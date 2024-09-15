@@ -10,7 +10,5 @@ func _ready() -> void :
 		start_penny_here()
 
 func start_penny_here() -> void :
-	start_penny_at(path, label)
+	Penny.start_penny_at(path, label)
 
-static func start_penny_at(_path : String, _label : StringName) -> void :
-	pass

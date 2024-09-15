@@ -15,6 +15,7 @@ func _ready() -> void:
 	REGEX.compile(PNY_FILE_EXPR)
 	if !REGEX.is_valid():
 		print("RegEx expression is not valid: \"" + PNY_FILE_EXPR + "\"")
+	Penny.instantiate()
 	reload()
 
 func _notification(what: int) -> void:
