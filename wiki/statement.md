@@ -200,6 +200,24 @@ This example shows a way of writing branches in expanded form. You may assign a 
 > > 	...
 > > ```
 
+###### Example 4
+
+```pny
+menu
+branch branch_apple
+	text = `Apple`
+	enable = apple_unvisited
+	visible = apple_unlocked
+content
+	`You choose to eat an apple.`
+```
+
+Branches have some attributes that define how or if the branch is displayed. Attributes must be placed before any other statements are made.
+
+- `text` is the string used in the menu
+- `enabled` is whether or not the branch can be chosen
+- `visible` is whether or not the branch is shown at all
+  - A branch must be both `enabled` and `visible` in order to be selected. Both default to `true`.
 
 # Functions
 

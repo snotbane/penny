@@ -38,7 +38,7 @@ static func reload(hard: bool = false) -> void:
 		print("***		Parsing ", files.size(), " updated file(s)...")
 		var parsers = get_parsers(files)
 
-	print("***	RELOADING COMPLETE")
+	print("***	RELOADING COMPLETE\n")
 
 static func open_modified() -> Array[FileAccess]:
 	var result : Array[FileAccess] = []
