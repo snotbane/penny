@@ -1,14 +1,17 @@
 extends Node
 
-@export_file("*.pny") var path : String
-@export var label : StringName
+@export var label : StringName = 'start'
 @export var autoload : bool = false
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void :
 	if autoload :
 		start_penny_here()
 
 func start_penny_here() -> void :
-	Penny.start_penny_at(path, label)
+	if not Penny.valid:
+		printerr("Penny environment is not valid, so PennyLoader will not be instantiated.")
+		return
+
+	var inst = PennyHost.new(label)
+	add_sibling.call_deferred(inst)
 

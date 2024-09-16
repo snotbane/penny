@@ -44,6 +44,7 @@ class Token:
 	]
 
 	static var RX_BOOLEAN_OPERATOR = RegEx.create_from_string("((\\b\\.\\b)|==|!=|!|&&|\\|\\|)|(\\b(and|nand|or|nor|not)\\b)")
+	static var RX_STRING_TRIM = RegEx.create_from_string("(?s)(?<=(\"\"\"|\"|'''|'|```|`)).*?(?=\\1)")
 
 	var type : int
 	var line : int
@@ -68,7 +69,7 @@ class Token:
 		value = _value
 
 	func _to_string() -> String:
-		return "(%s" % line + ", %s)" % col + " [%s" % value.length() + "] : %s" % type + " : " + value
+		return "ln %s cl %s type %s : %s" % [line, col, type, value]
 
 class Statement:
 
@@ -107,12 +108,18 @@ class Statement:
 	var depth : int
 	var tokens : Array[Token]
 
+	var is_blocking : bool :
+		get:
+			match type:
+				MESSAGE, MENU: return true
+			return false
+
 	func _init(_line: int, _depth: int) -> void:
 		line = _line
 		depth = _depth
 
 	func debug_string() -> String:
-		return "ln %s" % line + " (%s" % depth + ") : " + to_string()
+		return "ln %s dp %s type %s : %s" % [line, depth, type, to_string()]
 
 	func _to_string() -> String:
 		var result := ""
@@ -238,23 +245,23 @@ class Statement:
 		return validate_expression(self, expr)
 
 
-	static func validate_expression(ref: Statement, tokens: Array[Token]) -> bool:
-		if tokens.size() == 0:
-			PennyException.push_error(PennyException.PARSE_ERROR_EXPECTED_EXPRESSION, [ref.line, 0, ref.tokens[0].value])
+	static func validate_expression(ref: Statement, _tokens: Array[Token]) -> bool:
+		if _tokens.size() == 0:
+			PennyException.push_error(PennyException.PARSE_ERROR_EXPECTED_EXPRESSION, [ref.line, 0, ref._tokens[0].value])
 			return false
-		for i in tokens.size():
-			if not tokens[i].belongs_in_expression_variant:
-				PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [tokens[i]])
+		for i in _tokens.size():
+			if not _tokens[i].belongs_in_expression_variant:
+				PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [_tokens[i]])
 				return false
 		return true
 
-	static func validate_boolean_expression(ref: Statement, tokens: Array[Token]) -> bool:
-		if tokens.size() == 0:
-			PennyException.push_error(PennyException.PARSE_ERROR_EXPECTED_EXPRESSION, [ref.line, 0, ref.tokens[0].value])
+	static func validate_boolean_expression(ref: Statement, _tokens: Array[Token]) -> bool:
+		if _tokens.size() == 0:
+			PennyException.push_error(PennyException.PARSE_ERROR_EXPECTED_EXPRESSION, [ref.line, 0, ref._tokens[0].value])
 			return false
-		for i in tokens.size():
-			if not tokens[i].belongs_in_expression_variant:
-				PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [tokens[i]])
+		for i in _tokens.size():
+			if not _tokens[i].belongs_in_expression_variant:
+				PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [_tokens[i]])
 				return false
 		return true
 
@@ -277,6 +284,7 @@ static var line : int = 0
 static var col : int = 0
 
 var file : FileAccess
+var	errors : Array[String]
 static var raw_data : String
 
 func _init(_file: FileAccess) -> void:
@@ -293,15 +301,20 @@ func _init(_file: FileAccess) -> void:
 	# for i in tokens:
 	# 	print(i)
 
-	## Statements
+	## Statement Creation
 	var statements := statementize(tokens)
 	print("***				STATEMENTS:")
 	for i in statements:
 		print(i.debug_string())
 
-	## Validations
+	## Statement Validations
 	print("***				VALIDATIONS:")
-	validate_statements(statements)
+	var all_valid := validate_statements(statements)
+
+	if all_valid:
+		export_statements(statements)
+	else:
+		Penny.valid = false
 
 	print("***			Finished parsing file \"" + file.get_path() + "\".")
 
@@ -321,22 +334,21 @@ func tokenize() -> Array[Token]:
 				continue
 
 			match_found = true
-
-			if i == Token.WHITESPACE || i == Token.COMMENT:
-				cursor = match.get_end()
-				break
-
-			cursor = match.get_start()
-			var token = Token.new(i, line, col, cursor, match.get_string())
+			match i:
+				Token.WHITESPACE, Token.COMMENT:
+					pass
+				_:
+					cursor = match.get_start()
+					var token = Token.new(i, line, col, cursor, match.get_string())
+					match i:
+						Token.VALUE_STRING:
+							token.value = Token.RX_STRING_TRIM.search(token.value).get_string()
+					result.append(token)
 			cursor = match.get_end()
-
-			result.append(token)
-
 			break
 
 		if not match_found:
 			PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [line, col, raw_data[cursor]])
-
 			break
 
 	return result
@@ -377,3 +389,6 @@ func validate_statements(statements: Array[Statement]) -> bool:
 		if not i.validate():
 			result = false
 	return result
+
+func export_statements(statements: Array[Statement]) -> void:
+	Penny.import_statements(file.get_path(), statements)

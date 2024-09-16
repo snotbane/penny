@@ -6,7 +6,10 @@ const PNY_FILE_ROOT = "res://"
 const PNY_FILE_OMIT = [
 	".godot",
 	".vscode",
-	"addons"
+	"addons",
+
+	## Temporary
+	"assets",
 ]
 
 static var paths_dates : Dictionary
@@ -15,7 +18,7 @@ func _ready() -> void:
 	REGEX.compile(PNY_FILE_EXPR)
 	if !REGEX.is_valid():
 		print("RegEx expression is not valid: \"" + PNY_FILE_EXPR + "\"")
-	Penny.instantiate()
+
 	reload()
 
 func _notification(what: int) -> void:
@@ -24,6 +27,8 @@ func _notification(what: int) -> void:
 
 static func reload(hard: bool = false) -> void:
 	print("***	RELOADING PENNY SCRIPTS")
+
+	Penny.clear()
 
 	print("***		Detecting file changes...")
 
