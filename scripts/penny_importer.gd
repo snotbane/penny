@@ -1,3 +1,5 @@
+
+## Persistent autoload node that watches for file changes and handles the Penny environment.
 extends Node
 
 static var REGEX := RegEx.new()

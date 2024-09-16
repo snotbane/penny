@@ -1,3 +1,5 @@
+
+## Simple node that opens a PennyHost at a specified label.
 extends Node
 
 @export var label : StringName = 'start'

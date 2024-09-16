@@ -1,4 +1,5 @@
-## Node that actualizes Penny statements. Multiple of these can exist simultaneously.
+
+## Node that actualizes Penny statements. Multiple of these can exist simultaneously. This is the main router from Penny script to visual scenes.
 class_name PennyHost extends Node
 
 var statement_index : Penny.Address

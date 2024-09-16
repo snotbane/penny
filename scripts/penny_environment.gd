@@ -1,4 +1,5 @@
-## Environment for all Penny data. This is a singleton and all data is static as it comes from the penny scripts and save files.
+
+## Environment for all Penny runtime data. This is a singleton and all data is static as it comes from the penny scripts and save files.
 class_name Penny extends Object
 
 class Address:

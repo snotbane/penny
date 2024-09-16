@@ -1,3 +1,5 @@
+
+## Responsible for translating and validating a single file into workable statements.
 class_name PennyParser extends Object
 
 const RX_LF = "\\n"
