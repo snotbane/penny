@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="PennySettings" load_steps=3 format=3 uid="uid://d0fi2hxgyqk66"]
+
+[ext_resource type="PackedScene" uid="uid://b8sp6ey8fsgt7" path="res://addons/penny_godot/scenes/penny_dialogue_box.tscn" id="1_62s1b"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/penny_settings.gd" id="2_ofby1"]
+
+[resource]
+script = ExtResource("2_ofby1")
+message_receiver_parent_node_name = "dialogue_box_container"
+default_message_receiver_scene = ExtResource("1_62s1b")
