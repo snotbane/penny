@@ -25,6 +25,11 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed('penny_advance'):
 		try_advance_via_input()
+	if settings.allow_roll_controls:
+		if event.is_action_pressed('penny_roll_back'):
+			try_roll_back_via_input()
+		if event.is_action_pressed('penny_roll_forward'):
+			try_roll_forward_via_input()
 
 func advance() -> void:
 	cleanup()
@@ -35,7 +40,7 @@ func advance() -> void:
 		exit()
 		return
 
-	print("Advancing to %s" % statement_index)
+	# print("Advancing to %s" % statement_index)
 
 	match statement.type:
 		PennyParser.Statement.PRINT:
@@ -50,12 +55,19 @@ func advance() -> void:
 func cleanup() -> void:
 	if active_message_receiver != null:
 		active_message_receiver.queue_free()
+		active_message_receiver = null
 
 func try_advance_via_input() -> bool:
 	if is_blocked:
 		advance()
 		return true
 	return false
+
+func try_roll_back_via_input() -> bool:
+	return true
+
+func try_roll_forward_via_input() -> bool:
+	return true
 
 func message(stmt: PennyParser.Statement) -> void:
 	if active_message_receiver == null:

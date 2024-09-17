@@ -11,7 +11,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ednm0")
-rich_text_label = NodePath("margin_container/rich_text_label")
+rich_text_label = NodePath("margin_container/scroll_container/scroll_contents/rich_text_label")
 
 [node name="margin_container" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -20,10 +20,18 @@ theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="rich_text_label" type="RichTextLabel" parent="margin_container"]
+[node name="scroll_container" type="ScrollContainer" parent="margin_container"]
+layout_mode = 2
+
+[node name="scroll_contents" type="MarginContainer" parent="margin_container/scroll_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="rich_text_label" type="RichTextLabel" parent="margin_container/scroll_container/scroll_contents"]
 layout_mode = 2
 theme = ExtResource("1_qf3aa")
 text = "Test"
 
-[node name="typewriter" type="Node" parent="margin_container/rich_text_label"]
+[node name="typewriter" type="Node" parent="margin_container/scroll_container/scroll_contents/rich_text_label"]
 script = ExtResource("3_eupb4")
