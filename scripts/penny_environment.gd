@@ -18,6 +18,19 @@ class Address:
 	func _to_string() -> String:
 		return "%s:%s" % [path, index]
 
+## Displayable text capable of producing decorations.
+class Message:
+	static var RX_DEPTH_REMOVAL_PATTERN = "(?<=\\n)\\t{0,%s}"
+
+	var text: String
+
+	func _init(from: PennyParser.Statement) -> void:
+		var raw = from.tokens[0].value
+
+		var rx_whitespace = RegEx.create_from_string(RX_DEPTH_REMOVAL_PATTERN % from.depth)
+
+		text = rx_whitespace.sub(raw, "", true)
+
 static var statements : Dictionary		## String : Statement
 static var labels : Dictionary			## StringName : Address
 static var valid : bool = true

@@ -123,7 +123,7 @@ func invoke(stmt: PennyParser.Statement) -> void:
 			active_message_receiver = settings.default_message_receiver_scene.instantiate()
 			message_receiver_parent_node.add_child.call_deferred(active_message_receiver)
 
-			active_message_receiver.receive(stmt.tokens[0].value)
+			active_message_receiver.receive(Penny.Message.new(stmt))
 
 ## Record the statement as needed
 func record(stmt: PennyParser.Statement) -> void:
