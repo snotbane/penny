@@ -116,6 +116,12 @@ class Statement:
 				MESSAGE, MENU: return true
 			return false
 
+	var is_recorded : bool :
+		get:
+			match type:
+				ASSIGN: return true
+			return false
+
 	func _init(_line: int, _depth: int) -> void:
 		line = _line
 		depth = _depth

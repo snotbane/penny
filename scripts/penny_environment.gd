@@ -4,11 +4,16 @@ class_name Penny extends Object
 
 class Address:
 	var path : String
-	var index : int
 
-	func _init(_path: String, _index: int) -> void:
-		path = _path
-		index = _index
+	var _index : int
+	var index : int :
+		get: return _index
+		set (value):
+			_index = max(value, 0)
+
+	func _init(__path: String, __index: int) -> void:
+		path = __path
+		index = __index
 
 	func _to_string() -> String:
 		return "%s:%s" % [path, index]
@@ -41,10 +46,12 @@ static func get_address_from_label(label: StringName) -> Address:
 		printerr("Label '%s' does not exist in the current Penny environment." % label)
 		return null
 
-static func get_statement_from_address(address: Address) -> PennyParser.Statement:
+static func get_statement_from(address: Address) -> PennyParser.Statement:
 	if address.index < statements[address.path].size():
 		return statements[address.path][address.index]
 	return null
 
-static func get_next_from_address(address: Address) -> PennyParser.Statement:
+static func get_next_address_from(address: Address) -> PennyParser.Statement:
 	return statements[address.path][address.index + 1]
+
+# static func get_roll_back_address_from(address: Address) -> PennyParser.Statement:
