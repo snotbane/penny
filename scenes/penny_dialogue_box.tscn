@@ -4,34 +4,44 @@
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/templates/default_theme.tres" id="1_qf3aa"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/typewriter.gd" id="3_eupb4"]
 
-[node name="penny_dialogue_box" type="PanelContainer" node_paths=PackedStringArray("rich_text_label")]
+[node name="penny_dialogue_box" type="Control" node_paths=PackedStringArray("rich_text_label")]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+theme = ExtResource("1_qf3aa")
+script = ExtResource("1_ednm0")
+rich_text_label = NodePath("panel/margin_container/scroll_container/scroll_contents/rich_text_label")
+
+[node name="panel" type="PanelContainer" parent="."]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_ednm0")
-rich_text_label = NodePath("margin_container/scroll_container/scroll_contents/rich_text_label")
 
-[node name="margin_container" type="MarginContainer" parent="."]
+[node name="margin_container" type="MarginContainer" parent="panel"]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
+theme = ExtResource("1_qf3aa")
 
-[node name="scroll_container" type="ScrollContainer" parent="margin_container"]
+[node name="scroll_container" type="ScrollContainer" parent="panel/margin_container"]
 layout_mode = 2
 
-[node name="scroll_contents" type="MarginContainer" parent="margin_container/scroll_container"]
+[node name="scroll_contents" type="Control" parent="panel/margin_container/scroll_container"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="rich_text_label" type="RichTextLabel" parent="margin_container/scroll_container/scroll_contents"]
-layout_mode = 2
+[node name="rich_text_label" type="RichTextLabel" parent="panel/margin_container/scroll_container/scroll_contents"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme = ExtResource("1_qf3aa")
 text = "Test"
 
-[node name="typewriter" type="Node" parent="margin_container/scroll_container/scroll_contents/rich_text_label"]
+[node name="typewriter" type="Node" parent="panel/margin_container/scroll_container/scroll_contents/rich_text_label"]
 script = ExtResource("3_eupb4")

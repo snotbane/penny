@@ -42,7 +42,7 @@ jump start						# Jump to the label `start`
 
 **Pass-Through** statements automatically advance to the next method within the same frame, such as the `set` method.
 
-**Blocking** statements must be completed before the next method can be executed, such as the `say` method.
+**Halting** statements must be completed before the next method can be executed, such as the `say` method.
 
 ### Statement Implication
 

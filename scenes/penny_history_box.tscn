@@ -1,0 +1,64 @@
+[gd_scene load_steps=3 format=3 uid="uid://ckwmom7w0dvh1"]
+
+[ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/templates/default_theme.tres" id="1_lr0qd"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/history_handler.gd" id="1_vh1ak"]
+
+[node name="penny_history_box" type="Control" node_paths=PackedStringArray("vbox", "caret")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vh1ak")
+vbox = NodePath("panel_container/margin_container/scroll_container/scroll_contents")
+caret = NodePath("panel_container/margin_container/caret")
+verbosity = 11
+
+[node name="panel_container" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="margin_container" type="MarginContainer" parent="panel_container"]
+layout_mode = 2
+theme = ExtResource("1_lr0qd")
+
+[node name="caret" type="Control" parent="panel_container/margin_container"]
+layout_mode = 2
+
+[node name="color_rect" type="ColorRect" parent="panel_container/margin_container/caret"]
+layout_mode = 1
+offset_left = -22.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = 20.0
+pivot_offset = Vector2(6, 6)
+
+[node name="scroll_container" type="ScrollContainer" parent="panel_container/margin_container"]
+layout_mode = 2
+follow_focus = true
+
+[node name="scroll_contents" type="VBoxContainer" parent="panel_container/margin_container/scroll_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_lr0qd")
+
+[node name="rich_text_label" type="RichTextLabel" parent="panel_container/margin_container/scroll_container/scroll_contents"]
+layout_mode = 2
+text = "Test 1"
+fit_content = true
+
+[node name="rich_text_label_2" type="RichTextLabel" parent="panel_container/margin_container/scroll_container/scroll_contents"]
+layout_mode = 2
+text = "Test 2"
+fit_content = true
+
+[node name="rich_text_label_3" type="RichTextLabel" parent="panel_container/margin_container/scroll_container/scroll_contents"]
+layout_mode = 2
+text = "Test 3"
+fit_content = true

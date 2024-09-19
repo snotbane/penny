@@ -1,4 +1,5 @@
-class_name MessageReceiver extends Container
+
+class_name MessageReceiver extends Control
 
 @export var rich_text_label : RichTextLabel
 
