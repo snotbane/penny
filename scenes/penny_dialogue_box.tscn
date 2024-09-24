@@ -9,6 +9,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 1152.0
 offset_bottom = 648.0
+focus_mode = 1
 theme = ExtResource("1_qf3aa")
 script = ExtResource("1_ednm0")
 rich_text_label = NodePath("panel/margin_container/scroll_container/scroll_contents/rich_text_label")
@@ -27,6 +28,8 @@ theme = ExtResource("1_qf3aa")
 
 [node name="scroll_container" type="ScrollContainer" parent="panel/margin_container"]
 layout_mode = 2
+follow_focus = true
+horizontal_scroll_mode = 0
 
 [node name="scroll_contents" type="Control" parent="panel/margin_container/scroll_container"]
 layout_mode = 2
@@ -40,8 +43,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_qf3aa")
-text = "Test"
+bbcode_enabled = true
+text = "[p align=fill jst=w,k,sl]Oh, I don't have a strong preference on location, as long as it's close to the places I travel to most. But I do think that mountains are beautiful... as well as the rocks, minerals, and precious gems that lay beneath them.[/p]"
+fit_content = true
+scroll_active = false
+visible_characters_behavior = 1
 
 [node name="typewriter" type="Node" parent="panel/margin_container/scroll_container/scroll_contents/rich_text_label"]
 script = ExtResource("3_eupb4")

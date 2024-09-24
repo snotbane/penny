@@ -25,12 +25,11 @@ func _ready() -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_IN:
+		# pass
 		reload()
 
 static func reload(hard: bool = false) -> void:
 	print("***	RELOADING PENNY SCRIPTS")
-
-	Penny.clear()
 
 	print("***		Detecting file changes...")
 
@@ -45,6 +44,7 @@ static func reload(hard: bool = false) -> void:
 	else:
 		print("***		Parsing ", files.size(), " updated file(s)...")
 		var parsers = get_parsers(files)
+		Penny.reload_labels()
 
 	print("***	RELOADING COMPLETE\n")
 

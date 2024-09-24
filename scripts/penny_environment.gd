@@ -1,5 +1,5 @@
 
-## Environment for all Penny runtime data. This is a singleton and all data is static as it comes from the penny scripts and save files.
+## Environment for all Penny runtime data. This is a singleton and all data is static as it comes from the penny scripts. It simply represents the Penny code in workable object form.
 class_name Penny extends Object
 
 ## Single token in script representing a clause or value.
@@ -287,11 +287,22 @@ class Statement:
 				return false
 		return true
 
-## Record of a statement that occurred, used for historical purposes.
+## Record of a statement that has occurred or is occurring.
 class Record:
 
-	var statement : Statement
+	var host : PennyHost
+	var id : int
+	var stamp : int
+	var address : Address
 	var text : String
+	var change_label : StringName
+	var change_before : Variant
+	var change_after : Variant
+
+	var statement : Statement :
+		get: return Penny.get_statement_from(address)
+		set (value):
+			address = value.address
 
 	var verbosity : int :
 		get:
@@ -306,15 +317,28 @@ class Record:
 				## Debug Helpers
 				Statement.JUMP, Statement.RISE, Statement.DIVE, Statement.CONDITION: return 2
 
+				## Debug Markers
+				Statement.LABEL: return 3
+
 			return -1
 
-	func _init(__statement: Statement, __text) -> void:
+	func _init(__host: PennyHost, __stamp: int, __statement: Statement, __text: String) -> void:
+		host = __host
+		stamp = __stamp
 		statement = __statement
 		text = __text
 
+		id = hash(Time.get_ticks_msec())
+
+	func _to_string() -> String:
+		return "Record : stamp %s, address %s, text %s" % [stamp, address, text]
+
+	func equals(other: Record) -> bool:
+		return host == other.host and stamp == other.stamp
+
 ## Location of a Statement specified by a file path and array index.
 class Address:
-	var path : String
+	var path : StringName
 
 	var _index : int
 	var index : int :
@@ -322,7 +346,7 @@ class Address:
 		set (value):
 			_index = max(value, 0)
 
-	func _init(__path: String, __index: int) -> void:
+	func _init(__path: StringName, __index: int) -> void:
 		path = __path
 		index = __index
 
@@ -333,7 +357,7 @@ class Address:
 		return self.hash() == other.hash()
 
 	func _to_string() -> String:
-		return "%s:%s" % [path, index]
+		return "%s:%s (%s)" % [path, index, Penny.get_statement_from(self).line]
 
 ## Displayable text capable of producing decorations.
 class Message:
@@ -349,34 +373,46 @@ class Message:
 				var rx_whitespace = RegEx.create_from_string(RX_DEPTH_REMOVAL_PATTERN % from.depth)
 
 				text = rx_whitespace.sub(raw, "", true)
+				text = "[p align=fill jst=w,k,sl]" + text
 			Statement.PRINT:
 				text = from.tokens[0].value
+			Statement.LABEL:
+				text = "label " + from.tokens[0].value
 
 	func hash() -> int:
 		return text.hash()
 
-static var statements : Dictionary		## String : Statement
+static var statements : Dictionary		## StringName : Array[Statement]
 static var labels : Dictionary			## StringName : Address
 static var valid : bool = true
+static var clean : bool = true
 
-static var viewed_message_hashes : Array[int]
-
-static func clear() -> void:
+static func clear_all() -> void:
 	valid = true
 	statements.clear()
 	labels.clear()
 
-static func import_statements(path: String, _statements: Array[Statement]) -> void:
+static func clear(path: StringName) -> void:
+	statements.erase(path)
+
+static func import_statements(path: StringName, _statements: Array[Statement]) -> void:
+	print("Importing statements from '%s'..." % path)
+
 	statements[path] = _statements
 
+	clean = false
+
+static func reload_labels() -> void:
 	## Assign labels
 	var i := -1
-	for stmt in _statements:
-		i += 1
-		if stmt.type == Statement.LABEL:
-			if labels.has(stmt.tokens[1].value):
-				printerr("Label %s already exists (this check should be moved to the parser validations)" % stmt.tokens[1])
-			labels[stmt.tokens[1].value] = Address.new(path, i)
+	for path in statements.keys():
+		for stmt in statements[path]:
+			i += 1
+			if stmt.type == Statement.LABEL:
+				if labels.has(stmt.tokens[1].value):
+					printerr("Label %s already exists (this check should be moved to the parser validations)" % stmt.tokens[1])
+				labels[stmt.tokens[1].value] = Address.new(path, i)
+	clean = true
 
 static func get_address_from_label(label: StringName) -> Address:
 	if labels.has(label):

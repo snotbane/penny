@@ -43,8 +43,8 @@ func _init(_file: FileAccess) -> void:
 	## Penny.Statement Creation
 	var statements := statementize(tokens)
 	print("***				STATEMENTS:")
-	for i in statements:
-		print(i.debug_string())
+	# for i in statements:
+	# 	print(i.debug_string())
 
 	## Penny.Statement Validations
 	print("***				VALIDATIONS:")
