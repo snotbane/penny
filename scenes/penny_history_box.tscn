@@ -12,7 +12,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_vh1ak")
 vbox = NodePath("panel_container/margin_container/scroll_container/scroll_contents")
-verbosity = 10
 
 [node name="panel_container" type="PanelContainer" parent="."]
 layout_mode = 1

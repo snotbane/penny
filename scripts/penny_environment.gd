@@ -291,7 +291,6 @@ class Statement:
 class Record:
 
 	var host : PennyHost
-	var id : int
 	var stamp : int
 	var address : Address
 	var text : String
@@ -327,8 +326,6 @@ class Record:
 		stamp = __stamp
 		statement = __statement
 		text = __text
-
-		id = hash(Time.get_ticks_msec())
 
 	func _to_string() -> String:
 		return "Record : stamp %s, address %s, text %s" % [stamp, address, text]
