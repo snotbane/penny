@@ -1,11 +1,10 @@
 
 class_name PennyMessageLabel extends RichTextLabel
 
-var record : Penny.Record
+var record : Record
 var handler : HistoryHandler
 
-func _init(__handler: HistoryHandler, __record: Penny.Record, __verbosity: int = 0) -> void:
-	handler = __handler
+func _init(__record: Record) -> void:
 	record = __record
 
 	bbcode_enabled = true
@@ -13,9 +12,6 @@ func _init(__handler: HistoryHandler, __record: Penny.Record, __verbosity: int =
 	scroll_active = false
 	focus_mode = FOCUS_ALL
 	visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
-
-	text = record.text
-	refresh_visibility(__verbosity)
 
 	if not record.statement.is_record_user_facing:
 		var c = get_theme_color('default_color')

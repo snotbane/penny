@@ -35,19 +35,19 @@ func _init(_file: FileAccess) -> void:
 	raw_data = file.get_as_text(true)
 
 	## Tokens
-	var tokens := tokenize()
 	# print("***				TOKENS:")
+	var tokens := tokenize()
 	# for i in tokens:
 	# 	print(i)
 
-	## Penny.Statement Creation
+	## Statement Creation
+	# print("***				STATEMENTS:")
 	var statements := statementize(tokens)
-	print("***				STATEMENTS:")
 	# for i in statements:
 	# 	print(i.debug_string())
 
-	## Penny.Statement Validations
-	print("***				VALIDATIONS:")
+	## Statement Validations
+	# print("***				VALIDATIONS:")
 	var all_valid := validate_statements(statements)
 
 	if all_valid:
@@ -57,16 +57,16 @@ func _init(_file: FileAccess) -> void:
 
 	print("***			Finished parsing file \"" + file.get_path() + "\".")
 
-func tokenize() -> Array[Penny.Token]:
-	var result : Array[Penny.Token]
+func tokenize() -> Array[Token]:
+	var result : Array[Token]
 
-	## If this gets stuck in a loop, Penny.Token.PATTERNS has a regex pattern that matches with something of 0 length, e.g. ".*"
+	## If this gets stuck in a loop, Token.PATTERNS has a regex pattern that matches with something of 0 length, e.g. ".*"
 	cursor = 0
 	while cursor < raw_data.length():
 		var match_found = false
 
-		for i in Penny.Token.PATTERNS.size():
-			var match = Penny.Token.PATTERNS[i].search(raw_data, cursor)
+		for i in Token.PATTERNS.size():
+			var match = Token.PATTERNS[i].search(raw_data, cursor)
 			if not match:
 				continue
 			if match.get_start() != cursor:
@@ -74,14 +74,14 @@ func tokenize() -> Array[Penny.Token]:
 
 			match_found = true
 			match i:
-				Penny.Token.WHITESPACE, Penny.Token.COMMENT:
+				Token.WHITESPACE, Token.COMMENT:
 					pass
 				_:
 					cursor = match.get_start()
-					var token = Penny.Token.new(i, line, col, match.get_string())
+					var token = Token.new(i, line, col, match.get_string())
 					match i:
-						Penny.Token.VALUE_STRING:
-							token.value = Penny.Token.RX_STRING_TRIM.search(token.value).get_string()
+						Token.VALUE_STRING:
+							token.value = Token.RX_STRING_TRIM.search(token.value).get_string()
 					result.append(token)
 			cursor = match.get_end()
 			break
@@ -92,13 +92,13 @@ func tokenize() -> Array[Penny.Token]:
 
 	return result
 
-func statementize(tokens: Array[Penny.Token]) -> Array[Penny.Statement]:
-	var result : Array[Penny.Statement]
+func statementize(tokens: Array[Token]) -> Array[Statement]:
+	var result : Array[Statement]
 
-	var statement : Penny.Statement = null
+	var statement : Statement = null
 	var depth : int = 0
 	for i in tokens:
-		if i.type == Penny.Token.TERMINATOR:
+		if i.type == Token.TERMINATOR:
 			if statement:
 				if not statement.tokens.is_empty():
 					result.append(statement)
@@ -110,10 +110,10 @@ func statementize(tokens: Array[Penny.Token]) -> Array[Penny.Statement]:
 					depth += 1
 		else:
 			if not statement:
-				if i.type == Penny.Token.INDENTATION:
+				if i.type == Token.INDENTATION:
 					depth = i.value.length()
-				statement = Penny.Statement.new(i.line, depth, Penny.Address.new(file.get_path(), result.size()))
-			if not i.type == Penny.Token.INDENTATION:
+				statement = Statement.new(i.line, depth, Address.new(file.get_path(), result.size()))
+			if not i.type == Token.INDENTATION:
 				statement.add_token(i)
 
 	if statement:
@@ -122,12 +122,12 @@ func statementize(tokens: Array[Penny.Token]) -> Array[Penny.Statement]:
 
 	return result
 
-func validate_statements(statements: Array[Penny.Statement]) -> bool:
+func validate_statements(statements: Array[Statement]) -> bool:
 	var result := true
 	for i in statements:
 		if not i.validate():
 			result = false
 	return result
 
-func export_statements(statements: Array[Penny.Statement]) -> void:
+func export_statements(statements: Array[Statement]) -> void:
 	Penny.import_statements(file.get_path(), statements)

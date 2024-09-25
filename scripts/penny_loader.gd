@@ -16,6 +16,6 @@ func start_penny_here() -> void :
 		printerr("Penny environment is not valid, so PennyLoader will not be instantiated.")
 		return
 
-	var inst = PennyHost.new(label, settings)
-	add_sibling.call_deferred(inst)
+	# var inst = PennyHost.new(label, settings)
+	# add_sibling.call_deferred(inst)
 

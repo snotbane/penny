@@ -19,15 +19,15 @@ static var active_file_path : String
 static func push_error(code: int, clues: Array = []) -> void:
 	var message : String = EXCEPTION_MESSAGES[code]
 
-	if clues[0] is Penny.Token:
-		var token : Penny.Token = clues[0]
+	if clues[0] is Token:
+		var token : Token = clues[0]
 		clues.clear()
 		clues.append(token.line)
 		clues.append(token.col)
 		clues.append(token.value)
 
-	if clues[0] is Penny.Statement:
-		var statement : Penny.Statement = clues[0]
+	if clues[0] is Statement:
+		var statement : Statement = clues[0]
 		clues.clear()
 		clues.append(statement.line)
 		clues.append(statement.to_string())
