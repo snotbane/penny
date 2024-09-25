@@ -4,7 +4,7 @@
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/templates/default_theme.tres" id="1_qf3aa"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/typewriter.gd" id="3_eupb4"]
 
-[node name="penny_dialogue_box" type="Control" node_paths=PackedStringArray("rich_text_label")]
+[node name="penny_dialogue_box" type="Control" node_paths=PackedStringArray("rich_text_label", "skip_prevent_timer")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1152.0
@@ -12,11 +12,16 @@ offset_bottom = 648.0
 theme = ExtResource("1_qf3aa")
 script = ExtResource("1_ednm0")
 rich_text_label = NodePath("panel/margin_container/scroll_container/margin_container/rich_text_label")
+skip_prevent_timer = NodePath("skip_prevent_timer")
 
 [node name="typewriter" type="Node" parent="." node_paths=PackedStringArray("rtl", "scroll_container")]
 script = ExtResource("3_eupb4")
 rtl = NodePath("../panel/margin_container/scroll_container/margin_container/rich_text_label")
 scroll_container = NodePath("../panel/margin_container/scroll_container")
+
+[node name="skip_prevent_timer" type="Timer" parent="."]
+wait_time = 0.125
+one_shot = true
 
 [node name="panel" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -49,7 +54,7 @@ theme_override_constants/margin_bottom = 0
 [node name="rich_text_label" type="RichTextLabel" parent="panel/margin_container/scroll_container/margin_container"]
 layout_mode = 2
 focus_mode = 2
-mouse_default_cursor_shape = 1
+mouse_filter = 2
 bbcode_enabled = true
 text = "[p align=fill jst=w,k,sl]We'll have a super time. It's so important to do something every day that will make you happy. We'll lay all these little funky little things in there. This painting comes right out of your heart. Anyone can paint. You can get away with a lot. They say everything looks better with odd numbers of things. But sometimes I put even numbers—just to upset the critics. Let's give him a friend too. Everybody needs a friend. Use what you see, don't plan it. And maybe a little bush lives there. If you don't think every day is a good day - try missing a few. You'll see. It's life. It's interesting. It's fun. Put it in, leave it alone. Paint anything you want on the canvas. Create your own world. How to paint. That's easy. What to paint. That's much harder. Just make a decision and let it go.[/p]"
 fit_content = true
@@ -58,4 +63,5 @@ shortcut_keys_enabled = false
 selection_enabled = true
 visible_characters_behavior = 1
 
+[connection signal="make_ready" from="." to="typewriter" method="make_ready"]
 [connection signal="received" from="." to="typewriter" method="reset"]

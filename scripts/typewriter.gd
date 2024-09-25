@@ -19,6 +19,8 @@ signal completed
 ## (optional) controls scroll behavior.
 @export var scroll_container : ScrollContainer
 
+@onready var handler : MessageHandler = get_parent()
+
 var fake_rtl : RichTextLabel
 var scrollbar : VScrollBar
 
@@ -31,16 +33,21 @@ var visible_characters : int :
 		rtl.visible_characters = value
 		if rtl.visible_characters >= expected_characters:
 			rtl.visible_characters = -1
+		## Kind of weird syntax but we do this so that we ensure these methods get called whether the visible characters reached the end or if we manually skipped to the end by setting it directly to -1
+		if rtl.visible_characters == -1:
 			if scroll_container:
 				scroll_container.mouse_filter = Control.MOUSE_FILTER_PASS
 				scrollbar.mouse_filter = Control.MOUSE_FILTER_PASS
+			handler.prevent_skip()
 			completed.emit()
 		fake_rtl.visible_characters = rtl.visible_characters
+
 
 var cps : float :
 	get: return print_speed
 
 func _ready() -> void:
+	handler.watcher.workers.push_back(self)
 	if scroll_container:
 		scrollbar = scroll_container.get_v_scroll_bar()
 
@@ -54,7 +61,7 @@ func _ready() -> void:
 	reset()
 
 func _process(delta: float) -> void:
-	if visible_characters == -1: return
+	if not working: return
 
 	cursor += cps * delta
 	visible_characters = floori(cursor)
@@ -71,3 +78,11 @@ func reset() -> void:
 	cursor = 0
 	visible_characters = 0
 	started.emit()
+
+## WATCHER METHODS
+
+var working : bool :
+	get: return visible_characters != -1
+
+func wrap_up_work() -> void:
+	visible_characters = -1

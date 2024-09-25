@@ -1,14 +1,7 @@
-[gd_resource type="Resource" script_class="PennySettings" load_steps=5 format=3 uid="uid://d0fi2hxgyqk66"]
+[gd_resource type="Resource" script_class="PennySettings" load_steps=2 format=3 uid="uid://d0fi2hxgyqk66"]
 
-[ext_resource type="PackedScene" uid="uid://b8sp6ey8fsgt7" path="res://addons/penny_godot/scenes/penny_dialogue_box.tscn" id="1_62s1b"]
-[ext_resource type="PackedScene" uid="uid://ckwmom7w0dvh1" path="res://addons/penny_godot/scenes/penny_history_box.tscn" id="2_ma6q4"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/penny_settings.gd" id="2_ofby1"]
-[ext_resource type="PackedScene" uid="uid://iqegfs8mykmy" path="res://addons/penny_godot/scenes/penny_control.tscn" id="4_ubgv1"]
 
 [resource]
 script = ExtResource("2_ofby1")
 allow_roll_controls = true
-roll_history_max_size = 1024
-default_message_receiver_scene = ExtResource("1_62s1b")
-history_scene = ExtResource("2_ma6q4")
-ui_scene = ExtResource("4_ubgv1")
