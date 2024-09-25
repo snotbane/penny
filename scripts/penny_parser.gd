@@ -115,7 +115,7 @@ func statementize(tokens: Array[Token]) -> Array[Statement]:
 					depth = i.value.length()
 				statement = Statement.new(i.line, depth, Address.new(file.get_path(), result.size()))
 			if not i.type == Token.INDENTATION:
-				statement.add_token(i)
+				statement.tokens.push_back(i)
 
 	if statement:
 		result.append(statement)
@@ -125,9 +125,160 @@ func statementize(tokens: Array[Token]) -> Array[Statement]:
 func validate_statements(statements: Array[Statement]) -> bool:
 	var result := true
 	for i in statements:
-		if not i.validate():
+		if not validate(i):
 			result = false
 	return result
 
 func export_statements(statements: Array[Statement]) -> void:
 	Penny.import_statements(file.get_path(), statements)
+
+
+## VALIDATIONS
+
+static func validate(stmt: Statement) -> bool:
+	if stmt.tokens.size() == 0:
+		PennyException.push_error(PennyException.PARSE_ERROR_UNCAUGHT_VALIDATION, [stmt])
+		return false
+
+	match stmt.tokens[0].type:
+		Token.VALUE_STRING:
+			if stmt.tokens.size() == 1:
+				return validate_message_extension(stmt, Statement.MESSAGE)
+			elif stmt.tokens.size() == 2:
+				return validate_message_direct(stmt, Statement.MESSAGE)
+		Token.KEYWORD:
+			match stmt.tokens[0].value:
+				'init': return validate_keyword_standalone(stmt, Statement.INIT)
+				'pass': return validate_keyword_standalone(stmt, Statement.PASS)
+				'rise': return validate_keyword_standalone(stmt, Statement.RISE)
+				'print': return validate_keyword_with_optional_expression(stmt, Statement.PRINT)
+				'return': return validate_keyword_with_optional_expression(stmt, Statement.RETURN)
+				'dive': return validate_keyword_with_required_identifier(stmt, Statement.DIVE)
+				'label': return validate_keyword_with_required_identifier(stmt, Statement.LABEL)
+				'jump': return validate_keyword_with_required_identifier(stmt, Statement.JUMP)
+				'elif', 'else', 'if': return validate_conditional(stmt, Statement.CONDITION)
+				'object': return validate_keyword_standalone_with_required_block(stmt, Statement.OBJECT_MANIPULATE)
+				'filter': return validate_keyword_standalone_with_required_block(stmt, Statement.FILTER)
+		Token.IDENTIFIER:
+			if stmt.tokens.size() == 1:
+				return validate_object_manipulation(stmt, Statement.OBJECT_MANIPULATE)
+			match stmt.tokens[1].type:
+				Token.VALUE_STRING:
+					return validate_message_direct(stmt, Statement.MESSAGE)
+				Token.ASSIGNMENT:
+					return validate_object_assignment(stmt, Statement.ASSIGN)
+
+	PennyException.push_error(PennyException.PARSE_ERROR_UNCAUGHT_VALIDATION, [stmt])
+	return false
+
+static func validate_keyword_standalone(stmt: Statement, expect: int) -> bool:
+	stmt.type = expect
+	if stmt.tokens.size() == 1:
+		stmt.tokens = []
+		return true
+	else:
+		PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [stmt.tokens[1]])
+		return false
+
+static func validate_keyword_with_optional_expression(stmt: Statement, expect: int) -> bool:
+	stmt.type = expect
+	stmt.tokens.pop_front()
+	if stmt.tokens.size() == 0:
+		return true
+	return validate_expression(stmt, stmt.tokens)
+
+static func validate_keyword_with_required_expression(stmt: Statement, expect: int) -> bool:
+	stmt.type = expect
+	if stmt.tokens.size() == 1:
+		PennyException.push_error(PennyException.PARSE_ERROR_EXPECTED_EXPRESSION, [line, stmt.tokens[0].col_end, stmt.tokens[0].value])
+		return false
+	stmt.tokens.pop_front()
+	return validate_expression(stmt, stmt.tokens)
+
+static func validate_keyword_with_required_identifier(stmt: Statement, expect: int) -> bool:
+	stmt.type = expect
+	if stmt.tokens.size() == 1:
+		PennyException.push_error(PennyException.PARSE_ERROR_EXPECTED_IDENTIFIER, [line, stmt.tokens[0].col_end, stmt.tokens[0].value])
+		return false
+	stmt.tokens.pop_front()
+	if stmt.tokens.size() > 1:
+		PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [stmt.tokens[1]])
+		return false
+	if stmt.tokens[0].type != Token.IDENTIFIER:
+		PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [stmt.tokens[0]])
+		return false
+	return true
+
+static func validate_keyword_standalone_with_required_block(stmt: Statement, expect: int) -> bool:
+	return validate_keyword_standalone(stmt, expect)
+
+static func validate_object_manipulation(stmt: Statement, expect: int) -> bool:
+	stmt.type = expect
+	return true
+
+static func validate_object_assignment(stmt: Statement, expect: int) -> bool:
+	stmt.type = expect
+	if stmt.tokens[1].value == 'is':
+		if stmt.tokens.size() > 3:
+			PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [stmt.tokens[3]])
+			return false
+		if stmt.tokens[2].type != Token.IDENTIFIER && stmt.tokens[2].value != 'object':
+			PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [stmt.tokens[2]])
+			return false
+		return true
+	else:
+		var expr := stmt.tokens
+		expr.pop_front()
+		expr.pop_front()
+		return validate_expression(stmt, expr)
+
+static func validate_message_direct(stmt: Statement, expect: int) -> bool:
+	stmt.type = expect
+	if stmt.tokens.size() > 2:
+		PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [stmt.tokens[2]])
+		return false
+	if stmt.tokens[0].type != Token.IDENTIFIER && stmt.tokens[0].type != Token.VALUE_STRING:
+		PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [stmt.tokens[0]])
+		return false
+	if stmt.tokens[1].type != Token.VALUE_STRING:
+		PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [stmt.tokens[1]])
+		return false
+	return true
+
+static func validate_message_extension(stmt: Statement, expect: int) -> bool:
+	stmt.type = expect
+	if stmt.tokens.size() != 1:
+		PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [stmt.tokens[1]])
+		return false
+	return true
+
+static func validate_conditional(stmt: Statement, expect: int) -> bool:
+	stmt.type = expect
+	var expr := stmt.tokens
+	expr.pop_front()
+	return validate_expression(stmt, expr)
+
+
+static func validate_expression(ref: Statement, _tokens: Array[Token]) -> bool:
+	if _tokens.size() == 0:
+		PennyException.push_error(PennyException.PARSE_ERROR_EXPECTED_EXPRESSION, [ref.line, 0, ref._tokens[0].value])
+		return false
+	for i in _tokens.size():
+		if not _tokens[i].belongs_in_expression_variant:
+			PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [_tokens[i]])
+			return false
+	return true
+
+static func validate_boolean_expression(ref: Statement, _tokens: Array[Token]) -> bool:
+	if _tokens.size() == 0:
+		PennyException.push_error(PennyException.PARSE_ERROR_EXPECTED_EXPRESSION, [ref.line, 0, ref._tokens[0].value])
+		return false
+	for i in _tokens.size():
+		if not _tokens[i].belongs_in_expression_variant:
+			PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [_tokens[i]])
+			return false
+	return true
+
+
+
+

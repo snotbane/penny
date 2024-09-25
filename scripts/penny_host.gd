@@ -54,7 +54,10 @@ func invoke_at_cursor() -> void:
 	var record := Record.new(self, records.size(), cursor_stmt)
 	records.push_back(record)
 	history_handler.receive(record)
-	message_handler.receive(record)
+
+	match record.statement.type:
+		Statement.MESSAGE:
+			message_handler.receive(record)
 
 	if is_halting:
 		pass
@@ -64,7 +67,16 @@ func invoke_at_cursor() -> void:
 func advance() -> void:
 	if cursor == null: return
 	cursor.index += 1
+
+	if cursor_stmt == null:
+		close()
+		return
+
 	invoke_at_cursor()
+
+func close() -> void:
+	message_handler.queue_free()
+	queue_free()
 
 func rewind_to(record: Record) -> void:
 	cursor = record.address
