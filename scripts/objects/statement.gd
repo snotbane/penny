@@ -96,9 +96,9 @@ func validate() -> bool:
 				"rise": return validate_keyword_standalone(RISE)
 				"print": return validate_keyword_with_optional_expression(PRINT)
 				"return": return validate_keyword_with_optional_expression(RETURN)
-				"dive": return validate_keyword_with_required_expression(DIVE)
-				"label": return validate_keyword_with_required_expression(LABEL)
-				"jump": return validate_keyword_with_required_expression(JUMP)
+				"dive": return validate_keyword_with_required_identifier(DIVE)
+				"label": return validate_keyword_with_required_identifier(LABEL)
+				"jump": return validate_keyword_with_required_identifier(JUMP)
 				"elif", "else", "if": return validate_conditional(CONDITION)
 				"object": return validate_keyword_standalone_with_required_block(OBJECT_MANIPULATE)
 				"filter": return validate_keyword_standalone_with_required_block(FILTER)
@@ -117,6 +117,7 @@ func validate() -> bool:
 func validate_keyword_standalone(expect: int) -> bool:
 	type = expect
 	if tokens.size() == 1:
+		tokens = []
 		return true
 	else:
 		PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [tokens[1]])
@@ -124,22 +125,30 @@ func validate_keyword_standalone(expect: int) -> bool:
 
 func validate_keyword_with_optional_expression(expect: int) -> bool:
 	type = expect
-	var expr := tokens
-	expr.pop_front()
-	if expr.size() == 0:
+	tokens.pop_front()
+	if tokens.size() == 0:
 		return true
-	return validate_expression(self, expr)
+	return validate_expression(self, tokens)
 
 func validate_keyword_with_required_expression(expect: int) -> bool:
 	type = expect
 	if tokens.size() == 1:
+		PennyException.push_error(PennyException.PARSE_ERROR_EXPECTED_EXPRESSION, [line, tokens[0].col_end, tokens[0].value])
+		return false
+	tokens.pop_front()
+	return validate_expression(self, tokens)
+
+func validate_keyword_with_required_identifier(expect: int) -> bool:
+	type = expect
+	if tokens.size() == 1:
 		PennyException.push_error(PennyException.PARSE_ERROR_EXPECTED_IDENTIFIER, [line, tokens[0].col_end, tokens[0].value])
 		return false
-	if tokens.size() > 2:
-		PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [tokens[2]])
-		return false
-	if tokens[1].type != Token.IDENTIFIER:
+	tokens.pop_front()
+	if tokens.size() > 1:
 		PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [tokens[1]])
+		return false
+	if tokens[0].type != Token.IDENTIFIER:
+		PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [tokens[0]])
 		return false
 	return true
 

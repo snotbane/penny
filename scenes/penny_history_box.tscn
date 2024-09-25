@@ -40,6 +40,8 @@ pivot_offset = Vector2(6, 6)
 [node name="scroll_container" type="ScrollContainer" parent="panel_container/margin_container"]
 layout_mode = 2
 follow_focus = true
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
 
 [node name="scroll_contents" type="VBoxContainer" parent="panel_container/margin_container/scroll_container"]
 layout_mode = 2

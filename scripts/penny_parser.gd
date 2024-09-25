@@ -92,6 +92,7 @@ func tokenize() -> Array[Token]:
 
 	return result
 
+# Separates statements based on terminators and indentation; For type assignment, etc. see Statement validations.
 func statementize(tokens: Array[Token]) -> Array[Statement]:
 	var result : Array[Statement]
 
@@ -118,7 +119,6 @@ func statementize(tokens: Array[Token]) -> Array[Statement]:
 
 	if statement:
 		result.append(statement)
-		statement.validate()
 
 	return result
 

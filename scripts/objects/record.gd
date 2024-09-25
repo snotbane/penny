@@ -5,6 +5,7 @@ class_name Record extends Object
 var host : PennyHost
 var stamp : int
 var address : Address
+var message : Message
 var change_label : StringName
 var change_before : Variant
 var change_after : Variant
@@ -36,6 +37,7 @@ func _init(__host: PennyHost, __stamp: int, __statement: Statement) -> void:
 	host = __host
 	stamp = __stamp
 	statement = __statement
+	message = Message.new(statement)
 
 func _to_string() -> String:
 	return "Record : stamp %s, address %s" % [stamp, address]

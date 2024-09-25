@@ -14,6 +14,9 @@ func _init(__path: StringName, __index: int) -> void:
 	path = __path
 	index = __index
 
+func copy() -> Address:
+	return Address.new(path, index)
+
 func hash() -> int:
 	return path.hash() + hash(index)
 
