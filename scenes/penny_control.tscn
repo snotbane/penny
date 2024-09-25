@@ -10,7 +10,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="dialogue_box_container" type="MarginContainer" parent="."]
+[node name="dialogue_container" type="MarginContainer" parent="."]
 custom_minimum_size = Vector2(0, 240)
 layout_mode = 1
 anchors_preset = 12
@@ -25,7 +25,7 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 200
 theme_override_constants/margin_bottom = 20
 
-[node name="margin_container" type="MarginContainer" parent="."]
+[node name="history_container" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -37,5 +37,5 @@ size_flags_vertical = 3
 theme_override_constants/margin_left = 200
 theme_override_constants/margin_right = 200
 
-[node name="penny_history_box" parent="margin_container" instance=ExtResource("1_41dor")]
+[node name="penny_history_box" parent="history_container" instance=ExtResource("1_41dor")]
 layout_mode = 2

@@ -10,6 +10,7 @@ func _init() -> void:
 	scroll_active = false
 	focus_mode = FOCUS_ALL
 	visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
+	mouse_default_cursor_shape = Control.CursorShape.CURSOR_POINTING_HAND
 
 func _ready() -> void:
 	grab_focus.call_deferred()

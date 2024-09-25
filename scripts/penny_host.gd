@@ -1,9 +1,10 @@
 
 ## Node that actualizes Penny statements. This stores local data and records based on what the player chooses to do. Most applications will simply use an autoloaded, global host. For more advanced uses, you can instantiate multiple of these simultaneously for concurrent or even network-replicated instances. The records/state can be saved.
-
-## Penny starts by printing things to the history.
-
 class_name PennyHost extends Node
+
+@export var start_label : StringName = 'start'
+@export var history_handler : HistoryHandler
+@export var settings : PennySettings
 
 var _cursor : Address = null
 var cursor : Address = null :
@@ -20,7 +21,6 @@ var cursor_stmt : Statement :
 	set (value):
 		cursor = value.address
 
-var history_handler : HistoryHandler
 
 var records : Array[Record]
 
@@ -28,8 +28,8 @@ var is_halting : bool :
 	get: return cursor_stmt.is_halting
 
 func _ready() -> void:
-	history_handler = get_tree().root.find_child('penny_history_box', true, false)
-	jump_to('start')
+	if history_handler == null: return
+	jump_to(start_label)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed('penny_advance'):

@@ -9,10 +9,9 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 1152.0
 offset_bottom = 648.0
-focus_mode = 1
 theme = ExtResource("1_qf3aa")
 script = ExtResource("1_ednm0")
-rich_text_label = NodePath("panel/margin_container/scroll_container/scroll_contents/rich_text_label")
+rich_text_label = NodePath("")
 
 [node name="panel" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -21,6 +20,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="margin_container" type="MarginContainer" parent="panel"]
 layout_mode = 2
@@ -28,26 +28,28 @@ theme = ExtResource("1_qf3aa")
 
 [node name="scroll_container" type="ScrollContainer" parent="panel/margin_container"]
 layout_mode = 2
-follow_focus = true
 horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
 
-[node name="scroll_contents" type="Control" parent="panel/margin_container/scroll_container"]
+[node name="margin_container" type="MarginContainer" parent="panel/margin_container/scroll_container"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_vertical = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
 
-[node name="rich_text_label" type="RichTextLabel" parent="panel/margin_container/scroll_container/scroll_contents"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="rich_text_label" type="RichTextLabel" parent="panel/margin_container/scroll_container/margin_container"]
+layout_mode = 2
+focus_mode = 2
+mouse_default_cursor_shape = 1
 bbcode_enabled = true
-text = "[p align=fill jst=w,k,sl]Oh, I don't have a strong preference on location, as long as it's close to the places I travel to most. But I do think that mountains are beautiful... as well as the rocks, minerals, and precious gems that lay beneath them.[/p]"
+text = "[p align=fill jst=w,k,sl]We'll have a super time. It's so important to do something every day that will make you happy. We'll lay all these little funky little things in there. This painting comes right out of your heart. Anyone can paint. You can get away with a lot. They say everything looks better with odd numbers of things. But sometimes I put even numbers—just to upset the critics. Let's give him a friend too. Everybody needs a friend. Use what you see, don't plan it. And maybe a little bush lives there. If you don't think every day is a good day - try missing a few. You'll see. It's life. It's interesting. It's fun. Put it in, leave it alone. Paint anything you want on the canvas. Create your own world. How to paint. That's easy. What to paint. That's much harder. Just make a decision and let it go.[/p]"
 fit_content = true
 scroll_active = false
+selection_enabled = true
 visible_characters_behavior = 1
 
-[node name="typewriter" type="Node" parent="panel/margin_container/scroll_container/scroll_contents/rich_text_label"]
+[node name="typewriter" type="Node" parent="panel/margin_container/scroll_container/margin_container/rich_text_label"]
 script = ExtResource("3_eupb4")
