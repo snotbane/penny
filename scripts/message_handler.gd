@@ -2,7 +2,6 @@
 class_name MessageHandler extends Control
 
 signal received
-signal make_ready
 
 @export var rich_text_label : RichTextLabel
 @export var skip_prevent_timer : Timer

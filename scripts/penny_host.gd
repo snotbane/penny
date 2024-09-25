@@ -2,9 +2,16 @@
 ## Node that actualizes Penny statements. This stores local data and records based on what the player chooses to do. Most applications will simply use an autoloaded, global host. For more advanced uses, you can instantiate multiple of these simultaneously for concurrent or even network-replicated instances. The records/state can be saved.
 class_name PennyHost extends Node
 
-@export var start_label : StringName = 'start'
+## If populated, this host will start at this label on ready. Leave empty to not execute anything.
+@export var autostart_label : StringName = ''
+
+## Reference to a message handler. (Temporary. Eventually will be instantiated in code)
 @export var message_handler : MessageHandler
+
+## Reference to the history handler.
 @export var history_handler : HistoryHandler
+
+## Settings.
 @export var settings : PennySettings
 
 var _cursor : Address = null
@@ -22,22 +29,16 @@ var cursor_stmt : Statement :
 	set (value):
 		cursor = value.address
 
-
 var records : Array[Record]
 
 var is_halting : bool :
 	get: return cursor_stmt.is_halting
 
-var ready_to_advance : bool :
-	get: return message_handler.ready_to_advance
-	set (value):
-		message_handler.ready_to_advance = value
-
 @onready var watcher := Watcher.new([message_handler])
 
 func _ready() -> void:
-	if history_handler == null: return
-	jump_to.call_deferred(start_label)
+	if not autostart_label.is_empty():
+		jump_to.call_deferred(autostart_label)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed('penny_advance'):
@@ -61,6 +62,7 @@ func invoke_at_cursor() -> void:
 		advance()
 
 func advance() -> void:
+	if cursor == null: return
 	cursor.index += 1
 	invoke_at_cursor()
 

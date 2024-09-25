@@ -63,5 +63,4 @@ shortcut_keys_enabled = false
 selection_enabled = true
 visible_characters_behavior = 1
 
-[connection signal="make_ready" from="." to="typewriter" method="make_ready"]
 [connection signal="received" from="." to="typewriter" method="reset"]
