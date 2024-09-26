@@ -67,10 +67,11 @@ func _to_string() -> String:
 		result += i.raw + " "
 	return result.substr(0, result.length() - 1)
 
-func get_prev(offset: int = 1) -> Statement :
-	if address.index - offset < 0: return null
-	return Penny.statements[address.path][address.index - offset]
-
-func get_next(offset: int = 1) -> Statement :
-	if address.index + offset >= Penny.statements.size(): return null
-	return Penny.statements[address.path][address.index + offset]
+func execute(host: PennyHost) -> Record:
+	var result := Record.new(host, self)
+	match result.statement.type:
+		Statement.CONDITION:
+			result.attachment = tokens[0].value
+		Statement.MESSAGE:
+			host.message_handler.receive(result)
+	return result

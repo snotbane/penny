@@ -14,6 +14,11 @@ class_name PennyHost extends Node
 ## Settings.
 @export var settings : PennySettings
 
+var records : Array[Record]
+
+var last_record : Record :
+	get: return records[records.size() - 1]
+
 var _cursor : Address = null
 var cursor : Address = null :
 	get: return _cursor
@@ -29,7 +34,6 @@ var cursor_stmt : Statement :
 	set (value):
 		cursor = value.address
 
-var records : Array[Record]
 
 var is_halting : bool :
 	get: return cursor_stmt.is_halting
@@ -51,13 +55,9 @@ func jump_to(label: StringName) -> void:
 	invoke_at_cursor()
 
 func invoke_at_cursor() -> void:
-	var record := Record.new(self, records.size(), cursor_stmt)
+	var record := cursor_stmt.execute(self)
 	records.push_back(record)
 	history_handler.receive(record)
-
-	match record.statement.type:
-		Statement.MESSAGE:
-			message_handler.receive(record)
 
 	if is_halting:
 		pass
@@ -66,7 +66,7 @@ func invoke_at_cursor() -> void:
 
 func advance() -> void:
 	if cursor == null: return
-	cursor.index += 1
+	cursor = last_record.get_next()
 
 	if cursor_stmt == null:
 		close()

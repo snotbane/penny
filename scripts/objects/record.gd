@@ -6,9 +6,7 @@ var host : PennyHost
 var stamp : int
 var address : Address
 var message : Message
-var change_label : StringName
-var change_before : Variant
-var change_after : Variant
+var attachment : Variant
 
 var statement : Statement :
 	get: return Penny.get_statement_from(address)
@@ -33,9 +31,9 @@ var verbosity : int :
 
 		return -1
 
-func _init(__host: PennyHost, __stamp: int, __statement: Statement) -> void:
+func _init(__host: PennyHost, __statement: Statement) -> void:
 	host = __host
-	stamp = __stamp
+	stamp = host.records.size()
 	statement = __statement
 	message = Message.new(statement)
 
@@ -44,3 +42,15 @@ func _to_string() -> String:
 
 func equals(other: Record) -> bool:
 	return host == other.host and stamp == other.stamp
+
+func get_next() -> Address:
+	var result = statement.address.copy()
+	match statement.type:
+		Statement.CONDITION:
+			if attachment:
+				result.index += 1
+			else:
+				result.index += 2
+		_:
+			result.index += 1
+	return result

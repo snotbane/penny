@@ -49,6 +49,7 @@ var type : int
 var line : int
 var col : int
 var raw : String
+var value : Variant
 
 var col_end : int :
 	get: return col + raw.length()
@@ -64,9 +65,15 @@ func _init(_type: int, _line: int, _col: int, _raw: String) -> void:
 	line = _line
 	col = _col
 	raw = _raw
+	value = interpret(raw)
 
 func equals(other: Token) -> bool:
 	return raw == other.raw
 
 func _to_string() -> String:
 	return "ln %s cl %s type %s : %s" % [line, col, type, raw]
+
+static func interpret(s: String) -> Variant:
+	if s == 'true': return true
+	if s == 'false': return false
+	return s
