@@ -24,18 +24,19 @@ var verbosity : int :
 			Statement.ASSIGN, Statement.PRINT: return 1
 
 			## Debug Helpers
-			Statement.JUMP, Statement.RISE, Statement.DIVE, Statement.CONDITION: return 2
+			Statement.JUMP, Statement.RISE, Statement.DIVE, Statement.CONDITION_IF, Statement.CONDITION_ELIF, Statement.CONDITION_ELSE: return 2
 
 			## Debug Markers
 			Statement.LABEL: return 3
 
 		return -1
 
-func _init(__host: PennyHost, __statement: Statement) -> void:
+func _init(__host: PennyHost, __statement: Statement, __attachment: Variant = null) -> void:
 	host = __host
 	stamp = host.records.size()
 	statement = __statement
-	message = Message.new(statement)
+	attachment = __attachment
+	message = Message.new(self)
 
 func _to_string() -> String:
 	return "Record : stamp %s, address %s" % [stamp, address]
@@ -46,7 +47,7 @@ func equals(other: Record) -> bool:
 func get_next() -> Address:
 	var result = statement.address.copy()
 	match statement.type:
-		Statement.CONDITION:
+		Statement.CONDITION_ELSE, Statement.CONDITION_ELSE, Statement.CONDITION_IF:
 			if attachment:
 				result.index += 1
 			else:

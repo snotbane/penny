@@ -21,7 +21,9 @@ enum {
 
 	# block require indentation
 	BRANCH,			## IMPLICIT
-	CONDITION,
+	CONDITION_IF,
+	CONDITION_ELIF,
+	CONDITION_ELSE,
 	DECORATION,
 	FILTER,
 	MENU,
@@ -62,16 +64,41 @@ func debug_string() -> String:
 	return "ln %s dp %s type %s : %s" % [line, depth, type, to_string()]
 
 func _to_string() -> String:
-	var result := ""
+	var result := enum_to_string(type) + " "
 	for i in tokens:
 		result += i.raw + " "
 	return result.substr(0, result.length() - 1)
 
+static func enum_to_string(idx: int) -> String:
+	match idx:
+		INIT: return "init"
+		PASS: return "pass"
+		RISE: return "rise"
+		PRINT: return "print"
+		RETURN: return "return"
+		DIVE: return "dive"
+		LABEL: return "label"
+		JUMP: return "jump"
+		BRANCH: return "branch"
+		CONDITION_IF: return "if"
+		CONDITION_ELIF: return "elif"
+		CONDITION_ELSE: return "else"
+		DECORATION: return "decor"
+		FILTER: return "filter"
+		MENU: return "menu"
+		OBJECT_MANIPULATE: return "obj"
+		ASSIGN: return "assign"
+		MESSAGE: return "message"
+		_: return "invalid"
+
 func execute(host: PennyHost) -> Record:
-	var result := Record.new(host, self)
-	match result.statement.type:
-		Statement.CONDITION:
-			result.attachment = tokens[0].value
+	var result : Record
+	match type:
+		Statement.CONDITION_IF, Statement.CONDITION_ELIF, Statement.CONDITION_ELSE:
+			result = Record.new(host, self, host.evaluate_expression(tokens))
 		Statement.MESSAGE:
+			result = Record.new(host, self)
 			host.message_handler.receive(result)
+		_:
+			result = Record.new(host, self)
 	return result

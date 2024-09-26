@@ -85,3 +85,8 @@ func rewind_to(record: Record) -> void:
 		records.pop_back()
 	history_handler.rewind_to(record)
 	invoke_at_cursor()
+
+func evaluate_expression(tokens: Array[Token]) -> Variant:
+	if tokens[0].value == true: return true
+	if tokens[0].value == false: return false
+	return null

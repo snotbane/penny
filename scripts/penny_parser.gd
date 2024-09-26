@@ -156,7 +156,9 @@ static func validate(stmt: Statement) -> bool:
 				'dive': return validate_keyword_with_required_identifier(stmt, Statement.DIVE)
 				'label': return validate_keyword_with_required_identifier(stmt, Statement.LABEL)
 				'jump': return validate_keyword_with_required_identifier(stmt, Statement.JUMP)
-				'elif', 'else', 'if': return validate_conditional(stmt, Statement.CONDITION)
+				'elif': return validate_conditional(stmt, Statement.CONDITION_ELIF)
+				'else': return validate_conditional(stmt, Statement.CONDITION_ELSE)
+				'if': return validate_conditional(stmt, Statement.CONDITION_IF)
 				'object': return validate_keyword_standalone_with_required_block(stmt, Statement.OBJECT_MANIPULATE)
 				'filter': return validate_keyword_standalone_with_required_block(stmt, Statement.FILTER)
 		Token.IDENTIFIER:
@@ -254,10 +256,8 @@ static func validate_message_extension(stmt: Statement, expect: int) -> bool:
 
 static func validate_conditional(stmt: Statement, expect: int) -> bool:
 	stmt.type = expect
-	var expr := stmt.tokens
-	expr.pop_front()
-	return validate_expression(stmt, expr)
-
+	stmt.tokens.pop_front()
+	return validate_expression(stmt, stmt.tokens)
 
 static func validate_expression(ref: Statement, _tokens: Array[Token]) -> bool:
 	if _tokens.size() == 0:
