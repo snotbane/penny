@@ -42,6 +42,19 @@ static var PATTERNS = [
 	RegEx.create_from_string("(?m)[ \\n]+|(?<!^|\\t)\\t+"),
 ]
 
+
+enum Primitive {
+	NULL,
+	BOOLEAN_TRUE,
+	BOOLEAN_FALSE
+}
+
+static var PRIMITIVE_PATTERNS = [
+	RegEx.create_from_string("\\b([Nn]ull|NULL)\\b"),
+	RegEx.create_from_string("\\b([Tt]rue|TRUE)\\b"),
+	RegEx.create_from_string("\\b([Ff]alse|FALSE)\\b"),
+]
+
 static var RX_BOOLEAN_OPERATOR = RegEx.create_from_string("((\\b\\.\\b)|==|!=|!|&&|\\|\\|)|(\\b(and|nand|or|nor|not)\\b)")
 static var RX_STRING_TRIM = RegEx.create_from_string("(?s)(?<=(\"\"\"|\"|'''|'|```|`)).*?(?=\\1)")
 
@@ -74,6 +87,19 @@ func _to_string() -> String:
 	return "ln %s cl %s type %s : %s" % [line, col, type, raw]
 
 static func interpret(s: String) -> Variant:
-	if s == 'true': return true
-	if s == 'false': return false
-	return s
+	var result : Variant = s
+
+	for i in PRIMITIVE_PATTERNS.size():
+		var match : RegExMatch = PRIMITIVE_PATTERNS[i].search(s)
+		if not match:
+			continue
+
+		match i:
+			Primitive.NULL:
+				return null
+			Primitive.BOOLEAN_TRUE:
+				return true
+			Primitive.BOOLEAN_FALSE:
+				return false
+
+	return StringName(s)
