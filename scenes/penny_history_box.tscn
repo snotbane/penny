@@ -101,6 +101,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme = ExtResource("1_lr0qd")
 script = ExtResource("1_vh1ak")
 animation_player = NodePath("animation_player")
 vbox = NodePath("panel_container/margin_container/scroll_container/margin_container/scroll_contents")

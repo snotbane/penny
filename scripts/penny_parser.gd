@@ -44,7 +44,7 @@ func _init(_file: FileAccess) -> void:
 	# print("***				STATEMENTS:")
 	var statements := statementize(tokens)
 	# for i in statements:
-	# 	print(i.debug_string())
+	# 	print(i.debug_string)
 
 	## Statement Validations
 	# print("***				VALIDATIONS:")
@@ -124,14 +124,20 @@ func statementize(tokens: Array[Token]) -> Array[Statement]:
 
 func validate_statements(statements: Array[Statement]) -> bool:
 	var result := true
+	var exceptions : Array[PennyException] = []
 	for i in statements:
 		if not validate(i):
 			result = false
+		var e = i.validate()
+		if e:
+			exceptions.push_back(e)
+
+	for i in exceptions:
+		printerr(i)
 	return result
 
 func export_statements(statements: Array[Statement]) -> void:
 	Penny.import_statements(file.get_path(), statements)
-
 
 ## VALIDATIONS
 

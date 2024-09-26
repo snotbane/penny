@@ -87,6 +87,42 @@ func rewind_to(record: Record) -> void:
 	invoke_at_cursor()
 
 func evaluate_expression(tokens: Array[Token]) -> Variant:
-	if tokens[0].value == true: return true
-	if tokens[0].value == false: return false
-	return null
+	var stack := []
+	var ops := []
+
+	for i in tokens:
+		match i.type:
+			Token.VALUE_BOOLEAN:
+				stack.push_back(i.value)
+			Token.OPERATOR:
+				while ops and (i.get_operator_type() <= ops.back().get_operator_type()):
+					apply_operator(stack, ops.pop_back())
+				ops.push_back(i)
+
+	while ops:
+		apply_operator(stack, ops.pop_back())
+
+	if stack.size() != 1:
+		push_error("Stack size is not 1")
+
+	return stack[0]
+
+static func apply_operator(stack: Array[Variant], op: Token) -> void:
+	var token_count = op.get_operator_token_count()
+	match token_count:
+		1:
+			match op.get_operator_type():
+				Token.Operator.NOT:
+					stack.push_back(not stack.pop_back())
+		2:
+			var b : Variant = stack.pop_back()
+			var a : Variant = stack.pop_back()
+			match op.get_operator_type():
+				Token.Operator.AND:
+					stack.push_back(a and b)
+				Token.Operator.OR:
+					stack.push_back(a or b)
+				Token.Operator.IS_EQUAL:
+					stack.push_back(a == b)
+				Token.Operator.NOT_EQUAL:
+					stack.push_back(a != b)

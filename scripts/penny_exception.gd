@@ -14,29 +14,41 @@ static var EXCEPTION_MESSAGES = {
 	PARSE_ERROR_EXPECTED_IDENTIFIER: "PARSE_ERROR_EXPECTED_IDENTIFIER: In file '%s': (%s, %s), an identifier was expected for '%s' but none was found.",
 }
 
+var message : String
+
+func _init(s: String) -> void:
+	message = "Penny exception in file '%s' : %s" % [active_file_path, s]
+
+func _to_string() -> String:
+	return message
+
+# func _init(code: int, clues: Array = []) -> void:
+# 	message = EXCEPTION_MESSAGES[code]
+
+# 	if clues[0] is Token:
+# 		var token : Token = clues[0]
+# 		clues.clear()
+# 		clues.append(token.line)
+# 		clues.append(token.col)
+# 		clues.append(token.raw)
+
+# 	if clues[0] is Statement:
+# 		var statement : Statement = clues[0]
+# 		clues.clear()
+# 		clues.append(statement.line)
+# 		clues.append(statement.to_string())
+
+# 	if code < 10:
+# 		clues.push_front(active_file_path)
+
+
+# 	message = message % clues
+
+# 	printerr(message)
+# 	# push_error(message)
+
+
 static var active_file_path : String
 
 static func push_error(code: int, clues: Array = []) -> void:
-	var message : String = EXCEPTION_MESSAGES[code]
-
-	if clues[0] is Token:
-		var token : Token = clues[0]
-		clues.clear()
-		clues.append(token.line)
-		clues.append(token.col)
-		clues.append(token.raw)
-
-	if clues[0] is Statement:
-		var statement : Statement = clues[0]
-		clues.clear()
-		clues.append(statement.line)
-		clues.append(statement.to_string())
-
-	if code < 10:
-		clues.push_front(active_file_path)
-
-
-	message = message % clues
-
-	printerr(message)
-	# push_error(message)
+	pass
