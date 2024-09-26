@@ -24,7 +24,7 @@ static func push_error(code: int, clues: Array = []) -> void:
 		clues.clear()
 		clues.append(token.line)
 		clues.append(token.col)
-		clues.append(token.value)
+		clues.append(token.raw)
 
 	if clues[0] is Statement:
 		var statement : Statement = clues[0]

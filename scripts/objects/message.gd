@@ -8,7 +8,7 @@ var pure : String
 var text : String
 
 func _init(from: Statement) -> void:
-	pure = from.tokens[0].value
+	pure = from.tokens[0].raw
 	match from.type:
 		Statement.MESSAGE:
 
@@ -16,9 +16,9 @@ func _init(from: Statement) -> void:
 
 			text = rx_whitespace.sub(pure, "", true)
 		Statement.PRINT:
-			text = from.tokens[0].value
+			text = from.tokens[0].raw
 		Statement.LABEL:
-			text = "label " + from.tokens[0].value
+			text = "label " + from.tokens[0].raw
 	text = "[p align=fill jst=w,k,sl]" + text
 
 func hash() -> int:

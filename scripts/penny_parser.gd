@@ -81,7 +81,7 @@ func tokenize() -> Array[Token]:
 					var token = Token.new(i, line, col, match.get_string())
 					match i:
 						Token.VALUE_STRING:
-							token.value = Token.RX_STRING_TRIM.search(token.value).get_string()
+							token.raw = Token.RX_STRING_TRIM.search(token.raw).get_string()
 					result.append(token)
 			cursor = match.get_end()
 			break
@@ -105,14 +105,14 @@ func statementize(tokens: Array[Token]) -> Array[Statement]:
 					result.append(statement)
 				statement = null
 
-				if i.value == '\n':
+				if i.raw == '\n':
 					depth = 0
-				elif i.value == ':':
+				elif i.raw == ':':
 					depth += 1
 		else:
 			if not statement:
 				if i.type == Token.INDENTATION:
-					depth = i.value.length()
+					depth = i.raw.length()
 				statement = Statement.new(i.line, depth, Address.new(file.get_path(), result.size()))
 			if not i.type == Token.INDENTATION:
 				statement.tokens.push_back(i)
@@ -147,7 +147,7 @@ static func validate(stmt: Statement) -> bool:
 			elif stmt.tokens.size() == 2:
 				return validate_message_direct(stmt, Statement.MESSAGE)
 		Token.KEYWORD:
-			match stmt.tokens[0].value:
+			match stmt.tokens[0].raw:
 				'init': return validate_keyword_standalone(stmt, Statement.INIT)
 				'pass': return validate_keyword_standalone(stmt, Statement.PASS)
 				'rise': return validate_keyword_standalone(stmt, Statement.RISE)
@@ -190,7 +190,7 @@ static func validate_keyword_with_optional_expression(stmt: Statement, expect: i
 static func validate_keyword_with_required_expression(stmt: Statement, expect: int) -> bool:
 	stmt.type = expect
 	if stmt.tokens.size() == 1:
-		PennyException.push_error(PennyException.PARSE_ERROR_EXPECTED_EXPRESSION, [line, stmt.tokens[0].col_end, stmt.tokens[0].value])
+		PennyException.push_error(PennyException.PARSE_ERROR_EXPECTED_EXPRESSION, [line, stmt.tokens[0].col_end, stmt.tokens[0].raw])
 		return false
 	stmt.tokens.pop_front()
 	return validate_expression(stmt, stmt.tokens)
@@ -198,7 +198,7 @@ static func validate_keyword_with_required_expression(stmt: Statement, expect: i
 static func validate_keyword_with_required_identifier(stmt: Statement, expect: int) -> bool:
 	stmt.type = expect
 	if stmt.tokens.size() == 1:
-		PennyException.push_error(PennyException.PARSE_ERROR_EXPECTED_IDENTIFIER, [line, stmt.tokens[0].col_end, stmt.tokens[0].value])
+		PennyException.push_error(PennyException.PARSE_ERROR_EXPECTED_IDENTIFIER, [line, stmt.tokens[0].col_end, stmt.tokens[0].raw])
 		return false
 	stmt.tokens.pop_front()
 	if stmt.tokens.size() > 1:
@@ -218,11 +218,11 @@ static func validate_object_manipulation(stmt: Statement, expect: int) -> bool:
 
 static func validate_object_assignment(stmt: Statement, expect: int) -> bool:
 	stmt.type = expect
-	if stmt.tokens[1].value == 'is':
+	if stmt.tokens[1].raw == 'is':
 		if stmt.tokens.size() > 3:
 			PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [stmt.tokens[3]])
 			return false
-		if stmt.tokens[2].type != Token.IDENTIFIER && stmt.tokens[2].value != 'object':
+		if stmt.tokens[2].type != Token.IDENTIFIER && stmt.tokens[2].raw != 'object':
 			PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [stmt.tokens[2]])
 			return false
 		return true

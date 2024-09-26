@@ -64,7 +64,7 @@ func debug_string() -> String:
 func _to_string() -> String:
 	var result := ""
 	for i in tokens:
-		result += i.value + " "
+		result += i.raw + " "
 	return result.substr(0, result.length() - 1)
 
 func get_prev(offset: int = 1) -> Statement :
