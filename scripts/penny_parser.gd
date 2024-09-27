@@ -83,9 +83,6 @@ func tokenize() -> Array[Token]:
 				_:
 					cursor = match.get_start()
 					var token = Token.new(i, line, col, match.get_string())
-					match i:
-						Token.VALUE_STRING:
-							token.raw = Token.RX_STRING_TRIM.search(token.raw).get_string()
 					result.append(token)
 			cursor = match.get_end()
 			break

@@ -111,7 +111,7 @@ func evaluate_expression(tokens: Array[Token], range_in : int = 0, range_out : i
 	for i in range_out:
 		var token := tokens[i + range_in]
 		match token.type:
-			Token.VALUE_BOOLEAN:
+			Token.VALUE_BOOLEAN, Token.VALUE_NUMBER, Token.VALUE_COLOR, Token.VALUE_STRING:
 				stack.push_back(token.value)
 			Token.IDENTIFIER:
 				stack.push_back(get_data(token.value))

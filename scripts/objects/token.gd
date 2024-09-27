@@ -2,6 +2,13 @@
 ## Single token in script representing a clause or raw.
 class_name Token extends Object
 
+# enum Type {
+# 	LITERAL,
+# 	OPERATOR,
+# 	KEYWORD,
+# 	IDENTIFIER
+# }
+
 enum {
 	INDENTATION,		## NOT ADDED TO STATEMENTS
 	VALUE_STRING,		## Multiline
@@ -65,13 +72,19 @@ static var PATTERNS : Array[RegEx] = [
 enum Primitive {
 	NULL,
 	BOOLEAN_TRUE,
-	BOOLEAN_FALSE
+	BOOLEAN_FALSE,
+	NUMBER_DECIMAL,
+	NUMBER_INTEGER,
+	STRING,
 }
 
 static var PRIMITIVE_PATTERNS = [
 	RegEx.create_from_string("\\b([Nn]ull|NULL)\\b"),
 	RegEx.create_from_string("\\b([Tt]rue|TRUE)\\b"),
 	RegEx.create_from_string("\\b([Ff]alse|FALSE)\\b"),
+	RegEx.create_from_string("\\d+\\.\\d+|\\d+\\.|\\.\\d+"),
+	RegEx.create_from_string("\\d+"),
+	RegEx.create_from_string("(?s)(?<=(\"\"\"|\"|'''|'|```|`)).*?(?=\\1)"),
 ]
 
 enum Operator {
@@ -82,9 +95,6 @@ enum Operator {
 	IS_EQUAL,		# ==
 	NOT_EQUAL, # !=
 }
-
-static var RX_BOOLEAN_OPERATOR = RegEx.create_from_string("((\\b\\.\\b)|==|!=|!|&&|\\|\\|)|(\\b(and|nand|or|nor|not)\\b)")
-static var RX_STRING_TRIM = RegEx.create_from_string("(?s)(?<=(\"\"\"|\"|'''|'|```|`)).*?(?=\\1)")
 
 var type : int
 var line : int
@@ -140,5 +150,11 @@ static func interpret(s: String) -> Variant:
 				return true
 			Primitive.BOOLEAN_FALSE:
 				return false
+			Primitive.NUMBER_DECIMAL:
+				return float(s)
+			Primitive.NUMBER_INTEGER:
+				return int(s)
+			Primitive.STRING:
+				return match.get_string()
 
 	return StringName(s)
