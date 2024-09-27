@@ -14,14 +14,7 @@ class_name PennyHost extends Node
 ## Settings.
 @export var settings : PennySettings
 
-var data : Dictionary = {
-	'object': PennyObject.new(self, {
-		'base': null,
-		'link': null,
-		'name_prefix': "<>",
-		'name_suffix': "</>",
-	}),
-}
+var data := PennyObject.new(self, {})
 
 var records : Array[Record]
 
@@ -50,6 +43,13 @@ var is_halting : bool :
 @onready var watcher := Watcher.new([message_handler])
 
 func _ready() -> void:
+	data.set_data(PennyObject.BASE_OBJECT_NAME, PennyObject.new(null, {
+		'base': null,
+		'link': null,
+		'name_prefix': "<>",
+		'name_suffix': "</>",
+	}))
+
 	if not autostart_label.is_empty():
 		jump_to.call_deferred(autostart_label)
 
@@ -90,27 +90,10 @@ func close() -> void:
 
 func rewind_to(record: Record) -> void:
 	cursor = record.address
-	print("Rewinding to %s" % cursor)
 	while records.size() > record.stamp:
 		records.pop_back().undo()
 	history_handler.rewind_to(record)
 	invoke_at_cursor()
-
-func get_data(key: StringName) -> Variant:
-	if data.has(key):
-		return data[key]
-	return null
-
-func set_data(key: StringName, value: Variant) -> void:
-	if value == null:
-		data.erase(key)
-	else:
-		data[key] = value
-
-func add_object(key: StringName, base: StringName = 'object') -> PennyObject:
-	var result = PennyObject.new(self, {'base': base})
-	set_data(key, result)
-	return result
 
 func evaluate_expression(tokens: Array[Token], range_in : int = 0, range_out : int = -1) -> Variant:
 	var stack := []
@@ -126,11 +109,11 @@ func evaluate_expression(tokens: Array[Token], range_in : int = 0, range_out : i
 			Token.VALUE_BOOLEAN, Token.VALUE_NUMBER, Token.VALUE_COLOR, Token.VALUE_STRING:
 				stack.push_back(token.value)
 			Token.IDENTIFIER:
-				stack.push_back(get_data(token.value))
+				stack.push_back(data.get_data(token.value))
 			Token.KEYWORD:
 				match token.value:
 					'object':
-						stack.push_back(get_data(token.value))
+						stack.push_back(data.get_data(token.value))
 					_:
 						push_error("Unexpected keyword in expression '%s'." % token)
 						return null

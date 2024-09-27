@@ -37,8 +37,8 @@ func _init(_raw: String, _file: FileAccess = null) -> void:
 
 func parse_tokens() -> Array[Token]:
 	tokenize()
-	for i in tokens:
-		print(i)
+	# for i in tokens:
+	# 	print(i)
 	return tokens
 
 func parse_statements() -> Array[Statement]:
@@ -55,8 +55,8 @@ func parse_file() -> void:
 	parse_statements()
 
 	if validate_statements():
-		for i in statements:
-			print(i)
+		# for i in statements:
+		# 	print(i)
 		export_statements()
 	else:
 		Penny.valid = false

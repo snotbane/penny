@@ -41,7 +41,7 @@ func _init(__host: PennyHost, __statement: Statement, __attachment: Variant = nu
 func undo() -> void:
 	match statement.type:
 		Statement.ASSIGN:
-			host.set_data(attachment.key, attachment.before)
+			host.data.set_data(attachment.key, attachment.before)
 
 func _to_string() -> String:
 	return "Record : stamp %s, address %s" % [stamp, address]
