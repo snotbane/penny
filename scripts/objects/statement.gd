@@ -104,7 +104,12 @@ func execute(host: PennyHost) -> Record:
 		Statement.ASSIGN:
 			var key : StringName = tokens[0].value
 			var before : Variant = host.get_data(key)
-			host.set_data(key, host.evaluate_expression(tokens, 2))
+			var eval = host.evaluate_expression(tokens, 2)
+			print(eval)
+			if eval is PennyObject:
+				host.add_object(key, tokens[2].value)
+			else:
+				host.set_data(key, eval)
 			var after : Variant = host.get_data(key)
 			result = Record.new(host, self, AssignmentRecord.new(key, before, after))
 		_:

@@ -14,7 +14,14 @@ class_name PennyHost extends Node
 ## Settings.
 @export var settings : PennySettings
 
-var data : Dictionary		# StringName : Variant
+var data : Dictionary = {
+	'object': PennyObject.new(self, {
+		'base': null,
+		'link': null,
+		'name_prefix': "<>",
+		'name_suffix': "</>",
+	}),
+}
 
 var records : Array[Record]
 
@@ -100,6 +107,11 @@ func set_data(key: StringName, value: Variant) -> void:
 	else:
 		data[key] = value
 
+func add_object(key: StringName, base: StringName = 'object') -> PennyObject:
+	var result = PennyObject.new(self, {'base': base})
+	set_data(key, result)
+	return result
+
 func evaluate_expression(tokens: Array[Token], range_in : int = 0, range_out : int = -1) -> Variant:
 	var stack := []
 	var ops := []
@@ -115,6 +127,13 @@ func evaluate_expression(tokens: Array[Token], range_in : int = 0, range_out : i
 				stack.push_back(token.value)
 			Token.IDENTIFIER:
 				stack.push_back(get_data(token.value))
+			Token.KEYWORD:
+				match token.value:
+					'object':
+						stack.push_back(get_data(token.value))
+					_:
+						push_error("Unexpected keyword in expression '%s'." % token)
+						return null
 			Token.OPERATOR:
 				while ops and (token.get_operator_type() <= ops.back().get_operator_type()):
 					apply_operator(stack, ops.pop_back())
@@ -125,6 +144,7 @@ func evaluate_expression(tokens: Array[Token], range_in : int = 0, range_out : i
 
 	if stack.size() != 1:
 		push_error("Stack size is not 1")
+		return null
 
 	return stack[0]
 

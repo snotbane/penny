@@ -25,9 +25,7 @@ These are the variable types that Penny understands:
 - `int` — numeric id without a `.`
 - `float` — numeric id with a `.`
 - `color` — hex id beginning with `#`, e.g. `#ff4128`
-- `StringName` — string id with single quotes, e.g. `'chapter'`
-- `String` — string id with double quotes, e.g. `"chapter"`
-- `Text` — string id with ticks, e.g. ``` `chapter` ```
+- `string` — string id with quotes, e.g. `"chapter"`
 - `object` — string id with no quotes, e.g. `Rubin` or `player_name`
 
 ## Arrays
@@ -35,10 +33,10 @@ These are the variable types that Penny understands:
 Objects can also store arrays (lists) of data.
 
 ```pny
-obj Apple
+Apple = object
 	name = "apple"
 
-obj Rubin
+Rubin = object
 	name = "Rubin"
 	items = ["banana", Apple, 30]
 
@@ -66,7 +64,7 @@ Objects are a special kind of variable. They can be used to represent something 
 To define a new Object, use the following format:
 
 ```pny
-Apple is object
+Apple = object
 ```
 
 ###### Example 2
@@ -74,7 +72,7 @@ Apple is object
 Objects can store multiple variables. These variables can then be accessed using dot notation.
 
 ```pny
-Apple is object
+Apple = object
 	name = "apple"
 	health = 10
 
@@ -93,7 +91,7 @@ Apple.health = 0
 You can also set multiple properties at once using tab notation.
 
 ```pny
-Apple is object					# Initial definition
+Apple = object					# Initial definition
 	name = "apple"
 	value = 10
 	kind = "health"
@@ -118,7 +116,7 @@ Apple							# Setting only the listed attributes
 ```pny
 ...								# Previous example code
 
-Apple is object					# (Accidental?) redefinition
+Apple = object					# (Accidental?) redefinition
 	value = 20
 	kind = "mana"
 `The "[Apple.name]" will restore [Apple.value] [Apple.kind].`
@@ -133,11 +131,11 @@ Objects reference other objects when used as attributes. They do not have to be 
 ###### Example 1
 
 ```pny
-Rubin is object
+Rubin = object
 	name = "Rubin"
 	mother = Marigold
 
-Marigold is object
+Marigold = object
 	name = "Marigold"
 	son = Rubin
 
@@ -154,11 +152,11 @@ Marigold is object
 ###### Example 2
 
 ```pny
-Rubin is Character
+Rubin = Character
 	name = "Rubin"
 	spouse = Echo
 
-Echo is Character
+Echo = Character
 	name = "Echo"
 
 Rubin
@@ -190,29 +188,29 @@ Objects can inherit attributes from other objects. This is done so by using a bu
 ###### Example 1
 
 ```pny
-Fruit is object
+Fruit = object
 	base = object
 
-Apple is object
+Apple = object
 	base = Fruit
 ```
 
-Both of these definitions are technically valid, but also redundant, because `is` automatically sets `base`. Instead, do:
+Both of these definitions are technically valid, but also redundant, because `=` automatically sets `base`. Instead, do:
 
 ```pny
-Fruit is object
+Fruit = object
 
-Apple is Fruit
+Apple = Fruit
 ```
 
 ###### Example 2
 
 ```pny
-Fruit is object
+Fruit = object
 	name = "fruit"
 	health = 10
 
-Apple is Fruit
+Apple = Fruit
 	name = "apple"
 
 `A [Fruit] will replenish [Fruit.health] health.\n
@@ -226,11 +224,11 @@ An [Apple] will replenish [Apple.health] health as well because it is a kind of 
 Inherited objects do not copy their parents' values; they reference them. Therefore, changing a parent's attributes will also change all of their childrens' attributes as well.
 
 ```pny
-Fruit is object
+Fruit = object
 	name = "fruit"
 	health = 10
 
-Apple is Fruit
+Apple = Fruit
 	name = "apple"
 
 `All [Fruit]s heal [Fruit.health], so all [Apple]s heal [Apple.health].`
@@ -263,14 +261,14 @@ Apple.base = object
 
 ### Duplication
 
-Objects can be duplicated from a template object to target object (rather than being inherited). Use `=` to accomplish this (rather than using `is`). This protects the target's attributes from being modified if the template's attributes change. Creating an object in this way creates a sibling of the target object as it inherits from the same parent as the template.
+Objects can be duplicated from a template object to target object (rather than being inherited). Use `clone` to accomplish this. This protects the target's attributes from being modified if the template's attributes change. Creating an object in this way creates a sibling of the target object as it inherits from the same parent as the template.
 
 ```pny
-obj Apple
+Apple = object
 	name = "apple"
 	health = 10
 
-obj Banana = Apple
+Banana = Apple clone
 	name = "banana"
 
 Apple.health = 5
@@ -308,7 +306,7 @@ object
 Think of entities like "key items." They cannot speak (by default) but they are set up to have decorations added to their names to make them stand out when evaluated. They can even appear in the world using `link`.
 
 ```pny
-Entity is object
+Entity = object
 	link = null
 ```
 - `link` is a `StringName` referring to the engine PackedScene this `object` will instantiate and then control. Setting this value will not take effect until the existing node is destroyed.
@@ -318,7 +316,7 @@ Entity is object
 Characters are Entities that are set up to be able to speak.
 
 ```pny
-Character is Entity
+Character = Entity
 	message_link = "message_display_window"
 	message_prefix = ""
 	message_suffix = "<w>"
@@ -332,7 +330,7 @@ Character is Entity
 These are speaking characters that speak outside of the player's control. They auto-advance through dialogue.
 
 ```pny
- BackgroundCharacter is Character
+ BackgroundCharacter = Character
 	ignore_input = true
 	message_suffix = "<d=3>"
 ```

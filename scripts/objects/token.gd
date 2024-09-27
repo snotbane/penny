@@ -99,16 +99,10 @@ enum Operator {
 }
 
 var type : int
-# var line : int
-# var col : int
-# var col_end : int
 var value : Variant
 
 func _init(_type: int, _raw: String) -> void:
 	type = _type
-	# line = _line
-	# col = _col
-	# col_end = col + _raw.length()
 	value = interpret(_raw)
 
 func _to_string() -> String:
