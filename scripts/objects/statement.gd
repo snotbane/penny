@@ -52,9 +52,6 @@ var is_record_user_facing : bool :
 var line_string : String :
 	get: return "ln %s" % line
 
-var debug_string : String :
-	get: return "%s dp %s type %s : %s" % [line_string, depth, type, to_string()]
-
 func _init(_line: int, _depth: int, _address: Address) -> void:
 	line = _line
 	depth = _depth
@@ -67,10 +64,12 @@ func equals(other: Statement) -> bool:
 	return self.hash() == other.hash()
 
 func _to_string() -> String:
-	var result := enum_to_string(type) + " "
+	var result := ""
 	for i in tokens:
-		result += i.raw + " "
-	return result.substr(0, result.length() - 1)
+		result += str(i.value) + " "
+	result = result.substr(0, result.length() - 1)
+	result = "%s dp %s : %s (%s)" % [line_string, depth, result,  enum_to_string(type)]
+	return result
 
 static func enum_to_string(idx: int) -> String:
 	match idx:
@@ -103,7 +102,7 @@ func execute(host: PennyHost) -> Record:
 			result = Record.new(host, self)
 			host.message_handler.receive(result)
 		Statement.ASSIGN:
-			var key : StringName = tokens[0].raw
+			var key : StringName = tokens[0].value
 			var before : Variant = host.get_data(key)
 			host.set_data(key, host.evaluate_expression(tokens, 2))
 			var after : Variant = host.get_data(key)
@@ -123,7 +122,7 @@ func validate() -> PennyException:
 			type = Statement.MESSAGE
 			return validate_message()
 		Token.KEYWORD:
-			match tokens[0].raw:
+			match tokens[0].value:
 				'print':
 					type = Statement.PRINT
 					return validate_keyword_with_expression()

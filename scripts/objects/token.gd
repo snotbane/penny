@@ -1,5 +1,5 @@
 
-## Single token in script representing a clause or raw.
+## Single token in script.
 class_name Token extends Object
 
 # enum Type {
@@ -75,6 +75,7 @@ enum Literal {
 	BOOLEAN_FALSE,
 	NUMBER_DECIMAL,
 	NUMBER_INTEGER,
+	COLOR,
 	STRING,
 }
 
@@ -84,6 +85,7 @@ static var PRIMITIVE_PATTERNS = [
 	RegEx.create_from_string("\\b([Ff]alse|FALSE)\\b"),
 	RegEx.create_from_string("\\d+\\.\\d+|\\d+\\.|\\.\\d+"),
 	RegEx.create_from_string("\\d+"),
+	PATTERNS[Token.VALUE_COLOR],
 	RegEx.create_from_string("(?s)(?<=(\"\"\"|\"|'''|'|```|`)).*?(?=\\1)"),
 ]
 
@@ -97,29 +99,24 @@ enum Operator {
 }
 
 var type : int
-var line : int
-var col : int
-var raw : String
+# var line : int
+# var col : int
+# var col_end : int
 var value : Variant
 
-var col_end : int :
-	get: return col + raw.length()
-
-func _init(_type: int, _line: int, _col: int, _raw: String) -> void:
+func _init(_type: int, _raw: String) -> void:
 	type = _type
-	line = _line
-	col = _col
-	raw = _raw
-	value = interpret(raw)
-
-func equals(other: Token) -> bool:
-	return raw == other.raw
+	# line = _line
+	# col = _col
+	# col_end = col + _raw.length()
+	value = interpret(_raw)
 
 func _to_string() -> String:
-	return "ln %s cl %s type %s : %s" % [line, col, type, raw]
+	# return "ln %s cl %s type %s : %s" % [line, col, type, value]
+	return "%s (%s)" % [str(value), enum_to_string(type)]
 
 func get_operator_type() -> Operator:
-	match raw:
+	match value:
 		'!', 'not': return Operator.NOT
 		'&&', 'and': return Operator.AND
 		'||', 'or': return Operator.OR
@@ -154,6 +151,8 @@ static func interpret(s: String) -> Variant:
 				return float(s)
 			Literal.NUMBER_INTEGER:
 				return int(s)
+			Literal.COLOR:
+				return Color(s)
 			Literal.STRING:
 				return match.get_string()
 

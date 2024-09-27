@@ -25,6 +25,7 @@ static var col : int = 0
 var file : FileAccess
 var raw : String
 var tokens : Array[Token]
+var token_lines : Array[int]
 var statements : Array[Statement]
 
 static func from_file(_file: FileAccess) -> PennyParser:
@@ -35,16 +36,16 @@ func _init(_raw: String, _file: FileAccess = null) -> void:
 	file = _file
 
 func parse_tokens() -> Array[Token]:
-	tokens = tokenize()
-	# for i in tokens:
-	# 	print(i)
+	tokenize()
+	for i in tokens:
+		print(i)
 	return tokens
 
 func parse_statements() -> Array[Statement]:
 	parse_tokens()
-	statements = statementize(tokens)
+	statementize()
 	# for i in statements:
-	# 	print(i.debug_string)
+	# 	print(i)
 	return statements
 
 func parse_file() -> void:
@@ -54,6 +55,8 @@ func parse_file() -> void:
 	parse_statements()
 
 	if validate_statements():
+		for i in statements:
+			print(i)
 		export_statements()
 	else:
 		Penny.valid = false
@@ -61,8 +64,8 @@ func parse_file() -> void:
 	PennyException.active_file_path = PennyException.UNKNOWN_FILE
 	print("***			Finished parsing file \"" + file.get_path() + "\".")
 
-func tokenize() -> Array[Token]:
-	var result : Array[Token]
+func tokenize() -> void:
+	tokens.clear()
 
 	## If this gets stuck in a loop, Token.PATTERNS has a regex pattern that matches with something of 0 length, e.g. ".*"
 	cursor = 0
@@ -82,8 +85,9 @@ func tokenize() -> Array[Token]:
 					pass
 				_:
 					cursor = match.get_start()
-					var token = Token.new(i, line, col, match.get_string())
-					result.append(token)
+					var token = Token.new(i, match.get_string())
+					tokens.push_back(token)
+					token_lines.push_back(line)
 			cursor = match.get_end()
 			break
 
@@ -91,37 +95,34 @@ func tokenize() -> Array[Token]:
 			PennyException.new("Unrecognized token at ln %s cl %s" % [line, col]).push()
 			break
 
-	return result
-
 # Separates statements based on terminators and indentation; For type assignment, etc. see Statement validations.
-func statementize(_tokens: Array[Token]) -> Array[Statement]:
-	var result : Array[Statement]
+func statementize() -> void:
+	statements.clear()
 
 	var statement : Statement = null
 	var depth : int = 0
-	for i in _tokens:
-		if i.type == Token.TERMINATOR:
+	for i in tokens.size():
+		var token = tokens[i]
+		if token.type == Token.TERMINATOR:
 			if statement:
 				if not statement.tokens.is_empty():
-					result.append(statement)
+					statements.append(statement)
 				statement = null
 
-				if i.raw == '\n':
+				if token.value == '\n':
 					depth = 0
-				elif i.raw == ':':
+				elif token.value == ':':
 					depth += 1
 		else:
 			if not statement:
-				if i.type == Token.INDENTATION:
-					depth = i.raw.length()
-				statement = Statement.new(i.line, depth, Address.new(file.get_path(), result.size()))
-			if not i.type == Token.INDENTATION:
-				statement.tokens.push_back(i)
+				if token.type == Token.INDENTATION:
+					depth = token.value.length()
+				statement = Statement.new(token_lines[i], depth, Address.new(file.get_path(), statements.size()))
+			if not token.type == Token.INDENTATION:
+				statement.tokens.push_back(token)
 
 	if statement:
-		result.append(statement)
-
-	return result
+		statements.append(statement)
 
 func validate_statements() -> bool:
 	var result := true

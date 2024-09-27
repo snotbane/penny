@@ -27,9 +27,9 @@ static func reload_labels() -> void:
 		for stmt in statements[path]:
 			i += 1
 			if stmt.type == Statement.LABEL:
-				if labels.has(stmt.tokens[0].raw):
+				if labels.has(stmt.tokens[0].value):
 					printerr("Label %s already exists" % stmt.tokens[0])
-				labels[stmt.tokens[0].raw] = Address.new(path, i)
+				labels[stmt.tokens[0].value] = Address.new(path, i)
 	clean = true
 
 static func get_address_from_label(label: StringName) -> Address:
