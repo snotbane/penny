@@ -5,13 +5,13 @@ class_name PennyParser extends Object
 const RX_LF = "\\n"
 
 static var rx_line_col := RegEx.create_from_string(RX_LF)
-static var _cursor : int = 0
-static var cursor : int :
+var _cursor : int = 0
+var cursor : int :
 	get : return _cursor
 	set (value) :
 		_cursor = value
 
-		var rm_lf := rx_line_col.search_all(raw_data, 0, _cursor)
+		var rm_lf := rx_line_col.search_all(raw, 0, _cursor)
 
 		line = rm_lf.size() + 1
 
@@ -23,38 +23,42 @@ static var line : int = 0
 static var col : int = 0
 
 var file : FileAccess
-var	errors : Array[String]
-static var raw_data : String
+var raw : String
+var tokens : Array[Token]
+var statements : Array[Statement]
 
-func _init(_file: FileAccess) -> void:
+static func from_file(_file: FileAccess) -> PennyParser:
+	return PennyParser.new(_file.get_as_text(true), _file)
+
+func _init(_raw: String, _file: FileAccess = null) -> void:
+	raw = _raw
 	file = _file
 
+func parse_tokens() -> Array[Token]:
+	tokens = tokenize()
+	# for i in tokens:
+	# 	print(i)
+	return tokens
+
+func parse_statements() -> Array[Statement]:
+	parse_tokens()
+	statements = statementize(tokens)
+	# for i in statements:
+	# 	print(i.debug_string)
+	return statements
+
+func parse_file() -> void:
 	print("***			Parsing file \"" + file.get_path() + "\"...")
 	PennyException.active_file_path = file.get_path()
 
-	raw_data = file.get_as_text(true)
+	parse_statements()
 
-	## Tokens
-	# print("***				TOKENS:")
-	var tokens := tokenize()
-	# for i in tokens:
-	# 	print(i)
-
-	## Statement Creation
-	# print("***				STATEMENTS:")
-	var statements := statementize(tokens)
-	# for i in statements:
-	# 	print(i.debug_string)
-
-	## Statement Validations
-	# print("***				VALIDATIONS:")
-	var all_valid := validate_statements(statements)
-
-	if all_valid:
-		export_statements(statements)
+	if validate_statements():
+		export_statements()
 	else:
 		Penny.valid = false
 
+	PennyException.active_file_path = PennyException.UNKNOWN_FILE
 	print("***			Finished parsing file \"" + file.get_path() + "\".")
 
 func tokenize() -> Array[Token]:
@@ -62,11 +66,11 @@ func tokenize() -> Array[Token]:
 
 	## If this gets stuck in a loop, Token.PATTERNS has a regex pattern that matches with something of 0 length, e.g. ".*"
 	cursor = 0
-	while cursor < raw_data.length():
+	while cursor < raw.length():
 		var match_found = false
 
 		for i in Token.PATTERNS.size():
-			var match = Token.PATTERNS[i].search(raw_data, cursor)
+			var match = Token.PATTERNS[i].search(raw, cursor)
 			if not match:
 				continue
 			if match.get_start() != cursor:
@@ -87,18 +91,18 @@ func tokenize() -> Array[Token]:
 			break
 
 		if not match_found:
-			PennyException.push_error(PennyException.PARSE_ERROR_UNEXPECTED_TOKEN, [line, col, raw_data[cursor]])
+			PennyException.new("Unrecognized token at ln %s cl %s" % [line, col]).push()
 			break
 
 	return result
 
 # Separates statements based on terminators and indentation; For type assignment, etc. see Statement validations.
-func statementize(tokens: Array[Token]) -> Array[Statement]:
+func statementize(_tokens: Array[Token]) -> Array[Statement]:
 	var result : Array[Statement]
 
 	var statement : Statement = null
 	var depth : int = 0
-	for i in tokens:
+	for i in _tokens:
 		if i.type == Token.TERMINATOR:
 			if statement:
 				if not statement.tokens.is_empty():
@@ -122,7 +126,7 @@ func statementize(tokens: Array[Token]) -> Array[Statement]:
 
 	return result
 
-func validate_statements(statements: Array[Statement]) -> bool:
+func validate_statements() -> bool:
 	var result := true
 	var exceptions : Array[PennyException] = []
 	for i in statements:
@@ -134,5 +138,5 @@ func validate_statements(statements: Array[Statement]) -> bool:
 		printerr(i)
 	return result
 
-func export_statements(statements: Array[Statement]) -> void:
+func export_statements() -> void:
 	Penny.import_statements(file.get_path(), statements)

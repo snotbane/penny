@@ -43,13 +43,10 @@ static func reload(hard: bool = false) -> void:
 		print("***		No file changes detected.")
 	else:
 		print("***		Parsing ", files.size(), " updated file(s)...")
-		# ## Doesn't work???
-		# for i in Token.PATTERNS.size():
-		# 	var regex = Token.PATTERNS[i]
-		# 	if not regex.is_valid():
-		# 		push_error("Regex '%s' is not valid (%s)." % [regex.get_pattern(), Token.enum_to_string(i)])
 
 		var parsers = get_parsers(files)
+		for i in parsers:
+			i.parse_file()
 		Penny.reload_labels()
 
 	print("***	RELOADING COMPLETE\n")
@@ -94,15 +91,8 @@ static func open_all() -> Array[FileAccess]:
 
 static func get_parsers(files: Array[FileAccess]) -> Array[PennyParser]:
 	var result : Array[PennyParser]
-
-	# result.append(PennyParser.new(files[max(4, files.size()) - 1]))
 	for i in files:
-		result.append(PennyParser.new(i))
-
-	# for i in result:
-	# 	if ! i.is_valid:
-	# 		print("Parse error: " + i.file.get_path())
-
+		result.append(PennyParser.from_file(i))
 	return result
 
 static func get_all_paths(path: StringName = PNY_FILE_ROOT) -> Array[StringName]:

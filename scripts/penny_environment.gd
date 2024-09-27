@@ -21,14 +21,14 @@ static func import_statements(path: StringName, _statements: Array[Statement]) -
 	clean = false
 
 static func reload_labels() -> void:
-	## Assign labels
+	labels.clear()
 	var i := -1
 	for path in statements.keys():
 		for stmt in statements[path]:
 			i += 1
 			if stmt.type == Statement.LABEL:
 				if labels.has(stmt.tokens[0].raw):
-					printerr("Label %s already exists (this check should be moved to the parser validations)" % stmt.tokens[0])
+					printerr("Label %s already exists" % stmt.tokens[0])
 				labels[stmt.tokens[0].raw] = Address.new(path, i)
 	clean = true
 
