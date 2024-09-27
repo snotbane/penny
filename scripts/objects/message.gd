@@ -23,9 +23,12 @@ func _init(from: Record) -> void:
 				var expr_string = match.get_string()
 				expr_string = expr_string.substr(1, expr_string.length() - 2)
 
-				var result := convert_to_string(from.host.get_data(expr_string))
+				var parser = PennyParser.new(expr_string)
+				parser.parse_tokens()
+				var result = from.host.evaluate_expression(parser.tokens)
+				var result_string := convert_to_string(result)
 
-				text = text.substr(0, match.get_start()) + result + text.substr(match.get_end(), text.length() - match.get_end())
+				text = text.substr(0, match.get_start()) + result_string + text.substr(match.get_end(), text.length() - match.get_end())
 
 			text = rx_whitespace.sub(text, "", true)
 		Statement.PRINT:

@@ -95,12 +95,6 @@ var value : Variant
 var col_end : int :
 	get: return col + raw.length()
 
-var belongs_in_expression_variant : bool :
-	get: return type >= VALUE_STRING && type <= OPERATOR
-
-var belongs_in_expression_boolean : bool :
-	get: return type >= VALUE_BOOLEAN && type <= OPERATOR
-
 func _init(_type: int, _line: int, _col: int, _raw: String) -> void:
 	type = _type
 	line = _line

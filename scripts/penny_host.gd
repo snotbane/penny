@@ -113,6 +113,8 @@ func evaluate_expression(tokens: Array[Token], range_in : int = 0, range_out : i
 		match token.type:
 			Token.VALUE_BOOLEAN:
 				stack.push_back(token.value)
+			Token.IDENTIFIER:
+				stack.push_back(get_data(token.value))
 			Token.OPERATOR:
 				while ops and (token.get_operator_type() <= ops.back().get_operator_type()):
 					apply_operator(stack, ops.pop_back())
