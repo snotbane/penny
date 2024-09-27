@@ -86,10 +86,10 @@ static func enum_to_string(idx: int) -> String:
 		CONDITION_IF: return "if"
 		CONDITION_ELIF: return "elif"
 		CONDITION_ELSE: return "else"
-		DECORATION: return "decor"
+		DECORATION: return "decoration"
 		FILTER: return "filter"
 		MENU: return "menu"
-		OBJECT_MANIPULATE: return "obj"
+		OBJECT_MANIPULATE: return "object_manipulate"
 		ASSIGN: return "assign"
 		MESSAGE: return "message"
 		_: return "invalid"
@@ -102,6 +102,15 @@ func execute(host: PennyHost) -> Record:
 		Statement.MESSAGE:
 			result = Record.new(host, self)
 			host.message_handler.receive(result)
+		Statement.ASSIGN:
+			var key : StringName = tokens[0].raw
+			var before : Variant = host.get_data(key)
+			var expr = tokens.duplicate()
+			expr.pop_front()
+			expr.pop_front()
+			host.set_data(key, host.evaluate_expression(expr))
+			var after : Variant = host.get_data(key)
+			result = Record.new(host, self, AssignmentRecord.new(key, before, after))
 		_:
 			result = Record.new(host, self)
 	return result
@@ -133,6 +142,13 @@ func validate() -> PennyException:
 				'else':
 					type = Statement.CONDITION_ELSE
 					return validate_keyword_with_none()
+		Token.IDENTIFIER:
+			if tokens.size() == 1:
+				type = Statement.OBJECT_MANIPULATE
+				# Throw uncaught exception for now
+			elif tokens[1].type == Token.ASSIGNMENT:
+				type = Statement.ASSIGN
+				return validate_assignment()
 	return exception("Uncaught exception for statement '%s'" % self)
 
 func validate_keyword_with_none() -> PennyException:
@@ -143,8 +159,8 @@ func validate_keyword_with_none() -> PennyException:
 
 func validate_keyword_with_expression(require: bool = true) -> PennyException:
 	tokens.pop_front()
-	if require and tokens.is_empty():
-		return exception("Statement requires non-empty expression.")
+	if not require and tokens.is_empty():
+		return null
 	return validate_expression(tokens)
 
 func validate_keyword_with_identifier(count: int = 1) -> PennyException:
@@ -170,9 +186,13 @@ func validate_message() -> PennyException:
 			return exception("Unexpected token '%s'" % tokens[2])
 	return null
 
+func validate_assignment() -> PennyException:
+	var expr := tokens.duplicate()
+	expr.pop_front()
+	expr.pop_front()
+	return validate_expression(expr)
 
-
-static func validate_expression(expr: Array[Token]) -> PennyException:
+func validate_expression(expr: Array[Token]) -> PennyException:
 	if expr.is_empty():
-		return null
+		return exception("Expression is empty.")
 	return null

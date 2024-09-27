@@ -43,6 +43,12 @@ static func reload(hard: bool = false) -> void:
 		print("***		No file changes detected.")
 	else:
 		print("***		Parsing ", files.size(), " updated file(s)...")
+		# ## Doesn't work???
+		# for i in Token.PATTERNS.size():
+		# 	var regex = Token.PATTERNS[i]
+		# 	if not regex.is_valid():
+		# 		push_error("Regex '%s' is not valid (%s)." % [regex.get_pattern(), Token.enum_to_string(i)])
+
 		var parsers = get_parsers(files)
 		Penny.reload_labels()
 

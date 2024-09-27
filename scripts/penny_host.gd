@@ -14,6 +14,8 @@ class_name PennyHost extends Node
 ## Settings.
 @export var settings : PennySettings
 
+var data : Dictionary		# StringName : Variant
+
 var records : Array[Record]
 
 var last_record : Record :
@@ -51,6 +53,7 @@ func _input(event: InputEvent) -> void:
 		else: watcher.wrap_up_work()
 
 func jump_to(label: StringName) -> void:
+	if not Penny.valid: return
 	cursor = Penny.get_address_from_label(label)
 	invoke_at_cursor()
 
@@ -85,6 +88,15 @@ func rewind_to(record: Record) -> void:
 		records.pop_back()
 	history_handler.rewind_to(record)
 	invoke_at_cursor()
+
+func get_data(key: StringName) -> Variant:
+	if data.has(key):
+		return data[key]
+	return null
+
+func set_data(key: StringName, value: Variant) -> void:
+	data[key] = value
+	pass
 
 func evaluate_expression(tokens: Array[Token]) -> Variant:
 	var stack := []

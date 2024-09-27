@@ -40,7 +40,7 @@ static func enum_to_string(idx: int) -> String:
 		_: return "invalid_token"
 
 
-static var PATTERNS = [
+static var PATTERNS : Array[RegEx] = [
 	RegEx.create_from_string("(?m)^\\t+"),
 	RegEx.create_from_string("(?s)(\"\"\"|\"|'''|'|```|`).*?\\1"),
 	# RegEx.create_from_string("(?s)[\\[\\]]|,(?=.*\\])"),
@@ -48,13 +48,13 @@ static var PATTERNS = [
 	RegEx.create_from_string("(?i)#([0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
 	RegEx.create_from_string("(?<=[^\\d\\.])(\\d+\\.\\d+|\\.\\d+|\\d+\\.|\\d+)(?=[^\\d\\.])"),
 	RegEx.create_from_string("\\b([Tt]rue|TRUE|[Ff]alse|FALSE)\\b"),
-	RegEx.create_from_string("\\(|\\)|((\\b\\.\\b)|==|!=)|!|&&|\\|\\||(\\b(and|nand|or|nor|not)\\b)|\\+|-|\\*|/|%|&|\\||>|<|<=|>="),
+	RegEx.create_from_string("([=!<>]=)|&&|\\|\\||(\\b(and|nand|or|nor|not)\\b)|([!+\\-*/%&|<>()](?!=))|(\\b\\.\\b)"),
 	# RegEx.create_from_string("(\\b\\.\\b)|==|!="),
 	# RegEx.create_from_string("!|&&|\\|\\||(\\b(and|nand|or|nor|not)\\b)"),
 	# RegEx.create_from_string("\\+|-|\\*|/|%|&|\\|"),
 	# RegEx.create_from_string(">|<|<=|>="),
 	RegEx.create_from_string("(([#/])\\*(.|\\n)*?(\\*\\2|$))|((#|\\/\\/).*(?=\\n))"),
-	RegEx.create_from_string("\\+=|-=|\\*=|/=|=|is"),
+	RegEx.create_from_string("[+\\-*/:]?="),
 	RegEx.create_from_string("\\b(dec|dive|elif|else|if|filter|jump|label|menu|object|pass|print|return|rise|suspend)\\b"),
 	RegEx.create_from_string("[a-zA-Z_]\\w*"),
 	RegEx.create_from_string("(?m)[:;]|((?<=[^\\n:;])$\\n)"),

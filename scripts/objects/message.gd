@@ -16,6 +16,8 @@ func _init(from: Record) -> void:
 			text = rx_whitespace.sub(from.statement.tokens[0].raw, "", true)
 		Statement.PRINT:
 			text = from.statement.tokens[0].raw
+		Statement.ASSIGN:
+			text = from.attachment.to_string()
 		_:
 			text = pure
 			match from.statement.type:
