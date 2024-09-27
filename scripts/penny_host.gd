@@ -85,7 +85,7 @@ func rewind_to(record: Record) -> void:
 	cursor = record.address
 	print("Rewinding to %s" % cursor)
 	while records.size() > record.stamp:
-		records.pop_back()
+		records.pop_back().undo()
 	history_handler.rewind_to(record)
 	invoke_at_cursor()
 

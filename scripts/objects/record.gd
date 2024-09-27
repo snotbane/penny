@@ -38,6 +38,11 @@ func _init(__host: PennyHost, __statement: Statement, __attachment: Variant = nu
 	attachment = __attachment
 	message = Message.new(self)
 
+func undo() -> void:
+	match statement.type:
+		Statement.ASSIGN:
+			host.set_data(attachment.key, attachment.before)
+
 func _to_string() -> String:
 	return "Record : stamp %s, address %s" % [stamp, address]
 
