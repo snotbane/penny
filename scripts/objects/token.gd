@@ -69,7 +69,7 @@ static var PATTERNS : Array[RegEx] = [
 ]
 
 
-enum Primitive {
+enum Literal {
 	NULL,
 	BOOLEAN_TRUE,
 	BOOLEAN_FALSE,
@@ -144,17 +144,17 @@ static func interpret(s: String) -> Variant:
 			continue
 
 		match i:
-			Primitive.NULL:
+			Literal.NULL:
 				return null
-			Primitive.BOOLEAN_TRUE:
+			Literal.BOOLEAN_TRUE:
 				return true
-			Primitive.BOOLEAN_FALSE:
+			Literal.BOOLEAN_FALSE:
 				return false
-			Primitive.NUMBER_DECIMAL:
+			Literal.NUMBER_DECIMAL:
 				return float(s)
-			Primitive.NUMBER_INTEGER:
+			Literal.NUMBER_INTEGER:
 				return int(s)
-			Primitive.STRING:
+			Literal.STRING:
 				return match.get_string()
 
 	return StringName(s)
