@@ -5,16 +5,16 @@ class_name Token extends Object
 enum {
 	INDENTATION,		## NOT ADDED TO STATEMENTS
 	VALUE_STRING,		## Multiline
-	ARRAY_CAPS,
+	# ARRAY_CAPS,
 	# PARENTHESIS_CAPS,
 	VALUE_COLOR,
 	VALUE_NUMBER,
 	VALUE_BOOLEAN,
 	OPERATOR,
-	OPERATOR_GENERIC,
-	OPERATOR_BOOLEAN,
-	OPERATOR_NUMERIC,
-	OPERATOR_NUMERIC_EQUALITY,
+	# OPERATOR_GENERIC,
+	# OPERATOR_BOOLEAN,
+	# OPERATOR_NUMERIC,
+	# OPERATOR_NUMERIC_EQUALITY,
 	COMMENT,
 	ASSIGNMENT,
 	KEYWORD,
@@ -23,19 +23,36 @@ enum {
 	WHITESPACE,			## NOT ADDED TO STATEMENTS
 }
 
+static func enum_to_string(idx: int) -> String:
+	match idx:
+		INDENTATION: return "indent"
+		VALUE_STRING: return "string"
+		VALUE_COLOR: return "color"
+		VALUE_NUMBER: return "number"
+		VALUE_BOOLEAN: return "boolean"
+		OPERATOR: return "operator"
+		COMMENT: return "comment"
+		ASSIGNMENT: return "assigner"
+		KEYWORD: return "keyword"
+		IDENTIFIER: return "identifier"
+		TERMINATOR: return "terminator"
+		WHITESPACE: return "whitespace"
+		_: return "invalid_token"
+
+
 static var PATTERNS = [
 	RegEx.create_from_string("(?m)^\\t+"),
 	RegEx.create_from_string("(?s)(\"\"\"|\"|'''|'|```|`).*?\\1"),
-	RegEx.create_from_string("(?s)[\\[\\]]|,(?=.*\\])"),
+	# RegEx.create_from_string("(?s)[\\[\\]]|,(?=.*\\])"),
 	# RegEx.create_from_string("(?s)[\\(\\)]"),
 	RegEx.create_from_string("(?i)#([0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
 	RegEx.create_from_string("(?<=[^\\d\\.])(\\d+\\.\\d+|\\.\\d+|\\d+\\.|\\d+)(?=[^\\d\\.])"),
 	RegEx.create_from_string("\\b([Tt]rue|TRUE|[Ff]alse|FALSE)\\b"),
 	RegEx.create_from_string("\\(|\\)|((\\b\\.\\b)|==|!=)|!|&&|\\|\\||(\\b(and|nand|or|nor|not)\\b)|\\+|-|\\*|/|%|&|\\||>|<|<=|>="),
-	RegEx.create_from_string("(\\b\\.\\b)|==|!="),
-	RegEx.create_from_string("!|&&|\\|\\||(\\b(and|nand|or|nor|not)\\b)"),
-	RegEx.create_from_string("\\+|-|\\*|/|%|&|\\|"),
-	RegEx.create_from_string(">|<|<=|>="),
+	# RegEx.create_from_string("(\\b\\.\\b)|==|!="),
+	# RegEx.create_from_string("!|&&|\\|\\||(\\b(and|nand|or|nor|not)\\b)"),
+	# RegEx.create_from_string("\\+|-|\\*|/|%|&|\\|"),
+	# RegEx.create_from_string(">|<|<=|>="),
 	RegEx.create_from_string("(([#/])\\*(.|\\n)*?(\\*\\2|$))|((#|\\/\\/).*(?=\\n))"),
 	RegEx.create_from_string("\\+=|-=|\\*=|/=|=|is"),
 	RegEx.create_from_string("\\b(dec|dive|elif|else|if|filter|jump|label|menu|object|pass|print|return|rise|suspend)\\b"),
@@ -79,7 +96,7 @@ var col_end : int :
 	get: return col + raw.length()
 
 var belongs_in_expression_variant : bool :
-	get: return type >= VALUE_STRING && type <= OPERATOR_NUMERIC_EQUALITY
+	get: return type >= VALUE_STRING && type <= OPERATOR
 
 var belongs_in_expression_boolean : bool :
 	get: return type >= VALUE_BOOLEAN && type <= OPERATOR

@@ -1,12 +1,12 @@
-[gd_resource type="Theme" load_steps=3 format=3 uid="uid://bsvx4hbyp1r46"]
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://dn4s16pk0dl2"]
 
-[ext_resource type="FontFile" uid="uid://8xm7vwqkgqmo" path="res://addons/penny_godot/assets/IBMPlexSans-Regular.ttf" id="1_2b1x8"]
+[ext_resource type="FontFile" uid="uid://bsbudwo5438ls" path="res://addons/penny_godot/assets/IBMPlexMono-Regular.ttf" id="1_ryg5m"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_11om5"]
 bg_color = Color(0.15, 0.15, 0.15, 1)
 
 [resource]
-default_font = ExtResource("1_2b1x8")
+default_font = ExtResource("1_ryg5m")
 default_font_size = 20
 MarginContainer/constants/margin_bottom = 16
 MarginContainer/constants/margin_left = 16
