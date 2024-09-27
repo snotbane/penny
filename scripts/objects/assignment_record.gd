@@ -11,4 +11,4 @@ func _init(_key: StringName, _before: Variant, _after: Variant) -> void:
 	after = _after
 
 func _to_string() -> String:
-	return "assigned key '%s' : %s -> %s" % [key, before, after]
+	return "assigned '%s' : %s => %s" % [key, before, after]

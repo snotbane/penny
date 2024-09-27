@@ -95,21 +95,28 @@ func get_data(key: StringName) -> Variant:
 	return null
 
 func set_data(key: StringName, value: Variant) -> void:
-	data[key] = value
-	pass
+	if value == null:
+		data.erase(key)
+	else:
+		data[key] = value
 
-func evaluate_expression(tokens: Array[Token]) -> Variant:
+func evaluate_expression(tokens: Array[Token], range_in : int = 0, range_out : int = -1) -> Variant:
 	var stack := []
 	var ops := []
 
-	for i in tokens:
-		match i.type:
+	if range_out == -1:
+		range_out = tokens.size()
+	range_out -= range_in
+
+	for i in range_out:
+		var token := tokens[i + range_in]
+		match token.type:
 			Token.VALUE_BOOLEAN:
-				stack.push_back(i.value)
+				stack.push_back(token.value)
 			Token.OPERATOR:
-				while ops and (i.get_operator_type() <= ops.back().get_operator_type()):
+				while ops and (token.get_operator_type() <= ops.back().get_operator_type()):
 					apply_operator(stack, ops.pop_back())
-				ops.push_back(i)
+				ops.push_back(token)
 
 	while ops:
 		apply_operator(stack, ops.pop_back())
