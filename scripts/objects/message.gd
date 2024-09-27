@@ -2,7 +2,8 @@
 ## Displayable text capable of producing decorations.
 class_name Message extends Object
 
-static var RX_DEPTH_REMOVAL_PATTERN = "(?<=\\n)\\t{0,%s}"
+static var RX_DEPTH_REMOVAL_PATTERN := "(?<=\\n)\\t{0,%s}"
+static var RX_INTERPOLATION := RegEx.create_from_string("\\[.+\\]")
 
 var pure : String
 var text : String
@@ -11,9 +12,22 @@ func _init(from: Record) -> void:
 	pure = from.statement.to_string()
 	match from.statement.type:
 		Statement.MESSAGE:
+			text = from.statement.tokens[0].raw
+
 			var rx_whitespace = RegEx.create_from_string(RX_DEPTH_REMOVAL_PATTERN % from.statement.depth)
 
-			text = rx_whitespace.sub(from.statement.tokens[0].raw, "", true)
+			while true:
+				var match := RX_INTERPOLATION.search(text)
+				if not match : break
+
+				var expr_string = match.get_string()
+				expr_string = expr_string.substr(1, expr_string.length() - 2)
+
+				var result := convert_to_string(from.host.get_data(expr_string))
+
+				text = text.substr(0, match.get_start()) + result + text.substr(match.get_end(), text.length() - match.get_end())
+
+			text = rx_whitespace.sub(text, "", true)
 		Statement.PRINT:
 			text = from.statement.tokens[0].raw
 		Statement.ASSIGN:
@@ -30,5 +44,9 @@ func _init(from: Record) -> void:
 					text = wrapper % text
 	text = "[p align=fill jst=w,k,sl]" + text
 
-func hash() -> int:
-	return text.hash()
+static func convert_to_string(x: Variant) -> String:
+	match x:
+		null: return "NULL"
+		true: return "TRUE"
+		false: return "FALSE"
+	return x.to_string()
