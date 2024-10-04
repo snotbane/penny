@@ -5,9 +5,9 @@
 - [`init`](#init)
 - [`label`](#label)
 - [`jump`](#jump)
-- [`dive`](#dive)
-- [`rise`](#rise)
+- [`call`](#call)
 - [`return`](#return)
+- [`exit`](#exit)
 
 ## Overview
 
@@ -98,28 +98,28 @@ Contents beneath `label`s do not need to be indented. There are reasons why one 
 
 The `jump` statement will move execution laterally to a specified `label`. This is the most basic form of flow control and does not increase the flow depth. This is also a simple way to create loops.
 
-### `dive`
+### `call`
 
-The `dive` statement is similar to `jump`, but it will increase the flow depth by `1`. While inside the `dive`d `label`, you can then use `return` to return to the point from which the `label` was called.
+The `call` statement is similar to `jump`, but it will increase the flow depth by `1`. While inside the `call`ed `label`, you can then use `exit` to return to the point from which the `label` was called.
 
 > [!TIP] Project Structure
-> `dive`s create an easy way to organize chapters in your project. Use a master "Table of Contents" script with multiple `dive`s for each chapter, rather than having to place at the end of each chapter script a `jump` statement to the next.
-### `rise`
-
-The `rise` statement will close the current Penny script and go up one depth level, or exit the Penny environment.
-
+> `call`s create an easy way to organize chapters in your project. Use a master "Table of Contents" script with multiple `call`s for each chapter, rather than having to place at the end of each chapter script a `jump` statement to the next.
 ### `return`
 
-The `return` statement will immediately close the entire Penny flow tree, no matter the depth. Optionally, you may pass a value to the host engine using this statement. Additionally, you can later use `Penny.resume()` from the engine to return to this point and at the same state at which it was at when left.
+The `return` statement will close the current Penny script and go up one depth level, or exit the Penny environment.
+
+### `exit`
+
+The `exit` statement will immediately close the entire Penny flow tree, no matter the depth. Optionally, you may pass a value to the host engine using this statement. Additionally, you can later use `Penny.resume()` from the engine to return to this point and at the same state at which it was at when left.
 
 ```pny
-return 2
+exit 2
 ```
 
 > [!TIP] The Right Tools
-> Most visual novels will almost exclusively use the `rise` statement as they will not need to exit the Penny loop at all while reading (except, e.g. to navigate the main menu).
+> Most visual novels will almost exclusively use the `return` statement as they will not need to exit the Penny loop at all while reading (except, e.g. to navigate the main menu).
 >
-> Conversely, games that use Penny for isolated dialogue integration (e.g. how most games handle dialogue) will probably make more use of the `return` statement in order to completely suspend the Penny environment while not in use.
+> Conversely, games that use Penny for isolated dialogue integration (e.g. how most games handle dialogue) will probably make more use of the `exit` statement in order to completely suspend the Penny environment while not in use.
 
 ## Forks & Merges
 

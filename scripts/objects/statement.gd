@@ -146,9 +146,10 @@ func validate() -> PennyException:
 			if tokens.size() == 1:
 				type = Statement.OBJECT_MANIPULATE
 				# Throw uncaught exception for now
-			elif tokens[1].type == Token.ASSIGNMENT:
-				type = Statement.ASSIGN
-				return validate_assignment()
+			for i in tokens.size():
+				if tokens[i].type == Token.ASSIGNMENT:
+					type = Statement.ASSIGN
+					return validate_assignment(i)
 	return exception("Uncaught exception for statement '%s'" % self)
 
 func validate_keyword_with_none() -> PennyException:
@@ -186,11 +187,35 @@ func validate_message() -> PennyException:
 			return exception("Unexpected token '%s'" % tokens[2])
 	return null
 
-func validate_assignment() -> PennyException:
-	var expr := tokens.duplicate()
-	expr.pop_front()
-	expr.pop_front()
-	return validate_expression(expr)
+func validate_assignment(separator: int) -> PennyException:
+	var left := tokens.slice(0, separator)
+	print(left)
+	var left_exception := validate_object_path(left)
+	if left_exception:
+		return left_exception
+
+	var right := tokens.slice(separator + 1)
+	print(right)
+	var right_exception := validate_expression(right)
+	if right_exception:
+		return right_exception
+
+	tokens = right
+	tokens.push_front(ObjectPath.from_tokens(left))
+	return null
+
+func validate_object_path(expr: Array[Token]) -> PennyException:
+	if expr.size() & 1 == 0:
+		return exception("Identifier chain expects an odd-numbered size.")
+	for i in expr.size():
+		var token = expr[i]
+		if i & 1:
+			if token.value != '.':
+				return exception("Expected dot operator in identifier chain.")
+		else:
+			if token.type != Token.IDENTIFIER:
+				return exception("Expected identifier before assignment operator.")
+	return null
 
 func validate_expression(expr: Array[Token]) -> PennyException:
 	if expr.is_empty():

@@ -36,7 +36,6 @@ var cursor_stmt : Statement :
 	set (value):
 		cursor = value.address
 
-
 var is_halting : bool :
 	get: return cursor_stmt.is_halting
 
