@@ -55,6 +55,7 @@ size_flags_vertical = 3
 mouse_filter = 2
 theme_override_constants/margin_left = 200
 theme_override_constants/margin_right = 200
+theme_override_constants/margin_bottom = 170
 
 [node name="penny_history_box" parent="canvas_layer/ui/history_container" instance=ExtResource("4_hm4jj")]
 layout_mode = 2

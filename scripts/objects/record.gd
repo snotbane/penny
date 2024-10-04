@@ -4,14 +4,9 @@ class_name Record extends Object
 
 var host : PennyHost
 var stamp : int
-var address : Address
+var stmt : Stmt
 var message : Message
 var attachment : Variant
-
-var stmt : Stmt :
-	get: return Penny.get_statement_from(address)
-	set (value):
-		address = value.address
 
 var verbosity : int :
 	get: return stmt._get_verbosity()
@@ -27,10 +22,10 @@ func undo() -> void:
 	stmt._undo(self)
 
 func _to_string() -> String:
-	return "Record : stamp %s, address %s" % [stamp, address]
+	return "Record : stamp %s, address %s" % [stamp, stmt.address]
 
 func equals(other: Record) -> bool:
 	return host == other.host and stamp == other.stamp
 
-func get_next() -> Address:
+func get_next() -> Stmt:
 	return stmt._next(self)

@@ -1,8 +1,11 @@
 
 class_name HistoryHandler extends Control
 
+@export var animation_player : AnimationPlayer
+@export var vbox : VBoxContainer
+
 var _shown : bool = false
-@export var shown : bool :
+var shown : bool = false :
 	get: return _shown
 	set (value) :
 		if _shown == value: return
@@ -12,8 +15,6 @@ var _shown : bool = false
 		else:
 			animation_player.play('hide')
 
-@export var animation_player : AnimationPlayer
-@export var vbox : VBoxContainer
 
 var controls : Array[PennyMessageLabel]
 

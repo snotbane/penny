@@ -35,14 +35,9 @@ static func load() -> void:
 			stmt.address = Address.new(path, i)
 			stmt._load()
 
-static func get_address_from_label(label: StringName) -> Address:
+static func get_stmt_from_label(label: StringName) -> Stmt:
 	if labels.has(label):
-		return labels[label]
+		return labels[label].stmt
 	else:
 		printerr("Label '%s' does not exist in the current Penny environment." % label)
 		return null
-
-static func get_statement_from(address: Address) -> Stmt:
-	if address.index < stmt_dict[address.path].size():
-		return stmt_dict[address.path][address.index]
-	return null

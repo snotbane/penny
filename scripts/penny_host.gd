@@ -21,23 +21,20 @@ var records : Array[Record]
 var last_record : Record :
 	get: return records[records.size() - 1]
 
-var _cursor : Address = null
-var cursor : Address = null :
-	get: return _cursor
-	set (value):
-		if _cursor == null:
-			if _cursor == value: return
-		elif _cursor.equals(value): return
-		else: _cursor.free()
-		_cursor = value.copy()
+var cursor : Stmt
 
-var cursor_stmt : Stmt :
-	get: return Penny.get_statement_from(cursor)
-	set (value):
-		cursor = value.address
+# var _cursor : Address = null
+# var cursor : Address = null :
+# 	get: return _cursor
+# 	set (value):
+# 		if _cursor == null:
+# 			if _cursor == value: return
+# 		elif _cursor.equals(value): return
+# 		else: _cursor.free()
+# 		_cursor = value.copy()
 
 var is_halting : bool :
-	get: return cursor_stmt.is_halting
+	get: return cursor.is_halting
 
 @onready var watcher := Watcher.new([message_handler])
 
@@ -60,11 +57,11 @@ func _input(event: InputEvent) -> void:
 
 func jump_to(label: StringName) -> void:
 	if not Penny.valid: return
-	cursor = Penny.get_address_from_label(label)
+	cursor = Penny.get_stmt_from_label(label)
 	invoke_at_cursor()
 
 func invoke_at_cursor() -> void:
-	var record := cursor_stmt._execute(self)
+	var record := cursor._execute(self)
 	records.push_back(record)
 	history_handler.receive(record)
 
@@ -77,7 +74,7 @@ func advance() -> void:
 	if cursor == null: return
 	cursor = last_record.get_next()
 
-	if cursor_stmt == null:
+	if cursor == null:
 		close()
 		return
 
@@ -88,7 +85,7 @@ func close() -> void:
 	queue_free()
 
 func rewind_to(record: Record) -> void:
-	cursor = record.address
+	cursor = record.stmt
 	while records.size() > record.stamp:
 		records.pop_back().undo()
 	history_handler.rewind_to(record)

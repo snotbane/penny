@@ -21,6 +21,40 @@ var line_string : String :
 var depth_string : String :
 	get: return "dp %s" % depth
 
+## The next statement in order, regardless of depth.
+var next_in_order : Stmt :
+	get: return address.copy(1).stmt
+
+## The next statement in the same depth (or lower) as this one.
+var next_in_depth : Stmt :
+	get:
+		var cursor := address.copy(1)
+		while cursor.valid:
+			if cursor.stmt.depth <= depth:
+				break
+			cursor.index += 1
+		return cursor.stmt
+
+## The next statement in a lower depth than this one. (less nested)
+var next_lower_depth : Stmt :
+	get:
+		var cursor := address.copy(1)
+		while cursor.valid:
+			if cursor.stmt.depth < depth:
+				break
+			cursor.index += 1
+		return cursor.stmt
+
+# ## The next statement in a higher depth than this one. (more nested)
+# var next_higher_depth : Stmt :
+# 	get:
+# 		var cursor := address.copy(1)
+# 		while cursor.valid:
+# 			if cursor.stmt.depth > depth:
+# 				break
+# 			cursor.index += 1
+# 		return cursor.stmt
+
 var reconstructed_string : String :
 	get:
 		var result := ""
@@ -62,8 +96,8 @@ func _undo(record: Record) -> void:
 	pass
 
 ## Returns the address of the next statement to go to, based on what happened.
-func _next(record: Record) -> Address:
-	return address.copy(1)
+func _next(record: Record) -> Stmt:
+	return next_in_order
 
 ## Creates a message to be shown in the statement history or displayed to a dialogue box.
 func _message(record: Record) -> Message:

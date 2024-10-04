@@ -26,11 +26,11 @@ func _get_verbosity() -> int:
 func _execute(host: PennyHost) -> Record:
 	return Record.new(host, self, host.evaluate_expression(tokens))
 
-func _next(record: Record) -> Address:
+func _next(record: Record) -> Stmt:
 	if record.attachment:
-		return super._next(record)
+		return next_in_order
 	else:
-		return address.copy(2)
+		return next_in_depth
 
 func _message(record: Record) -> Message:
 	if record.attachment:
