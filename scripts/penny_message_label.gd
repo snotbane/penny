@@ -18,7 +18,7 @@ func _ready() -> void:
 func populate(__rec: Record) -> void:
 	rec = __rec
 	text = rec.message.text
-	if not rec.statement.is_record_user_facing:
+	if rec.stmt._get_verbosity() > 0:
 		var c = get_theme_color('default_color')
 		c.a = 0.25
 		add_theme_color_override('default_color', c)

@@ -44,10 +44,13 @@ static func reload(hard: bool = false) -> void:
 	else:
 		print("***		Parsing ", files.size(), " updated file(s)...")
 
+		Penny.valid = true
+
 		var parsers = get_parsers(files)
 		for i in parsers:
+			Penny.clear(i.file.get_path())
 			i.parse_file()
-		Penny.reload_labels()
+		Penny.load()
 
 	print("***	RELOADING COMPLETE\n")
 

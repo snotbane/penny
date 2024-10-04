@@ -31,7 +31,7 @@ var cursor : Address = null :
 		else: _cursor.free()
 		_cursor = value.copy()
 
-var cursor_stmt : Statement :
+var cursor_stmt : Stmt :
 	get: return Penny.get_statement_from(cursor)
 	set (value):
 		cursor = value.address
@@ -64,7 +64,7 @@ func jump_to(label: StringName) -> void:
 	invoke_at_cursor()
 
 func invoke_at_cursor() -> void:
-	var record := cursor_stmt.execute(self)
+	var record := cursor_stmt._execute(self)
 	records.push_back(record)
 	history_handler.receive(record)
 

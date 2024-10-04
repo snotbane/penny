@@ -26,7 +26,7 @@ var file : FileAccess
 var raw : String
 var tokens : Array[Token]
 var token_lines : Array[int]
-var statements : Array[Statement]
+var stmts : Array[Stmt]
 
 static func from_file(_file: FileAccess) -> PennyParser:
 	return PennyParser.new(_file.get_as_text(true), _file)
@@ -41,12 +41,12 @@ func parse_tokens() -> Array[Token]:
 	# 	print(i)
 	return tokens
 
-func parse_statements() -> Array[Statement]:
+func parse_statements() -> Array[Stmt]:
 	parse_tokens()
 	statementize()
-	# for i in statements:
-	# 	print(i)
-	return statements
+	for i in stmts:
+		print(i)
+	return stmts
 
 func parse_file() -> void:
 	print("***			Parsing file \"" + file.get_path() + "\"...")
@@ -54,12 +54,7 @@ func parse_file() -> void:
 
 	parse_statements()
 
-	if validate_statements():
-		# for i in statements:
-		# 	print(i)
-		export_statements()
-	else:
-		Penny.valid = false
+	export_statements()
 
 	PennyException.active_file_path = PennyException.UNKNOWN_FILE
 	print("***			Finished parsing file \"" + file.get_path() + "\".")
@@ -97,44 +92,38 @@ func tokenize() -> void:
 
 # Separates statements based on terminators and indentation; For type assignment, etc. see Statement validations.
 func statementize() -> void:
-	statements.clear()
+	stmts.clear()
 
-	var statement : Statement = null
+	var stmt : Stmt = null
 	var depth : int = 0
 	for i in tokens.size():
 		var token = tokens[i]
 		if token.type == Token.TERMINATOR:
-			if statement:
-				if not statement.tokens.is_empty():
-					statements.append(statement)
-				statement = null
+			if stmt:
+				if not stmt.tokens.is_empty():
+					stmts.push_back(stmt)
+				stmt = null
 
 				if token.value == '\n':
 					depth = 0
 				elif token.value == ':':
 					depth += 1
 		else:
-			if not statement:
+			if not stmt:
 				if token.type == Token.INDENTATION:
 					depth = token.value.length()
-				statement = Statement.new(token_lines[i], depth, Address.new(file.get_path(), statements.size()))
+				stmt = Stmt.new(token_lines[i], depth, [])
 			if not token.type == Token.INDENTATION:
-				statement.tokens.push_back(token)
+				stmt.tokens.push_back(token)
+	if stmt:
+		stmts.push_back(stmt)
 
-	if statement:
-		statements.append(statement)
-
-func validate_statements() -> bool:
-	var result := true
-	var exceptions : Array[PennyException] = []
-	for i in statements:
-		var e = i.validate()
-		if e:
-			exceptions.push_back(e)
-	result = exceptions.is_empty()
-	for i in exceptions:
-		printerr(i)
-	return result
+	for i in stmts.size():
+		stmts[i] = stmts[i].recycle()
+		var exception := stmts[i]._validate()
+		if exception:
+			exception.push()
+			Penny.valid = false
 
 func export_statements() -> void:
-	Penny.import_statements(file.get_path(), statements)
+	Penny.import_statements(file.get_path(), stmts)

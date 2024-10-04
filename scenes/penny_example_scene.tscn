@@ -10,7 +10,7 @@
 
 [node name="penny_host" type="Node" parent="." node_paths=PackedStringArray("message_handler", "history_handler")]
 script = ExtResource("1_jmae0")
-autostart_label = &"variable_assignment"
+autostart_label = &"boolean_literals"
 message_handler = NodePath("../canvas_layer/ui/dialogue_container/penny_dialogue_box")
 history_handler = NodePath("../canvas_layer/ui/history_container/penny_history_box")
 settings = ExtResource("2_cpo8r")

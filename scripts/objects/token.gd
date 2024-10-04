@@ -70,23 +70,23 @@ static var PATTERNS : Array[RegEx] = [
 
 
 enum Literal {
+	STRING,
 	NULL,
 	BOOLEAN_TRUE,
 	BOOLEAN_FALSE,
 	NUMBER_DECIMAL,
 	NUMBER_INTEGER,
 	COLOR,
-	STRING,
 }
 
 static var PRIMITIVE_PATTERNS = [
+	RegEx.create_from_string("(?s)(?<=(\"\"\"|\"|'''|'|```|`)).*?(?=\\1)"),
 	RegEx.create_from_string("\\b([Nn]ull|NULL)\\b"),
 	RegEx.create_from_string("\\b([Tt]rue|TRUE)\\b"),
 	RegEx.create_from_string("\\b([Ff]alse|FALSE)\\b"),
 	RegEx.create_from_string("\\d+\\.\\d+|\\d+\\.|\\.\\d+"),
 	RegEx.create_from_string("\\d+"),
 	PATTERNS[Token.VALUE_COLOR],
-	RegEx.create_from_string("(?s)(?<=(\"\"\"|\"|'''|'|```|`)).*?(?=\\1)"),
 ]
 
 enum Operator {

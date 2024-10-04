@@ -1,0 +1,124 @@
+
+class_name Stmt extends Object
+
+var address : Address
+var line : int
+var depth : int
+var tokens : Array[Token]
+
+var is_halting : bool :
+	get: return _get_is_halting()
+
+var verbosity : int :
+	get: return _get_verbosity()
+
+var keyword : StringName :
+	get: return _get_keyword()
+
+var line_string : String :
+	get: return "ln %s" % line
+
+var depth_string : String :
+	get: return "dp %s" % depth
+
+var reconstructed_string : String :
+	get:
+		var result := ""
+		for i in tokens:
+			result += str(i.value) + " "
+		result = result.substr(0, result.length() - 1)
+		return "%s %s" % [_get_keyword(), result]
+
+func _init(_line: int, _depth: int, _tokens: Array[Token]) -> void:
+	depth = _depth
+	line = _line
+	tokens = _tokens
+
+func _to_string() -> String:
+	return "%s %s : %s" % [line_string, depth_string, reconstructed_string]
+
+## Whether or not this statement should pause the execution flow, for an indeterminate amount of time.
+func _get_is_halting() -> bool:
+	return false
+
+## Helper keyword to define what this statement does.
+func _get_keyword() -> StringName:
+	return 'INVALID'
+
+## Defines whether or not this statement should show up in history. -1 = always show, even to end user. Values greater than 0 are used for debugging purposes.
+func _get_verbosity() -> int:
+	return -1
+
+## Executes just once, as soon as all scripts have been validated.
+func _load() -> void:
+	pass
+
+## Executes when it is reached as the user encounters it.
+func _execute(host: PennyHost) -> Record:
+	return Record.new(host, self)
+
+## Executes when the user rewinds through history to undo this action.
+func _undo(record: Record) -> void:
+	pass
+
+## Returns the address of the next statement to go to, based on what happened.
+func _next(record: Record) -> Address:
+	return address.copy(1)
+
+## Creates a message to be shown in the statement history or displayed to a dialogue box.
+func _message(record: Record) -> Message:
+	return Message.new(reconstructed_string)
+
+## Returns an exception to check what may be wrong with the statement (or null if OK)
+func _validate() -> PennyException:
+	return create_exception("_validate() method needs to be overriden.")
+
+func create_exception(s: String) -> PennyException:
+	return PennyException.new("%s : %s" % [line_string, s])
+
+func recycle() -> Stmt:
+	if tokens.is_empty():
+		create_exception("Empty statement.")
+	match tokens[0].type:
+		Token.VALUE_STRING:
+			return StmtMessage.new(line, depth, tokens)
+		Token.KEYWORD:
+			var key = tokens.pop_front().value
+			match key:
+				'pass': return StmtPass.new(line, depth, tokens)
+				'print': return StmtPrint.new(line, depth, tokens)
+				'label': return StmtLabel.new(line, depth, tokens)
+				'if': return StmtConditional.new(line, depth, tokens, 0)
+				'elif': return StmtConditional.new(line, depth, tokens, 1)
+				'else': return StmtConditional.new(line, depth, tokens, 2)
+				pass
+		Token.IDENTIFIER:
+			if tokens.size() == 1:
+				pass
+				# throw exception for now, this will become object manipulation
+			else:
+				return StmtAssign.new(line, depth, tokens)
+	create_exception("Unable to parse/recycle.").push()
+	return self
+
+func validate_as_no_tokens() -> PennyException:
+	if not tokens.is_empty():
+		return create_exception("Unexpected token(s) in standalone statement.")
+	return null
+
+func validate_as_identifier_only() -> PennyException:
+	if tokens.size() != 1:
+		return create_exception("Statement requires exactly 1 token.")
+	if tokens[0].type != Token.IDENTIFIER:
+		return create_exception("Unexpected token '%s' is not an identifier." % tokens[0])
+	return null
+
+func validate_as_expression(require: bool = true) -> PennyException:
+	if not require and tokens.is_empty():
+		return null
+	return validate_expression(tokens)
+
+func validate_expression(expr: Array[Token]) -> PennyException:
+	if expr.is_empty():
+		return create_exception("Expression is empty.")
+	return null
