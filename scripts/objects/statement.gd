@@ -189,19 +189,20 @@ func validate_message() -> PennyException:
 
 func validate_assignment(separator: int) -> PennyException:
 	var left := tokens.slice(0, separator)
-	print(left)
+	# print(left)
 	var left_exception := validate_object_path(left)
 	if left_exception:
 		return left_exception
 
 	var right := tokens.slice(separator + 1)
-	print(right)
+	# print(right)
 	var right_exception := validate_expression(right)
 	if right_exception:
 		return right_exception
 
-	tokens = right
-	tokens.push_front(ObjectPath.from_tokens(left))
+	var operator = tokens[separator]
+
+	print("All tokens: ", tokens)
 	return null
 
 func validate_object_path(expr: Array[Token]) -> PennyException:

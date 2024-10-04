@@ -63,7 +63,7 @@ static var PATTERNS : Array[RegEx] = [
 	RegEx.create_from_string("(?ms)(([#/])\\*.*?(\\*\\2))|((#|\\/{2}).*?$)"),
 	RegEx.create_from_string("[+\\-*/:]?="),
 	RegEx.create_from_string("\\b(dec|dive|elif|else|if|filter|jump|label|menu|object|pass|print|return|rise|suspend)\\b"),
-	RegEx.create_from_string("[a-zA-Z_]\\w*"),
+	RegEx.create_from_string("[a-zA-Z_]\\w*(\\.[a-zA-Z_]\\w*)*"),
 	RegEx.create_from_string("(?m)[:;]|((?<=[^\\n:;])$\\n)"),
 	RegEx.create_from_string("(?m)[ \\n]+|(?<!^|\\t)\\t+"),
 ]
