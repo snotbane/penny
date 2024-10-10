@@ -18,8 +18,7 @@ var data := PennyObject.new(self, {})
 
 var records : Array[Record]
 
-var last_record : Record :
-	get: return records[records.size() - 1]
+var handling_conditional : bool
 
 var cursor : Stmt
 
@@ -72,7 +71,7 @@ func invoke_at_cursor() -> void:
 
 func advance() -> void:
 	if cursor == null: return
-	cursor = last_record.get_next()
+	cursor = records.back().get_next()
 
 	if cursor == null:
 		close()

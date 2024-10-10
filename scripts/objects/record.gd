@@ -11,6 +11,11 @@ var attachment : Variant
 var verbosity : int :
 	get: return stmt._get_verbosity()
 
+var prev : Record :
+	get:
+		if stamp == 0 : return null
+		return host.records[stamp - 1]
+
 func _init(_host: PennyHost, _stmt: Stmt, _attachment: Variant = null) -> void:
 	host = _host
 	stamp = host.records.size()

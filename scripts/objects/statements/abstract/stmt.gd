@@ -45,6 +45,16 @@ var next_lower_depth : Stmt :
 			cursor.index += 1
 		return cursor.stmt
 
+## The previous statement in the same depth (or lower) as this one.
+var prev_in_depth : Stmt :
+	get:
+		var cursor := address.copy(-1)
+		while cursor.valid:
+			if cursor.stmt.depth <= depth:
+				break
+			cursor.index -= 1
+		return cursor.stmt
+
 # ## The next statement in a higher depth than this one. (more nested)
 # var next_higher_depth : Stmt :
 # 	get:
@@ -63,7 +73,8 @@ var reconstructed_string : String :
 		result = result.substr(0, result.length() - 1)
 		return "%s %s" % [_get_keyword(), result]
 
-func _init(_line: int, _depth: int, _tokens: Array[Token]) -> void:
+func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
+	address = _address
 	depth = _depth
 	line = _line
 	tokens = _tokens
@@ -107,7 +118,7 @@ func _message(record: Record) -> Message:
 func _validate() -> PennyException:
 	return create_exception("_validate() method needs to be overriden.")
 
-func create_exception(s: String) -> PennyException:
+func create_exception(s: String = "Uncaught exception.") -> PennyException:
 	return PennyException.new("%s : %s" % [line_string, s])
 
 func recycle() -> Stmt:
@@ -115,23 +126,23 @@ func recycle() -> Stmt:
 		create_exception("Empty statement.")
 	match tokens[0].type:
 		Token.VALUE_STRING:
-			return StmtMessage.new(line, depth, tokens)
+			return StmtMessage.new(address, line, depth, tokens)
 		Token.KEYWORD:
 			var key = tokens.pop_front().value
 			match key:
-				'pass': return StmtPass.new(line, depth, tokens)
-				'print': return StmtPrint.new(line, depth, tokens)
-				'label': return StmtLabel.new(line, depth, tokens)
-				'if': return StmtConditional.new(line, depth, tokens, 0)
-				'elif': return StmtConditional.new(line, depth, tokens, 1)
-				'else': return StmtConditional.new(line, depth, tokens, 2)
+				'pass': return StmtPass.new(address, line, depth, tokens)
+				'print': return StmtPrint.new(address, line, depth, tokens)
+				'label': return StmtLabel.new(address, line, depth, tokens)
+				'if': return StmtConditional.new(address, line, depth, tokens, 0)
+				'elif': return StmtConditional.new(address, line, depth, tokens, 1)
+				'else': return StmtConditional.new(address, line, depth, tokens, 2)
 				pass
 		Token.IDENTIFIER:
 			if tokens.size() == 1:
 				pass
 				# throw exception for now, this will become object manipulation
 			else:
-				return StmtAssign.new(line, depth, tokens)
+				return StmtAssign.new(address, line, depth, tokens)
 	create_exception("Unable to parse/recycle.").push()
 	return self
 

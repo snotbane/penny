@@ -26,7 +26,7 @@ var file : FileAccess
 var raw : String
 var tokens : Array[Token]
 var token_lines : Array[int]
-var stmts : Array[Stmt]
+# var stmts : Array[Stmt]
 
 static func from_file(_file: FileAccess) -> PennyParser:
 	return PennyParser.new(_file.get_as_text(true), _file)
@@ -41,20 +41,17 @@ func parse_tokens() -> Array[Token]:
 	# 	print(i)
 	return tokens
 
-func parse_statements() -> Array[Stmt]:
+func parse_statements() -> void:
 	parse_tokens()
 	statementize()
-	for i in stmts:
-		print(i)
-	return stmts
+	# for i in stmts:
+	# 	print(i)
 
 func parse_file() -> void:
 	print("***			Parsing file \"" + file.get_path() + "\"...")
 	PennyException.active_file_path = file.get_path()
 
 	parse_statements()
-
-	export_statements()
 
 	PennyException.active_file_path = PennyException.UNKNOWN_FILE
 	print("***			Finished parsing file \"" + file.get_path() + "\".")
@@ -92,7 +89,7 @@ func tokenize() -> void:
 
 # Separates statements based on terminators and indentation; For type assignment, etc. see Statement validations.
 func statementize() -> void:
-	stmts.clear()
+	var stmts : Array[Stmt] = []
 
 	var stmt : Stmt = null
 	var depth : int = 0
@@ -112,18 +109,17 @@ func statementize() -> void:
 			if not stmt:
 				if token.type == Token.INDENTATION:
 					depth = token.value.length()
-				stmt = Stmt.new(token_lines[i], depth, [])
+				stmt = Stmt.new(Address.new(file.get_path(), stmts.size()), token_lines[i], depth, [])
 			if not token.type == Token.INDENTATION:
 				stmt.tokens.push_back(token)
 	if stmt:
 		stmts.push_back(stmt)
 
-	for i in stmts.size():
-		stmts[i] = stmts[i].recycle()
-		var exception := stmts[i]._validate()
+	Penny.stmt_dict[file.get_path()] = []
+	for i in stmts:
+		Penny.stmt_dict[file.get_path()].push_back(i.recycle())
+	for i in Penny.stmt_dict[file.get_path()]:
+		var exception : PennyException = i._validate()
 		if exception:
 			exception.push()
 			Penny.valid = false
-
-func export_statements() -> void:
-	Penny.import_statements(file.get_path(), stmts)
