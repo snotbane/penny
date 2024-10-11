@@ -1,5 +1,6 @@
 
 ## Single token in script.
+@tool
 class_name Token extends Object
 
 # enum Type {

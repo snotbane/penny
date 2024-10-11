@@ -1,8 +1,35 @@
 
+@tool
 class_name StmtMessage extends Stmt
 
 const REGEX_DEPTH_REMOVAL_PATTERN := "(?<=\\n)\\t{0,%s}"
-static var REGEX_INTERPOLATION := RegEx.create_from_string("@([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)|\\[(.+)\\]")
+const REGEX_INTERPOLATION_PATTERN := "(?<!\\\\)(@(?:[A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)|\\[(?:.*?)\\])"
+static var REGEX_INTERPOLATION := RegEx.create_from_string(REGEX_INTERPOLATION_PATTERN)
+static var REGEX_INTERJECTION := RegEx.create_from_string("(?<!\\\\)(\\{.*?\\})")
+static var REGEX_DECORATION := RegEx.create_from_string("(?<!\\\\)(<.*?>)")
+static var REGEX_WORD_COUNT := RegEx.create_from_string("\\b\\S+\\b")
+static var REGEX_CHAR_COUNT := RegEx.create_from_string("\\S")
+
+var text_token : Token :
+	get:
+		return tokens[0]
+
+var text_stripped : String :
+	get:
+		var result : String = text_token.value
+		result = REGEX_INTERPOLATION.sub(result, "$1", true)
+		result = REGEX_INTERJECTION.sub(result, "", true)
+		result = REGEX_DECORATION.sub(result, "", true)
+		return result
+
+var word_count : int :
+	get: return REGEX_WORD_COUNT.search_all(text_stripped).size()
+
+var char_count : int :
+	get: return text_stripped.length()
+
+var char_count_non_whitespace : int :
+	get: return REGEX_CHAR_COUNT.search_all(text_stripped).size()
 
 func _get_is_halting() -> bool:
 	return true

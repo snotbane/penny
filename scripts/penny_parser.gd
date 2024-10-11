@@ -1,10 +1,10 @@
 
 ## Responsible for translating and validating a single file into workable statements.
-class_name PennyParser extends Object
+class_name PennyParser extends RefCounted
 
-const RX_LF = "\\n"
+const RX_LF := "\\n"
 
-static var rx_line_col := RegEx.create_from_string(RX_LF)
+static var rx_line_col : RegEx
 var _cursor : int = 0
 var cursor : int :
 	get : return _cursor
@@ -32,17 +32,24 @@ static func from_file(_file: FileAccess) -> PennyParser:
 	return PennyParser.new(_file.get_as_text(true), _file)
 
 func _init(_raw: String, _file: FileAccess = null) -> void:
+	rx_line_col = RegEx.create_from_string(RX_LF)
 	raw = _raw
 	file = _file
 
-func parse_tokens() -> Array[Token]:
-	tokenize()
+func parse_tokens() -> Variant:
+	var exception = tokenize()
+	if exception:
+		return exception
+
 	# for i in tokens:
 	# 	print(i)
 	return tokens
 
 func parse_statements() -> void:
-	parse_tokens()
+	var result = parse_tokens()
+	if result is PennyException:
+		result.push()
+
 	statementize()
 	# for i in stmts:
 	# 	print(i)
@@ -56,7 +63,8 @@ func parse_file() -> void:
 	PennyException.active_file_path = PennyException.UNKNOWN_FILE
 	print("***			Finished parsing file \"" + file.get_path() + "\".")
 
-func tokenize() -> void:
+func tokenize() -> PennyException:
+
 	tokens.clear()
 
 	## If this gets stuck in a loop, Token.PATTERNS has a regex pattern that matches with something of 0 length, e.g. ".*"
@@ -84,8 +92,9 @@ func tokenize() -> void:
 			break
 
 		if not match_found:
-			PennyException.new("Unrecognized token at ln %s cl %s" % [line, col]).push()
-			break
+			return PennyException.new("Unrecognized token at ln %s cl %s" % [line, col])
+
+	return null
 
 # Separates statements based on terminators and indentation; For type assignment, etc. see Statement validations.
 func statementize() -> void:

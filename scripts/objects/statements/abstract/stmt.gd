@@ -1,5 +1,6 @@
 
-class_name Stmt extends Object
+@tool
+class_name Stmt extends RefCounted
 
 var address : Address
 var line : int

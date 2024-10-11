@@ -1,0 +1,55 @@
+[gd_scene load_steps=3 format=3 uid="uid://ehssrfkq0q6c"]
+
+[ext_resource type="Script" path="res://addons/penny_godot/editor/scripts/penny_dock.gd" id="1_7bh35"]
+[ext_resource type="Theme" uid="uid://bhin0yonr7qve" path="res://addons/penny_godot/templates/debug_editor_theme.tres" id="2_64y3d"]
+
+[node name="Penny" type="Control" node_paths=PackedStringArray("message_box")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_7bh35")
+message_box = NodePath("v_box_container/panel/scroll_container/message_log")
+
+[node name="v_box_container" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="panel" type="Panel" parent="v_box_container"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_64y3d")
+
+[node name="scroll_container" type="ScrollContainer" parent="v_box_container/panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="message_log" type="VBoxContainer" parent="v_box_container/panel/scroll_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="h_box_container" type="HBoxContainer" parent="v_box_container"]
+layout_mode = 2
+
+[node name="button_import" type="Button" parent="v_box_container/h_box_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Import..."
+
+[node name="button_export" type="Button" parent="v_box_container/h_box_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Export..."

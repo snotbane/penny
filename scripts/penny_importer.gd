@@ -1,8 +1,10 @@
 
 ## Persistent autoload node that watches for file changes and handles the Penny environment.
-extends Node
+@tool
+class_name PennyImporter extends Node
 
-static var REGEX := RegEx.new()
+static var inst : PennyImporter
+static var REGEX : RegEx = RegEx.new()
 const PNY_FILE_EXPR = "(?i).+\\.pny"
 const PNY_FILE_ROOT = "res://"
 const PNY_FILE_OMIT = [
@@ -14,24 +16,23 @@ const PNY_FILE_OMIT = [
 	"assets",
 ]
 
-static var paths_dates : Dictionary
+var paths_dates : Dictionary
 
 func _ready() -> void:
+	inst = self
+	REGEX = RegEx.new()
 	REGEX.compile(PNY_FILE_EXPR)
 	if !REGEX.is_valid():
 		print("RegEx expression is not valid: \"" + PNY_FILE_EXPR + "\"")
 
-	reload()
+	reload.call_deferred()
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_IN:
 		# pass
 		reload()
 
-static func reload(hard: bool = false) -> void:
-	print("***	RELOADING PENNY SCRIPTS")
-
-	print("***		Detecting file changes...")
+func reload(hard: bool = false) -> void:
 
 	var files : Array[FileAccess]
 	if hard:
@@ -39,10 +40,14 @@ static func reload(hard: bool = false) -> void:
 	else:
 		files = open_modified()
 
-	if files.size() == 0:
-		print("***		No file changes detected.")
-	else:
-		print("***		Parsing ", files.size(), " updated file(s)...")
+	if files.size() > 0:
+		var host_application_string : String
+		if Engine.is_editor_hint():
+			host_application_string = "engine"
+		else:
+			host_application_string = "game"
+
+		print("***	RELOADING %s PENNY SCRIPTS ( %s )" % [files.size(), host_application_string])
 
 		Penny.valid = true
 
@@ -52,9 +57,16 @@ static func reload(hard: bool = false) -> void:
 			i.parse_file()
 		Penny.load()
 
-	print("***	RELOADING COMPLETE\n")
+		Penny.log_clear()
+		if Penny.valid:
+			Penny.log_timed("Successfully loaded all scripts.")
+			Penny.log_info()
+		else:
+			Penny.log_timed("Failed to load one or more scripts.")
 
-static func open_modified() -> Array[FileAccess]:
+		print("***	RELOADING COMPLETE\n")
+
+func open_modified() -> Array[FileAccess]:
 	var result : Array[FileAccess] = []
 
 	var new_paths = get_all_paths()
@@ -81,14 +93,13 @@ static func open_modified() -> Array[FileAccess]:
 
 	return result
 
-static func open_all() -> Array[FileAccess]:
+func open_all() -> Array[FileAccess]:
 	var result : Array[FileAccess] = []
 
 	paths_dates.clear()
 	for i in get_all_paths():
 		paths_dates[i] = FileAccess.get_modified_time(i)
 		result.append(FileAccess.open(i, FileAccess.READ))
-		# print("+ " + i)
 
 	return result
 
