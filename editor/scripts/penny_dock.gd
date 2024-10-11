@@ -26,11 +26,5 @@ func log_clear() -> void:
 	for i in message_box.get_children():
 		message_box.remove_child(i)
 
-
-func _on_button_stats_pressed() -> void:
-	print("Test!!!")
-	Penny.log("Test")
-
-
 func _on_button_reload_pressed() -> void:
 	PennyImporter.inst.reload(true)

@@ -23,6 +23,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="button_reload" type="Button" parent="v_box_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "[DEBUG] Reload"
+
 [node name="panel" type="Panel" parent="v_box_container"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -53,3 +58,5 @@ text = "Import..."
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Export..."
+
+[connection signal="pressed" from="v_box_container/button_reload" to="." method="_on_button_reload_pressed"]

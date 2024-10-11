@@ -57,23 +57,25 @@ static func log_clear() -> void:
 		PennyPlugin.inst.dock.log_clear()
 
 static func log_info() -> void:
-	Penny.log("Message blocks: %s\nWord count: %s\nCharacter count: %s (%s)" % get_script_info())
+	Penny.log("%s files | %s blocks | %s words | %s chars" % get_script_info())
 
 static func get_formatted_time() -> String:
 	var time = Time.get_time_dict_from_system()
 	return "%s:%s:%s" % [str(time.hour).pad_zeros(2), str(time.minute).pad_zeros(2), str(time.second).pad_zeros(2)]
 
 static func get_script_info() -> Array:
+	var files := 0
 	var blocks := 0
 	var words := 0
 	var chars := 0
 	var non_whitespace_chars := 0
 	for path in stmt_dict.keys():
+		files += 1
 		for i in stmt_dict[path]:
 			if i is	StmtMessage:
 				blocks += 1
 				words += i.word_count
 				chars += i.char_count
-				non_whitespace_chars += i.char_count_non_whitespace
+				# non_whitespace_chars += i.char_count_non_whitespace
 				continue
-	return [blocks, words, chars, non_whitespace_chars]
+	return [files, blocks, words, chars]
