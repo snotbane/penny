@@ -20,51 +20,55 @@ func _get_keyword() -> StringName:
 		2: return 'else'
 		_: return super._get_keyword()
 
+func _show_record(record: Record) -> bool:
+	return record.attachment != null
+
 func _get_verbosity() -> int:
 	return 2
 
 func _execute(host: PennyHost) -> Record:
+	var result = host.evaluate_expression(tokens)
 	match type:
-		ELSE:
-			# host.handling_conditional = null
-			return Record.new(host, self)
-		_:
-			var result = Record.new(host, self, host.evaluate_expression(tokens))
-			# if result.attachment:
-			# 	host.last_conditional = null
-			# else:
-			# 	host.last_conditional = result
-			return result
-
-## Because we can potentially jump into the middle of a conditional block, we need to be able to handle an elif/else statement (by skipping it) even if no 'if' statement was encountered. The shorthand to remember is that, an entire if/else chain is evaluated all at once, and always starts with 'if'. So if elif/else is encountered on its own, we should skip it.
-
-## Furthermore, "skipping" a conditional statement for any reason should not even create a record. _execute must be capable of handling null records. The only time a conditional statement is recorded is if it starts with an `if` statement. Then every conditional that is CHECKED is recorded, until one returns true.
+		IF:			## always TRUE or FALSE
+			pass
+		ELIF:		## TRUE, FALSE, or NULL
+			if not host.handling_conditional:
+				result = null
+		ELSE:		## always TRUE or NULL
+			if host.handling_conditional:
+				result = true
+			else:
+				result = null
+	return Record.new(host, self, result)
 
 func _next(record: Record) -> Stmt:
+	var skip := true
 	match type:
 		IF:
 			if record.attachment:
-				record.host.handling_conditional = false
-				return next_in_order
-			record.host.handling_conditional = true
+				skip = false
+			record.host.handling_conditional = skip
 		ELIF:
 			if record.host.handling_conditional:
 				if record.attachment:
-					record.host.handling_conditional = false
-					return next_in_order
-				record.host.handling_conditional = true
+					skip = false
+				record.host.handling_conditional = skip
 		ELSE:
 			if record.host.handling_conditional:
-				record.host.handling_conditional = false
-				return next_in_order
+				skip = false
 			record.host.handling_conditional = false
-	return next_in_depth
+
+	if skip: 	return next_in_depth
+	else:		return next_in_order
 
 func _message(record: Record) -> Message:
-	if record.attachment:
-		return Message.new("%s (TRUE)" % reconstructed_string)
-	else:
-		return Message.new("[s]%s (FALSE)[/s]" % reconstructed_string)
+	match record.attachment:
+		true:
+			return Message.new("[code][color=LAWN_GREEN]PASSED\t\t[/color][/code] %s" % reconstructed_string)
+		false:
+			return Message.new("[code][color=DEEP_PINK]FAILED\t\t[/color][/code] %s" % reconstructed_string)
+		_:
+			return Message.new("[s][code]SKIPPED\t[/code] %s" % reconstructed_string)
 
 func _validate() -> PennyException:
 	match type:

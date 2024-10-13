@@ -91,12 +91,14 @@ func rewind_to(record: Record) -> void:
 	invoke_at_cursor()
 
 func evaluate_expression(tokens: Array[Token], range_in : int = 0, range_out : int = -1) -> Variant:
-	var stack := []
-	var ops := []
-
 	if range_out == -1:
 		range_out = tokens.size()
 	range_out -= range_in
+	if range_out <= 0:
+		return null
+
+	var stack := []
+	var ops := []
 
 	for i in range_out:
 		var token := tokens[i + range_in]

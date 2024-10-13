@@ -44,7 +44,7 @@ static func get_stmt_from_label(label: StringName) -> Stmt:
 		return null
 
 static func log(s: String) -> void:
-	if PennyPlugin.inst.dock:
+	if PennyPlugin.inst:
 		PennyPlugin.inst.dock.log(s)
 	else :
 		print(s)
@@ -53,7 +53,7 @@ static func log_timed(s: String) -> void:
 	Penny.log("[%s] %s" % [get_formatted_time(), s])
 
 static func log_clear() -> void:
-	if PennyPlugin.inst.dock:
+	if PennyPlugin.inst:
 		PennyPlugin.inst.dock.log_clear()
 
 static func log_info() -> void:
