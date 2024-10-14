@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://gtm2kenc70u7"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/penny_host.gd" id="1_jmae0"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_host.gd" id="1_jmae0"]
 [ext_resource type="Resource" uid="uid://d0fi2hxgyqk66" path="res://addons/penny_godot/templates/default_settings.tres" id="2_cpo8r"]
 [ext_resource type="PackedScene" uid="uid://b8sp6ey8fsgt7" path="res://addons/penny_godot/scenes/penny_dialogue_box.tscn" id="3_36qr5"]
 [ext_resource type="PackedScene" uid="uid://ckwmom7w0dvh1" path="res://addons/penny_godot/scenes/penny_history_box.tscn" id="4_hm4jj"]

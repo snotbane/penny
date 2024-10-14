@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://cfkhtume00g5e"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/debug_overlay.gd" id="2_4v1jc"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/debug_overlay.gd" id="2_4v1jc"]
 [ext_resource type="Texture2D" uid="uid://5dmiewmbmtxq" path="res://addons/penny_godot/assets/overlay.png" id="2_7s783"]
 [ext_resource type="PackedScene" uid="uid://ehssrfkq0q6c" path="res://addons/penny_godot/editor/scenes/penny_dock.tscn" id="2_if5x3"]
 
