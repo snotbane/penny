@@ -11,4 +11,4 @@ func _init(_key: StringName, _before: Variant, _after: Variant) -> void:
 	after = _after
 
 func _to_string() -> String:
-	return "assigned '%s' : %s => %s" % [key, before, after]
+	return "[color=#%s][code]%s[/code][/color] = [code]%s[/code] \u279e [color=#%s][code]%s[/code][/color]" % [Penny.IDENTIFIER_COLOR.to_html(), key, before, Penny.FUTURE_COLOR.to_html(), after]

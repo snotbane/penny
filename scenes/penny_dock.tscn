@@ -1,8 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://ehssrfkq0q6c"]
+[gd_scene load_steps=6 format=3 uid="uid://ehssrfkq0q6c"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_dock.gd" id="1_2yk42"]
-[ext_resource type="Theme" uid="uid://bhin0yonr7qve" path="res://addons/penny_godot/templates/debug_editor_theme.tres" id="2_2kyva"]
+[ext_resource type="Theme" uid="uid://bhin0yonr7qve" path="res://addons/penny_godot/templates/debug_dock_theme.tres" id="2_2kyva"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/verbosity_selector.gd" id="2_7bn1p"]
+[ext_resource type="FontFile" uid="uid://cgxoa5vuur6al" path="res://addons/penny_godot/assets/NotoSansMono-Medium.ttf" id="4_cvcw8"]
+
+[sub_resource type="Theme" id="Theme_qnk2h"]
+default_font = ExtResource("4_cvcw8")
+default_font_size = 12
+RichTextLabel/fonts/normal_font = ExtResource("4_cvcw8")
 
 [node name="Penny" type="Control" node_paths=PackedStringArray("message_box", "verbosity_selector")]
 layout_mode = 3
@@ -13,6 +19,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("2_2kyva")
 script = ExtResource("1_2yk42")
 message_box = NodePath("v_box_container/panel/margin_container/scroll_container/message_log")
 verbosity_selector = NodePath("v_box_container/h_box_container_2/verbosity_selector")
@@ -73,6 +80,8 @@ theme = ExtResource("2_2kyva")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = SubResource("Theme_qnk2h")
+theme_override_constants/separation = 0
 
 [node name="h_box_container" type="HBoxContainer" parent="v_box_container"]
 layout_mode = 2

@@ -4,7 +4,8 @@
 class_name Penny extends Object
 
 const DEFAULT_COLOR = Color.LIGHT_GRAY
-const NEUTRAL_COLOR = Color.DODGER_BLUE
+const IDENTIFIER_COLOR = Color.PERU
+const FUTURE_COLOR = Color.DODGER_BLUE
 const HAPPY_COLOR = Color.LAWN_GREEN
 const ANGRY_COLOR = Color.DEEP_PINK
 const WARNING_COLOR = Color(1, 0.871, 0.4)	## Matches editor

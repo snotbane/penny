@@ -25,7 +25,7 @@ func get_data(key: StringName) -> Variant:
 func set_data(key: StringName, value: Variant) -> void:
 	if value == null:
 		if data.has(key) and data[key] is PennyObject:
-				data[key].free()
+			data[key].free()
 		data.erase(key)
 	else:
 		data[key] = value
