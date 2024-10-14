@@ -15,6 +15,12 @@ static var labels : Dictionary			## StringName : Address
 static var valid : bool = true
 static var clean : bool = true
 
+static var active_dock : PennyDock:
+	get:
+		if PennyPlugin.inst:
+			return PennyPlugin.inst.dock
+		return PennyDock.inst
+
 static func clear_all() -> void:
 	valid = true
 	stmt_dict.clear()
@@ -52,19 +58,13 @@ static func get_stmt_from_label(label: StringName) -> Stmt:
 		return null
 
 static func log(s: String, c: Color = DEFAULT_COLOR) -> void:
-	if PennyPlugin.inst:
-		PennyPlugin.inst.dock.log(s, c)
-	else:
-		PennyDock.inst.log(s, c)
+	active_dock.log(s, c)
 
 static func log_error(s: String, c: Color = ERROR_COLOR) -> void:
 	Penny.log(s, c)
 
 static func log_clear() -> void:
-	if PennyPlugin.inst:
-		PennyPlugin.inst.dock.log_clear()
-	else:
-		PennyDock.inst.log_clear()
+	active_dock.log_clear()
 
 static func log_timed(s: String, c: Color = DEFAULT_COLOR) -> void:
 	Penny.log("[%s] %s" % [get_formatted_time(), s], c)

@@ -105,6 +105,7 @@ theme = ExtResource("1_lr0qd")
 script = ExtResource("1_vh1ak")
 animation_player = NodePath("animation_player")
 vbox = NodePath("panel_container/margin_container/scroll_container/margin_container/scroll_contents")
+verbosity = 15
 
 [node name="panel_container" type="PanelContainer" parent="."]
 layout_mode = 1

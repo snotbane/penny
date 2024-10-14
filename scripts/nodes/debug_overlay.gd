@@ -12,6 +12,8 @@ func _process(delta: float) -> void:
 
 func _input(event: InputEvent) -> void:
 	# if not OS.is_debug_build(): return
-
+	if event.is_action_pressed('penny_history'):
+		if visible:
+			visible = false
 	if event.is_action_pressed('penny_debug'):
 		visible = not visible

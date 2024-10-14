@@ -1,9 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://ehssrfkq0q6c"]
+[gd_scene load_steps=4 format=3 uid="uid://ehssrfkq0q6c"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/editor/scripts/penny_dock.gd" id="1_7bh35"]
-[ext_resource type="Theme" uid="uid://bhin0yonr7qve" path="res://addons/penny_godot/templates/debug_editor_theme.tres" id="2_64y3d"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_dock.gd" id="1_2yk42"]
+[ext_resource type="Theme" uid="uid://bhin0yonr7qve" path="res://addons/penny_godot/templates/debug_editor_theme.tres" id="2_2kyva"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/verbosity_selector.gd" id="2_7bn1p"]
 
-[node name="Penny" type="Control" node_paths=PackedStringArray("message_box")]
+[node name="Penny" type="Control" node_paths=PackedStringArray("message_box", "verbosity_selector")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,8 +13,9 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("1_7bh35")
+script = ExtResource("1_2yk42")
 message_box = NodePath("v_box_container/panel/margin_container/scroll_container/message_log")
+verbosity_selector = NodePath("v_box_container/h_box_container_2/verbosity_selector")
 
 [node name="v_box_container" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -35,6 +37,22 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Reload"
 
+[node name="verbosity_selector" type="OptionButton" parent="v_box_container/h_box_container_2"]
+layout_mode = 2
+selected = 4
+item_count = 5
+popup/item_0/text = "Story"
+popup/item_0/id = 1
+popup/item_1/text = "+ Print Msgs"
+popup/item_1/id = 3
+popup/item_2/text = "+ Flow Activity"
+popup/item_2/id = 7
+popup/item_3/text = "+ Data Access"
+popup/item_3/id = 15
+popup/item_4/text = "All"
+popup/item_4/id = 15
+script = ExtResource("2_7bn1p")
+
 [node name="panel" type="Panel" parent="v_box_container"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -49,7 +67,7 @@ grow_vertical = 2
 
 [node name="scroll_container" type="ScrollContainer" parent="v_box_container/panel/margin_container"]
 layout_mode = 2
-theme = ExtResource("2_64y3d")
+theme = ExtResource("2_2kyva")
 
 [node name="message_log" type="VBoxContainer" parent="v_box_container/panel/margin_container/scroll_container"]
 layout_mode = 2
@@ -71,3 +89,4 @@ text = "Export..."
 
 [connection signal="toggled" from="v_box_container/h_box_container_2/toggle_auto_reload" to="v_box_container/h_box_container_2/button_reload" method="set_disabled"]
 [connection signal="pressed" from="v_box_container/h_box_container_2/button_reload" to="." method="_on_button_reload_pressed"]
+[connection signal="item_selected" from="v_box_container/h_box_container_2/verbosity_selector" to="v_box_container/h_box_container_2/verbosity_selector" method="_on_item_selected"]

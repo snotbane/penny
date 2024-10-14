@@ -7,11 +7,11 @@ func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) ->
 func _get_keyword() -> StringName:
 	return 'check'
 
-func _show_record(record: Record) -> bool:
-	return record.attachment != null
+func _get_verbosity() -> Verbosity:
+	return Verbosity.FLOW_ACTIVITY
 
-func _get_verbosity() -> int:
-	return 2
+func _is_record_shown_in_history(record: Record) -> bool:
+	return record.attachment != null
 
 func _execute(host: PennyHost) -> Record:
 	return Record.new(host, self, _evaluate_self(host))

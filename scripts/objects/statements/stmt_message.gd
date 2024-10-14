@@ -34,8 +34,8 @@ var char_count_non_whitespace : int :
 func _get_is_halting() -> bool:
 	return true
 
-# func _get_verbosity() -> int:
-# 	return -1
+func _get_verbosity() -> Verbosity:
+	return Verbosity.MAX
 
 func _get_keyword() -> StringName:
 	return 'message'

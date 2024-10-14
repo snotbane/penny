@@ -13,18 +13,21 @@ func _init() -> void:
 	mouse_default_cursor_shape = Control.CursorShape.CURSOR_POINTING_HAND
 
 func _ready() -> void:
-	grab_focus.call_deferred()
+	pass
 
 func populate(__rec: Record) -> void:
 	rec = __rec
 	text = rec.message.text
-	if rec.stmt._get_verbosity() > 0:
+	if not rec.stmt.verbosity & Stmt.Verbosity.USER_FACING:
 		var c = get_theme_color('default_color')
 		c.a = 0.25
 		add_theme_color_override('default_color', c)
+	refresh_visibility()
+	if visible:
+		grab_focus.call_deferred()
 
-func refresh_visibility(verbosity: int) -> void:
-	visible = rec.verbosity >= 0 && verbosity >= rec.verbosity
+func refresh_visibility() -> void:
+	visible = rec.stmt._is_record_shown_in_history(rec) && rec.host.history_handler.verbosity & rec.stmt.verbosity
 
 func _gui_input(event: InputEvent) -> void:
 	if event.is_pressed():

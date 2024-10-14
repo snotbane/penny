@@ -1,8 +1,10 @@
 
 class_name HistoryHandler extends Control
+static var inst : HistoryHandler
 
 @export var animation_player : AnimationPlayer
 @export var vbox : VBoxContainer
+
 
 var _shown : bool = false
 var shown : bool = false :
@@ -15,10 +17,19 @@ var shown : bool = false :
 		else:
 			animation_player.play('hide')
 
+var _verbosity : int
+@export_flags(Stmt.VERBOSITY_NAMES[0], Stmt.VERBOSITY_NAMES[1], Stmt.VERBOSITY_NAMES[2], Stmt.VERBOSITY_NAMES[3]) var verbosity : int = Stmt.Verbosity.USER_FACING | Stmt.Verbosity.DEBUG_MESSAGES :
+	get: return _verbosity
+	set (value):
+		if _verbosity == value: return
+		_verbosity = value
+		for i in controls:
+			i.refresh_visibility()
 
 var controls : Array[PennyMessageLabel]
 
 func _ready() -> void:
+	inst = self
 	visible = shown
 
 func _input(event: InputEvent) -> void:

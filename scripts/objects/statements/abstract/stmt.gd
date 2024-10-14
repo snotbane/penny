@@ -2,6 +2,23 @@
 @tool
 class_name Stmt extends RefCounted
 
+enum Verbosity {
+	NONE = 0,
+	USER_FACING = 1 << 0,
+	DEBUG_MESSAGES = 1 << 1,
+	FLOW_ACTIVITY = 1 << 2,
+	DATA_ACCESS = 1 << 3,
+	MAX = (1 << 4) - 1,
+	IGNORED = 1 << 4,
+}
+
+const VERBOSITY_NAMES : PackedStringArray = [
+	"User Facing:1",
+	"Debug Messages:2",
+	"Flow Activity:4",
+	"Data Access:8"
+]
+
 var address : Address
 var file_address : FileAddress
 var line : int
@@ -27,7 +44,7 @@ var depth_string : String :
 var next_in_order : Stmt :
 	get: return address.copy(1).stmt
 
-## Next statement in the exact same depth as this one. If we ever exit this depth (lower), return null (end of chain).
+## The next statement in the exact same depth as this one. If we ever exit this depth (lower), return null (end of chain).
 var next_in_chain : Stmt :
 	get:
 		var cursor := address.copy(1)
@@ -59,7 +76,21 @@ var next_lower_depth : Stmt :
 			cursor.index += 1
 		return cursor.stmt
 
-## Previous statement in the exact same depth as this one. If we ever exit this depth (lower), return null (start of chain).
+## The next statement in a higher depth than this one. (more nested)
+var next_higher_depth : Stmt :
+	get:
+		var cursor := address.copy(1)
+		while cursor.valid:
+			if cursor.stmt.depth > depth:
+				break
+			cursor.index += 1
+		return cursor.stmt
+
+## The previous statement in order, regardless of depth.
+var prev_in_order : Stmt :
+	get: return address.copy(-1).stmt
+
+## The previous statement in the exact same depth as this one. If we ever exit this depth (lower), return null (start of chain).
 var prev_in_chain : Stmt :
 	get:
 		var cursor := address.copy(-1)
@@ -81,15 +112,25 @@ var prev_in_depth : Stmt :
 			cursor.index -= 1
 		return cursor.stmt
 
-# ## The next statement in a higher depth than this one. (more nested)
-# var next_higher_depth : Stmt :
-# 	get:
-# 		var cursor := address.copy(1)
-# 		while cursor.valid:
-# 			if cursor.stmt.depth > depth:
-# 				break
-# 			cursor.index += 1
-# 		return cursor.stmt
+## The previous statement in a lower depth than this one. (less nested)
+var prev_lower_depth : Stmt :
+	get:
+		var cursor := address.copy(-1)
+		while cursor.valid:
+			if cursor.stmt.depth < depth:
+				break
+			cursor.index -= 1
+		return cursor.stmt
+
+## The previous statement in a higher depth than this one. (more nested)
+var prev_higher_depth : Stmt :
+	get:
+		var cursor := address.copy(-1)
+		while cursor.valid:
+			if cursor.stmt.depth > depth:
+				break
+			cursor.index -= 1
+		return cursor.stmt
 
 var reconstructed_string : String :
 	get:
@@ -117,8 +158,11 @@ func _get_keyword() -> StringName:
 	return 'INVALID'
 
 ## Defines whether or not this statement should show up in history. -1 = always show, even to end user. Values greater than 0 are used for debugging purposes.
-func _get_verbosity() -> int:
-	return -1
+func _get_verbosity() -> Verbosity:
+	return Verbosity.USER_FACING
+
+func _is_record_shown_in_history(rec: Record) -> bool:
+	return true
 
 ## Executes just once, as soon as all scripts have been validated.
 func _load() -> PennyException:

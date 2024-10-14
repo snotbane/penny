@@ -5,8 +5,8 @@ class_name StmtPass extends Stmt
 func _get_keyword() -> StringName:
 	return "pass"
 
-func _get_verbosity() -> int:
-	return 4
+func _get_verbosity() -> Verbosity:
+	return Verbosity.IGNORED
 
 func _execute(host: PennyHost) -> Record:
 	return super._execute(host)

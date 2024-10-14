@@ -4,8 +4,8 @@ class_name StmtAssign extends Stmt
 func _get_keyword() -> StringName:
 	return 'assign'
 
-func _get_verbosity() -> int:
-	return 1
+func _get_verbosity() -> Verbosity:
+	return Verbosity.DATA_ACCESS
 
 func _execute(host: PennyHost) -> Record:
 	var key : StringName = tokens[0].value

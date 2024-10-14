@@ -11,8 +11,11 @@ func _get_is_halting() -> bool:
 func _get_keyword() -> StringName:
 	return super._get_keyword()
 
-func _get_verbosity() -> int:
+func _get_verbosity() -> Verbosity:
 	return super._get_verbosity()
+
+# func _is_record_shown_in_history(record: Record) -> bool:
+# 	return true
 
 # func _load() -> PennyException:
 # 	super._load()

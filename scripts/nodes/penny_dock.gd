@@ -5,6 +5,7 @@ class_name PennyDock extends Control
 static var inst : PennyDock
 
 @export var message_box : VBoxContainer
+@export var verbosity_selector : OptionButton
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

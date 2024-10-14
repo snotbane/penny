@@ -4,8 +4,8 @@ class_name StmtPrint extends Stmt
 func _get_keyword() -> StringName:
 	return "print"
 
-func _get_verbosity() -> int:
-	return 1
+func _get_verbosity() -> Verbosity:
+	return Verbosity.DEBUG_MESSAGES
 
 func _execute(host: PennyHost) -> Record:
 	print(tokens[0])

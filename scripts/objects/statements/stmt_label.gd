@@ -6,7 +6,7 @@ func _get_keyword() -> StringName:
 	return "label"
 
 func _get_verbosity() -> int:
-	return 3
+	return Verbosity.IGNORED
 
 func _load() -> PennyException:
 	if Penny.labels.has(tokens[0].value):
