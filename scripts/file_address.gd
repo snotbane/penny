@@ -13,7 +13,11 @@ func _init(_path: String, _line: int = -1, _col: int = -1) -> void:
 	col = _col
 
 func _to_string() -> String:
-	return "[hint=%s][url=open_file_address]%s: ln %s, cl %s[/url][/hint]" % [path_absolute, path, line, col]
+	return "%s,%s,%s" % [path, line, col]
+
+static func from_string(s: String) -> FileAddress:
+	var args = s.split(',')
+	return FileAddress.new(args[0], int(args[1]), int(args[2]))
 
 func open() -> void:
 	var args = []

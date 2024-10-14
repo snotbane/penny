@@ -28,7 +28,6 @@ func log(s: String, c: Color = Penny.DEFAULT_COLOR) -> void:
 		_:
 			label.text = s
 	label.add_theme_color_override('default_color', c)
-	label.push_meta(FileAddress.new("res://test.pny", 1, 0))
 	label.meta_clicked.connect(_on_link_clicked)
 	message_box.add_child.call_deferred(label)
 
@@ -40,7 +39,6 @@ func _on_button_reload_pressed() -> void:
 	PennyImporter.inst.reload(true)
 
 func _on_link_clicked(meta) -> void:
-	pass
-	# if meta == "open_file_address":
+	FileAddress.from_string(meta).open()
 
 
