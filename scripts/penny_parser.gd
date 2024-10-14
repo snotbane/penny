@@ -52,13 +52,13 @@ func parse_statements() -> Array[PennyException]:
 	return exceptions
 
 func parse_file() -> Array[PennyException]:
-	print("***			Parsing file \"" + file.get_path() + "\"...")
+	# print("***			Parsing file \"" + file.get_path() + "\"...")
 	PennyException.active_file_path = file.get_path()
 
 	var result = parse_statements()
 
 	PennyException.active_file_path = PennyException.UNKNOWN_FILE
-	print("***			Finished parsing file \"" + file.get_path() + "\".")
+	# print("***			Finished parsing file \"" + file.get_path() + "\".")
 
 	return result
 

@@ -13,7 +13,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_7bh35")
-message_box = NodePath("v_box_container/panel/scroll_container/message_log")
+message_box = NodePath("v_box_container/panel/margin_container/scroll_container/message_log")
 
 [node name="v_box_container" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -23,17 +23,25 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="button_reload" type="Button" parent="v_box_container"]
+[node name="h_box_container_2" type="HBoxContainer" parent="v_box_container"]
+layout_mode = 2
+
+[node name="toggle_auto_reload" type="CheckButton" parent="v_box_container/h_box_container_2"]
+layout_mode = 2
+button_pressed = true
+text = "Auto"
+
+[node name="button_reload" type="Button" parent="v_box_container/h_box_container_2"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "[DEBUG] Reload"
+disabled = true
+text = "Reload"
 
 [node name="panel" type="Panel" parent="v_box_container"]
 layout_mode = 2
 size_flags_vertical = 3
-theme = ExtResource("2_64y3d")
 
-[node name="scroll_container" type="ScrollContainer" parent="v_box_container/panel"]
+[node name="margin_container" type="MarginContainer" parent="v_box_container/panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,7 +49,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="message_log" type="VBoxContainer" parent="v_box_container/panel/scroll_container"]
+[node name="scroll_container" type="ScrollContainer" parent="v_box_container/panel/margin_container"]
+layout_mode = 2
+theme = ExtResource("2_64y3d")
+
+[node name="message_log" type="VBoxContainer" parent="v_box_container/panel/margin_container/scroll_container"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -59,4 +71,5 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Export..."
 
-[connection signal="pressed" from="v_box_container/button_reload" to="." method="_on_button_reload_pressed"]
+[connection signal="toggled" from="v_box_container/h_box_container_2/toggle_auto_reload" to="v_box_container/h_box_container_2/button_reload" method="set_disabled"]
+[connection signal="pressed" from="v_box_container/h_box_container_2/button_reload" to="." method="_on_button_reload_pressed"]

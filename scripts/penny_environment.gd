@@ -51,23 +51,16 @@ static func get_stmt_from_label(label: StringName) -> Stmt:
 		return null
 
 static func log(s: String, c: Color = DEFAULT_COLOR) -> void:
-	if PennyPlugin.inst:
-		PennyPlugin.inst.dock.log(s, c)
-	else:
-		print(s)
+	PennyDock.inst.log(s, c)
 
 static func log_error(s: String, c: Color = ERROR_COLOR) -> void:
-	if PennyPlugin.inst:
-		PennyPlugin.inst.dock.log(s, c)
-	else:
-		printerr(s)
+	PennyDock.inst.log(s, c)
+
+static func log_clear() -> void:
+	PennyDock.inst.log_clear()
 
 static func log_timed(s: String, c: Color = DEFAULT_COLOR) -> void:
 	Penny.log("[%s] %s" % [get_formatted_time(), s], c)
-
-static func log_clear() -> void:
-	if PennyPlugin.inst:
-		PennyPlugin.inst.dock.log_clear()
 
 static func log_info() -> void:
 	Penny.log("%s files | %s blocks | %s words | %s chars" % get_script_info())

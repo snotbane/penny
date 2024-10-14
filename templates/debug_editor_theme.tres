@@ -8,9 +8,5 @@ bg_color = Color(0.15, 0.15, 0.15, 1)
 [resource]
 default_font = ExtResource("1_efb52")
 default_font_size = 12
-MarginContainer/constants/margin_bottom = 16
-MarginContainer/constants/margin_left = 16
-MarginContainer/constants/margin_right = 16
-MarginContainer/constants/margin_top = 16
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_11om5")
 VBoxContainer/constants/separation = 0

@@ -47,7 +47,7 @@ func reload(hard: bool = false) -> void:
 		else:
 			host_application_string = "game"
 
-		print("***	RELOADING %s PENNY SCRIPTS ( %s )" % [files.size(), host_application_string])
+		# print("***	RELOADING %s PENNY SCRIPTS ( %s )" % [files.size(), host_application_string])
 
 		Penny.valid = true
 
@@ -66,9 +66,10 @@ func reload(hard: bool = false) -> void:
 			Penny.log_timed("Failed to load one or more scripts:", Penny.ERROR_COLOR)
 			for i in exceptions:
 				i.push()
+			Penny.valid = false
 		Penny.log_info()
 
-		print("***	RELOADING COMPLETE\n")
+		# print("***	RELOADING COMPLETE\n")
 
 func open_modified() -> Array[FileAccess]:
 	var result : Array[FileAccess] = []
