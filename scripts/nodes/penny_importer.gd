@@ -67,6 +67,7 @@ func reload(hard: bool = false) -> void:
 			for i in exceptions:
 				i.push()
 			Penny.valid = false
+
 		Penny.log_info()
 
 		# print("***	RELOADING COMPLETE\n")
