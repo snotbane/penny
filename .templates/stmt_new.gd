@@ -14,7 +14,7 @@ func _get_keyword() -> StringName:
 func _get_verbosity() -> int:
 	return super._get_verbosity()
 
-# func _load() -> void:
+# func _load() -> PennyException:
 # 	super._load()
 
 func _execute(host: PennyHost) -> Record:

@@ -28,13 +28,11 @@ layout_mode = 2
 
 [node name="toggle_auto_reload" type="CheckButton" parent="v_box_container/h_box_container_2"]
 layout_mode = 2
-button_pressed = true
 text = "Auto"
 
 [node name="button_reload" type="Button" parent="v_box_container/h_box_container_2"]
 layout_mode = 2
 size_flags_horizontal = 3
-disabled = true
 text = "Reload"
 
 [node name="panel" type="Panel" parent="v_box_container"]

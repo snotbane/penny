@@ -14,7 +14,7 @@ MarginContainer/constants/margin_top = 2
 texture = ExtResource("2_7s783")
 axis_stretch_horizontal = 2
 axis_stretch_vertical = 2
-modulate_color = Color(1, 0.945, 0.34, 0.376471)
+modulate_color = Color(1, 0.916667, 0, 0.156863)
 
 [node name="debug_overlay" type="PanelContainer"]
 anchors_preset = 15

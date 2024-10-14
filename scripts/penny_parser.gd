@@ -94,7 +94,7 @@ func tokenize() -> Array[PennyException]:
 		if not match_found:
 			result.push_back(PennyExceptionRef.new(FileAddress.new(file.get_path(), line, col), "Unrecognized token '%s'." % raw[cursor]))
 			cursor += 1
-			break
+			# break
 
 	return result
 
@@ -129,7 +129,9 @@ func statementize() -> Array[PennyException]:
 	var result : Array[PennyException] = []
 	Penny.stmt_dict[file.get_path()] = []
 	for i in stmts:
-		Penny.stmt_dict[file.get_path()].push_back(i.recycle())
+		var recycle = i.recycle()
+		recycle.file_address = FileAddress.new(file.get_path(), i.line)
+		Penny.stmt_dict[file.get_path()].push_back(recycle)
 	for i in Penny.stmt_dict[file.get_path()]:
 		var exception : PennyException = i._validate()
 		if exception:

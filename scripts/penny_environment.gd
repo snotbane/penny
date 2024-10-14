@@ -28,10 +28,8 @@ static func import_statements(path: StringName, _statements: Array[Stmt]) -> voi
 
 	clean = false
 
-static func load() -> void:
-	if not valid:
-		printerr("Penny.valid == false; aborting Penny.load()")
-		return
+static func validate() -> Array[PennyException]:
+	var result : Array[PennyException] = []
 
 	labels.clear()
 
@@ -41,13 +39,16 @@ static func load() -> void:
 		for stmt in stmt_dict[path]:
 			i += 1
 			stmt.address = Address.new(path, i)
-			stmt._load()
+			var exception = stmt._load()
+			if exception:
+				result.push_back(exception)
+	return result
 
 static func get_stmt_from_label(label: StringName) -> Stmt:
 	if labels.has(label):
 		return labels[label].stmt
 	else:
-		printerr("Label '%s' does not exist in the current Penny environment." % label)
+		PennyException.new("Label '%s' does not exist in the current Penny environment." % label).push()
 		return null
 
 static func log(s: String, c: Color = DEFAULT_COLOR) -> void:
@@ -63,7 +64,7 @@ static func log_timed(s: String, c: Color = DEFAULT_COLOR) -> void:
 	Penny.log("[%s] %s" % [get_formatted_time(), s], c)
 
 static func log_info() -> void:
-	Penny.log("%s files | %s blocks | %s words | %s chars" % get_script_info())
+	Penny.log("%s files / %s blocks / %s words / %s chars" % get_script_info())
 
 static func get_formatted_time() -> String:
 	var time = Time.get_time_dict_from_system()

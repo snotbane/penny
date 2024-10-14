@@ -60,6 +60,5 @@ theme_override_constants/margin_bottom = 170
 [node name="penny_history_box" parent="canvas_layer/ui/history_container" instance=ExtResource("4_hm4jj")]
 layout_mode = 2
 
-[node name="debug_overlay" parent="canvas_layer/ui" instance=ExtResource("5_vsnrl")]
+[node name="debug_overlay" parent="canvas_layer" instance=ExtResource("5_vsnrl")]
 visible = false
-layout_mode = 1

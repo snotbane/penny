@@ -3,6 +3,7 @@
 class_name Stmt extends RefCounted
 
 var address : Address
+var file_address : FileAddress
 var line : int
 var depth : int
 var tokens : Array[Token]
@@ -120,8 +121,8 @@ func _get_verbosity() -> int:
 	return -1
 
 ## Executes just once, as soon as all scripts have been validated.
-func _load() -> void:
-	pass
+func _load() -> PennyException:
+	return null
 
 ## Executes when it is reached as the user encounters it.
 func _execute(host: PennyHost) -> Record:
@@ -141,10 +142,10 @@ func _message(record: Record) -> Message:
 
 ## Returns an exception to check what may be wrong with the statement (or null if OK)
 func _validate() -> PennyException:
-	return create_exception("_validate() method needs to be overriden.")
+	return create_exception("_validate() method needs to be overridden and/or statement was never recycled into the proper type (not implemented).")
 
 func create_exception(s: String = "Uncaught exception.") -> PennyException:
-	return PennyException.new("%s : %s" % [line_string, s])
+	return PennyExceptionRef.new(file_address, s)
 
 func recycle() -> Stmt:
 	if tokens.is_empty():
@@ -157,18 +158,16 @@ func recycle() -> Stmt:
 			match key:
 				'pass': return StmtPass.new(address, line, depth, tokens)
 				'print': return StmtPrint.new(address, line, depth, tokens)
-				'label': return StmtLabel.new(address, line, depth, tokens)
+				'label', 'jump': return StmtLabel.new(address, line, depth, tokens)
 				'if': return StmtConditionalIf.new(address, line, depth, tokens)
 				'elif': return StmtConditionalElif.new(address, line, depth, tokens)
 				'else': return StmtConditionalElse.new(address, line, depth, tokens)
-				pass
 		Token.IDENTIFIER:
 			if tokens.size() == 1:
 				pass
 				# throw exception for now, this will become object manipulation
 			else:
 				return StmtAssign.new(address, line, depth, tokens)
-	create_exception("Unable to parse/recycle.").push()
 	return self
 
 func validate_as_no_tokens() -> PennyException:

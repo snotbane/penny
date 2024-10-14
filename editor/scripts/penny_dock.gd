@@ -22,6 +22,7 @@ func log(s: String, c: Color = Penny.DEFAULT_COLOR) -> void:
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD
 	label.context_menu_enabled = true
 	label.selection_enabled = true
+	label.focus_mode = Control.FOCUS_NONE
 	match c:
 		Penny.ERROR_COLOR, Penny.WARNING_COLOR:
 			label.text = "\u2B24 %s" % s

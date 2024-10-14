@@ -56,12 +56,12 @@ func reload(hard: bool = false) -> void:
 		for i in parsers:
 			Penny.clear(i.file.get_path())
 			exceptions.append_array(i.parse_file())
+		if exceptions.is_empty():
+			exceptions = Penny.validate()
 
 		Penny.log_clear()
 		if exceptions.is_empty():
-			Penny.load()
-			if Penny.valid:
-				Penny.log_timed("Successfully loaded all scripts.", Penny.HAPPY_COLOR)
+			Penny.log_timed("Successfully loaded all scripts.", Penny.HAPPY_COLOR)
 		else:
 			Penny.log_timed("Failed to load one or more scripts:", Penny.ERROR_COLOR)
 			for i in exceptions:

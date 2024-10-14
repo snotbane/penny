@@ -8,11 +8,12 @@ func _get_keyword() -> StringName:
 func _get_verbosity() -> int:
 	return 3
 
-func _load() -> void:
+func _load() -> PennyException:
 	if Penny.labels.has(tokens[0].value):
-		PennyException.new("Label %s already exists" % tokens[0]).push()
+		return create_exception("Label '%s' already exists (%s)" % [tokens[0].value, Penny.get_stmt_from_label(tokens[0].value).file_address.pretty_string])
 	else:
 		Penny.labels[tokens[0].value] = address
+		return super._load()
 
 func _execute(host: PennyHost) -> Record:
 	return super._execute(host)
