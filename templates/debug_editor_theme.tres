@@ -1,12 +1,12 @@
 [gd_resource type="Theme" load_steps=3 format=3 uid="uid://bhin0yonr7qve"]
 
-[ext_resource type="FontFile" uid="uid://cgxoa5vuur6al" path="res://addons/penny_godot/assets/NotoSansMono-Medium.ttf" id="1_c5teg"]
+[ext_resource type="FontFile" uid="uid://cgxoa5vuur6al" path="res://addons/penny_godot/assets/NotoSansMono-Medium.ttf" id="1_efb52"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_11om5"]
 bg_color = Color(0.15, 0.15, 0.15, 1)
 
 [resource]
-default_font = ExtResource("1_c5teg")
+default_font = ExtResource("1_efb52")
 default_font_size = 12
 MarginContainer/constants/margin_bottom = 16
 MarginContainer/constants/margin_left = 16

@@ -13,13 +13,21 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
-func log(s: String) -> void:
+func log(s: String, c: Color = Penny.DEFAULT_COLOR) -> void:
 	var label := RichTextLabel.new()
+	label.bbcode_enabled = true
 	label.fit_content = true
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD
 	label.context_menu_enabled = true
 	label.selection_enabled = true
-	label.text = s
+	match c:
+		Penny.ERROR_COLOR, Penny.WARNING_COLOR:
+			label.text = "\u2B24 %s" % s
+		_:
+			label.text = s
+	label.add_theme_color_override('default_color', c)
+	label.push_meta(FileAddress.new("res://test.pny", 1, 0))
+	label.meta_clicked.connect(_on_link_clicked)
 	message_box.add_child.call_deferred(label)
 
 func log_clear() -> void:
@@ -28,3 +36,9 @@ func log_clear() -> void:
 
 func _on_button_reload_pressed() -> void:
 	PennyImporter.inst.reload(true)
+
+func _on_link_clicked(meta) -> void:
+	pass
+	# if meta == "open_file_address":
+
+

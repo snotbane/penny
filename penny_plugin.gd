@@ -22,4 +22,3 @@ func _enter_tree() -> void:
 func _exit_tree() -> void:
 	# remove_control_from_docks(dock)
 	pass
-

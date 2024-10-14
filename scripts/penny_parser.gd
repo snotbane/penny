@@ -36,34 +36,34 @@ func _init(_raw: String, _file: FileAccess = null) -> void:
 	raw = _raw
 	file = _file
 
-func parse_tokens() -> Variant:
-	var exception = tokenize()
-	if exception:
-		return exception
-
+func parse_tokens() -> Array[PennyException]:
+	var exceptions = tokenize()
 	# for i in tokens:
 	# 	print(i)
-	return tokens
+	return exceptions
 
-func parse_statements() -> void:
-	var result = parse_tokens()
-	if result is PennyException:
-		result.push()
 
-	statementize()
+func parse_statements() -> Array[PennyException]:
+	var exceptions = tokenize()
+	if exceptions.is_empty():
+		exceptions = statementize()
 	# for i in stmts:
 	# 	print(i)
+	return exceptions
 
-func parse_file() -> void:
+func parse_file() -> Array[PennyException]:
 	print("***			Parsing file \"" + file.get_path() + "\"...")
 	PennyException.active_file_path = file.get_path()
 
-	parse_statements()
+	var result = parse_statements()
 
 	PennyException.active_file_path = PennyException.UNKNOWN_FILE
 	print("***			Finished parsing file \"" + file.get_path() + "\".")
 
-func tokenize() -> PennyException:
+	return result
+
+func tokenize() -> Array[PennyException]:
+	var result : Array[PennyException] = []
 
 	tokens.clear()
 
@@ -92,12 +92,14 @@ func tokenize() -> PennyException:
 			break
 
 		if not match_found:
-			return PennyException.new("Unrecognized token at ln %s cl %s" % [line, col])
+			result.push_back(PennyExceptionRef.new(FileAddress.new(file.get_path(), line, col), "Unrecognized token '%s'." % raw[cursor]))
+			cursor += 1
+			break
 
-	return null
+	return result
 
 # Separates statements based on terminators and indentation; For type assignment, etc. see Statement validations.
-func statementize() -> void:
+func statementize() -> Array[PennyException]:
 	var stmts : Array[Stmt] = []
 
 	var stmt : Stmt = null
@@ -124,11 +126,12 @@ func statementize() -> void:
 	if stmt:
 		stmts.push_back(stmt)
 
+	var result : Array[PennyException] = []
 	Penny.stmt_dict[file.get_path()] = []
 	for i in stmts:
 		Penny.stmt_dict[file.get_path()].push_back(i.recycle())
 	for i in Penny.stmt_dict[file.get_path()]:
 		var exception : PennyException = i._validate()
 		if exception:
-			exception.push()
-			Penny.valid = false
+			result.push_back(exception)
+	return result

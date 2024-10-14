@@ -3,6 +3,13 @@
 @tool
 class_name Penny extends Object
 
+const DEFAULT_COLOR = Color.LIGHT_GRAY
+const NEUTRAL_COLOR = Color.DODGER_BLUE
+const HAPPY_COLOR = Color.LAWN_GREEN
+const ANGRY_COLOR = Color.DEEP_PINK
+const WARNING_COLOR = Color(1, 0.871, 0.4)	## Matches editor
+const ERROR_COLOR = Color(1, 0.471, 0.42)	## Matches editor
+
 static var stmt_dict : Dictionary		## StringName : Array[Stmt]
 static var labels : Dictionary			## StringName : Address
 static var valid : bool = true
@@ -43,14 +50,20 @@ static func get_stmt_from_label(label: StringName) -> Stmt:
 		printerr("Label '%s' does not exist in the current Penny environment." % label)
 		return null
 
-static func log(s: String) -> void:
+static func log(s: String, c: Color = DEFAULT_COLOR) -> void:
 	if PennyPlugin.inst:
-		PennyPlugin.inst.dock.log(s)
-	else :
+		PennyPlugin.inst.dock.log(s, c)
+	else:
 		print(s)
 
-static func log_timed(s: String) -> void:
-	Penny.log("[%s] %s" % [get_formatted_time(), s])
+static func log_error(s: String, c: Color = ERROR_COLOR) -> void:
+	if PennyPlugin.inst:
+		PennyPlugin.inst.dock.log(s, c)
+	else:
+		printerr(s)
+
+static func log_timed(s: String, c: Color = DEFAULT_COLOR) -> void:
+	Penny.log("[%s] %s" % [get_formatted_time(), s], c)
 
 static func log_clear() -> void:
 	if PennyPlugin.inst:

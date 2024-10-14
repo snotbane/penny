@@ -37,9 +37,9 @@ func _next(record: Record) -> Stmt:
 func _message(record: Record) -> Message:
 	match record.attachment:
 		true:
-			return Message.new("%s [code][color=LAWN_GREEN]PASSED[/color][/code]" % reconstructed_string)
+			return Message.new("%s [code][color=#%s]PASSED[/color][/code]" % [reconstructed_string, Penny.HAPPY_COLOR.to_html()])
 		false:
-			return Message.new("%s [code][color=DEEP_PINK]FAILED[/color][/code]" % reconstructed_string)
+			return Message.new("%s [code][color=#%s]FAILED[/color][/code]" % [reconstructed_string, Penny.ANGRY_COLOR.to_html()])
 		_:
 			return Message.new("[s]%s [code]SKIPPED[/code]" % reconstructed_string)
 

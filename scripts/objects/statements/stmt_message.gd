@@ -58,7 +58,12 @@ func _message(record: Record) -> Message:
 		expr_string = expr_string.substr(1, expr_string.length() - 2)
 
 		var parser = PennyParser.new(expr_string)
-		parser.parse_tokens()
+		var exceptions = parser.tokenize()
+		if not exceptions.is_empty():
+			for i in exceptions:
+				i.push()
+			break
+
 		var result = record.host.evaluate_expression(parser.tokens)
 		var result_string := str(result)
 

@@ -1,0 +1,46 @@
+
+class_name FileAddress extends RefCounted
+
+var path : String
+var path_absolute : String
+var line : int
+var col : int
+
+func _init(_path: String, _line: int = -1, _col: int = -1) -> void:
+	path = _path
+	path_absolute = FileAccess.open(_path, FileAccess.READ).get_path_absolute()
+	line = _line
+	col = _col
+
+func _to_string() -> String:
+	return "[hint=%s][url=open_file_address]%s: ln %s, cl %s[/url][/hint]" % [path_absolute, path, line, col]
+
+func open() -> void:
+	var args = []
+
+	var editor = OS.get_environment("EDITOR") # Get the system's default editor
+	if editor == "":
+		# push_warning("Unable to determine default editor. Defaulting to vscode.")
+		editor = "code"
+
+	match editor:
+		"godot":
+			# EditorInterface.edit_resource(load('res://'))
+			# EditorInterface.get_script_editor().goto_line(ln)
+			return
+		"code":
+			args.append_array(["--goto", "%s:%d" % [path_absolute, line]])
+		"devenv":
+			args.append_array(["/edit", "%s,%d" % [path_absolute, line]])
+		_:
+			push_error("Unsupported editor '%s'." % editor)
+			return
+
+	var os_name = OS.get_name()
+	match os_name:
+		"Windows":
+			args.insert(0, "/c")
+			args.insert(1, editor)
+			editor = "cmd"
+
+	OS.execute(editor, args)
