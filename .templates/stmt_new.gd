@@ -2,6 +2,9 @@
 ## No description
 class_name StmtNew extends Stmt
 
+func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
+	super._init(_address, _line, _depth, _tokens)
+
 func _get_is_halting() -> bool:
 	return super._get_is_halting()
 

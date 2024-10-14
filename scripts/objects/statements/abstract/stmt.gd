@@ -58,6 +58,18 @@ var next_lower_depth : Stmt :
 			cursor.index += 1
 		return cursor.stmt
 
+## Previous statement in the exact same depth as this one. If we ever exit this depth (lower), return null (start of chain).
+var prev_in_chain : Stmt :
+	get:
+		var cursor := address.copy(-1)
+		while cursor.valid:
+			if cursor.stmt.depth == depth:
+				break
+			if cursor.stmt.depth < depth:
+				return null
+			cursor.index -= 1
+		return cursor.stmt
+
 ## The previous statement in the same depth (or lower) as this one.
 var prev_in_depth : Stmt :
 	get:
@@ -146,9 +158,9 @@ func recycle() -> Stmt:
 				'pass': return StmtPass.new(address, line, depth, tokens)
 				'print': return StmtPrint.new(address, line, depth, tokens)
 				'label': return StmtLabel.new(address, line, depth, tokens)
-				'if': return StmtConditional.new(address, line, depth, tokens, 0)
-				'elif': return StmtConditional.new(address, line, depth, tokens, 1)
-				'else': return StmtConditional.new(address, line, depth, tokens, 2)
+				'if': return StmtConditionalIf.new(address, line, depth, tokens)
+				'elif': return StmtConditionalElif.new(address, line, depth, tokens)
+				'else': return StmtConditionalElse.new(address, line, depth, tokens)
 				pass
 		Token.IDENTIFIER:
 			if tokens.size() == 1:
