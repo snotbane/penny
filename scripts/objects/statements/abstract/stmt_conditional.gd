@@ -27,48 +27,54 @@ func _get_verbosity() -> int:
 	return 2
 
 func _execute(host: PennyHost) -> Record:
-	var result = host.evaluate_expression(tokens)
+	var result = null
 	match type:
 		IF:			## always TRUE or FALSE
-			pass
+			result = host.evaluate_expression_as_boolean(tokens)
 		ELIF:		## TRUE, FALSE, or NULL
-			if not host.handling_conditional:
-				result = null
+			if host.expecting_conditional:
+				result = host.evaluate_expression_as_boolean(tokens)
 		ELSE:		## always TRUE or NULL
-			if host.handling_conditional:
+			if host.expecting_conditional:
 				result = true
-			else:
-				result = null
 	return Record.new(host, self, result)
 
 func _next(record: Record) -> Stmt:
+	if record.attachment == null:
+		record.host.expecting_conditional = false
+		return next_in_depth
+
 	var skip := true
 	match type:
 		IF:
 			if record.attachment:
 				skip = false
-			record.host.handling_conditional = skip
 		ELIF:
-			if record.host.handling_conditional:
-				if record.attachment:
-					skip = false
-				record.host.handling_conditional = skip
-		ELSE:
-			if record.host.handling_conditional:
+			if record.host.expecting_conditional and record.attachment:
 				skip = false
-			record.host.handling_conditional = false
+		ELSE:
+			if record.host.expecting_conditional:
+				skip = false
 
-	if skip: 	return next_in_depth
-	else:		return next_in_order
+	var result : Stmt
+	if skip: 	result = next_in_chain
+	else:		result = next_in_order
+
+	if result:
+		record.host.expecting_conditional = skip and result is StmtConditional
+		return result
+	else:
+		record.host.expecting_conditional = false
+		return next_in_depth
 
 func _message(record: Record) -> Message:
 	match record.attachment:
 		true:
-			return Message.new("[code][color=LAWN_GREEN]PASSED\t\t[/color][/code] %s" % reconstructed_string)
+			return Message.new("%s\t\t\t[code][color=LAWN_GREEN]PASSED[/color][/code]" % reconstructed_string)
 		false:
-			return Message.new("[code][color=DEEP_PINK]FAILED\t\t[/color][/code] %s" % reconstructed_string)
+			return Message.new("%s\t\t\t[code][color=DEEP_PINK]FAILED[/color][/code]" % reconstructed_string)
 		_:
-			return Message.new("[s][code]SKIPPED\t[/code] %s" % reconstructed_string)
+			return Message.new("[s]%s\t\t\t[code]SKIPPED[/code]" % reconstructed_string)
 
 func _validate() -> PennyException:
 	match type:

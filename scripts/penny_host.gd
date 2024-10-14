@@ -18,7 +18,7 @@ var data := PennyObject.new(self, {})
 
 var records : Array[Record]
 
-var handling_conditional : bool
+var expecting_conditional : bool
 
 var cursor : Stmt
 
@@ -84,13 +84,21 @@ func close() -> void:
 	queue_free()
 
 func rewind_to(record: Record) -> void:
+	expecting_conditional = false
 	cursor = record.stmt
 	while records.size() > record.stamp:
 		records.pop_back().undo()
 	history_handler.rewind_to(record)
+
 	invoke_at_cursor()
 
-func evaluate_expression(tokens: Array[Token], range_in : int = 0, range_out : int = -1) -> Variant:
+func evaluate_expression_as_boolean(tokens: Array[Token], range_in := 0, range_out := -1) -> bool:
+	var result = evaluate_expression(tokens, range_in, range_out)
+	if result:
+		return result as bool
+	return false
+
+func evaluate_expression(tokens: Array[Token], range_in := 0, range_out := -1) -> Variant:
 	if range_out == -1:
 		range_out = tokens.size()
 	range_out -= range_in

@@ -26,6 +26,18 @@ var depth_string : String :
 var next_in_order : Stmt :
 	get: return address.copy(1).stmt
 
+## Next statement in the exact same depth as this one. If we ever exit this depth (lower), return null (end of chain).
+var next_in_chain : Stmt :
+	get:
+		var cursor := address.copy(1)
+		while cursor.valid:
+			if cursor.stmt.depth == depth:
+				break
+			if cursor.stmt.depth < depth:
+				return null
+			cursor.index += 1
+		return cursor.stmt
+
 ## The next statement in the same depth (or lower) as this one.
 var next_in_depth : Stmt :
 	get:
