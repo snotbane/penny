@@ -1,6 +1,6 @@
 
 @tool
-class_name Stmt extends RefCounted
+class_name Stmt_ extends RefCounted
 
 enum Verbosity {
 	NONE = 0,
@@ -41,11 +41,11 @@ var depth_string : String :
 	get: return "dp %s" % depth
 
 ## The next statement in order, regardless of depth.
-var next_in_order : Stmt :
+var next_in_order : Stmt_ :
 	get: return address.copy(1).stmt
 
 ## The next statement in the exact same depth as this one. If we ever exit this depth (lower), return null (end of chain).
-var next_in_chain : Stmt :
+var next_in_chain : Stmt_ :
 	get:
 		var cursor := address.copy(1)
 		while cursor.valid:
@@ -57,7 +57,7 @@ var next_in_chain : Stmt :
 		return cursor.stmt
 
 ## The next statement in the same depth (or lower) as this one.
-var next_in_depth : Stmt :
+var next_in_depth : Stmt_ :
 	get:
 		var cursor := address.copy(1)
 		while cursor.valid:
@@ -67,7 +67,7 @@ var next_in_depth : Stmt :
 		return cursor.stmt
 
 ## The next statement in a lower depth than this one. (less nested)
-var next_lower_depth : Stmt :
+var next_lower_depth : Stmt_ :
 	get:
 		var cursor := address.copy(1)
 		while cursor.valid:
@@ -77,7 +77,7 @@ var next_lower_depth : Stmt :
 		return cursor.stmt
 
 ## The next statement in a higher depth than this one. (more nested)
-var next_higher_depth : Stmt :
+var next_higher_depth : Stmt_ :
 	get:
 		var cursor := address.copy(1)
 		while cursor.valid:
@@ -87,11 +87,11 @@ var next_higher_depth : Stmt :
 		return cursor.stmt
 
 ## The previous statement in order, regardless of depth.
-var prev_in_order : Stmt :
+var prev_in_order : Stmt_ :
 	get: return address.copy(-1).stmt
 
 ## The previous statement in the exact same depth as this one. If we ever exit this depth (lower), return null (start of chain).
-var prev_in_chain : Stmt :
+var prev_in_chain : Stmt_ :
 	get:
 		var cursor := address.copy(-1)
 		while cursor.valid:
@@ -103,7 +103,7 @@ var prev_in_chain : Stmt :
 		return cursor.stmt
 
 ## The previous statement in the same depth (or lower) as this one.
-var prev_in_depth : Stmt :
+var prev_in_depth : Stmt_ :
 	get:
 		var cursor := address.copy(-1)
 		while cursor.valid:
@@ -113,7 +113,7 @@ var prev_in_depth : Stmt :
 		return cursor.stmt
 
 ## The previous statement in a lower depth than this one. (less nested)
-var prev_lower_depth : Stmt :
+var prev_lower_depth : Stmt_ :
 	get:
 		var cursor := address.copy(-1)
 		while cursor.valid:
@@ -123,7 +123,7 @@ var prev_lower_depth : Stmt :
 		return cursor.stmt
 
 ## The previous statement in a higher depth than this one. (more nested)
-var prev_higher_depth : Stmt :
+var prev_higher_depth : Stmt_ :
 	get:
 		var cursor := address.copy(-1)
 		while cursor.valid:
@@ -177,7 +177,7 @@ func _undo(record: Record) -> void:
 	pass
 
 ## Returns the address of the next statement to go to, based on what happened.
-func _next(record: Record) -> Stmt:
+func _next(record: Record) -> Stmt_:
 	return next_in_order
 
 ## Creates a message to be shown in the statement history or displayed to a dialogue box.
@@ -191,7 +191,7 @@ func _validate() -> PennyException:
 func create_exception(s: String = "Uncaught exception.") -> PennyException:
 	return PennyExceptionRef.new(file_address, s)
 
-func recycle() -> Stmt:
+func recycle() -> Stmt_:
 	if tokens.is_empty():
 		create_exception("Empty statement.")
 	match tokens[0].type:

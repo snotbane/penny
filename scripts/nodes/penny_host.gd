@@ -20,7 +20,7 @@ var records : Array[Record]
 
 var expecting_conditional : bool
 
-var cursor : Stmt
+var cursor : Stmt_
 
 # var _cursor : Address = null
 # var cursor : Address = null :

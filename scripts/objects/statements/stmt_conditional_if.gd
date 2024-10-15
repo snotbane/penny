@@ -1,6 +1,6 @@
 
 ## No description
-class_name StmtConditionalIf extends StmtConditional
+class_name StmtConditionalIf extends StmtConditional_
 
 func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
 	super._init(_address, _line, _depth, _tokens)

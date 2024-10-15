@@ -11,7 +11,7 @@ const ANGRY_COLOR = Color.DEEP_PINK
 const WARNING_COLOR = Color(1, 0.871, 0.4)	## Matches editor
 const ERROR_COLOR = Color(1, 0.471, 0.42)	## Matches editor
 
-static var stmt_dict : Dictionary		## StringName : Array[Stmt]
+static var stmt_dict : Dictionary		## StringName : Array[Stmt_]
 static var labels : Dictionary			## StringName : Address
 static var valid : bool = true
 static var clean : bool = true
@@ -30,7 +30,7 @@ static func clear_all() -> void:
 static func clear(path: StringName) -> void:
 	stmt_dict.erase(path)
 
-static func import_statements(path: StringName, _statements: Array[Stmt]) -> void:
+static func import_statements(path: StringName, _statements: Array[Stmt_]) -> void:
 	stmt_dict[path] = _statements
 
 	clean = false
@@ -51,7 +51,7 @@ static func validate() -> Array[PennyException]:
 				result.push_back(exception)
 	return result
 
-static func get_stmt_from_label(label: StringName) -> Stmt:
+static func get_stmt_from_label(label: StringName) -> Stmt_:
 	if labels.has(label):
 		return labels[label].stmt
 	else:

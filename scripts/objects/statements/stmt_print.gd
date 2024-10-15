@@ -1,5 +1,5 @@
 
-class_name StmtPrint extends Stmt
+class_name StmtPrint extends Stmt_
 
 func _get_keyword() -> StringName:
 	return "print"

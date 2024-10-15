@@ -18,7 +18,7 @@ func _ready() -> void:
 func populate(__rec: Record) -> void:
 	rec = __rec
 	text = rec.message.text
-	if not rec.stmt.verbosity & Stmt.Verbosity.USER_FACING:
+	if not rec.stmt.verbosity & Stmt_.Verbosity.USER_FACING:
 		var c = get_theme_color('default_color')
 		c.a = 0.25
 		add_theme_color_override('default_color', c)

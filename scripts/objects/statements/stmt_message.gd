@@ -1,6 +1,6 @@
 
 @tool
-class_name StmtMessage extends Stmt
+class_name StmtMessage extends Stmt_
 
 const REGEX_DEPTH_REMOVAL_PATTERN := "(?<=\\n)\\t{0,%s}"
 const REGEX_INTERPOLATION_PATTERN := "(?<!\\\\)(@(?:[A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)|\\[(?:.*?)\\])"

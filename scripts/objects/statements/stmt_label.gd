@@ -1,6 +1,6 @@
 
 ## Speaks nothing. Hears nothing. Sees nothing. Is nothing.
-class_name StmtLabel extends Stmt
+class_name StmtLabel extends Stmt_
 
 func _get_keyword() -> StringName:
 	return "label"

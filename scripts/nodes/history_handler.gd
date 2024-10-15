@@ -18,7 +18,7 @@ var shown : bool = false :
 			animation_player.play('hide')
 
 var _verbosity : int
-@export_flags(Stmt.VERBOSITY_NAMES[0], Stmt.VERBOSITY_NAMES[1], Stmt.VERBOSITY_NAMES[2], Stmt.VERBOSITY_NAMES[3]) var verbosity : int = Stmt.Verbosity.USER_FACING | Stmt.Verbosity.DEBUG_MESSAGES :
+@export_flags(Stmt_.VERBOSITY_NAMES[0], Stmt_.VERBOSITY_NAMES[1], Stmt_.VERBOSITY_NAMES[2], Stmt_.VERBOSITY_NAMES[3]) var verbosity : int = Stmt_.Verbosity.USER_FACING | Stmt_.Verbosity.DEBUG_MESSAGES :
 	get: return _verbosity
 	set (value):
 		if _verbosity == value: return

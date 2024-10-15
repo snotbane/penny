@@ -1,6 +1,6 @@
 
 ## Speaks nothing. Hears nothing. Sees nothing. Is nothing.
-class_name StmtPass extends Stmt
+class_name StmtPass extends Stmt_
 
 func _get_keyword() -> StringName:
 	return "pass"

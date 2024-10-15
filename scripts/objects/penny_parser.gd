@@ -26,7 +26,7 @@ var file : FileAccess
 var raw : String
 var tokens : Array[Token]
 var token_lines : Array[int]
-# var stmts : Array[Stmt]
+# var stmts : Array[Stmt_]
 
 static func from_file(_file: FileAccess) -> PennyParser:
 	return PennyParser.new(_file.get_as_text(true), _file)
@@ -100,9 +100,9 @@ func tokenize() -> Array[PennyException]:
 
 # Separates statements based on terminators and indentation; For type assignment, etc. see Statement validations.
 func statementize() -> Array[PennyException]:
-	var stmts : Array[Stmt] = []
+	var stmts : Array[Stmt_] = []
 
-	var stmt : Stmt = null
+	var stmt : Stmt_ = null
 	var depth : int = 0
 	for i in tokens.size():
 		var token = tokens[i]
@@ -120,7 +120,7 @@ func statementize() -> Array[PennyException]:
 			if not stmt:
 				if token.type == Token.INDENTATION:
 					depth = token.value.length()
-				stmt = Stmt.new(Address.new(file.get_path(), stmts.size()), token_lines[i], depth, [])
+				stmt = Stmt_.new(Address.new(file.get_path(), stmts.size()), token_lines[i], depth, [])
 			if not token.type == Token.INDENTATION:
 				stmt.tokens.push_back(token)
 	if stmt:

@@ -1,5 +1,5 @@
 
-class_name StmtAssign extends Stmt
+class_name StmtAssign extends Stmt_
 
 func _get_keyword() -> StringName:
 	return 'assign'

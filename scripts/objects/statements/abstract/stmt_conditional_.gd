@@ -1,5 +1,5 @@
 
-class_name StmtConditional extends Stmt
+class_name StmtConditional_ extends Stmt_
 
 func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
 	super._init(_address, _line, _depth, _tokens)
@@ -16,19 +16,19 @@ func _is_record_shown_in_history(record: Record) -> bool:
 func _execute(host: PennyHost) -> Record:
 	return Record.new(host, self, _evaluate_self(host))
 
-func _next(record: Record) -> Stmt:
+func _next(record: Record) -> Stmt_:
 	if record.attachment == null:
 		record.host.expecting_conditional = false
 		return next_in_depth
 
 	var skip := _should_skip(record)
 
-	var result : Stmt
+	var result : Stmt_
 	if skip: 	result = next_in_chain
 	else:		result = next_in_order
 
 	if result:
-		record.host.expecting_conditional = skip and result is StmtConditional
+		record.host.expecting_conditional = skip and result is StmtConditional_
 		return result
 	else:
 		record.host.expecting_conditional = false

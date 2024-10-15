@@ -10,7 +10,7 @@ var index : int :
 	set (value):
 		_index = max(value, 0)
 
-var stmt : Stmt :
+var stmt : Stmt_ :
 	get:
 		if valid:
 			return Penny.stmt_dict[path][index]
