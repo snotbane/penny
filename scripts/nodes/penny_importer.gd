@@ -49,6 +49,7 @@ func reload(hard: bool = false) -> void:
 
 		# print("***	RELOADING %s PENNY SCRIPTS ( %s )" % [files.size(), host_application_string])
 
+		Penny.log_clear()
 		Penny.valid = true
 
 		var parsers = get_parsers(files)
@@ -59,7 +60,6 @@ func reload(hard: bool = false) -> void:
 		if exceptions.is_empty():
 			exceptions = Penny.validate()
 
-		Penny.log_clear()
 		if exceptions.is_empty():
 			Penny.log_timed("Successfully loaded all scripts.", Penny.HAPPY_COLOR)
 		else:

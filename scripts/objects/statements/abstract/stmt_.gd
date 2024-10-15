@@ -219,6 +219,9 @@ func validate_as_no_tokens() -> PennyException:
 		return create_exception("Unexpected token(s) in standalone statement.")
 	return null
 
+func validate_obj_path(expr: Array[Token]) -> PennyException:
+	return null
+
 func validate_as_identifier_only() -> PennyException:
 	if tokens.size() != 1:
 		return create_exception("Statement requires exactly 1 token.")

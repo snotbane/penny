@@ -1,5 +1,5 @@
 
-class_name ObjectPath extends Token
+class_name ObjectPath extends RefCounted
 
 var identifiers : Array[StringName]
 
@@ -32,8 +32,14 @@ func get_data(host: PennyHost) -> Variant:
 		result = result.get_data(i)
 	return result
 
-func set_data(host: PennyHost, fart: Variant) -> void:
-	var obj : PennyObject = host.data
+func set_data(host: PennyHost, _value: Variant) -> void:
+	var result : PennyObject = host.data
 	for i in identifiers.size() - 1:
-		obj = obj.get_data(identifiers[i])
-	obj.set_data(identifiers[identifiers.size() - 1], fart)
+		result = result.get_data(identifiers[i])
+	result.set_data(identifiers.back(), _value)
+
+func add_obj(host: PennyHost, base: StringName = "object") -> void:
+	var result : PennyObject = host.data
+	for i in identifiers.size() - 1:
+		result = result.get_data(identifiers[i])
+	result.add_obj(identifiers.back(), base)

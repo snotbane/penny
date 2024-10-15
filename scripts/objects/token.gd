@@ -64,7 +64,7 @@ static var PATTERNS : Array[RegEx] = [
 	RegEx.create_from_string("(?ms)(([#/])\\*.*?(\\*\\2))|((#|\\/{2}).*?$)"),
 	RegEx.create_from_string("[+\\-*/:]?="),
 	RegEx.create_from_string("\\b(dec|dive|elif|else|if|filter|jump|label|menu|object|pass|print|return|rise|suspend)\\b"),
-	RegEx.create_from_string("[a-zA-Z_]\\w*(\\.[a-zA-Z_]\\w*)*"),
+	RegEx.create_from_string("[a-zA-Z_]\\w*"),
 	RegEx.create_from_string("(?m)[:;]|((?<=[^\\n:;])$\\n)"),
 	RegEx.create_from_string("(?m)[ \\n]+|(?<!^|\\t)\\t+"),
 ]
@@ -107,8 +107,11 @@ func _init(_type: int, _raw: String) -> void:
 	value = interpret(_raw)
 
 func _to_string() -> String:
-	# return "ln %s cl %s type %s : %s" % [line, col, type, value]
-	return "%s (%s)" % [str(value), enum_to_string(type)]
+	match type:
+		VALUE_STRING:
+			return "`%s` (%s)" % [str(value), enum_to_string(type)]
+		_:
+			return "%s (%s)" % [str(value), enum_to_string(type)]
 
 func get_operator_type() -> Operator:
 	match value:

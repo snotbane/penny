@@ -39,7 +39,7 @@ var is_halting : bool :
 
 func _ready() -> void:
 	data.set_data(PennyObject.BASE_OBJECT_NAME, PennyObject.new(null, {
-		'base': null,
+		# 'base': null,
 		'link': null,
 		'name_prefix': "<>",
 		'name_suffix': "</>",
@@ -131,7 +131,7 @@ func evaluate_expression(tokens: Array[Token], range_in := 0, range_out := -1) -
 		apply_operator(stack, ops.pop_back())
 
 	if stack.size() != 1:
-		push_error("Stack size is not 1")
+		Penny.log_error("Stack size is not 1. Tokens: %s | Stack: %s " % [str(tokens), str(stack)])
 		return null
 
 	return stack[0]

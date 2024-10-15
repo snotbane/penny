@@ -63,6 +63,7 @@ static func log(s: String, c: Color = DEFAULT_COLOR) -> void:
 
 static func log_error(s: String, c: Color = ERROR_COLOR) -> void:
 	Penny.log(s, c)
+	push_error(s)
 
 static func log_clear() -> void:
 	active_dock.log_clear()

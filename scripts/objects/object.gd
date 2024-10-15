@@ -30,7 +30,7 @@ func set_data(key: StringName, value: Variant) -> void:
 	else:
 		data[key] = value
 
-func add_object(key: StringName, base: StringName = BASE_OBJECT_NAME) -> PennyObject:
+func add_obj(key: StringName, base: StringName = BASE_OBJECT_NAME) -> PennyObject:
 	var result = PennyObject.new(null, {'base': host.data.get_data(base)})
 	set_data(key, result)
 	return result
