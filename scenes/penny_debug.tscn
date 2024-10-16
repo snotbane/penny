@@ -125,6 +125,7 @@ placeholder_text = "Search..."
 
 [node name="sort_selector" type="OptionButton" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/margin_container/v_box_container/h_box_container"]
 layout_mode = 2
+tooltip_text = "Sort order."
 selected = 0
 item_count = 3
 popup/item_0/text = "Default"

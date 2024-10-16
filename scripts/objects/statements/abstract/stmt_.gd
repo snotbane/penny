@@ -202,6 +202,9 @@ func recycle() -> Stmt_:
 		match i.type:
 			Token.ASSIGNMENT:
 				return StmtAssign.new(address, line, depth, tokens)
+			Token.KEYWORD:
+				if tokens.size() == 1 and tokens[0].value == 'object':
+					return StmtObject_.new(address, line, depth, tokens)
 	match tokens[0].type:
 		Token.VALUE_STRING:
 			return StmtMessage.new(address, line, depth, tokens)
