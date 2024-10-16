@@ -46,18 +46,22 @@ text = "Reload"
 
 [node name="verbosity_selector" type="OptionButton" parent="v_box_container/h_box_container_2"]
 layout_mode = 2
-selected = 4
-item_count = 5
+selected = 6
+item_count = 7
 popup/item_0/text = "Story"
 popup/item_0/id = 1
-popup/item_1/text = "+ Print Msgs"
-popup/item_1/id = 3
-popup/item_2/text = "+ Flow Activity"
-popup/item_2/id = 7
-popup/item_3/text = "+ Data Access"
-popup/item_3/id = 15
-popup/item_4/text = "All"
+popup/item_1/disabled = true
+popup/item_1/separator = true
+popup/item_2/text = "+ Print Msgs"
+popup/item_2/id = 3
+popup/item_3/text = "+ Flow Activity"
+popup/item_3/id = 7
+popup/item_4/text = "+ Data Access"
 popup/item_4/id = 15
+popup/item_5/disabled = true
+popup/item_5/separator = true
+popup/item_6/text = "ALL"
+popup/item_6/id = 31
 script = ExtResource("2_7bn1p")
 
 [node name="panel" type="Panel" parent="v_box_container"]

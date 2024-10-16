@@ -42,3 +42,8 @@ func add_object(host: PennyHost) -> PennyObject:
 	var result : PennyObject = PennyObject.new({'name': self.to_string()})
 	set_data(host, result)
 	return result
+
+func prepend(other: ObjectPath) -> void:
+	var temp = identifiers.duplicate()
+	identifiers = other.identifiers.duplicate()
+	identifiers.append_array(temp)

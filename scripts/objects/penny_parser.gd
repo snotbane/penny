@@ -138,4 +138,6 @@ func statementize() -> Array[PennyException]:
 		var exception : PennyException = i._validate()
 		if exception:
 			result.push_back(exception)
+		else:
+			i._setup()
 	return result

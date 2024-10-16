@@ -4,11 +4,7 @@ class_name Address extends Object
 
 var path : StringName
 
-var _index : int
-var index : int :
-	get: return _index
-	set (value):
-		_index = max(value, 0)
+var index : int
 
 var stmt : Stmt_ :
 	get:
@@ -19,8 +15,7 @@ var stmt : Stmt_ :
 var valid : bool :
 	get:
 		if Penny.stmt_dict.has(path):
-			if index < Penny.stmt_dict[path].size():
-				return true
+			return index >= 0 and index < Penny.stmt_dict[path].size()
 		return false
 
 func _init(__path: StringName, __index: int) -> void:

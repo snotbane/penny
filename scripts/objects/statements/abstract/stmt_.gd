@@ -16,7 +16,8 @@ const VERBOSITY_NAMES : PackedStringArray = [
 	"User Facing:1",
 	"Debug Messages:2",
 	"Flow Activity:4",
-	"Data Access:8"
+	"Data Access:8",
+	"Ignored:16"
 ]
 
 var address : Address
@@ -188,12 +189,19 @@ func _message(record: Record) -> Message:
 func _validate() -> PennyException:
 	return create_exception("_validate() method needs to be overridden and/or statement was never recycled into the proper type (not implemented).")
 
+func _setup() -> void:
+	pass
+
 func create_exception(s: String = "Uncaught exception.") -> PennyException:
 	return PennyExceptionRef.new(file_address, s)
 
 func recycle() -> Stmt_:
 	if tokens.is_empty():
 		create_exception("Empty statement.")
+	for i in tokens:
+		match i.type:
+			Token.ASSIGNMENT:
+				return StmtAssign.new(address, line, depth, tokens)
 	match tokens[0].type:
 		Token.VALUE_STRING:
 			return StmtMessage.new(address, line, depth, tokens)
@@ -207,11 +215,8 @@ func recycle() -> Stmt_:
 				'elif': return StmtConditionalElif.new(address, line, depth, tokens)
 				'else': return StmtConditionalElse.new(address, line, depth, tokens)
 		Token.IDENTIFIER:
-			if tokens.size() == 1:
-				pass
-				# throw exception for now, this will become object manipulation
-			else:
-				return StmtAssign.new(address, line, depth, tokens)
+			if tokens.size() == 1 or tokens[1].get_operator_type() == Token.Operator.DOT:
+				return StmtObject_.new(address, line, depth, tokens)
 	return self
 
 func validate_as_no_tokens() -> PennyException:

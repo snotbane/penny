@@ -8,3 +8,6 @@ var text : String
 func _init(_pure: String) -> void:
 	pure = _pure
 	text = "[p align=fill jst=w,k,sl]" + pure
+
+func append(_pure: String) -> void:
+	text += _pure

@@ -42,6 +42,7 @@ func jump_to(label: StringName) -> void:
 
 func invoke_at_cursor() -> void:
 	var record := cursor._execute(self)
+
 	records.push_back(record)
 	history_handler.receive(record)
 

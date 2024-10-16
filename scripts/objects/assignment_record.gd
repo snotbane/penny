@@ -1,12 +1,10 @@
 
 class_name AssignmentRecord extends Object
 
-var path_string : String
 var before : Variant
 var after : Variant
 
-func _init(_path: ObjectPath, _before: Variant, _after: Variant) -> void:
-	path_string = _path.to_string()
+func _init(_before: Variant, _after: Variant) -> void:
 	before = _before
 	after = _after
 
@@ -21,4 +19,4 @@ func _to_string() -> String:
 		after_string = after.name
 	elif after is String:
 		after_string = "\"%s\"" % after
-	return "[color=#%s][code]%s[/code][/color] = [code]%s[/code] \u279e [color=#%s][code]%s[/code][/color]" % [Penny.IDENTIFIER_COLOR.to_html(), path_string, before_string, Penny.FUTURE_COLOR.to_html(), after_string]
+	return "[code]%s[/code] \u279e [color=#%s][code]%s[/code][/color]" % [before_string, Penny.FUTURE_COLOR.to_html(), after_string]

@@ -1,7 +1,5 @@
 
-class_name StmtAssign extends Stmt_
-
-var obj_path : ObjectPath
+class_name StmtAssign extends StmtObject_
 
 var op_index : int = -1
 var expression_index : int :
@@ -19,13 +17,15 @@ func _execute(host: PennyHost) -> Record:
 	if after is PennyObject and after == PennyObject.DEFAULT_OBJECT:
 		after = obj_path.add_object(host)
 	obj_path.set_data(host, after)
-	return Record.new(host, self, AssignmentRecord.new(obj_path, before, after))
+	return Record.new(host, self, AssignmentRecord.new(before, after))
 
 func _undo(record: Record) -> void:
 	obj_path.set_data(record.host, record.attachment.before)
 
 func _message(record: Record) -> Message:
-	return Message.new(record.attachment.to_string())
+	var result := super._message(record)
+	result.append(" = %s" % record.attachment)
+	return result
 
 func _validate() -> PennyException:
 	op_index = -1
