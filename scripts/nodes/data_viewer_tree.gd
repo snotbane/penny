@@ -27,10 +27,14 @@ var sort_method := PennyObject.Sort.NONE :
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	self.set_column_title(0, "Path")
-	self.set_column_title(1, "Value")
-	self.set_column_title_alignment(0, HORIZONTAL_ALIGNMENT_LEFT)
-	self.set_column_title_alignment(1, HORIZONTAL_ALIGNMENT_LEFT)
+	self.set_column_expand(PennyObject.TreeCell.ICON, false)
+
+	self.set_column_title(PennyObject.TreeCell.NAME, "Path")
+	self.set_column_title_alignment(PennyObject.TreeCell.NAME, HORIZONTAL_ALIGNMENT_LEFT)
+
+	self.set_column_expand_ratio(PennyObject.TreeCell.VALUE, 3)
+	self.set_column_title(PennyObject.TreeCell.VALUE, "Value")
+	self.set_column_title_alignment(PennyObject.TreeCell.VALUE, HORIZONTAL_ALIGNMENT_LEFT)
 
 	setup.call_deferred()
 

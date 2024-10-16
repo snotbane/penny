@@ -7,6 +7,12 @@ enum Sort {
 	RECENT,
 }
 
+enum TreeCell {
+	NAME,
+	ICON,
+	VALUE
+}
+
 static var BASE_OBJECT := PennyObject.new(null, {
 	'name_prefix': "<>",
 	'name_suffix': "</>",
@@ -49,22 +55,27 @@ func set_data(key: StringName, value: Variant) -> void:
 
 func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null, path := ObjectPath.new()) -> TreeItem:
 	var result := tree.create_item(parent)
-	result.set_selectable(0, true)
-	result.set_selectable(1, true)
-	result.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
-	result.set_checked(0, true)
+
+	result.set_selectable(TreeCell.ICON, false)
+	result.set_cell_mode(TreeCell.ICON, TreeItem.CELL_MODE_ICON)
+	result.set_icon(TreeCell.ICON, load("res://addons/penny_godot/assets/icons/Node.svg"))
+
+	result.set_selectable(TreeCell.NAME, false)
+
+	result.set_selectable(TreeCell.VALUE, false)
+
 	if path.identifiers:
-		result.set_text(0, path.identifiers.back())
+		result.set_text(TreeCell.NAME, path.identifiers.back())
 		if host:
 			var v : Variant = path.get_data(host)
 			if v is PennyObject:
-				result.set_text(1, v.name)
+				result.set_text(TreeCell.VALUE, v.name)
 	# result.collapsed = true
 
 	var keys := data.keys()
 	match sort:
 		Sort.NONE:
-			pass
+			keys.reverse()
 		Sort.DEFAULT:
 			keys.sort()
 
@@ -76,8 +87,14 @@ func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null,
 			v.create_tree_item(tree, sort, result, ipath)
 		else:
 			var prop := result.create_child()
-			prop.set_selectable(0, false)
-			prop.set_selectable(1, false)
-			prop.set_text(0, k)
-			prop.set_text(1, Penny.get_debug_string(v))
+
+			prop.set_selectable(TreeCell.ICON, false)
+			prop.set_cell_mode(TreeCell.ICON, TreeItem.CELL_MODE_ICON)
+			# prop.set_icon(TreeCell.ICON, load("res://addons/penny_godot/assets/icons/Variant.svg"))
+
+			prop.set_selectable(TreeCell.NAME, false)
+			prop.set_text(TreeCell.NAME, k)
+
+			prop.set_selectable(TreeCell.VALUE, false)
+			prop.set_text(TreeCell.VALUE, Penny.get_debug_string(v))
 	return result

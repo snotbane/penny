@@ -111,6 +111,12 @@ layout_mode = 2
 [node name="h_box_container" type="HBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/margin_container/v_box_container"]
 layout_mode = 2
 
+[node name="query_values_toggle" type="CheckButton" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/margin_container/v_box_container/h_box_container"]
+layout_mode = 2
+tooltip_text = "Also search values in the query."
+focus_mode = 0
+button_pressed = true
+
 [node name="data_search_bar" type="LineEdit" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/margin_container/v_box_container/h_box_container"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -126,23 +132,20 @@ popup/item_1/text = "A to Z"
 popup/item_1/id = 1
 popup/item_2/text = "Recent"
 popup/item_2/id = 2
-
-[node name="query_values_toggle" type="CheckButton" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/margin_container/v_box_container/h_box_container"]
-layout_mode = 2
-tooltip_text = "Also search values in the query."
-focus_mode = 0
-button_pressed = true
+popup/item_2/disabled = true
 
 [node name="data_tree" type="Tree" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/margin_container/v_box_container" node_paths=PackedStringArray("debug")]
 layout_mode = 2
 size_flags_vertical = 3
+focus_mode = 0
 theme_override_font_sizes/title_button_font_size = 11
-columns = 2
+columns = 3
 column_titles_visible = true
+hide_root = true
 script = ExtResource("5_2yu6x")
 debug = NodePath("../../../../../../../..")
 
+[connection signal="toggled" from="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/margin_container/v_box_container/h_box_container/query_values_toggle" to="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/margin_container/v_box_container/data_tree" method="_on_query_values_toggle_toggled"]
 [connection signal="text_changed" from="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/margin_container/v_box_container/h_box_container/data_search_bar" to="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/margin_container/v_box_container/data_tree" method="_on_data_search_bar_text_changed"]
 [connection signal="item_selected" from="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/margin_container/v_box_container/h_box_container/sort_selector" to="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/margin_container/v_box_container/data_tree" method="_on_sort_selector_item_selected"]
-[connection signal="toggled" from="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/margin_container/v_box_container/h_box_container/query_values_toggle" to="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/margin_container/v_box_container/data_tree" method="_on_query_values_toggle_toggled"]
 [connection signal="visibility_changed" from="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/margin_container/v_box_container/data_tree" to="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/margin_container/v_box_container/data_tree" method="refresh"]
