@@ -94,3 +94,10 @@ static func get_script_info() -> Array:
 				# non_whitespace_chars += i.char_count_non_whitespace
 				continue
 	return [files, blocks, words, chars]
+
+static func get_debug_string(value: Variant) -> String:
+	if value is PennyObject:
+		return value.name
+	elif value is String:
+		return "\"%s\"" % value
+	return str(value)

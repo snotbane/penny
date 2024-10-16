@@ -63,6 +63,8 @@ func _message(record: Record) -> Message:
 			break
 
 		var result = record.host.evaluate_expression(parser.tokens)
+		if result is ObjectPath:
+			result = result.get_data(record.host)
 		var result_string := str(result)
 
 		text = text.substr(0, match.get_start()) + result_string + text.substr(match.get_end(), text.length() - match.get_end())

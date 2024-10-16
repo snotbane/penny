@@ -1,8 +1,12 @@
 
-extends Control
+class_name PennyDebug extends Control
+
+var host : PennyHost
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	host = PennyHost.insts[0]
+
 	if OS.is_debug_build():
 		visible = false
 

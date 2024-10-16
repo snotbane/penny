@@ -1,5 +1,5 @@
 
-## Node that actualizes Penny statements. This stores local data and records based on what the player chooses to do. Most applications will simply use an autoloaded, global host. For more advanced uses, you can instantiate multiple of these simultaneously for concurrent or even network-replicated instances. The records/state can be saved.
+## Node that actualizes Penny statements. This stores local data_root and records based on what the player chooses to do. Most applications will simply use an autoloaded, global host. For more advanced uses, you can instantiate multiple of these simultaneously for concurrent or even network-replicated instances. The records/state can be saved.
 class_name PennyHost extends Node
 
 ## If populated, this host will start at this label on ready. Leave empty to not execute anything.
@@ -14,7 +14,9 @@ class_name PennyHost extends Node
 ## Settings.
 @export var settings : PennySettings
 
-var data := PennyObject.new()
+static var insts : Array[PennyHost] = []
+
+var data_root := PennyObject.new()
 var records : Array[Record]
 
 var expecting_conditional : bool
@@ -26,8 +28,13 @@ var is_halting : bool :
 @onready var watcher := Watcher.new([message_handler])
 
 func _ready() -> void:
+	insts.push_back(self)
+
 	if not autostart_label.is_empty():
 		jump_to.call_deferred(autostart_label)
+
+func _exit_tree() -> void:
+	insts.erase(self)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed('penny_advance'):
@@ -94,10 +101,7 @@ func evaluate_expression(tokens: Array[Token], range_in := 0, range_out := -1) -
 		var token := tokens[i + range_in]
 		match token.type:
 			Token.IDENTIFIER:
-				if not stack.is_empty() and stack.back() is PennyObject:
-					stack.push_back(token.value)
-				else:
-					stack.push_back(data.get_data(token.value))
+				stack.push_back(ObjectPath.new([token.value]))
 			Token.VALUE_BOOLEAN, Token.VALUE_NUMBER, Token.VALUE_COLOR, Token.VALUE_STRING:
 				stack.push_back(token.value)
 			Token.KEYWORD:
@@ -141,5 +145,6 @@ static func apply_operator(stack: Array[Variant], op: Token) -> void:
 				Token.Operator.NOT_EQUAL:
 					stack.push_back(a != b)
 				Token.Operator.DOT:
-					stack.push_back(a.get_data(b))
+					a.identifiers.append_array(b.identifiers)
+					stack.push_back(a)
 

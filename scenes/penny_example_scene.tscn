@@ -4,7 +4,7 @@
 [ext_resource type="Resource" uid="uid://d0fi2hxgyqk66" path="res://addons/penny_godot/templates/default_settings.tres" id="2_cpo8r"]
 [ext_resource type="PackedScene" uid="uid://b8sp6ey8fsgt7" path="res://addons/penny_godot/scenes/penny_dialogue_box.tscn" id="3_36qr5"]
 [ext_resource type="PackedScene" uid="uid://ckwmom7w0dvh1" path="res://addons/penny_godot/scenes/penny_history_box.tscn" id="4_hm4jj"]
-[ext_resource type="PackedScene" uid="uid://cfkhtume00g5e" path="res://addons/penny_godot/scenes/penny_debug_overlay.tscn" id="5_vsnrl"]
+[ext_resource type="PackedScene" uid="uid://cfkhtume00g5e" path="res://addons/penny_godot/scenes/penny_debug.tscn" id="5_vsnrl"]
 
 [node name="penny_example_scene" type="Node2D"]
 

@@ -3,7 +3,7 @@ class_name ObjectPath extends RefCounted
 
 var identifiers : Array[StringName]
 
-func _init(_identifiers: Array[StringName]) -> void:
+func _init(_identifiers: Array[StringName] = []) -> void:
 	identifiers = _identifiers
 
 static func from_tokens(tokens: Array[Token]) -> ObjectPath:
@@ -26,20 +26,26 @@ func _to_string() -> String:
 		result += i + "."
 	return result.substr(0, result.length() - 1)
 
+func duplicate(deep := false) -> ObjectPath:
+	return ObjectPath.new(identifiers.duplicate(deep))
+
 func get_data(host: PennyHost) -> Variant:
-	var result : Variant = host.data
+	var result : Variant = host.data_root
 	for i in identifiers:
 		result = result.get_data(i)
 	return result
 
 func set_data(host: PennyHost, _value: Variant) -> void:
-	var result : PennyObject = host.data
+	var result : PennyObject = host.data_root
 	for i in identifiers.size() - 1:
 		result = result.get_data(identifiers[i])
 	result.set_data(identifiers.back(), _value)
 
+## Creates a new object at this path.
 func add_object(host: PennyHost) -> PennyObject:
-	var result : PennyObject = PennyObject.new({'name': self.to_string()})
+	var result : PennyObject = PennyObject.new({
+		PennyObject.NAME_KEY: self.to_string()
+	})
 	set_data(host, result)
 	return result
 
