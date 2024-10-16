@@ -1,6 +1,12 @@
 
 class_name PennyObject extends RefCounted
 
+enum Sort {
+	NONE,
+	DEFAULT,
+	RECENT,
+}
+
 static var BASE_OBJECT := PennyObject.new(null, {
 	'name_prefix': "<>",
 	'name_suffix': "</>",
@@ -41,7 +47,7 @@ func set_data(key: StringName, value: Variant) -> void:
 	else:
 		data[key] = value
 
-func create_tree_item(tree: DataViewerTree, parent: TreeItem = null, path := ObjectPath.new()) -> TreeItem:
+func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null, path := ObjectPath.new()) -> TreeItem:
 	var result := tree.create_item(parent)
 	result.set_selectable(0, true)
 	result.set_selectable(1, true)
@@ -49,14 +55,25 @@ func create_tree_item(tree: DataViewerTree, parent: TreeItem = null, path := Obj
 	result.set_checked(0, true)
 	if path.identifiers:
 		result.set_text(0, path.identifiers.back())
+		if host:
+			var v : Variant = path.get_data(host)
+			if v is PennyObject:
+				result.set_text(1, v.name)
 	# result.collapsed = true
 
-	for k in data.keys():
+	var keys := data.keys()
+	match sort:
+		Sort.NONE:
+			pass
+		Sort.DEFAULT:
+			keys.sort()
+
+	for k in keys:
 		var v : Variant = data[k]
 		if v is PennyObject:
 			var ipath := path.duplicate()
 			ipath.identifiers.push_back(k)
-			v.create_tree_item(tree, result, ipath)
+			v.create_tree_item(tree, sort, result, ipath)
 		else:
 			var prop := result.create_child()
 			prop.set_selectable(0, false)

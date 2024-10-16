@@ -18,6 +18,13 @@ var search_values : bool = true :
 		_search_values = value
 		refresh_search()
 
+var _sort_method := PennyObject.Sort.NONE
+var sort_method := PennyObject.Sort.NONE :
+	get: return _sort_method
+	set (value):
+		_sort_method = value
+		refresh()
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	self.set_column_title(0, "Path")
@@ -34,7 +41,7 @@ func refresh() -> void:
 	self.clear()
 
 	if debug.host:
-		root = debug.host.data_root.create_tree_item(self)
+		root = debug.host.data_root.create_tree_item(self, sort_method)
 		root.set_text(0, "root")
 
 	refresh_search()
@@ -70,4 +77,4 @@ func _on_data_search_bar_text_changed(new_text:String) -> void:
 
 
 func _on_sort_selector_item_selected(index:int) -> void:
-	pass # Replace with function body.
+	sort_method = index as PennyObject.Sort
