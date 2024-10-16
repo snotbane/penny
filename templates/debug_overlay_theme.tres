@@ -4,8 +4,8 @@
 
 [resource]
 MarginContainer/constants/margin_bottom = 2
-MarginContainer/constants/margin_left = 16
-MarginContainer/constants/margin_right = 16
+MarginContainer/constants/margin_left = 2
+MarginContainer/constants/margin_right = 2
 MarginContainer/constants/margin_top = 2
 RichTextLabel/fonts/mono_font = ExtResource("1_3ctjh")
 Tree/constants/draw_guides = 0

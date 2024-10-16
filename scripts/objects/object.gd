@@ -43,8 +43,10 @@ func set_data(key: StringName, value: Variant) -> void:
 
 func create_tree_item(tree: DataViewerTree, parent: TreeItem = null, path := ObjectPath.new()) -> TreeItem:
 	var result := tree.create_item(parent)
-	result.set_selectable(0, false)
-	result.set_selectable(1, false)
+	result.set_selectable(0, true)
+	result.set_selectable(1, true)
+	result.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+	result.set_checked(0, true)
 	if path.identifiers:
 		result.set_text(0, path.identifiers.back())
 	# result.collapsed = true

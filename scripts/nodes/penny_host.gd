@@ -2,6 +2,8 @@
 ## Node that actualizes Penny statements. This stores local data_root and records based on what the player chooses to do. Most applications will simply use an autoloaded, global host. For more advanced uses, you can instantiate multiple of these simultaneously for concurrent or even network-replicated instances. The records/state can be saved.
 class_name PennyHost extends Node
 
+signal on_data_modified
+
 ## If populated, this host will start at this label on ready. Leave empty to not execute anything.
 @export var autostart_label : StringName = ''
 

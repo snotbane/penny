@@ -17,7 +17,9 @@ func _execute(host: PennyHost) -> Record:
 	if after is ObjectPath and after.identifiers[0] == "object":
 		after = obj_path.add_object(host)
 	obj_path.set_data(host, after)
-	return Record.new(host, self, AssignmentRecord.new(before, after))
+	var result = Record.new(host, self, AssignmentRecord.new(before, after))
+	host.on_data_modified.emit()
+	return result
 
 func _undo(record: Record) -> void:
 	obj_path.set_data(record.host, record.attachment.before)
