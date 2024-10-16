@@ -3,8 +3,7 @@
 class_name StmtMessage extends Stmt_
 
 const REGEX_DEPTH_REMOVAL_PATTERN := "(?<=\\n)\\t{0,%s}"
-const REGEX_INTERPOLATION_PATTERN := "(?<!\\\\)(@(?:[A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)|\\[(?:.*?)\\])"
-static var REGEX_INTERPOLATION := RegEx.create_from_string(REGEX_INTERPOLATION_PATTERN)
+static var REGEX_INTERPOLATION := RegEx.create_from_string("(?<!\\\\)(@([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)|\\[(.*?)\\])")
 static var REGEX_INTERJECTION := RegEx.create_from_string("(?<!\\\\)(\\{.*?\\})")
 static var REGEX_DECORATION := RegEx.create_from_string("(?<!\\\\)(<.*?>)")
 static var REGEX_WORD_COUNT := RegEx.create_from_string("\\b\\S+\\b")
@@ -17,7 +16,7 @@ var text_token : Token :
 var text_stripped : String :
 	get:
 		var result : String = text_token.value
-		result = REGEX_INTERPOLATION.sub(result, "$1", true)
+		# result = REGEX_INTERPOLATION.sub(result, "$1", true)
 		result = REGEX_INTERJECTION.sub(result, "", true)
 		result = REGEX_DECORATION.sub(result, "", true)
 		return result
@@ -54,8 +53,7 @@ func _message(record: Record) -> Message:
 		var match := REGEX_INTERPOLATION.search(text)
 		if not match : break
 
-		var expr_string = match.get_string()
-		expr_string = expr_string.substr(1, expr_string.length() - 2)
+		var expr_string := match.get_string(2) + match.get_string(3)	## ~= $2$3
 
 		var parser = PennyParser.new(expr_string)
 		var exceptions = parser.tokenize()

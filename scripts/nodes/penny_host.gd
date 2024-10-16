@@ -14,23 +14,11 @@ class_name PennyHost extends Node
 ## Settings.
 @export var settings : PennySettings
 
-var data := PennyObject.new(self, {})
-
+var data := PennyObject.new()
 var records : Array[Record]
 
 var expecting_conditional : bool
-
 var cursor : Stmt_
-
-# var _cursor : Address = null
-# var cursor : Address = null :
-# 	get: return _cursor
-# 	set (value):
-# 		if _cursor == null:
-# 			if _cursor == value: return
-# 		elif _cursor.equals(value): return
-# 		else: _cursor.free()
-# 		_cursor = value.copy()
 
 var is_halting : bool :
 	get: return cursor.is_halting
@@ -38,13 +26,6 @@ var is_halting : bool :
 @onready var watcher := Watcher.new([message_handler])
 
 func _ready() -> void:
-	data.set_data(PennyObject.BASE_OBJECT_NAME, PennyObject.new(null, {
-		# 'base': null,
-		'link': null,
-		'name_prefix': "<>",
-		'name_suffix': "</>",
-	}))
-
 	if not autostart_label.is_empty():
 		jump_to.call_deferred(autostart_label)
 
@@ -118,7 +99,7 @@ func evaluate_expression(tokens: Array[Token], range_in := 0, range_out := -1) -
 			Token.KEYWORD:
 				match token.value:
 					'object':
-						stack.push_back(data.get_data(token.value))
+						stack.push_back(PennyObject.DEFAULT_OBJECT)
 					_:
 						push_error("Unexpected keyword in expression '%s'." % token)
 						return null

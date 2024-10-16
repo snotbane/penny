@@ -120,7 +120,7 @@ func get_operator_type() -> Operator:
 		'||', 'or': return Operator.OR
 		'==': return Operator.IS_EQUAL
 		'!=': return Operator.NOT_EQUAL
-	push_error("%s is not a valid operator")
+	push_error("%s is not a valid operator" % value)
 	return Operator.INVALID
 
 func get_operator_token_count() -> int:

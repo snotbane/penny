@@ -27,7 +27,7 @@ func _to_string() -> String:
 	return result.substr(0, result.length() - 1)
 
 func get_data(host: PennyHost) -> Variant:
-	var result : PennyObject = host.data
+	var result : Variant = host.data
 	for i in identifiers:
 		result = result.get_data(i)
 	return result
@@ -38,8 +38,7 @@ func set_data(host: PennyHost, _value: Variant) -> void:
 		result = result.get_data(identifiers[i])
 	result.set_data(identifiers.back(), _value)
 
-func add_obj(host: PennyHost, base: StringName = "object") -> void:
-	var result : PennyObject = host.data
-	for i in identifiers.size() - 1:
-		result = result.get_data(identifiers[i])
-	result.add_obj(identifiers.back(), base)
+func add_object(host: PennyHost) -> PennyObject:
+	var result : PennyObject = PennyObject.new({'name': self.to_string()})
+	set_data(host, result)
+	return result

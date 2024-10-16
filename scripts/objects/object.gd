@@ -1,36 +1,40 @@
 
-class_name PennyObject extends Object
+class_name PennyObject extends RefCounted
 
-const BASE_OBJECT_NAME = "object"
+static var DEFAULT_OBJECT := PennyObject.new({
+	'name_prefix': "<>",
+	'name_suffix': "</>",
+})
 
-var host : PennyHost
+const BASE_OBJECT_NAME := "object"
+const NAME_KEY := 'name'
+const BASE_KEY := 'base'
+
 var data : Dictionary
 
-func _init(_host : PennyHost = null, _data : Dictionary = {}) -> void:
-	host = _host
+var rich_name : String :
+	get: return get_data('name_prefix') + get_data(NAME_KEY) + get_data('name_suffix')
+
+static func _static_init() -> void:
+	DEFAULT_OBJECT.data.erase(PennyObject.BASE_KEY)
+
+func _init(_data : Dictionary = {}) -> void:
 	data = _data
+	if not data.has(BASE_KEY):
+		data[BASE_KEY] = DEFAULT_OBJECT
 
 func _to_string() -> String:
-	if data.has('name'):
-		return get_data('name_prefix') + get_data('name') + get_data('name_suffix')
-	return "Unnamed object <%s>" % self.get_instance_id()
+	return get_data(NAME_KEY)
 
 func get_data(key: StringName) -> Variant:
 	if data.has(key):
 		return data[key]
-	if data.has('base'):
-		return data['base'].get_data(key)
+	if data.has(BASE_KEY):
+		return data[BASE_KEY].get_data(key)
 	return null
 
 func set_data(key: StringName, value: Variant) -> void:
 	if value == null:
-		if data.has(key) and data[key] is PennyObject:
-			data[key].free()
 		data.erase(key)
 	else:
 		data[key] = value
-
-func add_obj(key: StringName, base: StringName = BASE_OBJECT_NAME) -> PennyObject:
-	var result = PennyObject.new(null, {'base': host.data.get_data(base)})
-	set_data(key, result)
-	return result
