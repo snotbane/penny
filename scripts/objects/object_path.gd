@@ -43,8 +43,9 @@ func set_data(host: PennyHost, _value: Variant) -> void:
 
 ## Creates a new object at this path.
 func add_object(host: PennyHost) -> PennyObject:
-	var result : PennyObject = PennyObject.new({
-		PennyObject.NAME_KEY: self.to_string()
+	var result := PennyObject.new(host, {
+		PennyObject.NAME_KEY: self.to_string(),
+		PennyObject.BASE_KEY: ObjectPath.new([PennyObject.BASE_OBJECT_NAME]),
 	})
 	set_data(host, result)
 	return result

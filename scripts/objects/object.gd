@@ -1,20 +1,16 @@
 
 class_name PennyObject extends RefCounted
 
-static var DEFAULT_OBJECT := PennyObject.new({
+static var BASE_OBJECT := PennyObject.new(null, {
 	'name_prefix': "<>",
 	'name_suffix': "</>",
 })
-
-static var DEFAULT_DATA := {
-	'name_prefix': "<>",
-	'name_suffix': "</>",
-}
 
 const BASE_OBJECT_NAME := "object"
 const NAME_KEY := 'name'
 const BASE_KEY := 'base'
 
+var host : PennyHost
 var data : Dictionary
 
 var name : String :
@@ -23,24 +19,20 @@ var name : String :
 var rich_name : String :
 	get: return str(get_data('name_prefix')) + name + str(get_data('name_suffix'))
 
-static func _static_init() -> void:
-	DEFAULT_OBJECT.data.erase(PennyObject.BASE_KEY)
-
-func _init(_data : Dictionary = {}) -> void:
+func _init(_host: PennyHost, _data : Dictionary = { BASE_KEY: ObjectPath.new([BASE_OBJECT_NAME]) }) -> void:
+	host = _host
 	data = _data
-	# if not data.has(BASE_KEY) and self != DEFAULT_OBJECT:
-	# 	data[BASE_KEY] = DEFAULT_OBJECT
 
 func _to_string() -> String:
 	return rich_name
 
-func get_data(key: StringName, local_only := false) -> Variant:
+func get_data(key: StringName) -> Variant:
 	if data.has(key):
 		return data[key]
-	if data.has(BASE_KEY):
-		return data[BASE_KEY].get_data(key)
-	if DEFAULT_DATA.has(key):
-		return DEFAULT_DATA[key]
+	if host and data.has(BASE_KEY):
+		var path : ObjectPath = data[BASE_KEY].duplicate()
+		path.identifiers.push_back(key)
+		return path.get_data(host)
 	return null
 
 func set_data(key: StringName, value: Variant) -> void:

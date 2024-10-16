@@ -16,7 +16,7 @@ class_name PennyHost extends Node
 
 static var insts : Array[PennyHost] = []
 
-var data_root := PennyObject.new()
+var data_root := PennyObject.new(self, { PennyObject.BASE_OBJECT_NAME: PennyObject.BASE_OBJECT })
 var records : Array[Record]
 
 var expecting_conditional : bool
@@ -107,7 +107,8 @@ func evaluate_expression(tokens: Array[Token], range_in := 0, range_out := -1) -
 			Token.KEYWORD:
 				match token.value:
 					'object':
-						stack.push_back(PennyObject.DEFAULT_OBJECT)
+						stack.push_back(ObjectPath.new(["object"]))
+						# stack.push_back(PennyObject.DEFAULT_OBJECT)
 					_:
 						push_error("Unexpected keyword in expression '%s'." % token)
 						return null
