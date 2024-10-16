@@ -12,8 +12,11 @@ const BASE_KEY := 'base'
 
 var data : Dictionary
 
+var name : String :
+	get: return str(get_data(NAME_KEY))
+
 var rich_name : String :
-	get: return get_data('name_prefix') + get_data(NAME_KEY) + get_data('name_suffix')
+	get: return str(get_data('name_prefix')) + name + str(get_data('name_suffix'))
 
 static func _static_init() -> void:
 	DEFAULT_OBJECT.data.erase(PennyObject.BASE_KEY)
@@ -24,7 +27,7 @@ func _init(_data : Dictionary = {}) -> void:
 		data[BASE_KEY] = DEFAULT_OBJECT
 
 func _to_string() -> String:
-	return get_data(NAME_KEY)
+	return rich_name
 
 func get_data(key: StringName) -> Variant:
 	if data.has(key):

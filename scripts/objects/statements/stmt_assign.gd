@@ -18,7 +18,7 @@ func _execute(host: PennyHost) -> Record:
 	var after : Variant = host.evaluate_expression(tokens, expression_index)
 	if after is PennyObject and after == PennyObject.DEFAULT_OBJECT:
 		after = obj_path.add_object(host)
-		obj_path.set_data(host, after)
+	obj_path.set_data(host, after)
 	return Record.new(host, self, AssignmentRecord.new(obj_path, before, after))
 
 func _undo(record: Record) -> void:

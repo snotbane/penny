@@ -95,8 +95,9 @@ enum Operator {
 	NOT,		# !  , not
 	AND,		# && , and
 	OR,			# || , or
-	IS_EQUAL,		# ==
-	NOT_EQUAL, # !=
+	IS_EQUAL,	# ==
+	NOT_EQUAL,	# !=
+	DOT,		# .
 }
 
 var type : int
@@ -120,6 +121,7 @@ func get_operator_type() -> Operator:
 		'||', 'or': return Operator.OR
 		'==': return Operator.IS_EQUAL
 		'!=': return Operator.NOT_EQUAL
+		'.': return Operator.DOT
 	push_error("%s is not a valid operator" % value)
 	return Operator.INVALID
 

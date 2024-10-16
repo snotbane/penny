@@ -92,10 +92,13 @@ func evaluate_expression(tokens: Array[Token], range_in := 0, range_out := -1) -
 	for i in range_out:
 		var token := tokens[i + range_in]
 		match token.type:
+			Token.IDENTIFIER:
+				if not stack.is_empty() and stack.back() is PennyObject:
+					stack.push_back(token.value)
+				else:
+					stack.push_back(data.get_data(token.value))
 			Token.VALUE_BOOLEAN, Token.VALUE_NUMBER, Token.VALUE_COLOR, Token.VALUE_STRING:
 				stack.push_back(token.value)
-			Token.IDENTIFIER:
-				stack.push_back(data.get_data(token.value))
 			Token.KEYWORD:
 				match token.value:
 					'object':
@@ -136,3 +139,6 @@ static func apply_operator(stack: Array[Variant], op: Token) -> void:
 					stack.push_back(a == b)
 				Token.Operator.NOT_EQUAL:
 					stack.push_back(a != b)
+				Token.Operator.DOT:
+					stack.push_back(a.get_data(b))
+
