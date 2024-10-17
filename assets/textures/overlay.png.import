@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://5dmiewmbmtxq"
-path="res://.godot/imported/overlay.png-b750e2f495cd2afc90c5064e45dfe18c.ctex"
+path="res://.godot/imported/overlay.png-f1198616b3a953680ac45e5120f1b381.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/overlay.png"
-dest_files=["res://.godot/imported/overlay.png-b750e2f495cd2afc90c5064e45dfe18c.ctex"]
+source_file="res://addons/penny_godot/assets/textures/overlay.png"
+dest_files=["res://.godot/imported/overlay.png-f1198616b3a953680ac45e5120f1b381.ctex"]
 
 [params]
 

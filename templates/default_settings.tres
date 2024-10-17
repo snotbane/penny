@@ -1,7 +1,0 @@
-[gd_resource type="Resource" script_class="PennySettings" load_steps=2 format=3 uid="uid://d0fi2hxgyqk66"]
-
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/penny_settings.gd" id="2_ofby1"]
-
-[resource]
-script = ExtResource("2_ofby1")
-allow_roll_controls = true

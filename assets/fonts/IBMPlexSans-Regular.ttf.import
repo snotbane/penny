@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://cgxoa5vuur6al"
-path="res://.godot/imported/NotoSansMono-Medium.ttf-a0046bfdb8ce7822c2cab349f824f52e.fontdata"
+uid="uid://8xm7vwqkgqmo"
+path="res://.godot/imported/IBMPlexSans-Regular.ttf-8dc687a471cba983d12179e34ed019e8.fontdata"
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/NotoSansMono-Medium.ttf"
-dest_files=["res://.godot/imported/NotoSansMono-Medium.ttf-a0046bfdb8ce7822c2cab349f824f52e.fontdata"]
+source_file="res://addons/penny_godot/assets/fonts/IBMPlexSans-Regular.ttf"
+dest_files=["res://.godot/imported/IBMPlexSans-Regular.ttf-8dc687a471cba983d12179e34ed019e8.fontdata"]
 
 [params]
 

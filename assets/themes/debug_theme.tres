@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=3 format=3 uid="uid://cuqma0tj3my70"]
 
-[ext_resource type="FontFile" uid="uid://cgxoa5vuur6al" path="res://addons/penny_godot/assets/NotoSansMono-Medium.ttf" id="1_3ctjh"]
+[ext_resource type="FontFile" uid="uid://cgxoa5vuur6al" path="res://addons/penny_godot/assets/fonts/NotoSansMono-Medium.ttf" id="1_3ctjh"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tmgjb"]
 
@@ -9,6 +9,7 @@ MarginContainer/constants/margin_bottom = 2
 MarginContainer/constants/margin_left = 2
 MarginContainer/constants/margin_right = 2
 MarginContainer/constants/margin_top = 2
+RichTextLabel/font_sizes/mono_font_size = 12
 RichTextLabel/fonts/mono_font = ExtResource("1_3ctjh")
 TabContainer/styles/panel = SubResource("StyleBoxEmpty_tmgjb")
 Tree/constants/draw_guides = 0

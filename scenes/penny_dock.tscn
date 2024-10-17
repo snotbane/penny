@@ -1,16 +1,22 @@
-[gd_scene load_steps=6 format=3 uid="uid://ehssrfkq0q6c"]
+[gd_scene load_steps=7 format=3 uid="uid://ehssrfkq0q6c"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_dock.gd" id="1_2yk42"]
-[ext_resource type="Theme" uid="uid://bhin0yonr7qve" path="res://addons/penny_godot/templates/debug_dock_theme.tres" id="2_2kyva"]
+[ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_wbnl2"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/verbosity_selector.gd" id="2_7bn1p"]
-[ext_resource type="FontFile" uid="uid://cgxoa5vuur6al" path="res://addons/penny_godot/assets/NotoSansMono-Medium.ttf" id="4_cvcw8"]
+[ext_resource type="FontFile" uid="uid://cgxoa5vuur6al" path="res://addons/penny_godot/assets/fonts/NotoSansMono-Medium.ttf" id="4_lq8cy"]
 
-[sub_resource type="Theme" id="Theme_qnk2h"]
-default_font = ExtResource("4_cvcw8")
-default_font_size = 12
-RichTextLabel/fonts/normal_font = ExtResource("4_cvcw8")
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_11om5"]
+bg_color = Color(0.15, 0.15, 0.15, 1)
 
-[node name="Penny" type="Control" node_paths=PackedStringArray("message_box", "verbosity_selector")]
+[sub_resource type="Theme" id="Theme_hq8tc"]
+MarginContainer/constants/margin_bottom = 2
+MarginContainer/constants/margin_left = 2
+MarginContainer/constants/margin_right = 2
+MarginContainer/constants/margin_top = 2
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_11om5")
+RichTextLabel/fonts/mono_font = ExtResource("4_lq8cy")
+
+[node name="Penny" type="Control" node_paths=PackedStringArray("message_log_bulk", "message_box", "verbosity_selector")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,12 +25,13 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme = ExtResource("2_2kyva")
+theme = ExtResource("1_wbnl2")
 script = ExtResource("1_2yk42")
-message_box = NodePath("v_box_container/panel/margin_container/scroll_container/message_log")
-verbosity_selector = NodePath("v_box_container/h_box_container_2/verbosity_selector")
+message_log_bulk = NodePath("vbox/panel/margin/message_log_bulk")
+message_box = NodePath("vbox/panel/margin/scroll_container/message_log")
+verbosity_selector = NodePath("vbox/hbox_header/verbosity_selector")
 
-[node name="v_box_container" type="VBoxContainer" parent="."]
+[node name="vbox" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,19 +39,19 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="h_box_container_2" type="HBoxContainer" parent="v_box_container"]
+[node name="hbox_header" type="HBoxContainer" parent="vbox"]
 layout_mode = 2
 
-[node name="toggle_auto_reload" type="CheckButton" parent="v_box_container/h_box_container_2"]
+[node name="toggle_auto_reload" type="CheckButton" parent="vbox/hbox_header"]
 layout_mode = 2
 text = "Auto"
 
-[node name="button_reload" type="Button" parent="v_box_container/h_box_container_2"]
+[node name="button_reload" type="Button" parent="vbox/hbox_header"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Reload"
 
-[node name="verbosity_selector" type="OptionButton" parent="v_box_container/h_box_container_2"]
+[node name="verbosity_selector" type="OptionButton" parent="vbox/hbox_header"]
 layout_mode = 2
 selected = 6
 item_count = 7
@@ -66,11 +73,11 @@ popup/item_6/text = "ALL"
 popup/item_6/id = 31
 script = ExtResource("2_7bn1p")
 
-[node name="panel" type="Panel" parent="v_box_container"]
+[node name="panel" type="Panel" parent="vbox"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="margin_container" type="MarginContainer" parent="v_box_container/panel"]
+[node name="margin" type="MarginContainer" parent="vbox/panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -78,30 +85,38 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="scroll_container" type="ScrollContainer" parent="v_box_container/panel/margin_container"]
+[node name="message_log_bulk" type="RichTextLabel" parent="vbox/panel/margin"]
 layout_mode = 2
-theme = ExtResource("2_2kyva")
+theme_override_font_sizes/mono_font_size = 12
+bbcode_enabled = true
+text = "[code]"
+fit_content = true
+scroll_following = true
 
-[node name="message_log" type="VBoxContainer" parent="v_box_container/panel/margin_container/scroll_container"]
+[node name="scroll_container" type="ScrollContainer" parent="vbox/panel/margin"]
+visible = false
+layout_mode = 2
+theme = SubResource("Theme_hq8tc")
+
+[node name="message_log" type="VBoxContainer" parent="vbox/panel/margin/scroll_container"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme = SubResource("Theme_qnk2h")
 theme_override_constants/separation = 0
 
-[node name="h_box_container" type="HBoxContainer" parent="v_box_container"]
+[node name="hbox_footer" type="HBoxContainer" parent="vbox"]
 layout_mode = 2
 
-[node name="button_import" type="Button" parent="v_box_container/h_box_container"]
+[node name="button_import" type="Button" parent="vbox/hbox_footer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Import..."
 
-[node name="button_export" type="Button" parent="v_box_container/h_box_container"]
+[node name="button_export" type="Button" parent="vbox/hbox_footer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Export..."
 
-[connection signal="toggled" from="v_box_container/h_box_container_2/toggle_auto_reload" to="v_box_container/h_box_container_2/button_reload" method="set_disabled"]
-[connection signal="pressed" from="v_box_container/h_box_container_2/button_reload" to="." method="_on_button_reload_pressed"]
-[connection signal="item_selected" from="v_box_container/h_box_container_2/verbosity_selector" to="v_box_container/h_box_container_2/verbosity_selector" method="_on_item_selected"]
+[connection signal="toggled" from="vbox/hbox_header/toggle_auto_reload" to="vbox/hbox_header/button_reload" method="set_disabled"]
+[connection signal="pressed" from="vbox/hbox_header/button_reload" to="." method="_on_button_reload_pressed"]
+[connection signal="item_selected" from="vbox/hbox_header/verbosity_selector" to="vbox/hbox_header/verbosity_selector" method="_on_item_selected"]

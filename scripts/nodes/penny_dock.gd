@@ -4,6 +4,7 @@ class_name PennyDock extends Control
 
 static var inst : PennyDock
 
+@export var message_log_bulk : RichTextLabel
 @export var message_box : VBoxContainer
 @export var verbosity_selector : OptionButton
 
@@ -17,6 +18,8 @@ func _process(delta: float) -> void:
 	pass
 
 func log(s: String, c: Color = Penny.DEFAULT_COLOR) -> void:
+	message_log_bulk.append_text("[color=#%s]%s[/color]\n" % [c.to_html(), s])
+
 	var label := RichTextLabel.new()
 	label.bbcode_enabled = true
 	label.fit_content = true
@@ -34,6 +37,7 @@ func log(s: String, c: Color = Penny.DEFAULT_COLOR) -> void:
 	message_box.add_child.call_deferred(label)
 
 func log_clear() -> void:
+	message_log_bulk.text = "[code]"
 	for i in message_box.get_children():
 		message_box.remove_child(i)
 

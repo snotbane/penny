@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=3 uid="uid://cfkhtume00g5e"]
 
-[ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/templates/debug_overlay_theme.tres" id="1_hv265"]
+[ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_hv265"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_debug.gd" id="2_4v1jc"]
-[ext_resource type="Texture2D" uid="uid://5dmiewmbmtxq" path="res://addons/penny_godot/assets/overlay.png" id="2_7s783"]
+[ext_resource type="Texture2D" uid="uid://5dmiewmbmtxq" path="res://addons/penny_godot/assets/textures/overlay.png" id="2_7s783"]
 [ext_resource type="PackedScene" uid="uid://ehssrfkq0q6c" path="res://addons/penny_godot/scenes/penny_dock.tscn" id="2_if5x3"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/data_viewer_tree.gd" id="5_2yu6x"]
 [ext_resource type="Texture2D" uid="uid://c5nb4l2ge7dlq" path="res://addons/penny_godot/assets/icons/Clear.svg" id="5_uw3ek"]
