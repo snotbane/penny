@@ -28,6 +28,10 @@ var sort_method := PennyObject.Sort.NONE :
 		_sort_method = value
 		refresh()
 
+var font_size : int :
+	get: return self.get_theme_font_size("font_size")
+	set (value):
+		self.add_theme_font_size_override("font_size", value)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -96,3 +100,7 @@ func _on_sort_selector_item_selected(index:int) -> void:
 
 func _on_search_clear_pressed() -> void:
 	query = ""
+
+
+func _on_zoom_slider_value_changed(value:float) -> void:
+	font_size = floori(value)

@@ -18,6 +18,12 @@ static var BASE_OBJECT := PennyObject.new(null, {
 	'name_suffix': "</>",
 })
 
+static var PRIORITY_DATA_ENTRIES := [
+	"base",
+	"link",
+	"name",
+]
+
 const BASE_OBJECT_NAME := "object"
 const NAME_KEY := 'name'
 const BASE_KEY := 'base'
@@ -30,6 +36,9 @@ var name : String :
 
 var rich_name : String :
 	get: return str(get_data('name_prefix')) + name + str(get_data('name_suffix'))
+
+static func _static_init() -> void:
+	PRIORITY_DATA_ENTRIES.reverse()
 
 func _init(_host: PennyHost, _data : Dictionary = { BASE_KEY: ObjectPath.new([BASE_OBJECT_NAME]) }) -> void:
 	host = _host
@@ -66,10 +75,10 @@ func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null,
 
 	if path.identifiers:
 		result.set_text(TreeCell.NAME, path.identifiers.back())
-		if host:
-			var v : Variant = path.get_data(host)
-			if v is PennyObject:
-				result.set_text(TreeCell.VALUE, v.name)
+		# if host:
+		# 	var v : Variant = path.get_data(host)
+		# 	if v is PennyObject:
+		# 		result.set_text(TreeCell.VALUE, v.name)
 	# result.collapsed = true
 
 	var keys := data.keys()
@@ -78,6 +87,7 @@ func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null,
 			keys.reverse()
 		Sort.DEFAULT:
 			keys.sort()
+	keys.sort_custom(sort_baseline)
 
 	for k in keys:
 		var v : Variant = data[k]
@@ -97,4 +107,10 @@ func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null,
 
 			prop.set_selectable(TreeCell.VALUE, false)
 			prop.set_text(TreeCell.VALUE, Penny.get_debug_string(v))
+
+			if v is ObjectPath:
+				prop.set_icon(TreeCell.ICON, load("res://addons/penny_godot/assets/icons/NodePath.svg"))
 	return result
+
+static func sort_baseline(a, b) -> int:
+	return PRIORITY_DATA_ENTRIES.find(a) > PRIORITY_DATA_ENTRIES.find(b)
