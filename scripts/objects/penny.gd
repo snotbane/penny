@@ -12,7 +12,7 @@ const WARNING_COLOR = Color(1, 0.871, 0.4)	## Matches editor
 const ERROR_COLOR = Color(1, 0.471, 0.42)	## Matches editor
 
 static var stmt_dict : Dictionary		## StringName : Array[Stmt_]
-static var labels : Dictionary			## StringName : Address
+static var labels : Dictionary			## StringName : Stmt_
 static var valid : bool = true
 static var clean : bool = true
 
@@ -53,7 +53,7 @@ static func validate() -> Array[PennyException]:
 
 static func get_stmt_from_label(label: StringName) -> Stmt_:
 	if labels.has(label):
-		return labels[label].stmt
+		return labels[label]
 	else:
 		PennyException.new("Label '%s' does not exist in the current Penny environment." % label).push()
 		return null

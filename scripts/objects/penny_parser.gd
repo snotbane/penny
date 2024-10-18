@@ -47,6 +47,7 @@ func parse_statements() -> Array[PennyException]:
 	var exceptions = tokenize()
 	if exceptions.is_empty():
 		exceptions = statementize()
+	Penny.log("================================================================")
 	for i in tokens:
 		Penny.log(i.to_string())
 	# for i in stmts:
@@ -95,8 +96,8 @@ func tokenize() -> Array[PennyException]:
 
 		if not match_found:
 			result.push_back(PennyExceptionRef.new(FileAddress.new(file.get_path(), line, col), "Unrecognized token '%s'." % raw[cursor]))
-			cursor += 1
-			# break
+			# cursor += 1
+			break
 
 	return result
 

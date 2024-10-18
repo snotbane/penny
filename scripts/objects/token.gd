@@ -56,7 +56,7 @@ static var PATTERNS : Array[RegEx] = [
 	# RegEx.create_from_string("(?s)[\\[\\]]|,(?=.*\\])"),
 	# RegEx.create_from_string("(?s)[\\(\\)]"),
 	RegEx.create_from_string("(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
-	RegEx.create_from_string("(?i)\\$(?:\\w*)"),
+	RegEx.create_from_string("\\$\\w+"),
 	RegEx.create_from_string("\\d+\\.\\d*|\\.?\\d+"),
 	RegEx.create_from_string("\\b([Tt]rue|TRUE|[Ff]alse|FALSE)\\b"),
 	RegEx.create_from_string("([=!<>]=)|&&|\\|\\||(\\b(and|nand|or|nor|not)\\b)|([!+\\-*/%&|<>()](?!=))|(\\b\\.\\b)"),

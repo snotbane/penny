@@ -32,7 +32,7 @@ var is_halting : bool :
 func _ready() -> void:
 	insts.push_back(self)
 
-	if not autostart_label.is_empty():
+	if Penny.valid and not autostart_label.is_empty():
 		jump_to.call_deferred(autostart_label)
 
 func _exit_tree() -> void:
@@ -45,7 +45,6 @@ func _input(event: InputEvent) -> void:
 		else: watcher.wrap_up_work()
 
 func jump_to(label: StringName) -> void:
-	if not Penny.valid: return
 	cursor = Penny.get_stmt_from_label(label)
 	invoke_at_cursor()
 
@@ -88,6 +87,16 @@ func evaluate_expression_as_boolean(tokens: Array[Token], range_in := 0, range_o
 	if result:
 		return result as bool
 	return false
+
+## Evaluates the expression. If the result is an ObjectPath that doesn't exist, just return the ObjectPath itself as if it is an identifier.
+func evaluate_expression_or_identifier(tokens: Array[Token], range_in := 0, range_out := -1) -> Variant:
+	var expr = self.evaluate_expression(tokens)
+	if expr is ObjectPath:
+		var value : Variant = expr.get_data(self)
+		if value:
+			return value
+		return StringName(expr.to_string())
+	return expr
 
 func evaluate_expression(tokens: Array[Token], range_in := 0, range_out := -1) -> Variant:
 	if range_out == -1:

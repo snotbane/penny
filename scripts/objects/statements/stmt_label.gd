@@ -12,7 +12,7 @@ func _load() -> PennyException:
 	if Penny.labels.has(tokens[0].value):
 		return create_exception("Label '%s' already exists (%s)" % [tokens[0].value, Penny.get_stmt_from_label(tokens[0].value).file_address.pretty_string])
 	else:
-		Penny.labels[tokens[0].value] = address
+		Penny.labels[tokens[0].value] = self
 		return super._load()
 
 func _execute(host: PennyHost) -> Record:
