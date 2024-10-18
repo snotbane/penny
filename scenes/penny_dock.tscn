@@ -74,6 +74,7 @@ grow_vertical = 2
 
 [node name="message_log" type="RichTextLabel" parent="vbox/panel/margin"]
 layout_mode = 2
+mouse_filter = 1
 theme_override_font_sizes/mono_font_size = 12
 bbcode_enabled = true
 scroll_following = true

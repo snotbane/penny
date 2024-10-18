@@ -100,7 +100,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 theme = ExtResource("1_lr0qd")
 script = ExtResource("1_vh1ak")
 animation_player = NodePath("animation_player")
@@ -114,11 +113,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 
 [node name="margin_container" type="MarginContainer" parent="panel_container"]
 layout_mode = 2
-mouse_filter = 2
 theme = ExtResource("1_lr0qd")
 
 [node name="scroll_container" type="ScrollContainer" parent="panel_container/margin_container"]
@@ -131,7 +128,6 @@ vertical_scroll_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-mouse_filter = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_bottom = 0
@@ -140,7 +136,6 @@ theme_override_constants/margin_bottom = 0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-mouse_filter = 2
 theme = ExtResource("1_lr0qd")
 
 [node name="animation_player" type="AnimationPlayer" parent="."]

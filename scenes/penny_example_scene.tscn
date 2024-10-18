@@ -60,6 +60,7 @@ theme_override_constants/margin_bottom = 170
 layout_mode = 2
 
 [node name="menu" parent="canvas_layer/ui" instance=ExtResource("4_ad4a2")]
+visible = false
 layout_mode = 1
 
 [node name="debug_overlay" parent="canvas_layer" instance=ExtResource("5_vsnrl")]
