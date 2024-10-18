@@ -106,6 +106,8 @@ func evaluate_expression(tokens: Array[Token], range_in := 0, range_out := -1) -
 				stack.push_back(ObjectPath.new([token.value]))
 			Token.VALUE_BOOLEAN, Token.VALUE_NUMBER, Token.VALUE_COLOR, Token.VALUE_STRING:
 				stack.push_back(token.value)
+			Token.LOOKUP:
+				stack.push_back(token.value)
 			Token.KEYWORD:
 				match token.value:
 					'object':

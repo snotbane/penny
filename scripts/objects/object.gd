@@ -122,4 +122,6 @@ static func get_icon(value: Variant) -> Texture2D:
 		return load("res://addons/penny_godot/assets/icons/NodePath.svg")
 	if value is	Color:
 		return load("res://addons/penny_godot/assets/icons/Color.svg")
+	if value is Lookup:
+		return load("res://addons/penny_godot/assets/icons/Slot.svg")
 	return null

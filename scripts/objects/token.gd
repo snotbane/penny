@@ -16,6 +16,7 @@ enum {
 	# ARRAY_CAPS,
 	# PARENTHESIS_CAPS,
 	VALUE_COLOR,
+	LOOKUP,
 	VALUE_NUMBER,
 	VALUE_BOOLEAN,
 	OPERATOR,
@@ -36,6 +37,7 @@ static func enum_to_string(idx: int) -> String:
 		INDENTATION: return "indent"
 		VALUE_STRING: return "string"
 		VALUE_COLOR: return "color"
+		LOOKUP: return "lookup"
 		VALUE_NUMBER: return "number"
 		VALUE_BOOLEAN: return "boolean"
 		OPERATOR: return "operator"
@@ -54,6 +56,7 @@ static var PATTERNS : Array[RegEx] = [
 	# RegEx.create_from_string("(?s)[\\[\\]]|,(?=.*\\])"),
 	# RegEx.create_from_string("(?s)[\\(\\)]"),
 	RegEx.create_from_string("(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
+	RegEx.create_from_string("(?i)\\$(?:\\w*)"),
 	RegEx.create_from_string("\\d+\\.\\d*|\\.?\\d+"),
 	RegEx.create_from_string("\\b([Tt]rue|TRUE|[Ff]alse|FALSE)\\b"),
 	RegEx.create_from_string("([=!<>]=)|&&|\\|\\||(\\b(and|nand|or|nor|not)\\b)|([!+\\-*/%&|<>()](?!=))|(\\b\\.\\b)"),
@@ -73,6 +76,7 @@ static var PATTERNS : Array[RegEx] = [
 enum Literal {
 	STRING,
 	COLOR,
+	LOOKUP,
 	NULL,
 	BOOLEAN_TRUE,
 	BOOLEAN_FALSE,
@@ -83,6 +87,7 @@ enum Literal {
 static var PRIMITIVE_PATTERNS = [
 	RegEx.create_from_string("(?s)(?<=(\"\"\"|\"|'''|'|```|`)).*?(?=\\1)"),
 	PATTERNS[Token.VALUE_COLOR],
+	PATTERNS[Token.LOOKUP],
 	RegEx.create_from_string("\\b([Nn]ull|NULL)\\b"),
 	RegEx.create_from_string("\\b([Tt]rue|TRUE)\\b"),
 	RegEx.create_from_string("\\b([Ff]alse|FALSE)\\b"),
@@ -143,6 +148,8 @@ static func interpret(s: String) -> Variant:
 				return match.get_string()
 			Literal.COLOR:
 				return Color(s)
+			Literal.LOOKUP:
+				return Lookup.new(s.substr(1))
 			Literal.NULL:
 				return null
 			Literal.BOOLEAN_TRUE:
