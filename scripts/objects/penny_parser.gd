@@ -136,9 +136,9 @@ func statementize() -> Array[PennyException]:
 		recycle.file_address = FileAddress.new(file.get_path(), i.line)
 		Penny.stmt_dict[file.get_path()].push_back(recycle)
 	for i in Penny.stmt_dict[file.get_path()]:
-		var exception : PennyException = i._validate()
+		var exception : PennyException = i.validate()
 		if exception:
 			result.push_back(exception)
 		else:
-			i._setup()
+			i.setup()
 	return result

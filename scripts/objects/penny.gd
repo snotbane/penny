@@ -46,7 +46,7 @@ static func validate() -> Array[PennyException]:
 		for stmt in stmt_dict[path]:
 			i += 1
 			stmt.address = Address.new(path, i)
-			var exception = stmt._load()
+			var exception = stmt.load()
 			if exception:
 				result.push_back(exception)
 	return result

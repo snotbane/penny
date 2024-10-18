@@ -50,7 +50,7 @@ func jump_to(label: StringName) -> void:
 	invoke_at_cursor()
 
 func invoke_at_cursor() -> void:
-	var record := cursor._execute(self)
+	var record := cursor.execute(self)
 
 	records.push_back(record)
 	history_handler.receive(record)
@@ -62,7 +62,7 @@ func invoke_at_cursor() -> void:
 
 func advance() -> void:
 	if cursor == null: return
-	cursor = records.back().get_next()
+	cursor = records.back().next()
 
 	if cursor == null:
 		if call_stack:

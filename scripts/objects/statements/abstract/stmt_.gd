@@ -174,33 +174,41 @@ func _get_keyword() -> StringName:
 func _get_verbosity() -> Verbosity:
 	return Verbosity.USER_FACING
 
-func _is_record_shown_in_history(rec: Record) -> bool:
+func is_record_shown_in_history(record: Record) -> bool: return _is_record_shown_in_history(record)
+func _is_record_shown_in_history(record: Record) -> bool:
 	return true
 
 ## Executes just once, as soon as all scripts have been validated.
+func load() -> PennyException: return _load()
 func _load() -> PennyException:
 	return null
 
 ## Executes when it is reached as the user encounters it.
+func execute(host: PennyHost) -> Record: return _execute(host)
 func _execute(host: PennyHost) -> Record:
 	return Record.new(host, self)
 
 ## Executes when the user rewinds through history to undo this action.
+func undo(record: Record) -> void: _undo(record)
 func _undo(record: Record) -> void:
 	pass
 
 ## Returns the address of the next statement to go to, based on what happened.
+func next(record: Record) -> Stmt_: return _next(record)
 func _next(record: Record) -> Stmt_:
 	return next_in_order
 
 ## Creates a message to be shown in the statement history or displayed to a dialogue box.
+func message(record: Record) -> Message: return _message(record)
 func _message(record: Record) -> Message:
 	return Message.new(reconstructed_string)
 
 ## Returns an exception to check what may be wrong with the statement (or null if OK)
+func validate() -> PennyException: return _validate()
 func _validate() -> PennyException:
 	return create_exception("_validate() method needs to be overridden and/or statement was never recycled into the proper type (not implemented).")
 
+func setup() -> void: _setup()
 func _setup() -> void:
 	pass
 

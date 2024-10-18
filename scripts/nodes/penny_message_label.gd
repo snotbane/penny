@@ -27,7 +27,7 @@ func populate(__rec: Record) -> void:
 		grab_focus.call_deferred()
 
 func refresh_visibility() -> void:
-	visible = rec.stmt._is_record_shown_in_history(rec) && rec.host.history_handler.verbosity & rec.stmt.verbosity
+	visible = rec.stmt.is_record_shown_in_history(rec) && rec.host.history_handler.verbosity & rec.stmt.verbosity
 
 func _gui_input(event: InputEvent) -> void:
 	if event.is_pressed():

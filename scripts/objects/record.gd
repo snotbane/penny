@@ -9,7 +9,7 @@ var message : Message
 var attachment : Variant
 
 var verbosity : int :
-	get: return stmt._get_verbosity()
+	get: return stmt.verbosity
 
 var prev : Record :
 	get:
@@ -21,10 +21,10 @@ func _init(_host: PennyHost, _stmt: Stmt_, _attachment: Variant = null) -> void:
 	stamp = host.records.size()
 	stmt = _stmt
 	attachment = _attachment
-	message = stmt._message(self)
+	message = stmt.message(self)
 
 func undo() -> void:
-	stmt._undo(self)
+	stmt.undo(self)
 
 func _to_string() -> String:
 	return "Record : stamp %s, address %s" % [stamp, stmt.address]
@@ -32,5 +32,5 @@ func _to_string() -> String:
 func equals(other: Record) -> bool:
 	return host == other.host and stamp == other.stamp
 
-func get_next() -> Stmt_:
-	return stmt._next(self)
+func next() -> Stmt_:
+	return stmt.next(self)
