@@ -47,8 +47,8 @@ func parse_statements() -> Array[PennyException]:
 	var exceptions = tokenize()
 	if exceptions.is_empty():
 		exceptions = statementize()
-	# for i in tokens:
-	# 	Penny.log(i.to_string())
+	for i in tokens:
+		Penny.log(i.to_string())
 	# for i in stmts:
 	# 	print(i)
 	return exceptions

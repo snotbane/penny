@@ -76,7 +76,6 @@ grow_vertical = 2
 layout_mode = 2
 theme_override_font_sizes/mono_font_size = 12
 bbcode_enabled = true
-fit_content = true
 scroll_following = true
 
 [node name="hbox_footer" type="HBoxContainer" parent="vbox"]

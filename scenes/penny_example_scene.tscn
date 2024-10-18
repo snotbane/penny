@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://gtm2kenc70u7"]
+[gd_scene load_steps=6 format=3 uid="uid://gtm2kenc70u7"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_host.gd" id="1_jmae0"]
 [ext_resource type="PackedScene" uid="uid://b8sp6ey8fsgt7" path="res://addons/penny_godot/scenes/penny_dialogue_box.tscn" id="3_36qr5"]
+[ext_resource type="PackedScene" uid="uid://cuu7puh0nnyug" path="res://addons/penny_godot/scenes/menu_default.tscn" id="4_ad4a2"]
 [ext_resource type="PackedScene" uid="uid://ckwmom7w0dvh1" path="res://addons/penny_godot/scenes/penny_history_box.tscn" id="4_hm4jj"]
 [ext_resource type="PackedScene" uid="uid://cfkhtume00g5e" path="res://addons/penny_godot/scenes/penny_debug.tscn" id="5_vsnrl"]
 
@@ -9,7 +10,7 @@
 
 [node name="penny_host" type="Node" parent="." node_paths=PackedStringArray("message_handler", "history_handler")]
 script = ExtResource("1_jmae0")
-autostart_label = &"variable_assignment"
+autostart_label = &"characters"
 message_handler = NodePath("../canvas_layer/ui/dialogue_container/penny_dialogue_box")
 history_handler = NodePath("../canvas_layer/ui/history_container/penny_history_box")
 
@@ -57,6 +58,9 @@ theme_override_constants/margin_bottom = 170
 
 [node name="penny_history_box" parent="canvas_layer/ui/history_container" instance=ExtResource("4_hm4jj")]
 layout_mode = 2
+
+[node name="menu" parent="canvas_layer/ui" instance=ExtResource("4_ad4a2")]
+layout_mode = 1
 
 [node name="debug_overlay" parent="canvas_layer" instance=ExtResource("5_vsnrl")]
 visible = false

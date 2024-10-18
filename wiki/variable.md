@@ -26,7 +26,8 @@ These are the variable types that Penny understands:
 - `float` — numeric id with a `.`
 - `color` — hex id beginning with `#`, e.g. `#ff4128`
 - `string` — string id with quotes, e.g. `"chapter"`
-- `object` — string id with no quotes, e.g. `Rubin` or `player_name`
+- `link` — string id beginning with `$`, e.g. `$setting`. Retrieves a value from host settings. Usually a key to a PackedScene in the settings dictionary
+- `object` — string id with no quotes, e.g. `Rubin`. Contains any other variable type.
 
 ## Arrays
 
@@ -123,6 +124,13 @@ Apple = object					# (Accidental?) redefinition
 ```
 > The "" will restore 20 mana.
 
+### Object Implication
+
+Objects are used differently based on what is using them.
+
+- `Object = object` : entire object
+- `"@Object"` : use rich_name
+- `Object.anim "walk"` : use link
 
 ### Object Referencing
 
