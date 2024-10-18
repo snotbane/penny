@@ -21,6 +21,7 @@ static var insts : Array[PennyHost] = []
 var data_root := PennyObject.new(self, { PennyObject.BASE_OBJECT_NAME: PennyObject.BASE_OBJECT })
 var records : Array[Record]
 
+var call_stack : Array[Address]
 var expecting_conditional : bool
 var cursor : Stmt_
 
@@ -64,8 +65,11 @@ func advance() -> void:
 	cursor = records.back().get_next()
 
 	if cursor == null:
-		close()
-		return
+		if call_stack:
+			cursor = call_stack.pop_back().stmt
+		else:
+			close()
+			return
 
 	invoke_at_cursor()
 

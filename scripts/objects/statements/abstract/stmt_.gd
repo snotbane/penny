@@ -215,6 +215,7 @@ func recycle() -> Stmt_:
 				'print': return StmtPrint.new(address, line, depth, tokens)
 				'label': return StmtLabel.new(address, line, depth, tokens)
 				'jump': return StmtJump.new(address, line, depth, tokens)
+				'call': return StmtJumpCall.new(address, line, depth, tokens)
 				'if': return StmtConditionalIf.new(address, line, depth, tokens)
 				'elif': return StmtConditionalElif.new(address, line, depth, tokens)
 				'else': return StmtConditionalElse.new(address, line, depth, tokens)
