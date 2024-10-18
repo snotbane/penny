@@ -1,6 +1,6 @@
 
 ## Location of a Statement specified by a file path and array index.
-class_name Address extends Object
+class_name Address extends RefCounted
 
 var path : StringName
 

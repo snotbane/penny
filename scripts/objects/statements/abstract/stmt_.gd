@@ -49,10 +49,10 @@ var next_in_order : Stmt_ :
 var next_in_chain : Stmt_ :
 	get:
 		var cursor := address.copy(1)
-		while cursor.valid:
+		while true:
 			if cursor.stmt.depth == depth:
 				break
-			if cursor.stmt.depth < depth:
+			if not cursor.valid or cursor.stmt.depth < depth:
 				return null
 			cursor.index += 1
 		return cursor.stmt
@@ -86,6 +86,18 @@ var next_higher_depth : Stmt_ :
 				break
 			cursor.index += 1
 		return cursor.stmt
+
+## Returns all statements exactly one depth higher than this one. (more nested)
+var next_higher_chain : Array[Stmt_] :
+	get:
+		var cursor := address.copy(1)
+		if cursor.stmt.depth <= depth:
+			return []
+		var result : Array[Stmt_] = []
+		while cursor and cursor.valid:
+			result.push_back(cursor)
+			cursor = cursor.stmt.next_in_chain.address.copy()
+		return result
 
 ## The previous statement in order, regardless of depth.
 var prev_in_order : Stmt_ :
