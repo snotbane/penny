@@ -12,17 +12,18 @@ func _get_verbosity() -> Verbosity:
 	return Verbosity.DATA_ACCESS
 
 func _execute(host: PennyHost) -> Record:
-	var before : Variant = obj_path.get_data(host)
+	var before : Variant = path.get_data(host)
 	var after : Variant = host.evaluate_expression(tokens, expression_index)
 	if after is Path and after.identifiers[0] == "object":
-		after = obj_path.add_object(host)
-	obj_path.set_data(host, after)
+		after = path.add_object(host)
+	else:
+		path.set_data(host, after)
 	var result = Record.new(host, self, AssignmentRecord.new(before, after))
 	host.on_data_modified.emit()
 	return result
 
 func _undo(record: Record) -> void:
-	obj_path.set_data(record.host, record.attachment.before)
+	path.set_data(record.host, record.attachment.before)
 
 func _message(record: Record) -> Message:
 	var result := super._message(record)
@@ -42,7 +43,7 @@ func _validate() -> PennyException:
 	# var op = tokens[i_op]
 
 	var left := tokens.slice(0, op_index)
-	var left_exception := validate_obj_path(left)
+	var left_exception := validate_path(left)
 	if left_exception:
 		return left_exception
 
@@ -51,5 +52,5 @@ func _validate() -> PennyException:
 	if right_exception:
 		return right_exception
 
-	obj_path = Path.from_tokens(left)
+	path = Path.from_tokens(left)
 	return null

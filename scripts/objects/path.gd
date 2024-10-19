@@ -2,18 +2,27 @@
 class_name Path extends RefCounted
 
 var identifiers : Array[StringName]
+var relative : bool
 
-func _init(_identifiers: Array[StringName] = []) -> void:
+func _init(_identifiers: Array[StringName] = [], _relative: bool = false) -> void:
 	identifiers = _identifiers
+	relative = _relative
 
 static func from_tokens(tokens: Array[Token]) -> Path:
+	var rel : bool = tokens[0].value == '.'
+	if rel: tokens.pop_front()
+
 	var ids : Array[StringName]
 	var l = floor(tokens.size() * 0.5) + 1
 	for i in l:
 		ids.push_back(tokens[i * 2].value)
-	return Path.new(ids)
+
+	return Path.new(ids, rel)
 
 static func from_string(s: String) -> Path:
+	var rel : bool = s[0] == '.'
+	if rel: s = s.substr(1)
+
 	var ids : Array[StringName]
 	var split := s.split(".", false)
 	for i in split:
@@ -26,31 +35,50 @@ func _to_string() -> String:
 		result += i + "."
 	return result.substr(0, result.length() - 1)
 
+func get_absolute_path(from: Stmt_) -> Path:
+	if relative:
+		var parent_stmt := from.prev_lower_depth
+		if not parent_stmt is StmtObject_:
+			parent_stmt.create_exception("Relative path is trying to look at parent statement [%s], but this statement is not an object." % parent_stmt).push()
+			return null
+		return parent_stmt.path.get_absolute_path(parent_stmt).combine(self)
+	return self
+
 func duplicate(deep := false) -> Path:
-	return Path.new(identifiers.duplicate(deep))
+	return Path.new(identifiers.duplicate(deep), relative)
 
 func get_data(host: PennyHost) -> Variant:
-	var result : Variant = host.data_root
-	for i in identifiers:
-		result = result.get_data(i)
-	return result
+	var mount := get_mount_point(host)
+	if mount:
+		return mount.get_data(identifiers.back())
+	return null
 
 func set_data(host: PennyHost, _value: Variant) -> void:
+	var mount := get_mount_point(host)
+	if mount:
+		get_mount_point(host).set_data(identifiers.back(), _value)
+
+func get_mount_point(host: PennyHost) -> PennyObject:
+	var absolute := get_absolute_path(host.cursor)
 	var result : PennyObject = host.data_root
-	for i in identifiers.size() - 1:
-		result = result.get_data(identifiers[i])
-	result.set_data(identifiers.back(), _value)
+	for i in absolute.identifiers.size() - 1:
+		var id := absolute.identifiers[i]
+		var next = result.get_data(id)
+		if not next is PennyObject:
+			host.cursor.create_exception("Attempted to get_mount_point object for path [%s], but identifier '%s' is not an object." % [absolute, id]).push()
+			return null
+		result = next as PennyObject
+	return result
 
 ## Creates a new object at this path.
 func add_object(host: PennyHost) -> PennyObject:
-	var result := PennyObject.new(host, {
-		PennyObject.NAME_KEY: self.to_string(),
+	var result := PennyObject.new(host, identifiers.back(), {
 		PennyObject.BASE_KEY: Path.new([PennyObject.BASE_OBJECT_NAME]),
 	})
 	set_data(host, result)
 	return result
 
-func prepend(other: Path) -> void:
-	var temp = identifiers.duplicate()
-	identifiers = other.identifiers.duplicate()
-	identifiers.append_array(temp)
+func combine(other: Path) -> Path:
+	var result := self.duplicate()
+	result.identifiers.append_array(other.identifiers)
+	return result

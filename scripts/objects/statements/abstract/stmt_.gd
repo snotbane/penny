@@ -288,7 +288,18 @@ func validate_as_no_tokens() -> PennyException:
 		return create_exception("Unexpected token(s) in standalone statement.")
 	return null
 
-func validate_obj_path(expr: Array[Token]) -> PennyException:
+func validate_path(expr: Array[Token]) -> PennyException:
+	var relative : bool = expr[0].get_operator_type() == Token.Operator.DOT
+	if expr.back().type != Token.IDENTIFIER:
+		return create_exception("Expected identifier at end of path.")
+	for i in expr.size():
+		var token := expr[i]
+		if bool(i & 1) == relative:
+			if token.type != Token.IDENTIFIER:
+				return create_exception("Expected identifier in path.")
+		else:
+			if token.get_operator_type() != Token.Operator.DOT:
+				return create_exception("Expected dot operator in path.")
 	return null
 
 func validate_as_identifier_only() -> PennyException:

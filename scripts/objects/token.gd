@@ -13,17 +13,10 @@ class_name Token extends Object
 enum {
 	INDENTATION,		## NOT ADDED TO STATEMENTS
 	VALUE_STRING,		## Multiline
-	# ARRAY_CAPS,
-	# PARENTHESIS_CAPS,
 	VALUE_COLOR,
-	LOOKUP,
 	VALUE_NUMBER,
 	VALUE_BOOLEAN,
 	OPERATOR,
-	# OPERATOR_GENERIC,
-	# OPERATOR_BOOLEAN,
-	# OPERATOR_NUMERIC,
-	# OPERATOR_NUMERIC_EQUALITY,
 	COMMENT,
 	ASSIGNMENT,
 	KEYWORD,
@@ -37,7 +30,6 @@ static func enum_to_string(idx: int) -> String:
 		INDENTATION: return "indent"
 		VALUE_STRING: return "string"
 		VALUE_COLOR: return "color"
-		LOOKUP: return "lookup"
 		VALUE_NUMBER: return "number"
 		VALUE_BOOLEAN: return "boolean"
 		OPERATOR: return "operator"
@@ -50,27 +42,20 @@ static func enum_to_string(idx: int) -> String:
 		_: return "invalid_token"
 
 
-static var PATTERNS : Array[RegEx] = [
-	RegEx.create_from_string("(?m)^\\t+"),
-	RegEx.create_from_string("(?s)(\"\"\"|\"|'''|'|```|`).*?\\1"),
-	# RegEx.create_from_string("(?s)[\\[\\]]|,(?=.*\\])"),
-	# RegEx.create_from_string("(?s)[\\(\\)]"),
-	RegEx.create_from_string("(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
-	RegEx.create_from_string("\\$\\w+"),
-	RegEx.create_from_string("\\d+\\.\\d*|\\.?\\d+"),
-	RegEx.create_from_string("\\b([Tt]rue|TRUE|[Ff]alse|FALSE)\\b"),
-	RegEx.create_from_string("([=!<>]=)|&&|\\|\\||(\\b(and|nand|or|nor|not)\\b)|([!+\\-*/%&|<>()](?!=))|(\\b\\.\\b)"),
-	# RegEx.create_from_string("(\\b\\.\\b)|==|!="),
-	# RegEx.create_from_string("!|&&|\\|\\||(\\b(and|nand|or|nor|not)\\b)"),
-	# RegEx.create_from_string("\\+|-|\\*|/|%|&|\\|"),
-	# RegEx.create_from_string(">|<|<=|>="),
-	RegEx.create_from_string("(?ms)(([#/])\\*.*?(\\*\\2))|((#|\\/{2}).*?$)"),
-	RegEx.create_from_string("[+\\-*/:]?="),
-	RegEx.create_from_string("\\b(dec|dive|call|elif|else|if|filter|jump|label|menu|object|pass|print|return|rise|suspend)\\b"),
-	RegEx.create_from_string("[a-zA-Z_]\\w*"),
-	RegEx.create_from_string("(?m)[:;]|((?<=[^\\n:;])$\\n)"),
-	RegEx.create_from_string("(?m)[ \\n]+|(?<!^|\\t)\\t+"),
-]
+static var PATTERNS := {
+	Token.INDENTATION: 		RegEx.create_from_string("(?m)^\\t+"),
+	Token.VALUE_STRING: 	RegEx.create_from_string("(?s)(\"\"\"|\"|'''|'|```|`).*?\\1"),
+	Token.VALUE_COLOR: 		RegEx.create_from_string("(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
+	Token.VALUE_NUMBER: 	RegEx.create_from_string("\\d+\\.\\d*|\\.?\\d+"),
+	Token.VALUE_BOOLEAN: 	RegEx.create_from_string("\\b([Tt]rue|TRUE|[Ff]alse|FALSE)\\b"),
+	Token.OPERATOR: 		RegEx.create_from_string("([=!<>]=)|&&|\\|\\||(\\b(and|nand|or|nor|not)\\b)|([!+\\-*/@\\$%&|<>\\(\\)](?!=))|(\\.\\b)"),
+	Token.COMMENT: 			RegEx.create_from_string("(?ms)(([#/])\\*.*?(\\*\\2))|((#|\\/{2}).*?$)"),
+	Token.ASSIGNMENT: 		RegEx.create_from_string("[+\\-*/:]?="),
+	Token.KEYWORD: 			RegEx.create_from_string("\\b(dec|dive|call|elif|else|if|filter|jump|label|menu|pass|print|return|rise|suspend)\\b"),
+	Token.IDENTIFIER: 		RegEx.create_from_string("[a-zA-Z_]\\w*"),
+	Token.TERMINATOR: 		RegEx.create_from_string("(?m)[:;]|((?<=[^\\n:;])$\\n)"),
+	Token.WHITESPACE: 		RegEx.create_from_string("(?m)[ \\n]+|(?<!^|\\t)\\t+"),
+}
 
 
 enum Literal {
@@ -87,7 +72,6 @@ enum Literal {
 static var PRIMITIVE_PATTERNS = [
 	RegEx.create_from_string("(?s)(?<=(\"\"\"|\"|'''|'|```|`)).*?(?=\\1)"),
 	PATTERNS[Token.VALUE_COLOR],
-	PATTERNS[Token.LOOKUP],
 	RegEx.create_from_string("\\b([Nn]ull|NULL)\\b"),
 	RegEx.create_from_string("\\b([Tt]rue|TRUE)\\b"),
 	RegEx.create_from_string("\\b([Ff]alse|FALSE)\\b"),
@@ -103,6 +87,10 @@ enum Operator {
 	IS_EQUAL,	# ==
 	NOT_EQUAL,	# !=
 	DOT,		# .
+	DEREF,		# @
+	LOOKUP,		# $
+	QUESTION,	# ?
+
 }
 
 var type : int
@@ -120,14 +108,17 @@ func _to_string() -> String:
 			return "%s (%s)" % [str(value), enum_to_string(type)]
 
 func get_operator_type() -> Operator:
-	match value:
-		'!', 'not': return Operator.NOT
-		'&&', 'and': return Operator.AND
-		'||', 'or': return Operator.OR
-		'==': return Operator.IS_EQUAL
-		'!=': return Operator.NOT_EQUAL
-		'.': return Operator.DOT
-	push_error("%s is not a valid operator" % value)
+	if type == OPERATOR:
+		match value:
+			'!', 'not': return Operator.NOT
+			'&&', 'and': return Operator.AND
+			'||', 'or': return Operator.OR
+			'==': return Operator.IS_EQUAL
+			'!=': return Operator.NOT_EQUAL
+			'.': return Operator.DOT
+			'@': return Operator.DEREF
+			'$': return Operator.LOOKUP
+			'?': return Operator.QUESTION
 	return Operator.INVALID
 
 func get_operator_token_count() -> int:

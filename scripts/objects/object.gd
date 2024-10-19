@@ -13,12 +13,12 @@ enum TreeCell {
 	VALUE
 }
 
-static var BASE_OBJECT := PennyObject.new(null, {
+static var BASE_OBJECT := PennyObject.new(null, 'object', {
 	'name_prefix': "<>",
 	'name_suffix': "</>",
 })
 
-static var BASE_OPTION := PennyObject.new(null, {
+static var BASE_OPTION := PennyObject.new(null, 'option', {
 	BASE_KEY: Path.new(["object"]),
 	ABLE_KEY: true,
 	SHOW_KEY: true,
@@ -41,10 +41,14 @@ const SHOW_KEY := 'show'
 const USED_KEY := 'used'
 
 var host : PennyHost
+var parent_key : StringName
 var data : Dictionary
 
 var name : String :
-	get: return str(get_data(NAME_KEY))
+	get:
+		if has_data(NAME_KEY):
+			return str(get_data(NAME_KEY))
+		return String(parent_key)
 
 var rich_name : String :
 	get: return str(get_data('name_prefix')) + name + str(get_data('name_suffix'))
@@ -52,8 +56,9 @@ var rich_name : String :
 static func _static_init() -> void:
 	PRIORITY_DATA_ENTRIES.reverse()
 
-func _init(_host: PennyHost, _data : Dictionary = { BASE_KEY: Path.new([BASE_OBJECT_NAME]) }) -> void:
+func _init(_host: PennyHost, _parent_key: StringName, _data : Dictionary = { BASE_KEY: Path.new([BASE_OBJECT_NAME]) }) -> void:
 	host = _host
+	parent_key = _parent_key
 	data = _data
 
 func _to_string() -> String:
@@ -73,6 +78,9 @@ func set_data(key: StringName, value: Variant) -> void:
 		data.erase(key)
 	else:
 		data[key] = value
+
+func has_data(key: StringName) -> bool:
+	return data.has(key)
 
 func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null, path := Path.new()) -> TreeItem:
 	var result := tree.create_item(parent)

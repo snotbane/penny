@@ -75,8 +75,10 @@ func tokenize() -> Array[PennyException]:
 	while cursor < raw.length():
 		var match_found = false
 
-		for i in Token.PATTERNS.size():
-			var match = Token.PATTERNS[i].search(raw, cursor)
+		var i := -1
+		for k in Token.PATTERNS.keys():
+			i += 1
+			var match = Token.PATTERNS[k].search(raw, cursor)
 			if not match:
 				continue
 			if match.get_start() != cursor:
@@ -93,6 +95,7 @@ func tokenize() -> Array[PennyException]:
 					token_lines.push_back(line)
 			cursor = match.get_end()
 			break
+
 
 		if not match_found:
 			result.push_back(PennyExceptionRef.new(FileAddress.new(file.get_path(), line, col), "Unrecognized token '%s'." % raw[cursor]))

@@ -18,7 +18,7 @@ signal on_data_modified
 
 static var insts : Array[PennyHost] = []
 
-var data_root := PennyObject.new(self, { PennyObject.BASE_OBJECT_NAME: PennyObject.BASE_OBJECT })
+var data_root := PennyObject.new(self, '_root', { PennyObject.BASE_OBJECT_NAME: PennyObject.BASE_OBJECT })
 var records : Array[Record]
 
 var call_stack : Array[Stmt_.Address]
@@ -118,8 +118,6 @@ func evaluate_expression(tokens: Array[Token], range_in := 0, range_out := -1) -
 			Token.IDENTIFIER:
 				stack.push_back(Path.new([token.value]))
 			Token.VALUE_BOOLEAN, Token.VALUE_NUMBER, Token.VALUE_COLOR, Token.VALUE_STRING:
-				stack.push_back(token.value)
-			Token.LOOKUP:
 				stack.push_back(token.value)
 			Token.KEYWORD:
 				match token.value:
