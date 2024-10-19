@@ -61,7 +61,6 @@ static var PATTERNS := {
 enum Literal {
 	STRING,
 	COLOR,
-	LOOKUP,
 	NULL,
 	BOOLEAN_TRUE,
 	BOOLEAN_FALSE,
@@ -81,9 +80,9 @@ static var PRIMITIVE_PATTERNS = [
 
 enum Operator {
 	INVALID,
-	NOT,		# !  , not
 	DEREF,		# @
 	LOOKUP,		# $
+	NOT,		# !  , not
 	AND,		# && , and
 	OR,			# || , or
 	IS_EQUAL,	# ==
@@ -142,8 +141,6 @@ static func interpret(s: String) -> Variant:
 				return match.get_string()
 			Literal.COLOR:
 				return Color(s)
-			Literal.LOOKUP:
-				return Lookup.new(s.substr(1))
 			Literal.NULL:
 				return null
 			Literal.BOOLEAN_TRUE:
