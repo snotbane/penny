@@ -21,7 +21,7 @@ static var insts : Array[PennyHost] = []
 var data_root := PennyObject.new(self, { PennyObject.BASE_OBJECT_NAME: PennyObject.BASE_OBJECT })
 var records : Array[Record]
 
-var call_stack : Array[Address]
+var call_stack : Array[Stmt_.Address]
 var expecting_conditional : bool
 var cursor : Stmt_
 
