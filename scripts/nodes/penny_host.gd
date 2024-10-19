@@ -102,65 +102,65 @@ func evaluate_expression_or_identifier(tokens: Array[Token], range_in := 0, rang
 		return StringName(expr.to_string())
 	return expr
 
-func evaluate_expression(tokens: Array[Token], range_in := 0, range_out := -1) -> Variant:
+func evaluate_expression(_tokens: Array[Token], range_in := 0, range_out := -1) -> Variant:
 	if range_out == -1:
-		range_out = tokens.size()
-	range_out -= range_in
-	if range_out <= 0:
-		return null
+		range_out = _tokens.size()
+	var tokens : Array[Token] = _tokens.slice(range_in, range_out)
 
 	var stack := []
 	var ops := []
 
-	for i in range_out:
-		var token := tokens[i + range_in]
-		match token.type:
+	for i in tokens:
+		match i.type:
 			Token.IDENTIFIER:
-				stack.push_back(Path.new([token.value]))
+				stack.push_back(i.value)
 			Token.VALUE_BOOLEAN, Token.VALUE_NUMBER, Token.VALUE_COLOR, Token.VALUE_STRING:
-				stack.push_back(token.value)
-			Token.KEYWORD:
-				match token.value:
-					'object':
-						stack.push_back(Path.new(["object"]))
-						# stack.push_back(PennyObject.DEFAULT_OBJECT)
-					_:
-						push_error("Unexpected keyword in expression '%s'." % token)
-						return null
+				stack.push_back(i.value)
 			Token.OPERATOR:
-				while ops and (token.get_operator_type() <= ops.back().get_operator_type()):
+				while ops and (i.get_operator_type() <= ops.back().get_operator_type()):
 					apply_operator(stack, ops.pop_back())
-				ops.push_back(token)
+				ops.push_back(i)
+			_:
+				Penny.log_error("Expression not evaluated: unexpected i '%s'" % i)
+				return null
 
 	while ops:
 		apply_operator(stack, ops.pop_back())
 
 	if stack.size() != 1:
-		Penny.log_error("Stack size is not 1. Tokens: %s | Stack: %s " % [str(tokens), str(stack)])
+		Penny.log_error("Expression not evaluated: Stack size is not 1. Tokens: %s | Stack: %s " % [str(tokens), str(stack)])
 		return null
 
+	if stack[0] is StringName:
+		return Path.new([stack[0]])
 	return stack[0]
 
-static func apply_operator(stack: Array[Variant], op: Token) -> void:
-	var token_count = op.get_operator_token_count()
+func apply_operator(stack: Array[Variant], op: Token) -> void:
+	var token_count := op.get_operator_token_count()
 	match token_count:
-		1:
-			match op.get_operator_type():
-				Token.Operator.NOT:
-					stack.push_back(not stack.pop_back())
-		2:
-			var b : Variant = stack.pop_back()
-			var a : Variant = stack.pop_back()
-			match op.get_operator_type():
-				Token.Operator.AND:
-					stack.push_back(a and b)
-				Token.Operator.OR:
-					stack.push_back(a or b)
-				Token.Operator.IS_EQUAL:
-					stack.push_back(a == b)
-				Token.Operator.NOT_EQUAL:
-					stack.push_back(a != b)
-				Token.Operator.DOT:
-					a.identifiers.append_array(b.identifiers)
-					stack.push_back(a)
+		-1: return
+		0:	token_count = stack.size()
+
+	var abc : Array[Variant] = []
+	for i in op.get_operator_token_count():
+		abc.push_front(stack.pop_back())
+
+	match op.get_operator_type():
+		Token.Operator.NOT:			stack.push_back(not abc[0])
+		Token.Operator.LOOKUP:		stack.push_back(Lookup.new(abc[0]))
+		Token.Operator.AND:			stack.push_back(abc[0] and abc[1])
+		Token.Operator.OR:			stack.push_back(abc[0] or abc[1])
+		Token.Operator.IS_EQUAL:	stack.push_back(abc[0] == abc[1])
+		Token.Operator.NOT_EQUAL:	stack.push_back(abc[0] != abc[1])
+		Token.Operator.DOT:
+			var path : Path
+			if abc.size() == 1:
+				var nest := cursor.nested_object_stmt
+				path = nest.path.get_absolute_path(nest)
+			elif abc[0] is Path:
+				path = abc[0]
+			else:
+				path = Path.new([abc[0]])
+			path.identifiers.push_back(abc[1])
+			stack.push_back(path)
 

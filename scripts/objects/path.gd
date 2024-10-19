@@ -37,9 +37,8 @@ func _to_string() -> String:
 
 func get_absolute_path(from: Stmt_) -> Path:
 	if relative:
-		var parent_stmt := from.prev_lower_depth
-		if not parent_stmt is StmtObject_:
-			parent_stmt.create_exception("Relative path is trying to look at parent statement [%s], but this statement is not an object." % parent_stmt).push()
+		var parent_stmt := from.nested_object_stmt
+		if not parent_stmt:
 			return null
 		return parent_stmt.path.get_absolute_path(parent_stmt).combine(self)
 	return self

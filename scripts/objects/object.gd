@@ -19,7 +19,7 @@ static var BASE_OBJECT := PennyObject.new(null, 'object', {
 })
 
 static var BASE_OPTION := PennyObject.new(null, 'option', {
-	BASE_KEY: Path.new(["object"]),
+	BASE_KEY: Path.new([BASE_OBJECT_NAME]),
 	ABLE_KEY: true,
 	SHOW_KEY: true,
 	# ICON_KEY: null,
@@ -143,7 +143,7 @@ static func get_icon(value: Variant) -> Texture2D:
 	if value is Path:
 		return load("res://addons/penny_godot/assets/icons/NodePath.svg")
 	if value is Lookup:
-		return load("res://addons/penny_godot/assets/icons/LinkButton.svg")
+		return load("res://addons/penny_godot/assets/icons/Lookup.svg")
 	if value is Expr:
 		return load("res://addons/penny_godot/assets/icons/PrismMesh.svg")
 	return null

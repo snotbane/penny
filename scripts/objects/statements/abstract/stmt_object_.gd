@@ -47,7 +47,3 @@ func _validate() -> PennyException:
 
 	path = Path.from_tokens(tokens)
 	return null
-
-# func _setup() -> void:
-# 	if prev_lower_depth is StmtObject_:
-# 		path.prepend(prev_lower_depth.path)

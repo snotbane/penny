@@ -184,6 +184,18 @@ var prev_higher_depth : Stmt_ :
 			cursor.index -= 1
 		return cursor.stmt
 
+var nested_object_stmt : StmtObject_ :
+	get:
+		var prev := prev_lower_depth
+		if prev:
+			if prev is StmtObject_:
+				return prev
+			else:
+				create_exception("Attempted to access a nested object statement at [%s], but this statement does not interact with an object." % prev).push()
+		else:
+			create_exception("Attempted to access a nested object statement at [%s], but there are no above statements to be found." % prev).push()
+		return null
+
 var reconstructed_string : String :
 	get:
 		var result := ""

@@ -82,13 +82,13 @@ static var PRIMITIVE_PATTERNS = [
 enum Operator {
 	INVALID,
 	NOT,		# !  , not
+	DEREF,		# @
+	LOOKUP,		# $
 	AND,		# && , and
 	OR,			# || , or
 	IS_EQUAL,	# ==
 	NOT_EQUAL,	# !=
 	DOT,		# .
-	DEREF,		# @
-	LOOKUP,		# $
 	QUESTION,	# ?
 
 }
@@ -111,22 +111,25 @@ func get_operator_type() -> Operator:
 	if type == OPERATOR:
 		match value:
 			'!', 'not': return Operator.NOT
+			'$': return Operator.LOOKUP
 			'&&', 'and': return Operator.AND
 			'||', 'or': return Operator.OR
 			'==': return Operator.IS_EQUAL
 			'!=': return Operator.NOT_EQUAL
 			'.': return Operator.DOT
 			'@': return Operator.DEREF
-			'$': return Operator.LOOKUP
 			'?': return Operator.QUESTION
 	return Operator.INVALID
 
 func get_operator_token_count() -> int:
-	if get_operator_type() == 1:
-		return 1
-	if get_operator_type() > 1:
-		return 2
-	return -1
+	if type != OPERATOR: return -1
+	match get_operator_type():
+		Operator.DOT:
+			return 0
+		Operator.NOT, Operator.LOOKUP, Operator.DEREF:
+			return 1
+		_:
+			return 2
 
 static func interpret(s: String) -> Variant:
 	for i in PRIMITIVE_PATTERNS.size():
