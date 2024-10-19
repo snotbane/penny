@@ -70,6 +70,7 @@ var next_in_depth : Stmt_ :
 ## The next statement in a lower depth than this one. (less nested)
 var next_lower_depth : Stmt_ :
 	get:
+		if depth == 0: return null
 		var cursor := address.copy(1)
 		while cursor.valid:
 			if cursor.stmt.depth < depth:
@@ -128,6 +129,7 @@ var prev_in_depth : Stmt_ :
 ## The previous statement in a lower depth than this one. (less nested)
 var prev_lower_depth : Stmt_ :
 	get:
+		if depth == 0: return null
 		var cursor := address.copy(-1)
 		while cursor.valid:
 			if cursor.stmt.depth < depth:
