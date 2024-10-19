@@ -64,6 +64,9 @@ func get_mount_point(host: PennyHost) -> PennyObject:
 	for i in absolute.identifiers.size() - 1:
 		var id := absolute.identifiers[i]
 		var next = result.get_data(id)
+		if not next:
+			host.cursor.create_exception("Attempted to get_mount_point object for path [%s], but identifier '%s' does not exist." % [absolute, id]).push()
+			return null
 		if not next is PennyObject:
 			host.cursor.create_exception("Attempted to get_mount_point object for path [%s], but identifier '%s' is not an object." % [absolute, id]).push()
 			return null
