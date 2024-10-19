@@ -2,7 +2,7 @@
 ## Statement that interacts with an object and can have nested statements that interact with said object.
 class_name StmtObject_ extends Stmt_
 
-var obj_path : ObjectPath
+var obj_path : Path
 
 func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
 	super._init(_address, _line, _depth, _tokens)
@@ -36,7 +36,7 @@ func _validate() -> PennyException:
 	if exception:
 		return exception
 
-	obj_path = ObjectPath.from_tokens(tokens)
+	obj_path = Path.from_tokens(tokens)
 	return null
 
 func _setup() -> void:

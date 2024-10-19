@@ -18,6 +18,14 @@ static var BASE_OBJECT := PennyObject.new(null, {
 	'name_suffix': "</>",
 })
 
+static var BASE_OPTION := PennyObject.new(null, {
+	BASE_KEY: Path.new(["object"]),
+	ABLE_KEY: true,
+	SHOW_KEY: true,
+	# ICON_KEY: null,
+	USED_KEY: false,
+})
+
 static var PRIORITY_DATA_ENTRIES := [
 	"base",
 	"link",
@@ -25,8 +33,12 @@ static var PRIORITY_DATA_ENTRIES := [
 ]
 
 const BASE_OBJECT_NAME := "object"
-const NAME_KEY := 'name'
+const ABLE_KEY := 'able'
 const BASE_KEY := 'base'
+const NAME_KEY := 'name'
+const ICON_KEY := 'icon'
+const SHOW_KEY := 'show'
+const USED_KEY := 'used'
 
 var host : PennyHost
 var data : Dictionary
@@ -40,7 +52,7 @@ var rich_name : String :
 static func _static_init() -> void:
 	PRIORITY_DATA_ENTRIES.reverse()
 
-func _init(_host: PennyHost, _data : Dictionary = { BASE_KEY: ObjectPath.new([BASE_OBJECT_NAME]) }) -> void:
+func _init(_host: PennyHost, _data : Dictionary = { BASE_KEY: Path.new([BASE_OBJECT_NAME]) }) -> void:
 	host = _host
 	data = _data
 
@@ -51,7 +63,7 @@ func get_data(key: StringName) -> Variant:
 	if data.has(key):
 		return data[key]
 	if host and data.has(BASE_KEY):
-		var path : ObjectPath = data[BASE_KEY].duplicate()
+		var path : Path = data[BASE_KEY].duplicate()
 		path.identifiers.push_back(key)
 		return path.get_data(host)
 	return null
@@ -62,12 +74,12 @@ func set_data(key: StringName, value: Variant) -> void:
 	else:
 		data[key] = value
 
-func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null, path := ObjectPath.new()) -> TreeItem:
+func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null, path := Path.new()) -> TreeItem:
 	var result := tree.create_item(parent)
 
 	result.set_selectable(TreeCell.ICON, false)
 	result.set_cell_mode(TreeCell.ICON, TreeItem.CELL_MODE_ICON)
-	result.set_icon(TreeCell.ICON, load("res://addons/penny_godot/assets/icons/Object.svg"))
+	result.set_icon(TreeCell.ICON, load("res://addons/penny_godot/assets/icons/MiniObject.svg"))
 
 	result.set_selectable(TreeCell.NAME, false)
 
@@ -118,10 +130,12 @@ static func sort_baseline(a, b) -> int:
 	return PRIORITY_DATA_ENTRIES.find(a) > PRIORITY_DATA_ENTRIES.find(b)
 
 static func get_icon(value: Variant) -> Texture2D:
-	if value is ObjectPath:
-		return load("res://addons/penny_godot/assets/icons/NodePath.svg")
 	if value is	Color:
 		return load("res://addons/penny_godot/assets/icons/Color.svg")
+	if value is Path:
+		return load("res://addons/penny_godot/assets/icons/NodePath.svg")
 	if value is Lookup:
-		return load("res://addons/penny_godot/assets/icons/Slot.svg")
+		return load("res://addons/penny_godot/assets/icons/LinkButton.svg")
+	if value is Expr:
+		return load("res://addons/penny_godot/assets/icons/PrismMesh.svg")
 	return null

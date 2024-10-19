@@ -92,10 +92,10 @@ func evaluate_expression_as_boolean(tokens: Array[Token], range_in := 0, range_o
 		return result as bool
 	return false
 
-## Evaluates the expression. If the result is an ObjectPath that doesn't exist, just return the ObjectPath itself as if it is an identifier.
+## Evaluates the expression. If the result is an Path that doesn't exist, just return the Path itself as if it is an identifier.
 func evaluate_expression_or_identifier(tokens: Array[Token], range_in := 0, range_out := -1) -> Variant:
 	var expr = self.evaluate_expression(tokens)
-	if expr is ObjectPath:
+	if expr is Path:
 		var value : Variant = expr.get_data(self)
 		if value:
 			return value
@@ -116,7 +116,7 @@ func evaluate_expression(tokens: Array[Token], range_in := 0, range_out := -1) -
 		var token := tokens[i + range_in]
 		match token.type:
 			Token.IDENTIFIER:
-				stack.push_back(ObjectPath.new([token.value]))
+				stack.push_back(Path.new([token.value]))
 			Token.VALUE_BOOLEAN, Token.VALUE_NUMBER, Token.VALUE_COLOR, Token.VALUE_STRING:
 				stack.push_back(token.value)
 			Token.LOOKUP:
@@ -124,7 +124,7 @@ func evaluate_expression(tokens: Array[Token], range_in := 0, range_out := -1) -
 			Token.KEYWORD:
 				match token.value:
 					'object':
-						stack.push_back(ObjectPath.new(["object"]))
+						stack.push_back(Path.new(["object"]))
 						# stack.push_back(PennyObject.DEFAULT_OBJECT)
 					_:
 						push_error("Unexpected keyword in expression '%s'." % token)
