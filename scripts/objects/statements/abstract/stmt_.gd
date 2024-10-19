@@ -242,6 +242,10 @@ func message(record: Record) -> Message: return _message(record)
 func _message(record: Record) -> Message:
 	return Message.new(reconstructed_string)
 
+func create_history_node(record: Record) -> Control: return _create_history_node(record)
+func _create_history_node(record: Record) -> Control:
+	return null
+
 ## Returns an exception to check what may be wrong with the statement (or null if OK)
 func validate() -> PennyException: return _validate()
 func _validate() -> PennyException:

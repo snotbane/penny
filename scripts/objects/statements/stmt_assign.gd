@@ -18,12 +18,10 @@ func _execute(host: PennyHost) -> Record:
 		after = path.add_object(host)
 	else:
 		path.set_data(host, after)
-	var result = Record.new(host, self, AssignmentRecord.new(before, after))
-	host.on_data_modified.emit()
-	return result
+	return create_record(host, before, after)
 
-func _undo(record: Record) -> void:
-	path.set_data(record.host, record.attachment.before)
+# func _undo(record: Record) -> void:
+# 	super._undo(record)
 
 func _message(record: Record) -> Message:
 	var result := super._message(record)

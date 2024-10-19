@@ -22,11 +22,20 @@ func _get_verbosity() -> Verbosity:
 # func _load() -> PennyException:
 # 	super._load()
 
-# func _execute(host: PennyHost) -> Record:
-# 	return super._execute(host)
+func _execute(host: PennyHost) -> Record:
+	var before : Variant = path.get_data(host)
+	if before: return super._execute(host)
+	var after : Variant = path.add_object(host)
+	return create_record(host, before, after)
 
-# func _undo(record: Record) -> void:
-# 	super._undo(record)
+func create_record(host: PennyHost, before: Variant, after: Variant) -> Record:
+	var result = Record.new(host, self, AssignmentRecord.new(before, after))
+	host.on_data_modified.emit()
+	return result
+
+func _undo(record: Record) -> void:
+	if record.attachment:
+		path.set_data(record.host, record.attachment.before)
 
 func _message(record: Record) -> Message:
 	return Message.new("[color=#%s][code]%s[/code][/color]" % [Penny.IDENTIFIER_COLOR.to_html(), path])
