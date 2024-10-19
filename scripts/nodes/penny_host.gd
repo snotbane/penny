@@ -4,8 +4,23 @@ class_name PennyHost extends Node
 
 signal on_data_modified
 
-## If populated, this host will start at this label on ready. Leave empty to not execute anything.
-@export var autostart_label : StringName = ''
+@export_subgroup("Instantiation")
+
+## Settings.
+@export var settings : PennySettings
+
+## Lookup tables.
+@export var lookup_tables : Array[LookupTable]
+
+## Controls instantiated via Penny will be added to this master [Control].
+@export var instantiate_parent_control : Control
+
+## Controls instantiated via Penny will be added to this master [Node2D].
+@export var instantiate_parent_2d : Node2D
+
+## Controls instantiated via Penny will be added to this master [Node3D].
+@export var instantiate_parent_3d : Node3D
+
 
 ## Reference to a message handler. (Temporary. Eventually will be instantiated in code)
 @export var message_handler : MessageHandler
@@ -13,8 +28,12 @@ signal on_data_modified
 ## Reference to the history handler.
 @export var history_handler : HistoryHandler
 
-## Settings.
-@export var settings : PennySettings
+@export_subgroup("Flow")
+
+## If populated, this host will start at this label on ready. Leave empty to not execute anything.
+@export var autostart_label : StringName = ''
+
+
 
 static var insts : Array[PennyHost] = []
 
@@ -163,4 +182,3 @@ func apply_operator(stack: Array[Variant], op: Token) -> void:
 				path = Path.new([abc[0]])
 			path.identifiers.push_back(abc[1])
 			stack.push_back(path)
-

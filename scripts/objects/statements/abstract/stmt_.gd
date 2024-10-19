@@ -44,17 +44,19 @@ enum Verbosity {
 	USER_FACING = 1 << 0,
 	DEBUG_MESSAGES = 1 << 1,
 	FLOW_ACTIVITY = 1 << 2,
-	DATA_ACCESS = 1 << 3,
-	MAX = (1 << 4) - 1,
-	IGNORED = 1 << 4,
+	DATA_ACTIVITY = 1 << 3,
+	NODE_ACTIVITY = 1 << 4,
+	IGNORED = 1 << 5,
+	MAX = (1 << 6) - 1,
 }
 
 const VERBOSITY_NAMES : PackedStringArray = [
 	"User Facing:1",
 	"Debug Messages:2",
 	"Flow Activity:4",
-	"Data Access:8",
-	"Ignored:16"
+	"Data Activity:8",
+	"Node Activity:16",
+	"Ignored:32"
 ]
 
 var address : Address
@@ -286,14 +288,15 @@ func recycle() -> Stmt_:
 		Token.KEYWORD:
 			var key = tokens.pop_front().value
 			match key:
+				'call': return StmtJumpCall.new(address, line, depth, tokens)
+				'else': return StmtConditionalElse.new(address, line, depth, tokens)
+				'elif': return StmtConditionalElif.new(address, line, depth, tokens)
+				'if': return StmtConditionalIf.new(address, line, depth, tokens)
+				'jump': return StmtJump.new(address, line, depth, tokens)
+				'label': return StmtLabel.new(address, line, depth, tokens)
+				'open': return StmtOpen.new(address, line, depth, tokens)
 				'pass': return StmtPass.new(address, line, depth, tokens)
 				'print': return StmtPrint.new(address, line, depth, tokens)
-				'label': return StmtLabel.new(address, line, depth, tokens)
-				'jump': return StmtJump.new(address, line, depth, tokens)
-				'call': return StmtJumpCall.new(address, line, depth, tokens)
-				'if': return StmtConditionalIf.new(address, line, depth, tokens)
-				'elif': return StmtConditionalElif.new(address, line, depth, tokens)
-				'else': return StmtConditionalElse.new(address, line, depth, tokens)
 		Token.IDENTIFIER:
 			if tokens.size() == 1 or tokens[1].get_operator_type() == Token.Operator.DOT:
 				return StmtObject_.new(address, line, depth, tokens)
@@ -323,6 +326,9 @@ func validate_as_identifier_only() -> PennyException:
 		return create_exception("Statement requires exactly 1 token.")
 	if tokens[0].type != Token.IDENTIFIER:
 		return create_exception("Unexpected token '%s' is not an identifier." % tokens[0])
+	return null
+
+func validate_as_lookup() -> PennyException:
 	return null
 
 func validate_as_expression(require: bool = true) -> PennyException:

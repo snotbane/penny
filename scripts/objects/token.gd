@@ -51,7 +51,7 @@ static var PATTERNS := {
 	Token.OPERATOR: 		RegEx.create_from_string("([=!<>]=)|&&|\\|\\||(\\b(and|nand|or|nor|not)\\b)|([!+\\-*/@\\$%&|<>\\(\\)](?!=))|(\\.\\b)"),
 	Token.COMMENT: 			RegEx.create_from_string("(?ms)(([#/])\\*.*?(\\*\\2))|((#|\\/{2}).*?$)"),
 	Token.ASSIGNMENT: 		RegEx.create_from_string("[+\\-*/:]?="),
-	Token.KEYWORD: 			RegEx.create_from_string("\\b(dec|dive|call|elif|else|if|filter|jump|label|menu|pass|print|return|rise|suspend)\\b"),
+	Token.KEYWORD: 			RegEx.create_from_string("\\b(dec|dive|call|elif|else|if|filter|jump|label|menu|open|pass|print|return|rise|suspend)\\b"),
 	Token.IDENTIFIER: 		RegEx.create_from_string("[a-zA-Z_]\\w*"),
 	Token.TERMINATOR: 		RegEx.create_from_string("(?m)[:;]|((?<=[^\\n:;])$\\n)"),
 	Token.WHITESPACE: 		RegEx.create_from_string("(?m)[ \\n]+|(?<!^|\\t)\\t+"),

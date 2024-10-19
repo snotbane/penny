@@ -9,7 +9,7 @@ func _get_keyword() -> StringName:
 	return 'assign'
 
 func _get_verbosity() -> Verbosity:
-	return Verbosity.DATA_ACCESS
+	return Verbosity.DATA_ACTIVITY
 
 func _execute(host: PennyHost) -> Record:
 	var before : Variant = path.get_data(host)
