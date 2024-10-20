@@ -9,10 +9,10 @@
 
 [node name="penny_example_scene" type="Node2D"]
 
-[node name="penny_host" type="Node" parent="." node_paths=PackedStringArray("instantiate_parent_control", "message_handler", "history_handler")]
+[node name="penny_host" type="Node2D" parent="." node_paths=PackedStringArray("instantiate_parent_control", "message_handler", "history_handler")]
 script = ExtResource("1_jmae0")
 lookup_tables = Array[ExtResource("2_4q0nq")]([ExtResource("3_lw4vb")])
-instantiate_parent_control = NodePath("../canvas_layer/ui")
+instantiate_parent_control = NodePath("../canvas_layer/menus")
 message_handler = NodePath("../canvas_layer/ui/dialogue_container/penny_dialogue_box")
 history_handler = NodePath("../canvas_layer/ui/history_container/penny_history_box")
 autostart_label = &"characters"
@@ -61,6 +61,14 @@ theme_override_constants/margin_bottom = 170
 
 [node name="penny_history_box" parent="canvas_layer/ui/history_container" instance=ExtResource("4_hm4jj")]
 layout_mode = 2
+
+[node name="menus" type="Control" parent="canvas_layer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="debug_overlay" parent="canvas_layer" instance=ExtResource("5_vsnrl")]
 visible = false

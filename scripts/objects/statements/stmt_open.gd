@@ -21,15 +21,15 @@ func _get_verbosity() -> Verbosity:
 # 	return null
 
 func _execute(host: PennyHost) -> Record:
-	var lookup = expr.evaluate(host)
-	if lookup is Lookup:
-		var scene : PackedScene = lookup.fetch(host)
+	var lookup := expr.evaluate_as_lookup(host)
+	if lookup:
+		var scene : PackedScene = lookup.fetch()
 		var node : Node = scene.instantiate()
 		if node is Control:
 			host.instantiate_parent_control.add_child.call_deferred(node)
+		elif node is Node2D or node is Node3D:
+			host.add_child.call_deferred(node)
 		return Record.new(host, self, node)
-	else:
-		create_exception("Couldn't open '%s' because it isn't a Lookup." % expr.evaluate(host, true)).push()
 	return super._execute(host)
 
 # func _next(record: Record) -> Stmt_:

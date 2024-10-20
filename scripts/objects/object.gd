@@ -90,7 +90,7 @@ func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null,
 
 	result.set_selectable(TreeCell.ICON, false)
 	result.set_cell_mode(TreeCell.ICON, TreeItem.CELL_MODE_ICON)
-	result.set_icon(TreeCell.ICON, load("res://addons/penny_godot/assets/icons/MiniObject.svg"))
+	result.set_icon(TreeCell.ICON, load("res://addons/penny_godot/assets/icons/Object.svg"))
 
 	result.set_selectable(TreeCell.NAME, false)
 

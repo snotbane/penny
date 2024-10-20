@@ -15,13 +15,6 @@ signal on_data_modified
 ## Controls instantiated via Penny will be added to this master [Control].
 @export var instantiate_parent_control : Control
 
-## Controls instantiated via Penny will be added to this master [Node2D].
-@export var instantiate_parent_2d : Node2D
-
-## Controls instantiated via Penny will be added to this master [Node3D].
-@export var instantiate_parent_3d : Node3D
-
-
 ## Reference to a message handler. (Temporary. Eventually will be instantiated in code)
 @export var message_handler : MessageHandler
 
