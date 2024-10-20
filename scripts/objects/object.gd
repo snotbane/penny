@@ -141,11 +141,12 @@ func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null,
 static func sort_baseline(a, b) -> int:
 	return PRIORITY_DATA_ENTRIES.find(a) > PRIORITY_DATA_ENTRIES.find(b)
 
+## REALLY SLOW??? PROBABLY??? Try caching
 static func get_icon(value: Variant) -> Texture2D:
 	if value is	Color:
 		return load("res://addons/penny_godot/assets/icons/Color.svg")
 	if value is Path:
-		return load("res://addons/penny_godot/assets/icons/NodePath.svg")
+		return load("res://addons/penny_godot/assets/icons/Path.svg")
 	if value is Lookup:
 		return load("res://addons/penny_godot/assets/icons/Lookup.svg")
 	if value is Expr:

@@ -29,7 +29,7 @@ func _execute(host: PennyHost) -> Record:
 			host.instantiate_parent_control.add_child.call_deferred(node)
 		return Record.new(host, self, node)
 	else:
-		create_exception("Couldn't use lookup because it isn't a Lookup: %s" % lookup)
+		create_exception("Couldn't open '%s' because it isn't a Lookup." % expr.evaluate(host, true)).push()
 	return super._execute(host)
 
 # func _next(record: Record) -> Stmt_:

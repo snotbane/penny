@@ -149,7 +149,6 @@ func _to_string() -> String:
 	return result.substr(0, result.length() - 1)
 
 func _evaluate(host: PennyHost, soft: bool = false) -> Variant:
-	print(self)
 	if returns_self_softly: return self
 
 	var stack : Array[Variant] = []
