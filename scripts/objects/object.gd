@@ -13,7 +13,7 @@ enum TreeCell {
 	VALUE
 }
 
-static var BASE_OBJECT := PennyObject.new(null, 'object', {
+static var BASE_OBJECT := PennyObject.new(null, BASE_OBJECT_NAME, {
 	'name_prefix': "<>",
 	'name_suffix': "</>",
 })
@@ -32,7 +32,7 @@ static var PRIORITY_DATA_ENTRIES := [
 	"name",
 ]
 
-const BASE_OBJECT_NAME := "object"
+const BASE_OBJECT_NAME := 'object'
 const ABLE_KEY := 'able'
 const BASE_KEY := 'base'
 const NAME_KEY := 'name'

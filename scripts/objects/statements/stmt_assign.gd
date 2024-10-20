@@ -14,7 +14,7 @@ func _get_verbosity() -> Verbosity:
 	return Verbosity.DATA_ACTIVITY
 
 func _execute(host: PennyHost) -> Record:
-	var before : Variant = path.get_data(host)
+	var before : Variant = path.evaluate(host)
 	var after : Variant = expr.evaluate_softly(host)
 	if after is PennyObject and after == PennyObject.BASE_OBJECT:
 		after = path.add_object(host)

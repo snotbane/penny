@@ -11,7 +11,7 @@ func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) ->
 # 	return super._get_is_halting()
 
 func _get_keyword() -> StringName:
-	return 'object'
+	return 'object_head'
 
 func _get_verbosity() -> Verbosity:
 	return Verbosity.DATA_ACTIVITY
@@ -23,7 +23,7 @@ func _get_verbosity() -> Verbosity:
 # 	super._load()
 
 func _execute(host: PennyHost) -> Record:
-	var before : Variant = path.get_data(host)
+	var before : Variant = path.evaluate(host)
 	if before: return super._execute(host)
 	var after : Variant = path.add_object(host)
 	return create_record(host, before, after)
