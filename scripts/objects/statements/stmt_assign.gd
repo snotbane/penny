@@ -15,8 +15,8 @@ func _get_verbosity() -> Verbosity:
 
 func _execute(host: PennyHost) -> Record:
 	var before : Variant = path.get_data(host)
-	var after : Variant = expr.evaluate(host, true)
-	if after is Path and after.identifiers[0] == "object":
+	var after : Variant = expr.evaluate_softly(host)
+	if after is PennyObject and after == PennyObject.BASE_OBJECT:
 		after = path.add_object(host)
 	else:
 		path.set_data(host, after)
@@ -25,10 +25,8 @@ func _execute(host: PennyHost) -> Record:
 # func _undo(record: Record) -> void:
 # 	super._undo(record)
 
-func _message(record: Record) -> Message:
-	var result := super._message(record)
-	result.append(" = %s" % record.attachment)
-	return result
+# func _message(record: Record) -> Message:
+# 	return super._message(record)
 
 func _validate() -> PennyException:
 	op_index = -1
@@ -54,5 +52,4 @@ func _validate() -> PennyException:
 
 	path = Path.from_tokens(left)
 	expr = Expr.from_tokens(self, right)
-	prints("Result:", expr)
 	return null

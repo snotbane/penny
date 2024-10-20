@@ -13,7 +13,7 @@ func _validate() -> PennyException:
 
 func _evaluate_self(host: PennyHost) -> Variant:
 	## Always returns TRUE or FALSE
-	return host.evaluate_expression_as_boolean(tokens)
+	return expr.evaluate(host)
 
 func _should_skip(record: Record) -> bool:
 	return not record.attachment

@@ -15,7 +15,7 @@ lookup_tables = Array[ExtResource("2_4q0nq")]([ExtResource("3_lw4vb")])
 instantiate_parent_control = NodePath("../canvas_layer/ui")
 message_handler = NodePath("../canvas_layer/ui/dialogue_container/penny_dialogue_box")
 history_handler = NodePath("../canvas_layer/ui/history_container/penny_history_box")
-autostart_label = &"characters"
+autostart_label = &"variable_assignment"
 
 [node name="canvas_layer" type="CanvasLayer" parent="."]
 

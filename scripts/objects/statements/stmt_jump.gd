@@ -21,10 +21,11 @@ func _get_verbosity() -> Verbosity:
 # 	return null
 
 func _execute(host: PennyHost) -> Record:
-	var label = host.evaluate_expression_or_identifier(tokens)
+	var label = tokens[0].value
 	return Record.new(host, self, label)
 
 func _next(record: Record) -> Stmt_:
+	print("Jumping to ", record.attachment)
 	return Penny.get_stmt_from_label(record.attachment)
 
 # func _undo(record: Record) -> void:

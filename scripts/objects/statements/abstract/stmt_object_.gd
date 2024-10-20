@@ -14,7 +14,7 @@ func _get_keyword() -> StringName:
 	return 'object'
 
 func _get_verbosity() -> Verbosity:
-	return Verbosity.IGNORED
+	return Verbosity.DATA_ACTIVITY
 
 # func _is_record_shown_in_history(record: Record) -> bool:
 # 	return true
@@ -38,7 +38,11 @@ func _undo(record: Record) -> void:
 		path.set_data(record.host, record.attachment.before)
 
 func _message(record: Record) -> Message:
-	return Message.new("[color=#%s][code]%s[/code][/color]" % [Penny.IDENTIFIER_COLOR.to_html(), path])
+	var result := Message.new("[color=#%s][code]%s[/code][/color]" % [Penny.IDENTIFIER_COLOR.to_html(), path])
+	if record.attachment:
+		result.append(" = %s" % record.attachment)
+	return result
+
 
 func _validate() -> PennyException:
 	var exception := validate_path(tokens)

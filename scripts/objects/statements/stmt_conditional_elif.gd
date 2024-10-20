@@ -16,7 +16,7 @@ func _validate() -> PennyException:
 func _evaluate_self(host: PennyHost) -> Variant:
 	## May return TRUE, FALSE, or NULL
 	if host.expecting_conditional:
-		return host.evaluate_expression_as_boolean(tokens)
+		return expr.evaluate(host)
 	return null
 
 func _should_skip(record: Record) -> bool:

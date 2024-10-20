@@ -1,10 +1,10 @@
 
-class_name Expr extends RefCounted
+class_name Expr extends Evaluable
 
 class Op extends RefCounted:
 	enum {
 		INVALID,
-		DEREF,				# @
+		EVALUATE,			# @
 		LOOKUP,				# $
 		NOT,				# !  , not
 		AND,				# && , and
@@ -20,7 +20,7 @@ class Op extends RefCounted:
 	var symbols_required : int :
 		get:
 			match type:
-				DEREF, LOOKUP, NOT:
+				EVALUATE, LOOKUP, NOT:
 					return 1
 				_:
 					return 2
@@ -34,7 +34,7 @@ class Op extends RefCounted:
 			'==': 			type = IS_EQUAL
 			'!=': 			type = NOT_EQUAL
 			'.': 			type = DOT
-			'@': 			type = DEREF
+			'@': 			type = EVALUATE
 			'?': 			type = QUESTION
 			_ :				type = INVALID
 
@@ -47,7 +47,7 @@ class Op extends RefCounted:
 			IS_EQUAL: return '=='
 			NOT_EQUAL: return '!='
 			DOT: return '.'
-			DEREF: return '@'
+			EVALUATE: return '@'
 			QUESTION: return '?'
 		return 'INVALID_OP'
 
@@ -55,22 +55,11 @@ class Op extends RefCounted:
 		var abc : Array[Variant] = []
 		for i in symbols_required:
 			abc.push_front(stack.pop_back())
-		# match type:
-		# 	# LOOKUP:
-		# 	# 	if host:
-		# 	# 		host.
-		# 	# 	else:
-		# 	# 		stack.push_back(Lookup.new(abc[0]))
-		# 	DEREF:
-		# 		stack.push_back(abc[0].get_data(host))
-		# 		return
 
 		for i in abc.size():
 			var e = abc[i]
-			if e is Expr:
+			if e is Evaluable:
 				abc[i] = e.evaluate(host)
-			if e is Path:
-				abc[i] = e.get_data(host)
 
 		match type:
 			NOT:			stack.push_back(not abc[0])
@@ -105,14 +94,14 @@ var symbols : Array[Variant]
 var returns_self_softly : bool :
 	get:
 		if symbols.size() == 1: return false
-		var path_count := 0
-		var deref_count := 0
+		var eval_count := 0
+		var dval_count := 0
 		for symbol in symbols:
-			if symbol is Path:
-				path_count += 1
-			elif symbol is Op and symbol.type == Op.DEREF:
-				deref_count += 1
-		return deref_count < path_count
+			if symbol is Evaluable:
+				eval_count += 1
+			elif symbol is Op and symbol.type == Op.EVALUATE:
+				dval_count += 1
+		return dval_count < eval_count
 
 func _init(_stmt: Stmt_, _symbols: Array) -> void:
 	stmt = _stmt
@@ -159,15 +148,17 @@ func _to_string() -> String:
 		result += str(symbol) + " "
 	return result.substr(0, result.length() - 1)
 
-func evaluate(host: PennyHost, soft: bool = false) -> Variant:
-	if returns_self_softly: return self
 
+func evaluate_softly(host: PennyHost) -> Variant:
+	if returns_self_softly: return self
+	return evaluate(host)
+
+
+func _evaluate(host: PennyHost) -> Variant:
 	var stack : Array[Variant] = []
 	var ops : Array[Op] = []
 
 	for symbol in symbols:
-		# if symbol is Expr:
-		# 	stack.push_back(symbol.evaluate(soft))
 		if symbol is Op:
 			while ops and symbol.type > ops.back().type:
 				ops.pop_back().apply(stack, host)
@@ -182,11 +173,12 @@ func evaluate(host: PennyHost, soft: bool = false) -> Variant:
 		stmt.create_exception("Expression not evaluated: stack size is not 1. Symbols: %s | Stack: %s" % [str(symbols), str(stack)])
 		return null
 
-	if stack[0] == null:
+	var result = stack.pop_back()
+	if result == null:
 		stmt.create_exception("Expression evaluated to null.")
 		return null
-
-	if stack[0] is StringName:
-		return Path.new([stack[0]])
-
-	return stack[0]
+	# if result is StringName:
+	# 	result = Path.new([result])
+	while result is Evaluable:
+		result = result.evaluate(host)
+	return result

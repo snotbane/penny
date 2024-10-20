@@ -1,6 +1,8 @@
 
 class_name StmtConditional_ extends Stmt_
 
+var expr : Expr
+
 func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
 	super._init(_address, _line, _depth, _tokens)
 
@@ -45,6 +47,9 @@ func _message(record: Record) -> Message:
 
 func _validate() -> PennyException:
 	return create_exception()
+
+func _setup() -> void:
+	expr = Expr.from_tokens(self, tokens)
 
 func _evaluate_self(host: PennyHost) -> Variant: return null
 

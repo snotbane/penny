@@ -1,5 +1,5 @@
 
-class_name Path extends RefCounted
+class_name Path extends Evaluable
 
 var identifiers : Array[StringName]
 var relative : bool
@@ -45,6 +45,9 @@ func get_absolute_path(from: Stmt_) -> Path:
 
 func duplicate(deep := false) -> Path:
 	return Path.new(identifiers.duplicate(deep), relative)
+
+func _evaluate(host: PennyHost) -> Variant:
+	return get_data(host)
 
 func get_data(host: PennyHost) -> Variant:
 	var mount := get_mount_point(host)

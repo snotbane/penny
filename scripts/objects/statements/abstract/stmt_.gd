@@ -300,6 +300,9 @@ func recycle() -> Stmt_:
 		Token.IDENTIFIER:
 			if tokens.size() == 1 or tokens[1].get_operator_type() == Token.Operator.DOT:
 				return StmtObject_.new(address, line, depth, tokens)
+		Token.OPERATOR:
+			if tokens[0].value == '.' and tokens[1].type == Token.IDENTIFIER:
+				return StmtObject_.new(address, line, depth, tokens)
 	return self
 
 func validate_as_no_tokens() -> PennyException:
