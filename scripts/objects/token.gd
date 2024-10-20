@@ -48,7 +48,7 @@ static var PATTERNS := {
 	Token.VALUE_COLOR: 		RegEx.create_from_string("(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
 	Token.VALUE_NUMBER: 	RegEx.create_from_string("\\d+\\.\\d*|\\.?\\d+"),
 	Token.VALUE_BOOLEAN: 	RegEx.create_from_string("\\b([Tt]rue|TRUE|[Ff]alse|FALSE)\\b"),
-	Token.OPERATOR: 		RegEx.create_from_string("([=!<>]=)|&&|\\|\\||(\\b(and|nand|or|nor|not)\\b)|([!+\\-*/@\\$%&|<>\\(\\)](?!=))|(\\.\\b)"),
+	Token.OPERATOR: 		RegEx.create_from_string("([=!<>]=)|&&|\\|\\||(\\b(and|nand|or|nor|not)\\b)|([!+\\-*/@\\$%&|<>\\[\\]\\(\\),](?!=))|(\\.\\b)"),
 	Token.COMMENT: 			RegEx.create_from_string("(?ms)(([#/])\\*.*?(\\*\\2))|((#|\\/{2}).*?$)"),
 	Token.ASSIGNMENT: 		RegEx.create_from_string("[+\\-*/:]?="),
 	Token.KEYWORD: 			RegEx.create_from_string("\\b(dec|dive|call|elif|else|if|filter|jump|label|menu|open|pass|print|return|rise|suspend)\\b"),

@@ -1,9 +1,24 @@
 
 class_name Expr extends Evaluable
 
+class ArrayBuilder extends RefCounted:
+
+	var arr : Array = []
+	var depth : int
+
+	func _init(_depth : int) -> void:
+		depth = _depth
+
+	func _to_string() -> String:
+		return "(%s) %s" % [depth, arr]
+
+
 class Op extends RefCounted:
 	enum {
 		INVALID,
+		ARRAY_OPEN,			# [
+		ARRAY_CLOSE,		# ]
+		ITERATOR,			# ,
 		EVALUATE,			# @
 		LOOKUP,				# $
 		NOT,				# !  , not
@@ -20,6 +35,8 @@ class Op extends RefCounted:
 	var symbols_required : int :
 		get:
 			match type:
+				ARRAY_OPEN, ARRAY_CLOSE, ITERATOR:
+					return 0
 				EVALUATE, LOOKUP, NOT:
 					return 1
 				_:
@@ -36,6 +53,9 @@ class Op extends RefCounted:
 			'.': 			type = DOT
 			'@': 			type = EVALUATE
 			'?': 			type = QUESTION
+			'[':			type = ARRAY_OPEN
+			']':			type = ARRAY_CLOSE
+			',':			type = ITERATOR
 			_ :				type = INVALID
 
 	func _to_string() -> String:
@@ -49,9 +69,25 @@ class Op extends RefCounted:
 			DOT: return '.'
 			EVALUATE: return '@'
 			QUESTION: return '?'
+			ARRAY_OPEN: return '['
+			ARRAY_CLOSE: return ']'
+			ITERATOR: return ','
 		return 'INVALID_OP'
 
 	func apply(stack: Array[Variant], host: PennyHost) -> void:
+		match type:
+			ARRAY_OPEN:
+				stack.push_back([])
+				return
+			ARRAY_CLOSE:
+				prints("stack before: ", stack)
+				var arr : Array = stack.pop_back()
+				while stack:
+					arr.push_front(stack.pop_back())
+				stack.push_back(arr)
+				prints("stack after: ", stack)
+				return
+
 		var abc : Array[Variant] = []
 		for i in symbols_required:
 			abc.push_front(stack.pop_back())
@@ -120,7 +156,7 @@ static func from_tokens(_stmt: Stmt_, tokens: Array[Token]) -> Expr:
 				stack.push_back(token.value)
 			Token.OPERATOR:
 				var op := Op.new(token.value)
-				while ops and op.type > ops.back().type:
+				while ops and op.type >= ops.back().type:
 					ops.pop_back().apply_static(stack)
 				match op.type:
 					Op.LOOKUP, Op.DOT:
@@ -156,7 +192,8 @@ func _evaluate(host: PennyHost, soft: bool = false) -> Variant:
 
 	for symbol in symbols:
 		if symbol is Op:
-			while ops and symbol.type > ops.back().type:
+			if symbol.type == Op.ITERATOR: continue
+			while ops and symbol.type >= ops.back().type:
 				ops.pop_back().apply(stack, host)
 			ops.push_back(symbol)
 		else:

@@ -298,11 +298,11 @@ func recycle() -> Stmt_:
 				'pass': return StmtPass.new(address, line, depth, tokens)
 				'print': return StmtPrint.new(address, line, depth, tokens)
 		Token.IDENTIFIER:
-			if tokens.size() == 1 or tokens[1].get_operator_type() == Token.Operator.DOT:
+			if tokens.size() == 1 or tokens[1].value == '.':
 				return StmtObject_.new(address, line, depth, tokens)
-		# Token.OPERATOR:
-		# 	if tokens[0].value == '.' and tokens[1].type == Token.IDENTIFIER:
-		# 		return StmtObject_.new(address, line, depth, tokens)
+		Token.OPERATOR:
+			if tokens[0].value == '.' and tokens[1].type == Token.IDENTIFIER:
+				return StmtObject_.new(address, line, depth, tokens)
 	return self
 
 func validate_as_no_tokens() -> PennyException:
@@ -311,7 +311,7 @@ func validate_as_no_tokens() -> PennyException:
 	return null
 
 func validate_path(expr: Array[Token]) -> PennyException:
-	var relative : bool = expr[0].get_operator_type() == Token.Operator.DOT
+	var relative : bool = expr[0].value == '.'
 	if expr.back().type != Token.IDENTIFIER:
 		return create_exception("Expected identifier at end of path.")
 	for i in expr.size():
@@ -320,7 +320,7 @@ func validate_path(expr: Array[Token]) -> PennyException:
 			if token.type != Token.IDENTIFIER:
 				return create_exception("Expected identifier in path.")
 		else:
-			if token.get_operator_type() != Token.Operator.DOT:
+			if token.value != '.':
 				return create_exception("Expected dot operator in path.")
 	return null
 

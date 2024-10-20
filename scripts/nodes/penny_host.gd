@@ -86,8 +86,9 @@ func advance() -> void:
 	invoke_at_cursor()
 
 func close() -> void:
-	message_handler.queue_free()
-	queue_free()
+	# message_handler.queue_free()
+	# queue_free()
+	return
 
 func rewind_to(record: Record) -> void:
 	expecting_conditional = false

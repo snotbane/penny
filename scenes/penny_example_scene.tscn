@@ -15,7 +15,7 @@ lookup_tables = Array[ExtResource("2_4q0nq")]([ExtResource("3_lw4vb")])
 instantiate_parent_control = NodePath("../canvas_layer/menus")
 message_handler = NodePath("../canvas_layer/ui/dialogue_container/penny_dialogue_box")
 history_handler = NodePath("../canvas_layer/ui/history_container/penny_history_box")
-autostart_label = &"characters"
+autostart_label = &"arrays"
 
 [node name="canvas_layer" type="CanvasLayer" parent="."]
 
@@ -69,6 +69,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="debug_overlay" parent="canvas_layer" instance=ExtResource("5_vsnrl")]
 visible = false

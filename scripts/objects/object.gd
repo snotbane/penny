@@ -106,10 +106,8 @@ func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null,
 
 	var keys := data.keys()
 	match sort:
-		Sort.NONE:
-			keys.reverse()
-		Sort.DEFAULT:
-			keys.sort()
+		# Sort.NONE:		keys.reverse()
+		Sort.DEFAULT:	keys.sort()
 	keys.sort_custom(sort_baseline)
 
 	for k in keys:
@@ -119,30 +117,41 @@ func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null,
 			ipath.identifiers.push_back(k)
 			v.create_tree_item(tree, sort, result, ipath)
 		else:
-			var prop := result.create_child()
+			var prop := create_tree_item_property(tree, result, str(k), v)
 
-			prop.set_selectable(TreeCell.ICON, false)
-			prop.set_cell_mode(TreeCell.ICON, TreeItem.CELL_MODE_ICON)
-
-			prop.set_selectable(TreeCell.NAME, false)
-			prop.set_text(TreeCell.NAME, k)
-
-			prop.set_selectable(TreeCell.VALUE, false)
-			var icon := get_icon(v)
-			if icon:
-				prop.set_icon(TreeCell.ICON, icon)
-				prop.set_tooltip_text(TreeCell.ICON, get_tooltip(v))
-			prop.set_text(TreeCell.VALUE, Penny.get_debug_string(v))
-			if v is Color:
-				prop.set_custom_color(TreeCell.VALUE, v)
-				# prop.set_custom_bg_color(TreeCell.VALUE, Color.from_hsv(0, 0, wrap(v.v + 0.5, 0, 1)))
 	return result
+
+func create_tree_item_property(tree: DataViewerTree, parent: TreeItem, k: StringName, v: Variant) -> TreeItem:
+	var prop = parent.create_child()
+
+	prop.set_selectable(TreeCell.ICON, false)
+	prop.set_cell_mode(TreeCell.ICON, TreeItem.CELL_MODE_ICON)
+
+	prop.set_selectable(TreeCell.NAME, false)
+	prop.set_text(TreeCell.NAME, k)
+
+	prop.set_selectable(TreeCell.VALUE, false)
+	var icon := get_icon(v)
+	if icon:
+		prop.set_icon(TreeCell.ICON, icon)
+		prop.set_tooltip_text(TreeCell.ICON, get_tooltip(v))
+	prop.set_text(TreeCell.VALUE, Penny.get_debug_string(v))
+	if v is Color:
+		prop.set_custom_color(TreeCell.VALUE, v)
+		# prop.set_custom_bg_color(TreeCell.VALUE, Color.from_hsv(0, 0, wrap(v.v + 0.5, 0, 1)))
+	elif v is Array:
+		prop.collapsed = true
+		for i in v.size():
+			create_tree_item_property(tree, prop, str(i), v[i])
+	return prop
 
 static func sort_baseline(a, b) -> int:
 	return PRIORITY_DATA_ENTRIES.find(a) > PRIORITY_DATA_ENTRIES.find(b)
 
 ## REALLY SLOW??? PROBABLY??? Try caching
 static func get_icon(value: Variant) -> Texture2D:
+	if value is	Array:
+		return load("res://addons/penny_godot/assets/icons/Array.svg")
 	if value is	Color:
 		return load("res://addons/penny_godot/assets/icons/Color.svg")
 	if value is Path:
@@ -154,6 +163,8 @@ static func get_icon(value: Variant) -> Texture2D:
 	return null
 
 static func get_tooltip(value: Variant) -> String:
+	if value is Array:
+		return "array"
 	if value is Color:
 		return "color"
 	if value is Path:
