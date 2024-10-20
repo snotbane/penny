@@ -34,3 +34,6 @@ func _message(record: Record) -> Message:
 
 func _validate() -> PennyException:
 	return super._validate()
+
+# func _setup() -> void:
+# 	pass

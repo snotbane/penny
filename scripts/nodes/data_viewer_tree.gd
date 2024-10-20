@@ -1,4 +1,5 @@
 
+## Visualizer for [PennyHost]'s data dictionary.
 class_name DataViewerTree extends Tree
 
 @export var debug : PennyDebug

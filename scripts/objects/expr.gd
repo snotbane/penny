@@ -174,9 +174,9 @@ func _evaluate(host: PennyHost, soft: bool = false) -> Variant:
 		stmt.create_exception("Expression evaluated to null.")
 		return null
 
+	while result is Evaluable:
+		result = result.evaluate(host, soft)
 	if result is StringName:
 		return Path.new([stack[0]])
-	# while result is Evaluable:
-	# 	result = result.evaluate(host, soft)
 
 	return result

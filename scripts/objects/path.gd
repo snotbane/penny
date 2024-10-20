@@ -47,7 +47,6 @@ func duplicate(deep := false) -> Path:
 	return Path.new(identifiers.duplicate(deep), relative)
 
 func _evaluate(host: PennyHost, soft: bool = false) -> Variant:
-	if soft: return self
 	return get_data(host)
 
 func get_data(host: PennyHost) -> Variant:

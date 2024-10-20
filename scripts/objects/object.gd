@@ -68,9 +68,12 @@ func get_data(key: StringName) -> Variant:
 	if data.has(key):
 		return data[key]
 	if host and data.has(BASE_KEY):
-		var path : Path = data[BASE_KEY].duplicate()
-		path.identifiers.push_back(key)
-		return path.get_data(host)
+		var base = data[BASE_KEY]
+		if base is Path:
+			var path : Path = base.duplicate()
+			path.identifiers.push_back(key)
+			return path.get_data(host)
+		return base
 	return null
 
 func set_data(key: StringName, value: Variant) -> void:
