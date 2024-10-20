@@ -72,7 +72,7 @@ func get_data(key: StringName) -> Variant:
 		if base is Path:
 			var path : Path = base.duplicate()
 			path.identifiers.push_back(key)
-			return path.get_data(host)
+			return path.evaluate(host)
 		return base
 	return null
 

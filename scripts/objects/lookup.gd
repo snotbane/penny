@@ -7,7 +7,7 @@ func _init(_key: StringName) -> void:
 	key = _key
 
 func _to_string() -> String:
-	return key
+	return "$" + key
 
 func fetch(host: PennyHost) -> Variant:
 	for i in host.lookup_tables:

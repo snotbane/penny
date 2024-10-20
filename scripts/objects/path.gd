@@ -32,8 +32,8 @@ static func from_string(s: String) -> Path:
 func _to_string() -> String:
 	var result := ""
 	for i in identifiers:
-		result += i + "."
-	return result.substr(0, result.length() - 1)
+		result += "." + i
+	return result
 
 func get_absolute_path(from: Stmt_) -> Path:
 	if relative:

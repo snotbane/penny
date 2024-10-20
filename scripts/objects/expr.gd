@@ -143,12 +143,13 @@ static func from_tokens(_stmt: Stmt_, tokens: Array[Token]) -> Expr:
 
 
 func _to_string() -> String:
-	var result := ""
+	var result := "=> "
 	for symbol in symbols:
 		result += str(symbol) + " "
 	return result.substr(0, result.length() - 1)
 
 func _evaluate(host: PennyHost, soft: bool = false) -> Variant:
+	print(self)
 	if returns_self_softly: return self
 
 	var stack : Array[Variant] = []
@@ -174,9 +175,8 @@ func _evaluate(host: PennyHost, soft: bool = false) -> Variant:
 		stmt.create_exception("Expression evaluated to null.")
 		return null
 
-	while result is Evaluable:
-		result = result.evaluate(host, soft)
-	if result is StringName:
-		return Path.new([stack[0]])
+	if not soft:
+		while result is Evaluable:
+			result = result.evaluate(host, soft)
 
 	return result
