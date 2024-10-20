@@ -1,7 +1,7 @@
 
 class_name StmtAssign extends StmtObject_
 
-var expr : Variant
+var expr : Expr
 
 var op_index : int = -1
 var expression_index : int :
@@ -15,11 +15,7 @@ func _get_verbosity() -> Verbosity:
 
 func _execute(host: PennyHost) -> Record:
 	var before : Variant = path.get_data(host)
-	var after : Variant
-	if expr is Expr:
-		after = expr.evaluate(host)
-	else:
-		after = expr
+	var after : Variant = expr.evaluate(host, true)
 	if after is Path and after.identifiers[0] == "object":
 		after = path.add_object(host)
 	else:
@@ -57,6 +53,6 @@ func _validate() -> PennyException:
 		return right_exception
 
 	path = Path.from_tokens(left)
-	expr = Expr.create_or_evaluate_from_tokens(self, right)
-	print(expr)
+	expr = Expr.from_tokens(self, right)
+	prints("Result:", expr)
 	return null

@@ -128,6 +128,7 @@ func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null,
 			var icon := get_icon(v)
 			if icon:
 				prop.set_icon(TreeCell.ICON, icon)
+				prop.set_tooltip_text(TreeCell.ICON, get_tooltip(v))
 			prop.set_text(TreeCell.VALUE, Penny.get_debug_string(v))
 			if v is Color:
 				prop.set_custom_color(TreeCell.VALUE, v)
@@ -147,3 +148,14 @@ static func get_icon(value: Variant) -> Texture2D:
 	if value is Expr:
 		return load("res://addons/penny_godot/assets/icons/PrismMesh.svg")
 	return null
+
+static func get_tooltip(value: Variant) -> String:
+	if value is Color:
+		return "color"
+	if value is Path:
+		return "path"
+	if value is Lookup:
+		return "lookup"
+	if value is Expr:
+		return "expression"
+	return "other"
