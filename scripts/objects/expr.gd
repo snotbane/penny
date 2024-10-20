@@ -148,13 +148,9 @@ func _to_string() -> String:
 		result += str(symbol) + " "
 	return result.substr(0, result.length() - 1)
 
-
-func evaluate_softly(host: PennyHost) -> Variant:
+func _evaluate(host: PennyHost, soft: bool = false) -> Variant:
 	if returns_self_softly: return self
-	return evaluate(host)
 
-
-func _evaluate(host: PennyHost) -> Variant:
 	var stack : Array[Variant] = []
 	var ops : Array[Op] = []
 
@@ -177,6 +173,10 @@ func _evaluate(host: PennyHost) -> Variant:
 	if result == null:
 		stmt.create_exception("Expression evaluated to null.")
 		return null
-	while result is Evaluable:
-		result = result.evaluate(host)
+
+	if result is StringName:
+		return Path.new([stack[0]])
+	# while result is Evaluable:
+	# 	result = result.evaluate(host, soft)
+
 	return result
