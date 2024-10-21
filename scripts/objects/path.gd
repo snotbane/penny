@@ -29,6 +29,9 @@ static func from_string(s: String) -> Path:
 		ids.push_back(StringName(i))
 	return Path.new(ids)
 
+static func from_single(s: StringName) -> Path:
+	return Path.new([s])
+
 func _to_string() -> String:
 	var result := ""
 	for i in identifiers:

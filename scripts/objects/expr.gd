@@ -16,10 +16,10 @@ class ArrayBuilder extends RefCounted:
 class Op extends RefCounted:
 	enum {
 		INVALID,
-		ARRAY_OPEN,			# [
-		ARRAY_CLOSE,		# ]
-		ITERATOR,			# ,
 		EVALUATE,			# @
+		ARRAY_CLOSE,		# ]
+		ARRAY_OPEN,			# [
+		ITERATOR,			# ,
 		LOOKUP,				# $
 		NOT,				# !  , not
 		AND,				# && , and
@@ -75,19 +75,6 @@ class Op extends RefCounted:
 		return 'INVALID_OP'
 
 	func apply(stack: Array[Variant], host: PennyHost) -> void:
-		match type:
-			ARRAY_OPEN:
-				stack.push_back([])
-				return
-			ARRAY_CLOSE:
-				prints("stack before: ", stack)
-				var arr : Array = stack.pop_back()
-				while stack:
-					arr.push_front(stack.pop_back())
-				stack.push_back(arr)
-				prints("stack after: ", stack)
-				return
-
 		var abc : Array[Variant] = []
 		for i in symbols_required:
 			abc.push_front(stack.pop_back())
@@ -106,6 +93,20 @@ class Op extends RefCounted:
 
 	func apply_static(stack: Array[Variant]) -> void:
 		match type:
+			ARRAY_OPEN:
+				stack.push_back([])
+				return
+			ARRAY_CLOSE:
+				prints("stack before: ", stack)
+				var arr : Array = stack.pop_back()
+				while stack:
+					var pop = stack.pop_back()
+					if pop is StringName:
+						pop = Path.from_single(pop)
+					arr.push_front(pop)
+				stack.push_back(arr)
+				prints("stack after: ", stack)
+				return
 			LOOKUP:
 				stack.push_back(Lookup.new(stack.pop_back()))
 			DOT:
@@ -155,12 +156,15 @@ static func from_tokens(_stmt: Stmt_, tokens: Array[Token]) -> Expr:
 			Token.IDENTIFIER:
 				stack.push_back(token.value)
 			Token.OPERATOR:
+				if token.value == ',': continue
 				var op := Op.new(token.value)
-				while ops and op.type >= ops.back().type:
+				while ops and op.type <= ops.back().type:
 					ops.pop_back().apply_static(stack)
 				match op.type:
-					Op.LOOKUP, Op.DOT:
+					Op.LOOKUP, Op.DOT, Op.ARRAY_OPEN, Op.ARRAY_CLOSE:
 						ops.push_back(op)
+					Op.ITERATOR:
+						pass
 					_:
 						stack.push_back(op)
 			_:
@@ -193,7 +197,7 @@ func _evaluate(host: PennyHost, soft: bool = false) -> Variant:
 	for symbol in symbols:
 		if symbol is Op:
 			if symbol.type == Op.ITERATOR: continue
-			while ops and symbol.type >= ops.back().type:
+			while ops and symbol.type <= ops.back().type:
 				ops.pop_back().apply(stack, host)
 			ops.push_back(symbol)
 		else:
