@@ -13,49 +13,48 @@ class_name Token extends Object
 enum {
 	INDENTATION,		## NOT ADDED TO STATEMENTS
 	VALUE_STRING,		## Multiline
-	VALUE_COLOR,
-	VALUE_NUMBER,
+	KEYWORD,
 	VALUE_BOOLEAN,
+	VALUE_COLOR,
 	OPERATOR,
 	COMMENT,
 	ASSIGNMENT,
-	KEYWORD,
 	IDENTIFIER,
+	VALUE_NUMBER,
 	TERMINATOR,			## NOT ADDED TO STATEMENTS
 	WHITESPACE,			## NOT ADDED TO STATEMENTS
+}
+
+static var PATTERNS := {
+	Token.INDENTATION: 		RegEx.create_from_string("(?m)^\\t+"),
+	Token.VALUE_STRING: 	RegEx.create_from_string("(?s)(\"\"\"|\"|'''|'|```|`).*?\\1"),
+	Token.KEYWORD: 			RegEx.create_from_string("\\b(dec|dive|call|elif|else|if|filter|jump|label|open|pass|print|return|rise|suspend)\\b"),
+	Token.VALUE_BOOLEAN: 	RegEx.create_from_string("\\b([Tt]rue|TRUE|[Ff]alse|FALSE)\\b"),
+	Token.VALUE_COLOR: 		RegEx.create_from_string("(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
+	Token.OPERATOR: 		RegEx.create_from_string("([=!<>]=)|&&|\\|\\||(\\b(and|nand|or|nor|not)\\b)|([!+\\-*/@\\$%&|<>\\[\\]\\(\\),](?!=))|(\\.\\b)"),
+	Token.COMMENT: 			RegEx.create_from_string("(?ms)(([#/])\\*.*?(\\*\\2))|((#|\\/{2}).*?$)"),
+	Token.ASSIGNMENT: 		RegEx.create_from_string("[+\\-*/:]?="),
+	Token.IDENTIFIER: 		RegEx.create_from_string("[a-zA-Z_]\\w*"),
+	Token.VALUE_NUMBER: 	RegEx.create_from_string("\\d+\\.\\d*|\\.?\\d+"),
+	Token.TERMINATOR: 		RegEx.create_from_string("(?m)[:;]|((?<=[^\\n:;])$\\n)"),
+	Token.WHITESPACE: 		RegEx.create_from_string("(?m)[ \\n]+|(?<!^|\\t)\\t+"),
 }
 
 static func enum_to_string(idx: int) -> String:
 	match idx:
 		INDENTATION: return "indent"
 		VALUE_STRING: return "string"
+		KEYWORD: return "keyword"
+		VALUE_BOOLEAN: return "boolean"
 		VALUE_COLOR: return "color"
 		VALUE_NUMBER: return "number"
-		VALUE_BOOLEAN: return "boolean"
 		OPERATOR: return "operator"
 		COMMENT: return "comment"
 		ASSIGNMENT: return "assigner"
-		KEYWORD: return "keyword"
 		IDENTIFIER: return "identifier"
 		TERMINATOR: return "terminator"
 		WHITESPACE: return "whitespace"
 		_: return "invalid_token"
-
-
-static var PATTERNS := {
-	Token.INDENTATION: 		RegEx.create_from_string("(?m)^\\t+"),
-	Token.VALUE_STRING: 	RegEx.create_from_string("(?s)(\"\"\"|\"|'''|'|```|`).*?\\1"),
-	Token.VALUE_COLOR: 		RegEx.create_from_string("(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
-	Token.VALUE_NUMBER: 	RegEx.create_from_string("\\d+\\.\\d*|\\.?\\d+"),
-	Token.VALUE_BOOLEAN: 	RegEx.create_from_string("\\b([Tt]rue|TRUE|[Ff]alse|FALSE)\\b"),
-	Token.OPERATOR: 		RegEx.create_from_string("([=!<>]=)|&&|\\|\\||(\\b(and|nand|or|nor|not)\\b)|([!+\\-*/@\\$%&|<>\\[\\]\\(\\),](?!=))|(\\.\\b)"),
-	Token.COMMENT: 			RegEx.create_from_string("(?ms)(([#/])\\*.*?(\\*\\2))|((#|\\/{2}).*?$)"),
-	Token.ASSIGNMENT: 		RegEx.create_from_string("[+\\-*/:]?="),
-	Token.KEYWORD: 			RegEx.create_from_string("\\b(dec|dive|call|elif|else|if|filter|jump|label|menu|open|pass|print|return|rise|suspend)\\b"),
-	Token.IDENTIFIER: 		RegEx.create_from_string("[a-zA-Z_]\\w*"),
-	Token.TERMINATOR: 		RegEx.create_from_string("(?m)[:;]|((?<=[^\\n:;])$\\n)"),
-	Token.WHITESPACE: 		RegEx.create_from_string("(?m)[ \\n]+|(?<!^|\\t)\\t+"),
-}
 
 
 enum Literal {
@@ -74,8 +73,8 @@ static var PRIMITIVE_PATTERNS = [
 	RegEx.create_from_string("\\b([Nn]ull|NULL)\\b"),
 	RegEx.create_from_string("\\b([Tt]rue|TRUE)\\b"),
 	RegEx.create_from_string("\\b([Ff]alse|FALSE)\\b"),
-	RegEx.create_from_string("\\d+\\.\\d+|\\d+\\.|\\.\\d+"),
-	RegEx.create_from_string("\\d+"),
+	RegEx.create_from_string("(?<!\\D)(\\d+\\.\\d+|\\d+\\.|\\.\\d+)(?!=\\D)"),
+	RegEx.create_from_string("(?<!\\D)\\d+(?!=\\D)"),
 ]
 
 enum Operator {

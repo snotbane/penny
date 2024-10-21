@@ -1,14 +1,17 @@
 
 class_name LookupTable extends Resource
 
-static var data : Dictionary
+static var data : Dictionary = {}
 
-@export var local_data : Dictionary
+@export var local_data : Dictionary = {}
 
 func _init() -> void:
 	for k in local_data.keys():
 		if data.has(k):
-			Penny.log_error("LookupTable key '%s' already exists in another LookupTable. This key will not be added.")
+			Penny.log_error("LookupTable key '%s' already exists in another LookupTable. This key will not be added." % k)
+	_setup.call_deferred()
+
+func _setup() -> void:
 	data.merge(local_data)
 
 static func get_data(key: StringName) -> Variant:

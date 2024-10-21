@@ -30,7 +30,11 @@ signal on_data_modified
 
 static var insts : Array[PennyHost] = []
 
-var data_root := PennyObject.new(self, '_root', { PennyObject.BASE_OBJECT_NAME: PennyObject.BASE_OBJECT })
+var data_root := PennyObject.new(self, '_root', {
+	PennyObject.BUILTIN_OBJECT_NAME: PennyObject.BUILTIN_OBJECT,
+	PennyObject.BUILTIN_OPTION_NAME: PennyObject.BUILTIN_OPTION,
+	PennyObject.BUILTIN_PROMPT_NAME: PennyObject.BUILTIN_PROMPT,
+})
 var records : Array[Record]
 
 var call_stack : Array[Stmt_.Address]

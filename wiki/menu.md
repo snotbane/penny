@@ -30,8 +30,7 @@ _
 			.name = `Option 2`
 			`You have chosen option 2`
 	]
-open _
-choice = suspend
+open prompt
 match choice
 	_0
 		`You have chosen option 1`
