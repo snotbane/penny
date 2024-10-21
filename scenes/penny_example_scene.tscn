@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_host.gd" id="1_jmae0"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/lookup_table.gd" id="2_4q0nq"]
 [ext_resource type="PackedScene" uid="uid://b8sp6ey8fsgt7" path="res://addons/penny_godot/scenes/penny_dialogue_box.tscn" id="3_36qr5"]
-[ext_resource type="Resource" uid="uid://cxfy5qyeucf76" path="res://assets/story/lut.tres" id="3_lw4vb"]
+[ext_resource type="Resource" uid="uid://cxfy5qyeucf76" path="res://addons/penny_godot/assets/lookup_table_default.tres" id="3_lw4vb"]
 [ext_resource type="PackedScene" uid="uid://ckwmom7w0dvh1" path="res://addons/penny_godot/scenes/penny_history_box.tscn" id="4_hm4jj"]
 [ext_resource type="PackedScene" uid="uid://cfkhtume00g5e" path="res://addons/penny_godot/scenes/penny_debug.tscn" id="5_vsnrl"]
 

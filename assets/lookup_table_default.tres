@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="LookupTable" load_steps=3 format=3 uid="uid://cxfy5qyeucf76"]
+
+[ext_resource type="PackedScene" uid="uid://cuu7puh0nnyug" path="res://addons/penny_godot/scenes/menu_default.tscn" id="1_75o6q"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/lookup_table.gd" id="1_b288m"]
+
+[resource]
+script = ExtResource("1_b288m")
+local_data = {
+"menu_default": ExtResource("1_75o6q")
+}
