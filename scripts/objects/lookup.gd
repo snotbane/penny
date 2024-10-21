@@ -15,9 +15,11 @@ func _to_string() -> String:
 func fetch() -> Variant:
 	return LookupTable.get_data(key)
 
-func open(host: PennyHost) -> Node:
+func open(host: PennyHost, attach: Variant = null) -> PennyNode:
 	var scene : PackedScene = fetch()
 	var result : Node = scene.instantiate()
+	if result is PennyNode:
+		result.populate(host, attach)
 	if result is Control:
 		host.instantiate_parent_control.add_child.call_deferred(result)
 	elif result is Node2D or result is Node3D:

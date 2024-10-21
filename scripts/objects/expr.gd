@@ -97,7 +97,6 @@ class Op extends RefCounted:
 				stack.push_back([])
 				return
 			ARRAY_CLOSE:
-				prints("stack before: ", stack)
 				var arr : Array = stack.pop_back()
 				while stack:
 					var pop = stack.pop_back()
@@ -105,7 +104,6 @@ class Op extends RefCounted:
 						pop = Path.from_single(pop)
 					arr.push_front(pop)
 				stack.push_back(arr)
-				prints("stack after: ", stack)
 				return
 			LOOKUP:
 				stack.push_back(Lookup.new(stack.pop_back()))

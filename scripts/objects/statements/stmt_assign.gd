@@ -16,7 +16,6 @@ func _get_verbosity() -> Verbosity:
 func _execute(host: PennyHost) -> Record:
 	var before : Variant = path.evaluate(host)
 	var after : Variant = expr.evaluate(host, true)
-	prints("expr:", expr, ", after:", after)
 	if after == null:
 		create_exception("Couldn't assign '%s' using '%s' because it evaluated to null." % [path, expr]).push()
 	elif after is PennyObject and after == PennyObject.BUILTIN_OBJECT:

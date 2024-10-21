@@ -84,14 +84,14 @@ func advance() -> void:
 		if call_stack:
 			cursor = call_stack.pop_back().stmt
 		else:
-			close()
+			# close()
 			return
 
 	invoke_at_cursor()
 
 func close() -> void:
-	# message_handler.queue_free()
-	# queue_free()
+	message_handler.queue_free()
+	queue_free()
 	return
 
 func rewind_to(record: Record) -> void:

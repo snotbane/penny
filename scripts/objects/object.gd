@@ -106,7 +106,7 @@ func has_data(key: StringName) -> bool:
 func open(_host: PennyHost) -> Node:
 	var lookup : Lookup = get_data(LINK_KEY)
 	if lookup:
-		return lookup.open(_host)
+		return lookup.open(_host, self)
 	return null
 
 func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null, path := Path.new()) -> TreeItem:
