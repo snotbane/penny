@@ -81,7 +81,7 @@ func get_mount_point(host: PennyHost) -> PennyObject:
 ## Creates a new object at this path.
 func add_object(host: PennyHost) -> PennyObject:
 	var result := PennyObject.new(host, identifiers.back(), {
-		PennyObject.BASE_KEY: Path.new([PennyObject.BUILTIN_OBJECT_NAME]),
+		PennyObject.BASE_KEY: Path.new([PennyObject.BILTIN_OBJECT_NAME]),
 	})
 	set_data(host, result)
 	return result

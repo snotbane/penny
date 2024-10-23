@@ -84,5 +84,5 @@ func reset() -> void:
 var working : bool :
 	get: return visible_characters != -1
 
-func wrap_up_work() -> void:
+func prod_work() -> void:
 	visible_characters = -1

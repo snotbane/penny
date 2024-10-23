@@ -6,7 +6,7 @@ class_name PennyNode extends Node
 @export var suspend_on_open : bool = false
 
 ## If enabled, Penny will resume itself when this node is freed from the scene.
-@export var resume_on_close : bool = false
+@export var advance_on_close : bool = false
 
 var host : PennyHost
 
@@ -14,12 +14,20 @@ var host : PennyHost
 var attach : Variant
 
 ## Called immediately after instantiation.
-func populate(_host: PennyHost, _attach: Variant = null) -> void: _populate(_host, _attach)
-func _populate(_host: PennyHost, _attach: Variant = null) -> void:
+func populate(_host: PennyHost, _attach: Variant = null) -> void:
 	host = _host
 	attach = _attach
 
-func _ready() -> void:
+	_populate(_host, _attach)
+
 	if suspend_on_open:
-		host.close()
+		host.is_halting = true
+func _populate(_host: PennyHost, _attach: Variant = null) -> void: pass
+
+func _ready() -> void:
+	pass
+
+func _exit_tree() -> void:
+	# if advance_on_close:
+	# 	host.advance()
 	pass

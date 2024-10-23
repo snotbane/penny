@@ -5,8 +5,8 @@ class_name PennyMenuControl extends PennyMenu_
 @export var button_prefab : PackedScene = load("res://addons/penny_godot/scenes/menu_button_default.tscn")
 @export var button_container : Container
 
-func _populate(_host: PennyHost, _attach: Variant = null) -> void:
-	super._populate(_host, _attach)
+# func _populate(_host: PennyHost, _attach: Variant = null) -> void:
+# 	super._populate(_host, _attach)
 
 func _ready() -> void:
 	if not attach: return

@@ -14,29 +14,38 @@ enum TreeCell {
 }
 
 static var BUILTIN_DICT := {
-	BUILTIN_OBJECT_NAME: BUILTIN_OBJECT,
-	BUILTIN_OPTION_NAME: BUILTIN_OPTION,
-	BUILTIN_PROMPT_NAME: BUILTIN_PROMPT,
+	BILTIN_OBJECT_NAME: BILTIN_OBJECT,
+	BILTIN_OPTION_NAME: BILTIN_OPTION,
+	BILTIN_PROMPT_NAME: BILTIN_PROMPT,
 }
 
-static var BUILTIN_OBJECT := PennyObject.new(null, BUILTIN_OBJECT_NAME, {
-	'name_prefix': "<>",
-	'name_suffix': "</>",
+static var BILTIN_OBJECT := PennyObject.new(null, BILTIN_OBJECT_NAME, {
+	'name_prefix': "<>",							## Prepended when getting the rich name.
+	'name_suffix': "</>",							## Appended when getting the rich name.
+	'dialog': Path.new([BILTIN_DIALOG_NAME]),		## Lookup for the message box scene.
+	# 'dialog_shared': true,							## Whether or not to use a shared message box. All objects that have this set to true will share one message box object that won't be destroyed until someone who doesn't share decides to send dialog.
+	# 'inst': null									## Reference to the instanced node of this object.
 })
 
-static var BUILTIN_OPTION := PennyObject.new(null, BUILTIN_OPTION_NAME, {
-	BASE_KEY: Path.new([BUILTIN_OBJECT_NAME]),
+static var BILTIN_OPTION := PennyObject.new(null, BILTIN_OPTION_NAME, {
+	BASE_KEY: Path.new([BILTIN_OBJECT_NAME]),
 	ABLE_KEY: Path.new([USED_KEY], true),
 	SHOW_KEY: true,
 	# ICON_KEY: null,
 	USED_KEY: false,
 })
 
-static var BUILTIN_PROMPT := PennyObject.new(null, BUILTIN_PROMPT_NAME, {
-	BASE_KEY: Path.new([BUILTIN_OBJECT_NAME]),
-	LINK_KEY: Lookup.new('menu_default'),
+static var BILTIN_PROMPT := PennyObject.new(null, BILTIN_PROMPT_NAME, {
+	BASE_KEY: Path.new([BILTIN_OBJECT_NAME]),
+	LINK_KEY: Lookup.new('prompt_default'),
 	OPTIONS_KEY: [],
 	RESPONSE_KEY: -1,
+})
+
+static var BILTIN_DIALOG := PennyObject.new(null, BILTIN_DIALOG_NAME, {
+	BASE_KEY: Path.new([BILTIN_OBJECT_NAME]),
+	LINK_KEY: Lookup.new('dialog_default'),
+	LINK_LAYER_KEY: 0,								## Prefer the bottom layer.
 })
 
 static var PRIORITY_DATA_ENTRIES := [
@@ -45,18 +54,21 @@ static var PRIORITY_DATA_ENTRIES := [
 	"name",
 ]
 
-const BUILTIN_OBJECT_NAME := 'object'
-const BUILTIN_OPTION_NAME := 'option'
-const BUILTIN_PROMPT_NAME := 'prompt'
-const ABLE_KEY := 'able'
-const BASE_KEY := 'base'
-const LINK_KEY := 'link'
-const NAME_KEY := 'name'
-const ICON_KEY := 'icon'
-const OPTIONS_KEY := 'options'
-const RESPONSE_KEY := 'response'
-const SHOW_KEY := 'show'
-const USED_KEY := 'used'
+const BILTIN_OBJECT_NAME := StringName('object')
+const BILTIN_OPTION_NAME := StringName('option')
+const BILTIN_PROMPT_NAME := StringName('prompt')
+const BILTIN_DIALOG_NAME := StringName('dialog')
+const ABLE_KEY := StringName('able')
+const BASE_KEY := StringName('base')
+const LINK_KEY := StringName('link')
+const LINK_LAYER_KEY := StringName('link_layer')
+const NAME_KEY := StringName('name')
+const ICON_KEY := StringName('icon')
+const INST_KEY := StringName('inst')
+const OPTIONS_KEY := StringName('options')
+const RESPONSE_KEY := StringName('response')
+const SHOW_KEY := StringName('show')
+const USED_KEY := StringName('used')
 
 var host : PennyHost
 var parent_key : StringName
@@ -71,10 +83,17 @@ var name : String :
 var rich_name : String :
 	get: return str(get_data('name_prefix')) + name + str(get_data('name_suffix'))
 
+var preferred_layer : int :
+	get:
+		var value = get_data(LINK_LAYER_KEY)
+		if value != null:
+			return value
+		return -1
+
 static func _static_init() -> void:
 	PRIORITY_DATA_ENTRIES.reverse()
 
-func _init(_host: PennyHost, _parent_key: StringName, _data : Dictionary = { BASE_KEY: Path.new([BUILTIN_OBJECT_NAME]) }) -> void:
+func _init(_host: PennyHost, _parent_key: StringName, _data : Dictionary = { BASE_KEY: Path.new([BILTIN_OBJECT_NAME]) }) -> void:
 	host = _host
 	parent_key = _parent_key
 	data = _data
@@ -103,11 +122,23 @@ func set_data(key: StringName, value: Variant) -> void:
 func has_data(key: StringName) -> bool:
 	return data.has(key)
 
-func open(_host: PennyHost) -> Node:
+func instantiate(_host: PennyHost) -> PennyNode:
 	var lookup : Lookup = get_data(LINK_KEY)
 	if lookup:
-		return lookup.open(_host, self)
+		var node : PennyNode = lookup.instantiate(_host, preferred_layer, self)
+		set_data(INST_KEY, node)
+		return node
 	return null
+
+func destroy_instance(_host: PennyHost, recursive: bool = false) -> void:
+	if recursive:
+		for k in data.keys():
+			var v = data[k]
+			if v is PennyObject:
+				v.destroy_instance(_host, recursive)
+	var node : PennyNode = get_data(INST_KEY)
+	if node:
+		node.queue_free()
 
 func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null, path := Path.new()) -> TreeItem:
 	var result := tree.create_item(parent)

@@ -1,6 +1,6 @@
 
-## No description
-class_name StmtOpen extends StmtExpr_
+## Instantiates a node when executed.
+class_name StmtNode extends StmtExpr_
 
 func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
 	super._init(_address, _line, _depth, _tokens)
@@ -23,10 +23,10 @@ func _get_verbosity() -> Verbosity:
 func _execute(host: PennyHost) -> Record:
 	var value = expr.evaluate(host)
 	if value is Lookup:
-		var node : Node = value.open(host)
+		var node : Node = value.instantiate(host)
 		return Record.new(host, self, node)
 	if value is PennyObject:
-		var node : Node = value.open(host)
+		var node : Node = value.instantiate(host)
 		return Record.new(host, self, node)
 	return super._execute(host)
 

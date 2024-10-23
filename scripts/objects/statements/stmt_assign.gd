@@ -18,7 +18,7 @@ func _execute(host: PennyHost) -> Record:
 	var after : Variant = expr.evaluate(host, true)
 	if after == null:
 		create_exception("Couldn't assign '%s' using '%s' because it evaluated to null." % [path, expr]).push()
-	elif after is PennyObject and after == PennyObject.BUILTIN_OBJECT:
+	elif after is PennyObject and after == PennyObject.BILTIN_OBJECT:
 		after = path.add_object(host)
 	else:
 		path.set_data(host, after)

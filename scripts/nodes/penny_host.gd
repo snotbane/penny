@@ -12,39 +12,36 @@ signal on_data_modified
 ## Lookup tables.
 @export var lookup_tables : Array[LookupTable]
 
-## Controls instantiated via Penny will be added to this master [Control].
-@export var instantiate_parent_control : Control
-
-## Reference to a message handler. (Temporary. Eventually will be instantiated in code)
-@export var message_handler : MessageHandler
+## [PennyNode]s instantiated via script will be added to their preferred layer, else the last in this list. Require at least one element. Any node/space can be used.
+@export var layers : Array[Node]
 
 ## Reference to the history handler.
 @export var history_handler : HistoryHandler
 
 @export_subgroup("Flow")
 
-## If populated, this host will start at this label on ready. Leave empty to not execute anything.
-@export var autostart_label : StringName = ''
-
-
+## If populated, this host will start at this label on ready. Leave empty to wait for manual invocation.
+@export var autostart_label := StringName()
 
 static var insts : Array[PennyHost] = []
 
 var data_root := PennyObject.new(self, '_root', {
-	PennyObject.BUILTIN_OBJECT_NAME: PennyObject.BUILTIN_OBJECT,
-	PennyObject.BUILTIN_OPTION_NAME: PennyObject.BUILTIN_OPTION,
-	PennyObject.BUILTIN_PROMPT_NAME: PennyObject.BUILTIN_PROMPT,
+	PennyObject.BILTIN_OBJECT_NAME: PennyObject.BILTIN_OBJECT,
+	PennyObject.BILTIN_OPTION_NAME: PennyObject.BILTIN_OPTION,
+	PennyObject.BILTIN_PROMPT_NAME: PennyObject.BILTIN_PROMPT,
+	PennyObject.BILTIN_DIALOG_NAME: PennyObject.BILTIN_DIALOG,
 })
-var records : Array[Record]
 
+var records : Array[Record]
 var call_stack : Array[Stmt_.Address]
-var expecting_conditional : bool
+
 var cursor : Stmt_
+var expecting_conditional : bool
 
 var is_halting : bool :
 	get: return cursor.is_halting
 
-@onready var watcher := Watcher.new([message_handler])
+# @onready var watcher := Watcher.new([message_handler])
 
 func _ready() -> void:
 	insts.push_back(self)
@@ -54,12 +51,8 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	insts.erase(self)
+	data_root.destroy_instance(self, true)
 
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed('penny_advance'):
-		if not watcher.working:
-			advance()
-		else: watcher.wrap_up_work()
 
 func jump_to(label: StringName) -> void:
 	cursor = Penny.get_stmt_from_label(label)
@@ -79,7 +72,6 @@ func invoke_at_cursor() -> void:
 func advance() -> void:
 	if cursor == null: return
 	cursor = records.back().next()
-
 	if cursor == null:
 		if call_stack:
 			cursor = call_stack.pop_back().stmt
@@ -90,7 +82,6 @@ func advance() -> void:
 	invoke_at_cursor()
 
 func close() -> void:
-	message_handler.queue_free()
 	queue_free()
 	return
 
@@ -102,3 +93,7 @@ func rewind_to(record: Record) -> void:
 	history_handler.rewind_to(record)
 
 	invoke_at_cursor()
+
+func get_layer(i: int = -1) -> Node:
+	if i < 0 or i >= layers.size(): return layers.back()
+	return layers[i]
