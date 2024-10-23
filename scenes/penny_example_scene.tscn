@@ -13,7 +13,7 @@ script = ExtResource("1_jmae0")
 lookup_tables = Array[ExtResource("2_4q0nq")]([ExtResource("3_lw4vb")])
 layers = [NodePath("../canvas_layer/ui/message_layer"), NodePath("../canvas_layer/ui/other_layer")]
 history_handler = NodePath("../canvas_layer/ui/history_layer/penny_history_box")
-autostart_label = &"start"
+autostart_label = &"z"
 
 [node name="canvas_layer" type="CanvasLayer" parent="."]
 
@@ -27,12 +27,17 @@ grow_vertical = 2
 
 [node name="message_layer" type="MarginContainer" parent="canvas_layer/ui"]
 custom_minimum_size = Vector2(0, 280)
-offset_top = 800.0
-offset_right = 1920.0
-offset_bottom = 1080.0
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -280.0
+grow_horizontal = 2
+grow_vertical = 0
 theme_override_constants/margin_left = 200
 theme_override_constants/margin_right = 200
-theme_override_constants/margin_bottom = 0
+theme_override_constants/margin_bottom = 40
 
 [node name="other_layer" type="Control" parent="canvas_layer/ui"]
 layout_mode = 1
@@ -44,8 +49,12 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="history_layer" type="MarginContainer" parent="canvas_layer/ui"]
-offset_right = 1920.0
-offset_bottom = 1080.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2

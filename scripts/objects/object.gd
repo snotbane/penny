@@ -83,6 +83,9 @@ var name : String :
 var rich_name : String :
 	get: return str(get_data('name_prefix')) + name + str(get_data('name_suffix'))
 
+var node_name : String :
+	get: return "%s (penny)" % name
+
 var preferred_layer : int :
 	get:
 		var value = get_data(LINK_LAYER_KEY)
@@ -122,23 +125,36 @@ func set_data(key: StringName, value: Variant) -> void:
 func has_data(key: StringName) -> bool:
 	return data.has(key)
 
-func instantiate(_host: PennyHost) -> PennyNode:
-	var lookup : Lookup = get_data(LINK_KEY)
-	if lookup:
-		var node : PennyNode = lookup.instantiate(_host, preferred_layer, self)
-		set_data(INST_KEY, node)
-		return node
-	return null
+func clear_data(key: StringName) -> void:
+	set_data(key, null)
 
-func destroy_instance(_host: PennyHost, recursive: bool = false) -> void:
+func instantiate(_host: PennyHost) -> Node:
+	var result : Node = self.get_data(INST_KEY)
+	print("inst: ", result)
+	if result:
+		_host.cursor.create_exception("Subject '%s' already has an instance '%s'. Aborting." % [self, result]).push()
+	else:
+		var lookup : Lookup = get_data(LINK_KEY)
+		print("lookup: ", lookup)
+		result = lookup.instantiate(_host, self, preferred_layer)
+		result.name = node_name
+		print("result: ", result)
+		self.set_data(INST_KEY, result)
+	return result
+
+func destroy_instance_downstream(_host: PennyHost, recursive: bool = false) -> void:
 	if recursive:
 		for k in data.keys():
 			var v = data[k]
-			if v is PennyObject:
-				v.destroy_instance(_host, recursive)
+			if v and v is PennyObject:
+				v.destroy_instance_downstream(_host, recursive)
 	var node : PennyNode = get_data(INST_KEY)
 	if node:
 		node.queue_free()
+	# clear_data(INST_KEY)
+
+func clear_instance_upstream() -> void:
+	clear_data(INST_KEY)
 
 func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null, path := Path.new()) -> TreeItem:
 	var result := tree.create_item(parent)

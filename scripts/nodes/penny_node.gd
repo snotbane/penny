@@ -9,25 +9,25 @@ class_name PennyNode extends Node
 @export var advance_on_close : bool = false
 
 var host : PennyHost
+var object : PennyObject
 
 ## Additional data that may be submitted when this node is [member populate]d.
 var attach : Variant
 
 ## Called immediately after instantiation.
-func populate(_host: PennyHost, _attach: Variant = null) -> void:
+func populate(_host: PennyHost, _object: PennyObject = null) -> void:
 	host = _host
-	attach = _attach
-
-	_populate(_host, _attach)
-
+	object = _object
+	_populate(_host, _object)
+func _populate(_host: PennyHost, _object: PennyObject) -> void:
 	if suspend_on_open:
 		host.is_halting = true
-func _populate(_host: PennyHost, _attach: Variant = null) -> void: pass
 
 func _ready() -> void:
 	pass
 
 func _exit_tree() -> void:
-	# if advance_on_close:
-	# 	host.advance()
-	pass
+	if object:
+		object.clear_instance_upstream()
+	if advance_on_close:
+		host.advance()

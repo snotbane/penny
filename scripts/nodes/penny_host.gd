@@ -38,8 +38,7 @@ var call_stack : Array[Stmt_.Address]
 var cursor : Stmt_
 var expecting_conditional : bool
 
-var is_halting : bool :
-	get: return cursor.is_halting
+var is_halting : bool = false
 
 # @onready var watcher := Watcher.new([message_handler])
 
@@ -51,7 +50,7 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	insts.erase(self)
-	data_root.destroy_instance(self, true)
+	data_root.destroy_instance_downstream(self, true)
 
 
 func jump_to(label: StringName) -> void:

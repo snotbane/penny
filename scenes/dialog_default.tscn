@@ -1,0 +1,214 @@
+[gd_scene load_steps=8 format=3 uid="uid://b8sp6ey8fsgt7"]
+
+[ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="1_0b5nk"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/message_handler.gd" id="2_44j7f"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/typewriter.gd" id="3_q7721"]
+
+[sub_resource type="Animation" id="Animation_th5j2"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_kij65"]
+resource_name = "fade_in"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.3),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"_on_appear_finished"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_niumw"]
+resource_name = "fade_out"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.3),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.3),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"_on_disappear_finished"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ywfyv"]
+_data = {
+"RESET": SubResource("Animation_th5j2"),
+"dialog_appear": SubResource("Animation_kij65"),
+"dialog_disappear": SubResource("Animation_niumw")
+}
+
+[node name="dialog_default" type="Control" node_paths=PackedStringArray("name_label", "text_label", "typewriter", "skip_prevent_timer")]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+theme = ExtResource("1_0b5nk")
+script = ExtResource("2_44j7f")
+name_label = NodePath("v_box_container/margin_container/name_label")
+text_label = NodePath("v_box_container/panel/margin_container/scroll_container/margin_container/text_label")
+typewriter = NodePath("typewriter")
+skip_prevent_timer = NodePath("skip_prevent_timer")
+suspend_on_open = true
+advance_on_close = true
+
+[node name="typewriter" type="Node" parent="." node_paths=PackedStringArray("rtl", "scroll_container")]
+script = ExtResource("3_q7721")
+rtl = NodePath("../v_box_container/panel/margin_container/scroll_container/margin_container/text_label")
+scroll_container = NodePath("../v_box_container/panel/margin_container/scroll_container")
+
+[node name="skip_prevent_timer" type="Timer" parent="."]
+wait_time = 0.125
+one_shot = true
+
+[node name="v_box_container" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="margin_container" type="MarginContainer" parent="v_box_container"]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_bottom = 0
+
+[node name="name_label" type="RichTextLabel" parent="v_box_container/margin_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/bold_italics_font_size = 28
+theme_override_font_sizes/italics_font_size = 28
+theme_override_font_sizes/normal_font_size = 28
+theme_override_font_sizes/bold_font_size = 28
+bbcode_enabled = true
+text = "[p align=fill jst=w,k,sl][b][i]Object Name"
+fit_content = true
+scroll_active = false
+shortcut_keys_enabled = false
+selection_enabled = true
+visible_characters_behavior = 1
+
+[node name="panel" type="PanelContainer" parent="v_box_container"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="margin_container" type="MarginContainer" parent="v_box_container/panel"]
+layout_mode = 2
+theme = ExtResource("1_0b5nk")
+
+[node name="scroll_container" type="ScrollContainer" parent="v_box_container/panel/margin_container"]
+layout_mode = 2
+follow_focus = true
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+
+[node name="margin_container" type="MarginContainer" parent="v_box_container/panel/margin_container/scroll_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="text_label" type="RichTextLabel" parent="v_box_container/panel/margin_container/scroll_container/margin_container"]
+layout_mode = 2
+focus_mode = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[p align=fill jst=w,k,sl]Everybody needs a friend. Use your imagination, let it go. We're not trying to teach you a thing to copy. We're just here to teach you a technique, then let you loose into the world. That is when you can experience true joy, when you have no fear. Just let these leaves jump off the brush The first step to doing anything is to believe you can do it. See it finished in your mind before you ever start. We're trying to teach you a technique here and how to use it. You can't make a mistake. Anything that happens you can learn to use - and make something beautiful out of it. This is the fun part Work on one thing at a time. Don't get carried away - we have plenty of time.
+
+"
+fit_content = true
+scroll_active = false
+shortcut_keys_enabled = false
+selection_enabled = true
+visible_characters_behavior = 1
+
+[node name="animation_player" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_ywfyv")
+}
+
+[connection signal="appeared" from="." to="typewriter" method="_on_dialog_appeared"]
+[connection signal="closed" from="." to="animation_player" method="play" binds= [&"dialog_disappear"]]
+[connection signal="ready" from="." to="animation_player" method="play" binds= [&"dialog_appear"]]
+[connection signal="received" from="." to="typewriter" method="_on_dialog_received"]
+[connection signal="completed" from="typewriter" to="." method="prevent_skip"]

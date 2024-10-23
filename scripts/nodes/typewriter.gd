@@ -2,7 +2,6 @@
 ## Decorator class for a [RichTextLabel]. Prints out text over time in accordance with the Penny script.
 class_name Typewriter extends Node
 
-signal started
 signal completed
 
 ## How many characters per second to print out. For specific speeds mid-printout, use the <speed=X> decoration.
@@ -19,10 +18,12 @@ signal completed
 ## (optional) controls scroll behavior.
 @export var scroll_container : ScrollContainer
 
-@onready var handler : MessageHandler = get_parent()
-
+## Fake label used to calculate appropriate scroll amount.
 var fake_rtl : RichTextLabel
 var scrollbar : VScrollBar
+
+var is_ready : bool = false
+var is_playing : bool = false
 
 var cursor : float = 0.0
 var expected_characters : int
@@ -38,7 +39,6 @@ var visible_characters : int :
 			if scroll_container:
 				scroll_container.mouse_filter = Control.MOUSE_FILTER_PASS
 				scrollbar.mouse_filter = Control.MOUSE_FILTER_PASS
-			handler.prevent_skip()
 			completed.emit()
 		fake_rtl.visible_characters = rtl.visible_characters
 
@@ -47,7 +47,6 @@ var cps : float :
 	get: return print_speed
 
 func _ready() -> void:
-	handler.watcher.workers.push_back(self)
 	if scroll_container:
 		scrollbar = scroll_container.get_v_scroll_bar()
 
@@ -59,12 +58,14 @@ func _ready() -> void:
 
 		rtl.add_sibling.call_deferred(fake_rtl)
 	reset()
+	is_ready = true
 
 func _process(delta: float) -> void:
 	if not working: return
 
-	cursor += cps * delta
-	visible_characters = floori(cursor)
+	if is_playing:
+		cursor += cps * delta
+		visible_characters = floori(cursor)
 
 	if scroll_container:
 		scrollbar.value = fake_rtl.get_content_height() - scroll_container.size.y
@@ -77,7 +78,19 @@ func reset() -> void:
 	expected_characters = rtl.get_total_character_count()
 	cursor = 0
 	visible_characters = 0
-	started.emit()
+
+
+func start() -> void:
+	is_playing = true
+
+func _on_dialog_received() -> void:
+	if is_ready:
+		reset()
+
+func _on_dialog_appeared() -> void:
+	start()
+
+
 
 ## WATCHER METHODS
 
@@ -85,4 +98,9 @@ var working : bool :
 	get: return visible_characters != -1
 
 func prod_work() -> void:
+	## Eventually, go to the next wait input chararcter -- not necessarily the whole thing.
 	visible_characters = -1
+
+
+
+

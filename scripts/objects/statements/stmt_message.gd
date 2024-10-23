@@ -1,6 +1,6 @@
 
 @tool
-class_name StmtMessage extends Stmt_
+class_name StmtMessage extends StmtNode_
 
 const REGEX_DEPTH_REMOVAL_PATTERN := "(?<=\\n)\\t{0,%s}"
 static var REGEX_INTERPOLATION := RegEx.create_from_string("(?<!\\\\)(@([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)|\\[(.*?)\\])")
@@ -8,6 +8,8 @@ static var REGEX_INTERJECTION := RegEx.create_from_string("(?<!\\\\)(\\{.*?\\})"
 static var REGEX_DECORATION := RegEx.create_from_string("(?<!\\\\)(<.*?>)")
 static var REGEX_WORD_COUNT := RegEx.create_from_string("\\b\\S+\\b")
 static var REGEX_CHAR_COUNT := RegEx.create_from_string("\\S")
+
+var subject_dialog_path : Path
 
 var text_token : Token :
 	get:
@@ -41,7 +43,14 @@ func _get_keyword() -> StringName:
 
 func _execute(host: PennyHost) -> Record:
 	var result := super._execute(host)
-	host.message_handler.receive(result)
+	print("path: ", subject_path)
+	var message_handler : Node = instantiate_subject(host)
+	if message_handler is MessageHandler:
+		message_handler.receive(result)
+	elif message_handler:
+		host.cursor.create_exception("Attempted to send a message to a node, but it isn't a MessageHandler.").push()
+	else:
+		host.cursor.create_exception("Attempted to send a message to a node, but it wasn't created.").push()
 	return result
 
 func _message(record: Record) -> Message:
@@ -53,17 +62,17 @@ func _message(record: Record) -> Message:
 		var match := REGEX_INTERPOLATION.search(text)
 		if not match : break
 
-		var expr_string := match.get_string(2) + match.get_string(3)	## ~= $2$3
+		var interp_expr_string := match.get_string(2) + match.get_string(3)	## ~= $2$3
 
-		var parser = PennyParser.new(expr_string)
+		var parser = PennyParser.new(interp_expr_string)
 		var exceptions = parser.tokenize()
 		if not exceptions.is_empty():
 			for i in exceptions:
 				i.push()
 			break
 
-		var expr := Expr.from_tokens(self, parser.tokens)
-		var result = expr.evaluate(record.host)
+		var inter_expr := Expr.from_tokens(self, parser.tokens)
+		var result = inter_expr.evaluate(record.host)
 		var result_string := str(result)
 
 		text = text.substr(0, match.get_start()) + result_string + text.substr(match.get_end(), text.length() - match.get_end())
@@ -84,3 +93,7 @@ func _validate() -> PennyException:
 		_:
 			return create_exception("Unexpected token '%s'" % tokens[2])
 	return null
+
+func _setup() -> void:
+	subject_path = Path.new([PennyObject.BILTIN_OBJECT_NAME, PennyObject.BILTIN_DIALOG_NAME])
+

@@ -294,7 +294,7 @@ func recycle() -> Stmt_:
 				'if': return StmtConditionalIf.new(address, line, depth, tokens)
 				'jump': return StmtJump.new(address, line, depth, tokens)
 				'label': return StmtLabel.new(address, line, depth, tokens)
-				'open': return StmtNode.new(address, line, depth, tokens)
+				'open': return StmtNode_.new(address, line, depth, tokens)
 				'pass': return StmtPass.new(address, line, depth, tokens)
 				'print': return StmtPrint.new(address, line, depth, tokens)
 		Token.IDENTIFIER:

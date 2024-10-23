@@ -1,40 +1,56 @@
 
 class_name MessageHandler extends PennyNode
 
+signal appeared
 signal received
+signal advanced
+signal closed
+signal disappeared
 
-@export var rich_text_label : RichTextLabel
+@export var name_label : RichTextLabel
+@export var text_label : RichTextLabel
 @export var typewriter : Typewriter
 @export var skip_prevent_timer : Timer
 
-var watcher := Watcher.new()
+var rand := RandomNumberGenerator.new()
 
 func _ready() -> void:
+	# var c = self
+	# c.modulate = Color(rand.randf(), rand.randf(), rand.randf())
 	pass
 
-func _gui_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if event.is_action_pressed('penny_advance'):
-		if typewriter.working:
-			typewriter.prod_work()
-			return
-		if not skip_prevent_timer.is_stopped():
-			return
-		host.advance()
+		try_advance()
+
+func _gui_input(event: InputEvent) -> void:
+	pass
+		# try_advance()
 
 func receive(record: Record) -> void:
-	rich_text_label.text = record.message.text
+	name_label.text = object.rich_name
+	text_label.text = record.message.text
 	received.emit()
 
 func prevent_skip() -> void:
 	if skip_prevent_timer.is_stopped():
 		skip_prevent_timer.start()
 
+func try_advance() -> void:
+	if typewriter.working:
+		typewriter.prod_work()
+		return
+	if not skip_prevent_timer.is_stopped():
+		return
+	advanced.emit()
+	close()											###### NO!!!!!!!!!!!!!!!!!!!!!
 
-## WATCHER METHODS
+func close() -> void:
+	closed.emit()
 
-# var working : bool :
-# 	get:
-# 		return watcher.working or not skip_prevent_timer.is_stopped()
+func _on_appear_finished() -> void:
+	appeared.emit()
 
-# func wrap_up_work() -> void:
-# 	watcher.wrap_up_work()
+func _on_disappear_finished() -> void:
+	disappeared.emit()
+	queue_free()
