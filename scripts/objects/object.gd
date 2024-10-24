@@ -13,13 +13,14 @@ enum TreeCell {
 	VALUE
 }
 
-static var BUILTIN_DICT := {
+static var STATIC_ROOT := PennyObject.new('static', {
 	BILTIN_OBJECT_NAME: BILTIN_OBJECT,
 	BILTIN_OPTION_NAME: BILTIN_OPTION,
 	BILTIN_PROMPT_NAME: BILTIN_PROMPT,
-}
+	BILTIN_DIALOG_NAME: BILTIN_DIALOG,
+})
 
-static var BILTIN_OBJECT := PennyObject.new(null, BILTIN_OBJECT_NAME, {
+static var BILTIN_OBJECT := PennyObject.new(BILTIN_OBJECT_NAME, {
 	'name_prefix': "<>",							## Prepended when getting the rich name.
 	'name_suffix': "</>",							## Appended when getting the rich name.
 	'dialog': Path.new([BILTIN_DIALOG_NAME]),		## Lookup for the message box scene.
@@ -27,22 +28,22 @@ static var BILTIN_OBJECT := PennyObject.new(null, BILTIN_OBJECT_NAME, {
 	# 'inst': null									## Reference to the instanced node of this object.
 })
 
-static var BILTIN_OPTION := PennyObject.new(null, BILTIN_OPTION_NAME, {
+static var BILTIN_OPTION := PennyObject.new(BILTIN_OPTION_NAME, {
 	BASE_KEY: Path.new([BILTIN_OBJECT_NAME]),
-	ABLE_KEY: Path.new([USED_KEY], true),
+	ABLE_KEY: Path.new([USED_KEY]),
 	SHOW_KEY: true,
 	# ICON_KEY: null,
 	USED_KEY: false,
 })
 
-static var BILTIN_PROMPT := PennyObject.new(null, BILTIN_PROMPT_NAME, {
+static var BILTIN_PROMPT := PennyObject.new(BILTIN_PROMPT_NAME, {
 	BASE_KEY: Path.new([BILTIN_OBJECT_NAME]),
 	LINK_KEY: Lookup.new('prompt_default'),
 	OPTIONS_KEY: [],
 	RESPONSE_KEY: -1,
 })
 
-static var BILTIN_DIALOG := PennyObject.new(null, BILTIN_DIALOG_NAME, {
+static var BILTIN_DIALOG := PennyObject.new(BILTIN_DIALOG_NAME, {
 	BASE_KEY: Path.new([BILTIN_OBJECT_NAME]),
 	LINK_KEY: Lookup.new('dialog_default'),
 	LINK_LAYER_KEY: 0,								## Prefer the bottom layer.
@@ -70,25 +71,15 @@ const RESPONSE_KEY := StringName('response')
 const SHOW_KEY := StringName('show')
 const USED_KEY := StringName('used')
 
-var host : PennyHost
-var parent_key : StringName
+var self_key : StringName
 var data : Dictionary
 
-var name : String :
-	get:
-		if has_data(NAME_KEY):
-			return str(get_data(NAME_KEY))
-		return String(parent_key)
-
-var rich_name : String :
-	get: return str(get_data('name_prefix')) + name + str(get_data('name_suffix'))
-
 var node_name : String :
-	get: return "%s (penny)" % name
+	get: return "%s (penny)" % self_key
 
 var preferred_layer : int :
 	get:
-		var value = get_data(LINK_LAYER_KEY)
+		var value = get_local_from_key(LINK_LAYER_KEY)
 		if value != null:
 			return value
 		return -1
@@ -96,50 +87,75 @@ var preferred_layer : int :
 static func _static_init() -> void:
 	PRIORITY_DATA_ENTRIES.reverse()
 
-func _init(_host: PennyHost, _parent_key: StringName, _data : Dictionary = { BASE_KEY: Path.new([BILTIN_OBJECT_NAME]) }) -> void:
-	host = _host
-	parent_key = _parent_key
+func _init(_self_key: StringName, _data: Dictionary = { BASE_KEY: Path.new([BILTIN_OBJECT_NAME]) }) -> void:
+	self_key = _self_key
 	data = _data
 
 func _to_string() -> String:
-	return rich_name
+	return self_key
 
-func get_data(key: StringName) -> Variant:
+func get_local_from_key(key: StringName) -> Variant:
 	if data.has(key):
 		return data[key]
-	if host and data.has(BASE_KEY):
-		var base = data[BASE_KEY]
-		if base is Path:
-			var path : Path = base.duplicate()
-			path.identifiers.push_back(key)
-			return path.evaluate(host)
-		return base
+	if data.has(BASE_KEY):
+		var path : Path = data[BASE_KEY].duplicate()
+		path.ids.push_back(key)
+		return path
 	return null
 
-func set_data(key: StringName, value: Variant) -> void:
+func set_local_from_key(key: StringName, value: Variant) -> void:
 	if value == null:
 		data.erase(key)
 	else:
 		data[key] = value
 
-func has_data(key: StringName) -> bool:
+func has_local(key: StringName) -> bool:
 	return data.has(key)
 
-func clear_data(key: StringName) -> void:
-	set_data(key, null)
+func clear_local_from_key(key: StringName) -> void:
+	set_local_from_key(key, null)
+
+func get_from_path(path: Path, deep := true) -> Variant:
+	if deep:
+		return path.get_deep_value_for(self)
+	else:
+		return path.get_value_for(self)
+
+func set_from_path(path: Path, value: Variant) -> void:
+	path.set_value_for(self, value)
+
+func has_path(path: Path) -> bool:
+	return path.has_value_for(self)
+
+func clear_from_path(path: Path) -> void:
+	set_from_path(path, null)
+
+func get_local_or_base_on_root(key: StringName, root: PennyObject) -> Variant:
+	if data.has(key):
+		return data[key]
+	var path := Path.from_single(key, true)
+	path.prepend(data[BASE_KEY])
+	return root.get_from_path(path)
+
+func get_rich_name(root: PennyObject) -> String:
+
+	return get_local_or_base_on_root('name_prefix', root) + get_local_or_base_on_root('name', root) + get_local_or_base_on_root('name_suffix', root)
+	# var name_prefix_path := Path.new(['name_prefix'])
+	# return name_prefix_path.get_deep_value_for(root)
+
 
 func instantiate(_host: PennyHost) -> Node:
-	var result : Node = self.get_data(INST_KEY)
+	var result : Node = self.get_local_from_key(INST_KEY)
 	print("inst: ", result)
 	if result:
 		_host.cursor.create_exception("Subject '%s' already has an instance '%s'. Aborting." % [self, result]).push()
 	else:
-		var lookup : Lookup = get_data(LINK_KEY)
+		var lookup : Lookup = get_local_from_key(LINK_KEY)
 		print("lookup: ", lookup)
 		result = lookup.instantiate(_host, self, preferred_layer)
 		result.name = node_name
 		print("result: ", result)
-		self.set_data(INST_KEY, result)
+		self.set_local_from_key(INST_KEY, result)
 	return result
 
 func destroy_instance_downstream(_host: PennyHost, recursive: bool = false) -> void:
@@ -148,13 +164,13 @@ func destroy_instance_downstream(_host: PennyHost, recursive: bool = false) -> v
 			var v = data[k]
 			if v and v is PennyObject:
 				v.destroy_instance_downstream(_host, recursive)
-	var node : PennyNode = get_data(INST_KEY)
+	var node : PennyNode = get_local_from_key(INST_KEY)
 	if node:
 		node.queue_free()
-	# clear_data(INST_KEY)
+	# clear_local_from_key(INST_KEY)
 
 func clear_instance_upstream() -> void:
-	clear_data(INST_KEY)
+	clear_local_from_key(INST_KEY)
 
 func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null, path := Path.new()) -> TreeItem:
 	var result := tree.create_item(parent)
@@ -167,10 +183,10 @@ func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null,
 
 	result.set_selectable(TreeCell.VALUE, false)
 
-	if path.identifiers:
-		result.set_text(TreeCell.NAME, path.identifiers.back())
+	if path.ids:
+		result.set_text(TreeCell.NAME, path.ids.back())
 		# if host:
-		# 	var v : Variant = path.get_data(host)
+		# 	var v : Variant = path.get_local_from_key(host)
 		# 	if v is PennyObject:
 		# 		result.set_text(TreeCell.VALUE, v.name)
 	# result.collapsed = true
@@ -185,7 +201,7 @@ func create_tree_item(tree: DataViewerTree, sort: Sort, parent: TreeItem = null,
 		var v : Variant = data[k]
 		if v is PennyObject:
 			var ipath := path.duplicate()
-			ipath.identifiers.push_back(k)
+			ipath.ids.push_back(k)
 			v.create_tree_item(tree, sort, result, ipath)
 		else:
 			var prop := create_tree_item_property(tree, result, str(k), v)

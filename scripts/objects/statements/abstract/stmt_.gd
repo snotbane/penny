@@ -90,11 +90,11 @@ var next_in_chain : Stmt_ :
 		var cursor := address.copy(1)
 		while true:
 			if cursor.stmt.depth == depth:
-				break
+				return cursor.stmt
 			if not cursor.valid or cursor.stmt.depth < depth:
 				return null
 			cursor.index += 1
-		return cursor.stmt
+		return null
 
 ## The next statement in the same depth (or lower) as this one.
 var next_in_depth : Stmt_ :
@@ -102,9 +102,9 @@ var next_in_depth : Stmt_ :
 		var cursor := address.copy(1)
 		while cursor.valid:
 			if cursor.stmt.depth <= depth:
-				break
+				return cursor.stmt
 			cursor.index += 1
-		return cursor.stmt
+		return null
 
 ## The next statement in a lower depth than this one. (less nested)
 var next_lower_depth : Stmt_ :
@@ -113,9 +113,9 @@ var next_lower_depth : Stmt_ :
 		var cursor := address.copy(1)
 		while cursor.valid:
 			if cursor.stmt.depth < depth:
-				break
+				return cursor.stmt
 			cursor.index += 1
-		return cursor.stmt
+		return null
 
 ## The next statement in a higher depth than this one. (more nested)
 var next_higher_depth : Stmt_ :
@@ -123,9 +123,9 @@ var next_higher_depth : Stmt_ :
 		var cursor := address.copy(1)
 		while cursor.valid:
 			if cursor.stmt.depth > depth:
-				break
+				return cursor.stmt
 			cursor.index += 1
-		return cursor.stmt
+		return null
 
 ## Returns all statements exactly one depth higher than this one. (more nested)
 var next_higher_chain : Array[Stmt_] :
@@ -149,11 +149,11 @@ var prev_in_chain : Stmt_ :
 		var cursor := address.copy(-1)
 		while cursor.valid:
 			if cursor.stmt.depth == depth:
-				break
+				return cursor.stmt
 			if cursor.stmt.depth < depth:
 				return null
 			cursor.index -= 1
-		return cursor.stmt
+		return null
 
 ## The previous statement in the same depth (or lower) as this one.
 var prev_in_depth : Stmt_ :
@@ -161,9 +161,9 @@ var prev_in_depth : Stmt_ :
 		var cursor := address.copy(-1)
 		while cursor.valid:
 			if cursor.stmt.depth <= depth:
-				break
+				return cursor.stmt
 			cursor.index -= 1
-		return cursor.stmt
+		return null
 
 ## The previous statement in a lower depth than this one. (less nested)
 var prev_lower_depth : Stmt_ :
@@ -172,9 +172,9 @@ var prev_lower_depth : Stmt_ :
 		var cursor := address.copy(-1)
 		while cursor.valid:
 			if cursor.stmt.depth < depth:
-				break
+				return cursor.stmt
 			cursor.index -= 1
-		return cursor.stmt
+		return null
 
 ## The previous statement in a higher depth than this one. (more nested)
 var prev_higher_depth : Stmt_ :
@@ -182,21 +182,32 @@ var prev_higher_depth : Stmt_ :
 		var cursor := address.copy(-1)
 		while cursor.valid:
 			if cursor.stmt.depth > depth:
-				break
+				return cursor.stmt
 			cursor.index -= 1
-		return cursor.stmt
+		return null
 
 var nested_object_stmt : StmtObject_ :
 	get:
-		var prev := prev_lower_depth
-		if prev:
-			if prev is StmtObject_:
-				return prev
+		var result := prev_lower_depth
+		if result:
+			if result is StmtObject_:
+				return result
 			else:
-				create_exception("Attempted to access a nested object statement at [%s], but this statement does not interact with an object." % prev).push()
-		else:
-			create_exception("Attempted to access a nested object statement at [%s], but there are no above statements to be found." % prev).push()
+				return result.nested_object_stmt
 		return null
+
+
+## Returns the object [Path] under which this [Stmt_] is nested.
+var nested_object_path : Path :
+	get:
+		var stmt := self
+		var result := Path.new()
+		while stmt:
+			stmt = stmt.prev_lower_depth
+			if stmt is StmtObject_:
+				result.prepend(stmt.path)
+		return result
+
 
 var reconstructed_string : String :
 	get:
@@ -205,6 +216,21 @@ var reconstructed_string : String :
 			result += str(i.value) + " "
 		result = result.substr(0, result.length() - 1)
 		return "%s %s" % [_get_keyword(), result]
+
+
+func get_global_path(path: Path) -> Path:
+	var result : Path = path.duplicate()
+	if path.nested:
+		var root : Path = nested_object_path
+		if root:
+			result.prepend(root)
+		result.nested = false
+	return result
+
+
+func get_value_from_path(root: PennyObject, path: Path) -> Variant:
+	return get_global_path(path).get_deep_value_for(root)
+
 
 func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
 	address = _address

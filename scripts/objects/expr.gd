@@ -115,7 +115,7 @@ class Op extends RefCounted:
 						var b = stack.pop_back()
 						var a = stack.pop_back()
 						if a is Path:
-							a.identifiers.push_back(b)
+							a.ids.push_back(b)
 							stack.push_back(a)
 						elif a is StringName:
 							stack.push_back(Path.new([a, b], false))

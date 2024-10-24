@@ -23,10 +23,12 @@ func _get_verbosity() -> Verbosity:
 # 	super._load()
 
 func _execute(host: PennyHost) -> Record:
+	print(self.get_value_from_path(host.data_root, path).get_rich_name(host.data_root))
 	var before : Variant = path.evaluate(host)
-	if before: return super._execute(host)
-	var after : Variant = path.add_object(host)
-	return create_record(host, before, after)
+	return super._execute(host)
+	# if before: return super._execute(host)
+	# var after : Variant = path.add_object(host)
+	# return create_record(host, before, after)
 
 func create_record(host: PennyHost, before: Variant, after: Variant) -> Record:
 	var result = Record.new(host, self, AssignmentRecord.new(before, after))
