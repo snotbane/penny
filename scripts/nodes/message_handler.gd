@@ -29,8 +29,8 @@ func _gui_input(event: InputEvent) -> void:
 	pass
 		# try_advance()
 
-func receive(record: Record) -> void:
-	name_label.text = object.rich_name
+func receive(record: Record, subject: PennyObject) -> void:
+	name_label.text = subject.rich_name
 	text_label.text = record.message.text
 	received.emit()
 
@@ -45,7 +45,6 @@ func try_advance() -> void:
 	if not skip_prevent_timer.is_stopped():
 		return
 	advanced.emit()
-	# close()											###### NO!!!!!!!!!!!!!!!!!!!!!
 
 func _on_appear_finished() -> void:
 	appeared.emit()

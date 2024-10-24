@@ -1,6 +1,6 @@
 
 @tool
-class_name StmtMessage extends StmtNode_
+class_name StmtDialog extends StmtNode_
 
 const REGEX_DEPTH_REMOVAL_PATTERN := "(?<=\\n)\\t{0,%s}"
 static var REGEX_INTERPOLATION := RegEx.create_from_string("(?<!\\\\)(@([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)|\\[(.*?)\\])")
@@ -9,15 +9,12 @@ static var REGEX_DECORATION := RegEx.create_from_string("(?<!\\\\)(<.*?>)")
 static var REGEX_WORD_COUNT := RegEx.create_from_string("\\b\\S+\\b")
 static var REGEX_CHAR_COUNT := RegEx.create_from_string("\\S")
 
-var subject_dialog_path : Path
-
-var text_token : Token :
-	get:
-		return tokens[0]
+var dialog_node_path : Path
+var raw_text : String
 
 var text_stripped : String :
 	get:
-		var result : String = text_token.value
+		var result : String = raw_text
 		# result = REGEX_INTERPOLATION.sub(result, "$1", true)
 		result = REGEX_INTERJECTION.sub(result, "", true)
 		result = REGEX_DECORATION.sub(result, "", true)
@@ -43,10 +40,10 @@ func _get_keyword() -> StringName:
 
 func _execute(host: PennyHost) -> Record:
 	var result := super._execute(host)
-	var message_handler : Node = get_or_create_node(host)
+	var message_handler : Node = get_or_create_node(host, dialog_node_path)
 	if message_handler is MessageHandler:
 		host.is_halting = true
-		message_handler.receive(result)
+		message_handler.receive(result, node_path.evaluate_deep(host.data_root))
 	elif message_handler:
 		host.cursor.create_exception("Attempted to send a message to a node, but it isn't a MessageHandler.").push()
 	else:
@@ -54,7 +51,7 @@ func _execute(host: PennyHost) -> Record:
 	return result
 
 func _message(record: Record) -> Message:
-	var text : String = tokens[0].value
+	var text : String = raw_text
 
 	var rx_whitespace = RegEx.create_from_string(REGEX_DEPTH_REMOVAL_PATTERN % depth)
 
@@ -81,19 +78,13 @@ func _message(record: Record) -> Message:
 	return Message.new(text)
 
 func _validate() -> PennyException:
-	match tokens.size():
-		1:
-			if tokens[0].type != Token.VALUE_STRING:
-				return create_exception("Message statements must contain a string.")
-		2:
-			if tokens[0].type != Token.IDENTIFIER:
-				return create_exception("Message statements must start with an object identifier.")
-			if tokens[1].type != Token.VALUE_STRING:
-				return create_exception("Message statements must contain a string.")
-		_:
-			return create_exception("Unexpected token '%s'" % tokens[2])
+	if tokens.back().type != Token.VALUE_STRING:
+		return create_exception("The last token must be a String.")
 	return null
 
 func _setup() -> void:
-	node_path = Path.new([PennyObject.BILTIN_OBJECT_NAME, PennyObject.BILTIN_DIALOG_NAME])
+	raw_text = tokens.pop_back().value
+	super._setup()
+	dialog_node_path = node_path.duplicate()
+	dialog_node_path.ids.push_back(PennyObject.BILTIN_DIALOG_NAME)
 

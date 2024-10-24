@@ -40,7 +40,7 @@ var last_dialog_object : PennyObject :
 	get:
 		for i in records.size():
 			var record := records[-i-1]
-			if record.stmt is StmtMessage:
+			if record.stmt is StmtDialog:
 				var path : Path = record.stmt.subject_path
 				return path.evaluate_deep(self.data_root)
 		return null

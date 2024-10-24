@@ -87,7 +87,7 @@ static func get_script_info() -> Array:
 	for path in stmt_dict.keys():
 		files += 1
 		for i in stmt_dict[path]:
-			if i is	StmtMessage:
+			if i is	StmtDialog:
 				blocks += 1
 				words += i.word_count
 				chars += i.char_count

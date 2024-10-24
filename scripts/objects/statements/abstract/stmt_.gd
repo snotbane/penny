@@ -315,8 +315,6 @@ func push_exception(s: String = "Uncaught exception.") -> PennyException:
 
 
 func recycle() -> Stmt_:
-	if tokens.is_empty():
-		create_exception("Empty statement.")
 	for i in tokens:
 		match i.type:
 			Token.ASSIGNMENT:
@@ -324,9 +322,7 @@ func recycle() -> Stmt_:
 			Token.KEYWORD:
 				if tokens.size() == 1 and tokens[0].value == 'object':
 					return StmtObject_.new(address, line, depth, tokens)
-	match tokens[0].type:
-		Token.VALUE_STRING:
-			return StmtMessage.new(address, line, depth, tokens)
+	match tokens.front().type:
 		Token.KEYWORD:
 			var key = tokens.pop_front().value
 			match key:
@@ -340,6 +336,10 @@ func recycle() -> Stmt_:
 				'open': return StmtNode_.new(address, line, depth, tokens)
 				'pass': return StmtPass.new(address, line, depth, tokens)
 				'print': return StmtPrint.new(address, line, depth, tokens)
+	match tokens.back().type:
+			Token.VALUE_STRING:
+				return StmtDialog.new(address, line, depth, tokens)
+	match tokens.front().type:
 		Token.IDENTIFIER:
 			if tokens.size() == 1 or tokens[1].value == '.':
 				return StmtObject_.new(address, line, depth, tokens)

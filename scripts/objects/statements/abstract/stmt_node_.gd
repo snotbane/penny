@@ -45,15 +45,15 @@ func _setup() -> void:
 		node_path = Path.new([PennyObject.BILTIN_OBJECT_NAME])
 
 
-func get_or_create_node(host: PennyHost) -> Node:
-	var obj : PennyObject = node_path.evaluate_deep(host.data_root)
+func get_or_create_node(host: PennyHost, path := node_path) -> Node:
+	var obj : PennyObject = path.evaluate_deep(host.data_root)
 	if obj:
 		var node = obj.get_or_create_node(host)
 		return node
 	return null
 
-func get_existing_node(host: PennyHost) -> Node:
-	var obj : PennyObject = node_path.evaluate_deep(host.data_root)
+func get_existing_node(host: PennyHost, path := node_path) -> Node:
+	var obj : PennyObject = path.evaluate_deep(host.data_root)
 	if obj:
 		var node : Node = obj.instance
 		return node
