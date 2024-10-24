@@ -83,7 +83,7 @@ static func get_script_info() -> Array:
 	var blocks := 0
 	var words := 0
 	var chars := 0
-	var non_whitespace_chars := 0
+	# var non_whitespace_chars := 0
 	for path in stmt_dict.keys():
 		files += 1
 		for i in stmt_dict[path]:

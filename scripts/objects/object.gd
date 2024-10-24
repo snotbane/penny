@@ -120,6 +120,10 @@ func _to_string() -> String:
 	return self_key
 
 
+func duplicate(_new_parent: PennyObject = null, deep := false) -> PennyObject:
+	return PennyObject.new(self_key, _new_parent, data.duplicate(deep))
+
+
 ## Returns the value stored in this object's [member data] using a given [key]. If it doesn't exist, return [null].
 func get_local_value(key: StringName) -> Variant:
 	if data.has(key):
@@ -237,7 +241,7 @@ func create_tree_item(tree: DataViewerTree, sort: Sort, _parent: TreeItem = null
 			ipath.ids.push_back(k)
 			v.create_tree_item(tree, sort, result, ipath)
 		else:
-			var prop := create_tree_item_property(tree, result, str(k), v)
+			create_tree_item_property(tree, result, str(k), v)
 
 	return result
 

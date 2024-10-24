@@ -41,11 +41,11 @@ func reload(hard: bool = false) -> void:
 		files = open_modified()
 
 	if files.size() > 0:
-		var host_application_string : String
-		if Engine.is_editor_hint():
-			host_application_string = "engine"
-		else:
-			host_application_string = "game"
+		# var host_application_string : String
+		# if Engine.is_editor_hint():
+		# 	host_application_string = "engine"
+		# else:
+		# 	host_application_string = "game"
 
 		# print("***	RELOADING %s PENNY SCRIPTS ( %s )" % [files.size(), host_application_string])
 
