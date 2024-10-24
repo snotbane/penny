@@ -14,15 +14,15 @@ func _get_verbosity() -> Verbosity:
 	return Verbosity.DATA_ACTIVITY
 
 func _execute(host: PennyHost) -> Record:
-	var before : Variant = path.evaluate(host)
-	var after : Variant = expr.evaluate(host, true)
-	if after == null:
-		create_exception("Couldn't assign '%s' using '%s' because it evaluated to null." % [path, expr]).push()
-	elif after is PennyObject and after == PennyObject.BILTIN_OBJECT:
-		after = path.add_object(host)
-	else:
-		path.set_data(host, after)
-	return create_record(host, before, after)
+	var prior : Variant = path.evaluate(get_context_parent(host))
+	var after : Variant = expr.evaluate(get_context_parent(host))
+	if after is PennyObject:
+		after.self_key = path.ids.back()
+
+	path.set_value_for(get_context_parent(host), after)
+
+	# get_context_parent(host).set_value(path.ids.back(), after)
+	return create_record(host, prior, after)
 
 # func _undo(record: Record) -> void:
 # 	super._undo(record)

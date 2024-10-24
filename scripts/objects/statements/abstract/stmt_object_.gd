@@ -23,12 +23,23 @@ func _get_verbosity() -> Verbosity:
 # 	super._load()
 
 func _execute(host: PennyHost) -> Record:
-	print(self.get_value_from_path(host.data_root, path).get_rich_name(host.data_root))
-	var before : Variant = path.evaluate(host)
-	return super._execute(host)
-	# if before: return super._execute(host)
-	# var after : Variant = path.add_object(host)
-	# return create_record(host, before, after)
+	var before : Variant = path.evaluate(host.data_root)
+	if before: return super._execute(host)
+	var after : Variant = self.get_context_parent(host).add_object(path.ids.back(), PennyObject.DEFAULT_BASE)
+	if after is PennyObject:
+		after.self_key = path.ids.back()
+	print(after.rich_name)
+	return create_record(host, before, after)
+
+func get_context_object(host: PennyHost) -> PennyObject:
+	return self.get_value_from_path(host.data_root, path)
+
+func get_context_parent(host: PennyHost) -> PennyObject:
+	var parent_path := path.duplicate()
+	parent_path.ids.pop_back()
+	var result : PennyObject = get_nested_object(host.data_root)
+	if result: return result
+	return host.data_root
 
 func create_record(host: PennyHost, before: Variant, after: Variant) -> Record:
 	var result = Record.new(host, self, AssignmentRecord.new(before, after))

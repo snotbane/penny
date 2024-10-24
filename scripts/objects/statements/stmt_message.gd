@@ -72,7 +72,7 @@ func _message(record: Record) -> Message:
 			break
 
 		var inter_expr := Expr.from_tokens(self, parser.tokens)
-		var result = inter_expr.evaluate(record.host)
+		var result = inter_expr.evaluate(record.host.data_root)
 		var result_string := str(result)
 
 		text = text.substr(0, match.get_start()) + result_string + text.substr(match.get_end(), text.length() - match.get_end())

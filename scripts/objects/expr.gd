@@ -24,6 +24,7 @@ class Op extends RefCounted:
 		NOT,				# !  , not
 		AND,				# && , and
 		OR,					# || , or
+		NEW,					# new
 		IS_EQUAL,			# ==
 		NOT_EQUAL,			# !=
 		DOT,				# .
@@ -35,7 +36,7 @@ class Op extends RefCounted:
 	var symbols_required : int :
 		get:
 			match type:
-				ARRAY_OPEN, ARRAY_CLOSE, ITERATOR:
+				ARRAY_OPEN, ARRAY_CLOSE, ITERATOR, NEW:
 					return 0
 				EVALUATE, LOOKUP, NOT:
 					return 1
@@ -48,6 +49,7 @@ class Op extends RefCounted:
 			'$': 			type = LOOKUP
 			'&&', 'and': 	type = AND
 			'||', 'or': 	type = OR
+			'new':		 	type = NEW
 			'==': 			type = IS_EQUAL
 			'!=': 			type = NOT_EQUAL
 			'.': 			type = DOT
@@ -64,6 +66,7 @@ class Op extends RefCounted:
 			LOOKUP: return '$'
 			AND: return 'and'
 			OR: return 'or'
+			NEW: return 'new'
 			IS_EQUAL: return '=='
 			NOT_EQUAL: return '!='
 			DOT: return '.'
@@ -74,7 +77,17 @@ class Op extends RefCounted:
 			ITERATOR: return ','
 		return 'INVALID_OP'
 
-	func apply(stack: Array[Variant], host: PennyHost) -> void:
+	func apply(stack: Array[Variant], root: PennyObject) -> void:
+		match type:
+			NEW:
+				var data := {}
+				if stack:
+					data[PennyObject.BASE_KEY] = stack.pop_back()
+				else:
+					data[PennyObject.BASE_KEY] = PennyObject.DEFAULT_BASE
+				stack.push_back(PennyObject.new('new_object', root, data))
+				return
+
 		var abc : Array[Variant] = []
 		for i in symbols_required:
 			abc.push_front(stack.pop_back())
@@ -82,7 +95,7 @@ class Op extends RefCounted:
 		for i in abc.size():
 			var e = abc[i]
 			if e is Evaluable:
-				abc[i] = e.evaluate(host)
+				abc[i] = e.evaluate(root)
 
 		match type:
 			NOT:			stack.push_back(not abc[0])
@@ -109,6 +122,8 @@ class Op extends RefCounted:
 				stack.push_back(Lookup.new(stack.pop_back()))
 			DOT:
 				match stack.size():
+					0:
+						stack.push_back(Path.new([], true))
 					1:
 						stack.push_back(Path.new([stack.pop_back()], true))
 					_:
@@ -183,12 +198,10 @@ static func from_tokens(_stmt: Stmt_, tokens: Array[Token]) -> Expr:
 func _to_string() -> String:
 	var result := "=> "
 	for symbol in symbols:
-		result += str(symbol) + " "
+		result += "%s " % symbol
 	return result.substr(0, result.length() - 1)
 
-func _evaluate(host: PennyHost, soft: bool = false) -> Variant:
-	if returns_self_softly: return self
-
+func _evaluate(context: PennyObject) -> Variant:
 	var stack : Array[Variant] = []
 	var ops : Array[Op] = []
 
@@ -196,25 +209,22 @@ func _evaluate(host: PennyHost, soft: bool = false) -> Variant:
 		if symbol is Op:
 			if symbol.type == Op.ITERATOR: continue
 			while ops and symbol.type <= ops.back().type:
-				ops.pop_back().apply(stack, host)
+				ops.pop_back().apply(stack, context)
 			ops.push_back(symbol)
 		else:
 			stack.push_back(symbol)
-
 	while ops:
-		ops.pop_back().apply(stack, host)
+		ops.pop_back().apply(stack, context)
 
 	if stack.size() != 1:
 		stmt.create_exception("Expression not evaluated: stack size is not 1. Symbols: %s | Stack: %s" % [str(symbols), str(stack)])
 		return null
-
 	var result = stack.pop_back()
 	if result == null:
 		stmt.create_exception("Expression evaluated to null.")
 		return null
 
-	if not soft:
-		while result is Evaluable:
-			result = result.evaluate(host, soft)
+	while result is Evaluable:
+		result = result.evaluate(context)
 
 	return result

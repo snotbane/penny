@@ -42,7 +42,7 @@ func _setup() -> void:
 	subject_path = Path.new([PennyObject.BILTIN_OBJECT_NAME])
 
 func instantiate_subject(host: PennyHost) -> Node:
-	var obj = subject_path.evaluate(host).get_data(host)
+	var obj = subject_path.evaluate(host.data_root).get_data(host)
 	print("obj: ", obj)
 	if obj:
 		var node = obj.instantiate(host)

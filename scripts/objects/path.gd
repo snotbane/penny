@@ -2,11 +2,11 @@
 class_name Path extends Evaluable
 
 var ids : Array[StringName]
-var nested : bool
+var relative : bool
 
 func _init(_ids: Array[StringName] = [], _nested : bool = false) -> void:
 	ids = _ids
-	nested = _nested
+	relative = _nested
 
 static func from_tokens(tokens: Array[Token]) -> Path:
 	var _nested = tokens[0].value == '.'
@@ -34,29 +34,34 @@ static func from_single(s: StringName, _nested: bool = false) -> Path:
 func _to_string() -> String:
 	var result := ""
 	for i in ids:
-		result += "." + i
-	if nested:
-		return result
+		result += i + "."
+	if relative:
+		return "/." + result
 	else:
-		return result.substr(1)
+		return "/" + result.substr(0, result.length() - 1)
 
 
 func duplicate() -> Path:
 	return Path.new(ids.duplicate())
 
 
+func _evaluate(context: PennyObject) -> Variant:
+	return get_value_for(context)
+
+
 ## Evaluates till the end of only this [Path]. The result may or may not also be a [Path].
-func get_value_for(root: PennyObject) -> Variant:
-	var result : Variant = root
+func get_value_for(context: PennyObject) -> Variant:
+	if not relative:
+		context = context.root
+	var result : Variant = context
 	for id in ids:
-		result = result.get_local_from_key(id)
+		result = result.get_value(id)
 	return result
 
 
 ## Fully evaluates the path or a chain of paths. Never returns a [Path], but is prone to cyclical pathing.
 func get_deep_value_for(root: PennyObject) -> Variant:
 	var paths_used : Array[Path]
-
 	var result : Variant = self
 	while result is Path:
 		if paths_used.has(result):
@@ -67,12 +72,14 @@ func get_deep_value_for(root: PennyObject) -> Variant:
 	return result
 
 
-func set_value_for(root: PennyObject, value: Variant) -> void:
-	var obj : PennyObject = root
+func set_value_for(context: PennyObject, value: Variant) -> void:
+	print("Attempting to set value on path '%s'. relative: '%s', Context: '%s', value: '%s'" % [self, relative, context, value])
+	if not relative:
+		context = context.root
 	for i in ids.size() - 1:
 		var id := ids[i]
-		obj = obj.get_local_from_key(id)
-	obj.set_local_from_key(ids.back(), value)
+		context = context.get_value(id)
+	context.set_value(ids.back(), value)
 
 
 func has_value_for(root: PennyObject) -> bool:
@@ -80,7 +87,7 @@ func has_value_for(root: PennyObject) -> bool:
 	for i in ids.size() - 1:
 		var id := ids[i]
 		if not obj.has_local(id): return false
-		obj = obj.get_local_from_key(id)
+		obj = obj.get_value(id)
 	return obj.has_local(ids.back())
 
 
@@ -88,7 +95,7 @@ func prepend(other: Path) -> Path:
 	var other_ids := other.ids.duplicate()
 	while other_ids:
 		self.ids.push_front(other_ids.pop_back())
-	self.nested = other.nested
+	self.relative = other.relative
 	return self
 
 

@@ -218,18 +218,22 @@ var reconstructed_string : String :
 		return "%s %s" % [_get_keyword(), result]
 
 
-func get_global_path(path: Path) -> Path:
+func get_full_path(path: Path) -> Path:
 	var result : Path = path.duplicate()
-	if path.nested:
+	if path.relative:
 		var root : Path = nested_object_path
 		if root:
 			result.prepend(root)
-		result.nested = false
+		result.relative = false
 	return result
 
 
+func get_nested_object(root: PennyObject) -> PennyObject:
+	return get_full_path(nested_object_path).get_deep_value_for(root)
+
+
 func get_value_from_path(root: PennyObject, path: Path) -> Variant:
-	return get_global_path(path).get_deep_value_for(root)
+	return get_full_path(path).get_deep_value_for(root)
 
 
 func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
