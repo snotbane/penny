@@ -4,7 +4,7 @@ class_name MessageHandler extends PennyNode
 signal appeared
 signal received
 signal advanced
-signal closed
+# signal closed
 signal disappeared
 
 @export var name_label : RichTextLabel
@@ -15,6 +15,8 @@ signal disappeared
 var rand := RandomNumberGenerator.new()
 
 func _ready() -> void:
+	advanced.connect(host.resume)
+
 	# var c = self
 	# c.modulate = Color(rand.randf(), rand.randf(), rand.randf())
 	pass
@@ -43,10 +45,7 @@ func try_advance() -> void:
 	if not skip_prevent_timer.is_stopped():
 		return
 	advanced.emit()
-	close()											###### NO!!!!!!!!!!!!!!!!!!!!!
-
-func close() -> void:
-	closed.emit()
+	# close()											###### NO!!!!!!!!!!!!!!!!!!!!!
 
 func _on_appear_finished() -> void:
 	appeared.emit()

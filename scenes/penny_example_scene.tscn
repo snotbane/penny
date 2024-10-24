@@ -13,7 +13,7 @@ script = ExtResource("1_jmae0")
 lookup_tables = Array[ExtResource("2_4q0nq")]([ExtResource("3_lw4vb")])
 layers = [NodePath("../canvas_layer/ui/message_layer"), NodePath("../canvas_layer/ui/other_layer")]
 history_handler = NodePath("../canvas_layer/ui/history_layer/penny_history_box")
-autostart_label = &"z"
+autostart_label = &"tests"
 
 [node name="canvas_layer" type="CanvasLayer" parent="."]
 

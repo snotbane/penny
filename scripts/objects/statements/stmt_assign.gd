@@ -7,6 +7,9 @@ var op_index : int = -1
 var expression_index : int :
 	get: return op_index + 1
 
+func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
+	super._init(_address, _line, _depth, _tokens)
+
 func _get_keyword() -> StringName:
 	return 'assign'
 

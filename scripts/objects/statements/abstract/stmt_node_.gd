@@ -2,7 +2,7 @@
 ## Statement that interacts with a PennyObject and its Node instance via the supplied Path.
 class_name StmtNode_ extends Stmt_
 
-var subject_path : Path
+var node_path : Path
 
 func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
 	super._init(_address, _line, _depth, _tokens)
@@ -39,12 +39,22 @@ func _validate() -> PennyException:
 	return null
 
 func _setup() -> void:
-	subject_path = Path.new([PennyObject.BILTIN_OBJECT_NAME])
+	if tokens:
+		node_path = Path.from_tokens(tokens)
+	else:
+		node_path = Path.new([PennyObject.BILTIN_OBJECT_NAME])
 
-func instantiate_subject(host: PennyHost) -> Node:
-	var obj = subject_path.evaluate(host.data_root).get_data(host)
-	print("obj: ", obj)
+
+func get_or_create_node(host: PennyHost) -> Node:
+	var obj : PennyObject = node_path.evaluate_deep(host.data_root)
 	if obj:
-		var node = obj.instantiate(host)
+		var node = obj.get_or_create_node(host)
+		return node
+	return null
+
+func get_existing_node(host: PennyHost) -> Node:
+	var obj : PennyObject = node_path.evaluate_deep(host.data_root)
+	if obj:
+		var node : Node = obj.instance
 		return node
 	return null

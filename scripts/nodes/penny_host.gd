@@ -26,12 +26,6 @@ signal on_data_modified
 static var insts : Array[PennyHost] = []
 
 var data_root := PennyObject.STATIC_ROOT
-# var data_root := PennyObject.new('_root', {
-# 	PennyObject.BILTIN_OBJECT_NAME: PennyObject.BILTIN_OBJECT,
-# 	PennyObject.BILTIN_OPTION_NAME: PennyObject.BILTIN_OPTION,
-# 	PennyObject.BILTIN_PROMPT_NAME: PennyObject.BILTIN_PROMPT,
-# 	PennyObject.BILTIN_DIALOG_NAME: PennyObject.BILTIN_DIALOG,
-# })
 
 var records : Array[Record]
 var call_stack : Array[Stmt_.Address]
@@ -44,12 +38,11 @@ var is_halting : bool = false
 ## Returns the object in data that has most recently sent a message.
 var last_dialog_object : PennyObject :
 	get:
-		# for i in records.size():
-		# 	var record := records[-i-1]
-		# 	if record.stmt is StmtMessage:
-		# 		var path : Path = record.stmt.subject_path
-		# 		print(path)
-		# 		return path.evaluate(self).get_data(self)
+		for i in records.size():
+			var record := records[-i-1]
+			if record.stmt is StmtMessage:
+				var path : Path = record.stmt.subject_path
+				return path.evaluate_deep(self.data_root)
 		return null
 
 # @onready var watcher := Watcher.new([message_handler])
@@ -91,6 +84,10 @@ func advance() -> void:
 			return
 
 	invoke_at_cursor()
+
+func resume() -> void:
+	is_halting = false
+	advance()
 
 func close() -> void:
 	queue_free()

@@ -43,9 +43,9 @@ func _get_keyword() -> StringName:
 
 func _execute(host: PennyHost) -> Record:
 	var result := super._execute(host)
-	print("path: ", subject_path)
-	var message_handler : Node = instantiate_subject(host)
+	var message_handler : Node = get_or_create_node(host)
 	if message_handler is MessageHandler:
+		host.is_halting = true
 		message_handler.receive(result)
 	elif message_handler:
 		host.cursor.create_exception("Attempted to send a message to a node, but it isn't a MessageHandler.").push()
@@ -95,5 +95,5 @@ func _validate() -> PennyException:
 	return null
 
 func _setup() -> void:
-	subject_path = Path.new([PennyObject.BILTIN_OBJECT_NAME, PennyObject.BILTIN_DIALOG_NAME])
+	node_path = Path.new([PennyObject.BILTIN_OBJECT_NAME, PennyObject.BILTIN_DIALOG_NAME])
 

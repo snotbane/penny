@@ -178,27 +178,28 @@ func clear_local_from_key(key: StringName) -> void:
 	set_value(key, null)
 
 
-func instantiate(_host: PennyHost) -> Node:
-	var result : Node = self.get_value(INST_KEY)
-	print("inst: ", result)
-	if result:
-		_host.cursor.create_exception("Subject '%s' already has an instance '%s'. Aborting." % [self, result]).push()
-	else:
-		var lookup : Lookup = get_value(LINK_KEY)
-		print("lookup: ", lookup)
-		result = lookup.instantiate(_host, self, preferred_layer)
-		result.name = node_name
-		print("result: ", result)
-		self.set_value(INST_KEY, result)
+func get_or_create_node(host: PennyHost) -> Node:
+	var result : Node = instance
+	if result: return result
+
+	var lookup : Lookup = get_value(LINK_KEY)
+	result = lookup.instantiate(host, self, preferred_layer)
+	result.name = node_name
+	self.set_value(INST_KEY, result)
+
 	return result
 
 
-func destroy_instance_downstream(_host: PennyHost, recursive: bool = false) -> void:
+var instance : Node :
+	get: return self.get_value(INST_KEY)
+
+
+func destroy_instance_downstream(host: PennyHost, recursive: bool = false) -> void:
 	if recursive:
 		for k in data.keys():
 			var v = data[k]
 			if v and v is PennyObject:
-				v.destroy_instance_downstream(_host, recursive)
+				v.destroy_instance_downstream(host, recursive)
 	var node : PennyNode = get_value(INST_KEY)
 	if node:
 		node.queue_free()
@@ -287,6 +288,8 @@ static func get_icon(value: Variant) -> Texture2D:
 		return load("res://addons/penny_godot/assets/icons/Lookup.svg")
 	if value is Expr:
 		return load("res://addons/penny_godot/assets/icons/PrismMesh.svg")
+	if value is Node:
+		return load("res://addons/penny_godot/assets/icons/Node.svg")
 	return null
 
 
@@ -301,4 +304,6 @@ static func get_tooltip(value: Variant) -> String:
 		return "lookup"
 	if value is Expr:
 		return "expression"
+	if value is Node:
+		return "node"
 	return "other"

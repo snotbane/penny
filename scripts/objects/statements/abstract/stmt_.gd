@@ -307,6 +307,13 @@ func _setup() -> void:
 func create_exception(s: String = "Uncaught exception.") -> PennyException:
 	return PennyExceptionRef.new(file_address, s)
 
+
+func push_exception(s: String = "Uncaught exception.") -> PennyException:
+	var result := PennyExceptionRef.new(file_address, s)
+	result.push()
+	return result
+
+
 func recycle() -> Stmt_:
 	if tokens.is_empty():
 		create_exception("Empty statement.")
@@ -324,6 +331,7 @@ func recycle() -> Stmt_:
 			var key = tokens.pop_front().value
 			match key:
 				'call': return StmtJumpCall.new(address, line, depth, tokens)
+				'close': return StmtClose.new(address, line, depth, tokens)
 				'else': return StmtConditionalElse.new(address, line, depth, tokens)
 				'elif': return StmtConditionalElif.new(address, line, depth, tokens)
 				'if': return StmtConditionalIf.new(address, line, depth, tokens)
