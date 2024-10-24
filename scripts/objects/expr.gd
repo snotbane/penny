@@ -224,7 +224,4 @@ func _evaluate(context: PennyObject) -> Variant:
 		stmt.create_exception("Expression evaluated to null.")
 		return null
 
-	while result is Evaluable:
-		result = result.evaluate(context)
-
 	return result

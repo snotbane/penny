@@ -133,7 +133,7 @@ func get_base_value(key: StringName) -> Variant:
 	if base:
 		var path : Path = base.duplicate()
 		path.ids.push_back(key)
-		return path.get_deep_value_for(root)
+		return path.evaluate_deep(root)
 	return null
 
 ## Returns the value stored in this object's [member data] using a given [key]. If it doesn't exist, look for it in the base (inherited) object.

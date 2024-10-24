@@ -32,13 +32,12 @@ static func from_single(s: StringName, _nested: bool = false) -> Path:
 	return Path.new([s], _nested)
 
 func _to_string() -> String:
-	var result := ""
-	for i in ids:
-		result += i + "."
-	if relative:
-		return "/." + result
-	else:
-		return "/" + result.substr(0, result.length() - 1)
+	var result = "/"
+	if self.relative: result += "."
+	for id in ids:
+		result += id + "."
+	result = result.substr(0, result.length() - 1)
+	return result
 
 
 func duplicate() -> Path:
@@ -60,15 +59,15 @@ func get_value_for(context: PennyObject) -> Variant:
 
 
 ## Fully evaluates the path or a chain of paths. Never returns a [Path], but is prone to cyclical pathing.
-func get_deep_value_for(root: PennyObject) -> Variant:
+func get_deep_value_for(context: PennyObject) -> Variant:
 	var paths_used : Array[Path]
 	var result : Variant = self
 	while result is Path:
 		if paths_used.has(result):
-			PennyException.new("Cyclical path '%s' for object '%s'" % [result, root]).push()
+			PennyException.new("Cyclical path '%s' for object '%s'" % [result, context]).push()
 			return null
 		paths_used.push_back(result)
-		result = result.get_value_for(root)
+		result = result.get_value_for(context)
 	return result
 
 
@@ -82,8 +81,8 @@ func set_value_for(context: PennyObject, value: Variant) -> void:
 	context.set_value(ids.back(), value)
 
 
-func has_value_for(root: PennyObject) -> bool:
-	var obj : PennyObject = root
+func has_value_for(context: PennyObject) -> bool:
+	var obj : PennyObject = context
 	for i in ids.size() - 1:
 		var id := ids[i]
 		if not obj.has_local(id): return false

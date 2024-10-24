@@ -201,9 +201,12 @@ var nested_object_stmt : StmtObject_ :
 var nested_object_path : Path :
 	get:
 		var stmt := self
-		var result := Path.new()
-		while stmt:
+		var result := Path.new([], true)
+		while result.relative:
 			stmt = stmt.prev_lower_depth
+			if not stmt:
+				result.relative = false
+				break
 			if stmt is StmtObject_:
 				result.prepend(stmt.path)
 		return result
@@ -228,12 +231,14 @@ func get_full_path(path: Path) -> Path:
 	return result
 
 
-func get_nested_object(root: PennyObject) -> PennyObject:
-	return get_full_path(nested_object_path).get_deep_value_for(root)
+## Returns the object which this statement refers to.
+func get_nested_object(context: PennyObject) -> PennyObject:
+	return get_full_path(nested_object_path).evaluate_deep(context)
 
 
-func get_value_from_path(root: PennyObject, path: Path) -> Variant:
-	return get_full_path(path).get_deep_value_for(root)
+## Returns the value at the path with some starting point [root]
+func get_value_from_path(context: PennyObject, path: Path) -> Variant:
+	return get_full_path(path).evaluate_deep(context)
 
 
 func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
