@@ -233,7 +233,7 @@ func get_full_path(path: Path) -> Path:
 
 ## Returns the object which this statement refers to.
 func get_nested_object(context: PennyObject) -> PennyObject:
-	return get_full_path(nested_object_path).evaluate_deep(context)
+	return nested_object_path.evaluate_deep(context)
 
 
 ## Returns the value at the path with some starting point [root]
