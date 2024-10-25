@@ -29,7 +29,7 @@ func _execute(host: PennyHost) -> Record:
 	if after is PennyObject:
 		after.self_key = path.ids.back()
 	print(after.rich_name)
-	return create_record(host, before, after)
+	return create_assignment_record(host, before, after)
 
 
 ## Returns the object that this statement is working with.
@@ -44,8 +44,8 @@ func get_context_parent(host: PennyHost) -> PennyObject:
 	if result: return result
 	return host.data_root
 
-func create_record(host: PennyHost, before: Variant, after: Variant) -> Record:
-	var result = Record.new(host, self, AssignmentRecord.new(before, after))
+func create_assignment_record(host: PennyHost, before: Variant, after: Variant) -> Record:
+	var result := create_record(host, false, AssignmentRecord.new(before, after))
 	host.on_data_modified.emit()
 	return result
 

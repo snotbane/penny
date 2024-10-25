@@ -274,7 +274,7 @@ func _load() -> PennyException:
 ## Executes when it is reached as the user encounters it.
 func execute(host: PennyHost) -> Record: return _execute(host)
 func _execute(host: PennyHost) -> Record:
-	return Record.new(host, self)
+	return create_record(host)
 
 ## Executes when the user rewinds through history to undo this action.
 func undo(record: Record) -> void: _undo(record)
@@ -303,6 +303,9 @@ func _validate() -> PennyException:
 func setup() -> void: _setup()
 func _setup() -> void:
 	pass
+
+func create_record(host: PennyHost, halt: bool = false, attachment: Variant = null) -> Record:
+	return Record.new(host, self, halt, attachment)
 
 func create_exception(s: String = "Uncaught exception.") -> PennyException:
 	return PennyExceptionRef.new(file_address, s)

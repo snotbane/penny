@@ -19,7 +19,7 @@ func _execute(host: PennyHost) -> Record:
 	var value = expr.evaluate_deep(get_nested_object(host.data_root))
 	var s := str(value)
 	print(s)
-	return Record.new(host, self, s)
+	return create_record(host, false, s)
 
 
 # func _undo(record: Record) -> void:

@@ -33,7 +33,6 @@ var call_stack : Array[Stmt_.Address]
 var cursor : Stmt_
 var expecting_conditional : bool
 
-var is_halting : bool = false
 
 ## Returns the object in data that has most recently sent a message.
 var last_dialog_object : PennyObject :
@@ -44,13 +43,12 @@ var last_dialog_object : PennyObject :
 				return record.stmt.subject_dialog_path.evaluate_deep(self.data_root)
 		return null
 
-# @onready var watcher := Watcher.new([message_handler])
 
 func _ready() -> void:
 	insts.push_back(self)
-
 	if Penny.valid and not autostart_label.is_empty():
 		jump_to.call_deferred(autostart_label)
+
 
 func _exit_tree() -> void:
 	insts.erase(self)
@@ -61,36 +59,31 @@ func jump_to(label: StringName) -> void:
 	cursor = Penny.get_stmt_from_label(label)
 	invoke_at_cursor()
 
+
 func invoke_at_cursor() -> void:
 	var record := cursor.execute(self)
 
 	records.push_back(record)
 	history_handler.receive(record)
 
-	if is_halting:
-		pass
-	else:
+	if not record.halt:
 		advance()
 
+
 func advance() -> void:
-	if cursor == null: return
 	cursor = records.back().next()
 	if cursor == null:
 		if call_stack:
 			cursor = call_stack.pop_back().stmt
 		else:
-			# close()
 			return
-
 	invoke_at_cursor()
 
-func resume() -> void:
-	is_halting = false
-	advance()
 
 func close() -> void:
 	queue_free()
 	return
+
 
 func rewind_to(record: Record) -> void:
 	expecting_conditional = false
@@ -98,8 +91,8 @@ func rewind_to(record: Record) -> void:
 	while records.size() > record.stamp:
 		records.pop_back().undo()
 	history_handler.rewind_to(record)
-
 	invoke_at_cursor()
+
 
 func get_layer(i: int = -1) -> Node:
 	if i < 0 or i >= layers.size(): return layers.back()

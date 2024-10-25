@@ -16,7 +16,7 @@ func _is_record_shown_in_history(record: Record) -> bool:
 	return record.attachment != null
 
 func _execute(host: PennyHost) -> Record:
-	return Record.new(host, self, _evaluate_self(host))
+	return create_record(host, _evaluate_self(host))
 
 func _next(record: Record) -> Stmt_:
 	if record.attachment == null:

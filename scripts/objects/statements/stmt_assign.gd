@@ -25,7 +25,7 @@ func _execute(host: PennyHost) -> Record:
 	path.set_value_for(get_context_parent(host), after)
 
 	# get_context_parent(host).set_value(path.ids.back(), after)
-	return create_record(host, prior, after)
+	return create_assignment_record(host, prior, after)
 
 # func _undo(record: Record) -> void:
 # 	super._undo(record)

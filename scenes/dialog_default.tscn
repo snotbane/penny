@@ -134,10 +134,6 @@ name_label = NodePath("v_box_container/margin_container/name_label")
 text_label = NodePath("v_box_container/panel/margin_container/scroll_container/margin_container/text_label")
 typewriter = NodePath("typewriter")
 skip_prevent_timer = NodePath("skip_prevent_timer")
-suspend_host_on_populate = true
-resume_host_on_free = true
-free_on_close = false
-open_on_ready = false
 
 [node name="typewriter" type="Node" parent="." node_paths=PackedStringArray("rtl", "scroll_container")]
 script = ExtResource("3_q7721")

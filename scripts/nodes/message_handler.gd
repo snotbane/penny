@@ -9,14 +9,9 @@ signal advanced
 @export var typewriter : Typewriter
 @export var skip_prevent_timer : Timer
 
-var rand := RandomNumberGenerator.new()
 
 func _populate(_host: PennyHost, _object: PennyObject) -> void:
-	advanced.connect(_host.resume)
-
-	# var c = self
-	# c.modulate = Color(rand.randf(), rand.randf(), rand.randf())
-	pass
+	advanced.connect(_host.advance)
 
 
 func _input(event: InputEvent) -> void:
@@ -41,9 +36,9 @@ func prevent_skip() -> void:
 
 
 func try_advance() -> void:
+	if appear_state != AppearState.PRESENT: return
 	if typewriter.working:
 		typewriter.prod_work()
 		return
-	if not skip_prevent_timer.is_stopped():
-		return
+	if not skip_prevent_timer.is_stopped():	return
 	advanced.emit()

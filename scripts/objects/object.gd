@@ -116,8 +116,8 @@ func _init(_self_key: StringName, _parent: PennyObject = null, _data: Dictionary
 	data = _data
 
 
-func _to_string() -> String:
-	return self_key
+# func _to_string() -> String:
+# 	return self_key
 
 
 func duplicate(_new_parent: PennyObject = null, deep := false) -> PennyObject:
@@ -198,11 +198,10 @@ func get_or_create_node(host: PennyHost, owner := self) -> Node:
 
 func instantiate_from_lookup(host: PennyHost, lookup: Lookup = get_value(LINK_KEY)) -> Node:
 	var result : Node = self.local_instance
-	if result: self.local_instance.queue_free()
+	# if result and result is PennyNode and result.close_on_unlinked: self.local_instance.close()
 	result = lookup.instantiate(host, self.preferred_layer)
 	result.name = self.node_name
 	self.local_instance = result
-	print("set self.local_instance to: ", self.local_instance)
 	return result
 
 

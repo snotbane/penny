@@ -3,6 +3,7 @@
 class_name Record extends Object
 
 var host : PennyHost
+var halt : bool
 var stamp : int
 var stmt : Stmt_
 var message : Message
@@ -16,10 +17,11 @@ var prev : Record :
 		if stamp == 0 : return null
 		return host.records[stamp - 1]
 
-func _init(_host: PennyHost, _stmt: Stmt_, _attachment: Variant = null) -> void:
+func _init(_host: PennyHost, _stmt: Stmt_, _halt: bool, _attachment: Variant = null) -> void:
 	host = _host
 	stamp = host.records.size()
 	stmt = _stmt
+	halt = _halt
 	attachment = _attachment
 	message = stmt.message(self)
 

@@ -39,32 +39,30 @@ func _get_keyword() -> StringName:
 	return 'message'
 
 func _execute(host: PennyHost) -> Record:
-	var result := super._execute(host)
+	var result := create_record(host, true)
 
-	var remaining_dialog_object : PennyObject = host.last_dialog_object
-	var remaining_dialog_node : PennyNode
+	var previous_dialog : PennyObject = host.last_dialog_object
+	var previous_dialog_node : PennyNode
 
-	var incoming_dialog_object : PennyObject = self.subject_dialog_path.evaluate_deep(host.data_root)
+	var incoming_dialog : PennyObject = self.subject_dialog_path.evaluate_deep(host.data_root)
 	var incoming_dialog_node : PennyNode
 
-	var do_create_incoming_node : bool = true
-	if remaining_dialog_object:
-		remaining_dialog_node = remaining_dialog_object.local_instance
-		do_create_incoming_node = not (remaining_dialog_node and remaining_dialog_object == incoming_dialog_object)
+	var incoming_needs_creation : bool = true
+	if previous_dialog:
+		previous_dialog_node = previous_dialog.local_instance
+		incoming_needs_creation = previous_dialog_node == null or previous_dialog_node.appear_state >= PennyNode.AppearState.CLOSING or previous_dialog != incoming_dialog
 
-	if do_create_incoming_node:
-		incoming_dialog_node = self.get_or_create_node(host, subject_dialog_path)
-		incoming_dialog_node.populate(host, incoming_dialog_object)
-		incoming_dialog_node.open_on_ready = remaining_dialog_node == null
-
-		if not incoming_dialog_node.open_on_ready:
-			remaining_dialog_node.tree_exited.connect(incoming_dialog_node.open)
-			remaining_dialog_node.close()
-			remaining_dialog_node.resume_host_on_free = false
+	if incoming_needs_creation:
+		incoming_dialog_node = self.instantiate_node(host, subject_dialog_path)
+		incoming_dialog_node.populate(host, incoming_dialog)
+		incoming_dialog_node.open_on_ready = previous_dialog_node == null
+		if previous_dialog_node != null:
+			previous_dialog_node.advance_on_free = false
+			previous_dialog_node.tree_exited.connect(incoming_dialog_node.open)
+			previous_dialog_node.close()
 	else:
-		incoming_dialog_node = remaining_dialog_node
+		incoming_dialog_node = previous_dialog_node
 
-	host.is_halting = true
 	if incoming_dialog_node is MessageHandler:
 		incoming_dialog_node.receive(result, subject_path.evaluate_deep(host.data_root))
 	elif incoming_dialog_node:

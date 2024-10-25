@@ -22,7 +22,7 @@ func _get_verbosity() -> Verbosity:
 
 func _execute(host: PennyHost) -> Record:
 	var label = tokens[0].value
-	return Record.new(host, self, label)
+	return create_record(host, false, label)
 
 func _next(record: Record) -> Stmt_:
 	print("Jumping to ", record.attachment)
