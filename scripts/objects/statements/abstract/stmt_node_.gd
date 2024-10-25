@@ -48,9 +48,12 @@ func _setup() -> void:
 func get_or_create_node(host: PennyHost, path := node_path) -> Node:
 	var obj : PennyObject = path.evaluate_deep(host.data_root)
 	if obj:
-		var node = obj.get_or_create_node(host)
+		var node = obj.instantiate_from_lookup(host)
 		return node
 	return null
+
+# func instantiate_node(host: PennyHost, path := node_path) -> Node:
+# 	return obj.instantiate(host)
 
 func get_existing_node(host: PennyHost, path := node_path) -> Node:
 	var obj : PennyObject = path.evaluate_deep(host.data_root)

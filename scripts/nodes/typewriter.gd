@@ -80,15 +80,15 @@ func reset() -> void:
 	visible_characters = 0
 
 
-func start() -> void:
+func present() -> void:
 	is_playing = true
 
 func _on_dialog_received() -> void:
 	if is_ready:
 		reset()
 
-func _on_dialog_appeared() -> void:
-	start()
+func _on_dialog_present() -> void:
+	present()
 
 
 

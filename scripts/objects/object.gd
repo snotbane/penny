@@ -148,8 +148,14 @@ func get_value(key: StringName) -> Variant:
 
 
 ## Returns the value stored at the given [key], else use [default].
-func get_value_or_default(key: StringName, default: Variant) -> Variant:
+func get_local_value_or_default(key: StringName, default: Variant) -> Variant:
 	var value : Variant = self.get_local_value(key)
+	if value != null: return value
+	return default
+
+## Returns the value stored at the given [key], else use [default].
+func get_value_or_default(key: StringName, default: Variant) -> Variant:
+	var value : Variant = self.get_value(key)
 	if value != null: return value
 	return default
 
@@ -178,20 +184,30 @@ func clear_local_from_key(key: StringName) -> void:
 	set_value(key, null)
 
 
-func get_or_create_node(host: PennyHost) -> Node:
-	var result : Node = instance
+func get_or_create_node(host: PennyHost, owner := self) -> Node:
+	var result : Node = owner.instance
 	if result: return result
 
 	var lookup : Lookup = get_value(LINK_KEY)
-	result = lookup.instantiate(host, self, preferred_layer)
-	result.name = node_name
-	self.set_value(INST_KEY, result)
+	result = lookup.instantiate(host, preferred_layer)
+	result.name = owner.node_name
+	owner.set_value(INST_KEY, result)
 
 	return result
 
 
+func instantiate_from_lookup(host: PennyHost, lookup: Lookup = get_value(LINK_KEY)) -> Node:
+	var result : Node = self.instance
+	if result: self.instance.queue_free()
+	result = lookup.instantiate(host, self.preferred_layer)
+	result.name = self.node_name
+	self.instance = result
+	return result
+
+
 var instance : Node :
-	get: return self.get_value(INST_KEY)
+	get: return self.get_local_value(INST_KEY)
+	set(value): self.set_value(INST_KEY, value)
 
 
 func destroy_instance_downstream(host: PennyHost, recursive: bool = false) -> void:

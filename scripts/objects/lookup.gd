@@ -15,10 +15,8 @@ func _to_string() -> String:
 func fetch() -> Variant:
 	return LookupTable.get_data(key)
 
-func instantiate(host: PennyHost, object: PennyObject = null, layer := -1) -> PennyNode:
+func instantiate(host: PennyHost, layer := -1) -> Node:
 	var scene : PackedScene = fetch()
 	var result : Node = scene.instantiate()
-	if result is PennyNode:
-		result.populate(host, object)
 	host.get_layer(layer).add_child.call_deferred(result)
 	return result

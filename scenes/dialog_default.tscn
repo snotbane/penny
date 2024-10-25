@@ -16,7 +16,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Color(1, 1, 1, 0)]
+"values": [Color(1, 1, 1, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_kij65"]
@@ -57,7 +57,7 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
-"method": &"_on_appear_finished"
+"method": &"present"
 }]
 }
 
@@ -99,7 +99,7 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
-"method": &"_on_disappear_finished"
+"method": &"queue_free"
 }]
 }
 
@@ -111,7 +111,6 @@ _data = {
 }
 
 [node name="dialog_default" type="Control" node_paths=PackedStringArray("name_label", "text_label", "typewriter", "skip_prevent_timer")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1152.0
@@ -208,8 +207,8 @@ libraries = {
 "": SubResource("AnimationLibrary_ywfyv")
 }
 
-[connection signal="appeared" from="." to="typewriter" method="_on_dialog_appeared"]
-[connection signal="closed" from="." to="animation_player" method="play" binds= [&"dialog_disappear"]]
-[connection signal="ready" from="." to="animation_player" method="play" binds= [&"dialog_appear"]]
-[connection signal="received" from="." to="typewriter" method="_on_dialog_received"]
+[connection signal="on_close" from="." to="animation_player" method="play" binds= [&"dialog_disappear"]]
+[connection signal="on_open" from="." to="animation_player" method="play" binds= [&"dialog_appear"]]
+[connection signal="on_present" from="." to="typewriter" method="_on_dialog_appeared"]
+[connection signal="received" from="." to="typewriter" method="_on_dialog_present"]
 [connection signal="completed" from="typewriter" to="." method="prevent_skip"]

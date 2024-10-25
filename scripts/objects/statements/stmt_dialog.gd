@@ -40,7 +40,22 @@ func _get_keyword() -> StringName:
 
 func _execute(host: PennyHost) -> Record:
 	var result := super._execute(host)
-	var message_handler : Node = get_or_create_node(host, dialog_node_path)
+
+	var dialog_object : PennyObject = self.dialog_node_path.evaluate_deep(host.data_root)
+	print("dialog path: ", dialog_node_path, ", dialog object: ", dialog_object)
+
+	var current_message_handler : PennyNode = get_existing_node(host, dialog_node_path)
+
+	var switch_dialog_nodes : bool = current_message_handler and host.last_dialog_object and host.last_dialog_object != self.node_path.evaluate_deep(host.data_root)
+	print("Need to switch: ", switch_dialog_nodes)
+
+	var message_handler : PennyNode = get_or_create_node(host, dialog_node_path)
+	message_handler.populate(host, self.dialog_node_path.evaluate_deep(host.data_root))
+
+	# if switch_dialog_nodes:
+	# 	message_handler.close()
+
+
 	if message_handler is MessageHandler:
 		host.is_halting = true
 		message_handler.receive(result, node_path.evaluate_deep(host.data_root))
