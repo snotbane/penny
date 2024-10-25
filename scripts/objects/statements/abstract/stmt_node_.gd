@@ -2,7 +2,7 @@
 ## Statement that interacts with a PennyObject and its Node instance via the supplied Path.
 class_name StmtNode_ extends Stmt_
 
-var node_path : Path
+var subject_path : Path
 
 func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
 	super._init(_address, _line, _depth, _tokens)
@@ -40,24 +40,24 @@ func _validate() -> PennyException:
 
 func _setup() -> void:
 	if tokens:
-		node_path = Path.from_tokens(tokens)
+		subject_path = Path.from_tokens(tokens)
 	else:
-		node_path = Path.new([PennyObject.BILTIN_OBJECT_NAME])
+		subject_path = Path.new([PennyObject.BILTIN_OBJECT_NAME])
 
 
-func get_or_create_node(host: PennyHost, path := node_path) -> Node:
+func get_or_create_node(host: PennyHost, path := subject_path) -> Node:
 	var obj : PennyObject = path.evaluate_deep(host.data_root)
 	if obj:
 		var node = obj.instantiate_from_lookup(host)
 		return node
 	return null
 
-# func instantiate_node(host: PennyHost, path := node_path) -> Node:
+# func instantiate_node(host: PennyHost, path := subject_path) -> Node:
 # 	return obj.instantiate(host)
 
-func get_existing_node(host: PennyHost, path := node_path) -> Node:
+func get_existing_node(host: PennyHost, path := subject_path) -> Node:
 	var obj : PennyObject = path.evaluate_deep(host.data_root)
 	if obj:
-		var node : Node = obj.instance
+		var node : Node = obj.local_instance
 		return node
 	return null

@@ -18,6 +18,18 @@ tracks/0/keys = {
 "update": 0,
 "values": [Color(1, 1, 1, 1)]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_kij65"]
 resource_name = "fade_in"
@@ -106,11 +118,12 @@ tracks/2/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ywfyv"]
 _data = {
 "RESET": SubResource("Animation_th5j2"),
-"dialog_appear": SubResource("Animation_kij65"),
-"dialog_disappear": SubResource("Animation_niumw")
+"dialog_close": SubResource("Animation_niumw"),
+"dialog_open": SubResource("Animation_kij65")
 }
 
 [node name="dialog_default" type="Control" node_paths=PackedStringArray("name_label", "text_label", "typewriter", "skip_prevent_timer")]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1152.0
@@ -124,6 +137,7 @@ skip_prevent_timer = NodePath("skip_prevent_timer")
 suspend_host_on_populate = true
 resume_host_on_free = true
 free_on_close = false
+open_on_ready = false
 
 [node name="typewriter" type="Node" parent="." node_paths=PackedStringArray("rtl", "scroll_container")]
 script = ExtResource("3_q7721")
@@ -207,8 +221,8 @@ libraries = {
 "": SubResource("AnimationLibrary_ywfyv")
 }
 
-[connection signal="on_close" from="." to="animation_player" method="play" binds= [&"dialog_disappear"]]
-[connection signal="on_open" from="." to="animation_player" method="play" binds= [&"dialog_appear"]]
-[connection signal="on_present" from="." to="typewriter" method="_on_dialog_appeared"]
-[connection signal="received" from="." to="typewriter" method="_on_dialog_present"]
+[connection signal="on_close" from="." to="animation_player" method="play" binds= [&"dialog_close"]]
+[connection signal="on_open" from="." to="animation_player" method="play" binds= [&"dialog_open"]]
+[connection signal="on_present" from="." to="typewriter" method="_on_dialog_present"]
+[connection signal="received" from="." to="typewriter" method="_on_dialog_received"]
 [connection signal="completed" from="typewriter" to="." method="prevent_skip"]

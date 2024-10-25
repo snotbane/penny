@@ -57,6 +57,7 @@ func open() -> void:
 
 
 func close() -> void:
+	print("Closing")
 	on_close.emit()
 	if free_on_close:
 		queue_free()

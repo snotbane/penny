@@ -28,7 +28,7 @@ func _execute(host: PennyHost) -> Record:
 		else:
 			node.queue_free()
 	else:
-		self.push_exception("Attempted to close object at path '%s' but no node instance exists." % node_path)
+		self.push_exception("Attempted to close object at path '%s' but no node instance exists." % subject_path)
 	return super._execute(host)
 
 # func _next(record: Record) -> Stmt_:

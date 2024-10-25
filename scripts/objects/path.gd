@@ -72,7 +72,7 @@ func get_deep_value_for(context: PennyObject) -> Variant:
 
 
 func set_value_for(context: PennyObject, value: Variant) -> void:
-	print("Attempting to set value on path '%s'. relative: '%s', Context: '%s', value: '%s'" % [self, relative, context, value])
+	# print("Attempting to set value on path '%s'. relative: '%s', Context: '%s', value: '%s'" % [self, relative, context, value])
 	if not relative:
 		context = context.root
 	for i in ids.size() - 1:

@@ -185,7 +185,7 @@ func clear_local_from_key(key: StringName) -> void:
 
 
 func get_or_create_node(host: PennyHost, owner := self) -> Node:
-	var result : Node = owner.instance
+	var result : Node = owner.local_instance
 	if result: return result
 
 	var lookup : Lookup = get_value(LINK_KEY)
@@ -197,15 +197,16 @@ func get_or_create_node(host: PennyHost, owner := self) -> Node:
 
 
 func instantiate_from_lookup(host: PennyHost, lookup: Lookup = get_value(LINK_KEY)) -> Node:
-	var result : Node = self.instance
-	if result: self.instance.queue_free()
+	var result : Node = self.local_instance
+	if result: self.local_instance.queue_free()
 	result = lookup.instantiate(host, self.preferred_layer)
 	result.name = self.node_name
-	self.instance = result
+	self.local_instance = result
+	print("set self.local_instance to: ", self.local_instance)
 	return result
 
 
-var instance : Node :
+var local_instance : Node :
 	get: return self.get_local_value(INST_KEY)
 	set(value): self.set_value(INST_KEY, value)
 

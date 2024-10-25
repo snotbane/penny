@@ -9,7 +9,7 @@ static var REGEX_DECORATION := RegEx.create_from_string("(?<!\\\\)(<.*?>)")
 static var REGEX_WORD_COUNT := RegEx.create_from_string("\\b\\S+\\b")
 static var REGEX_CHAR_COUNT := RegEx.create_from_string("\\S")
 
-var dialog_node_path : Path
+var subject_dialog_path : Path
 var raw_text : String
 
 var text_stripped : String :
@@ -41,25 +41,33 @@ func _get_keyword() -> StringName:
 func _execute(host: PennyHost) -> Record:
 	var result := super._execute(host)
 
-	var dialog_object : PennyObject = self.dialog_node_path.evaluate_deep(host.data_root)
-	print("dialog path: ", dialog_node_path, ", dialog object: ", dialog_object)
+	var remaining_dialog_object : PennyObject = host.last_dialog_object
+	var remaining_dialog_node : PennyNode
 
-	var current_message_handler : PennyNode = get_existing_node(host, dialog_node_path)
+	var incoming_dialog_object : PennyObject = self.subject_dialog_path.evaluate_deep(host.data_root)
+	var incoming_dialog_node : PennyNode
 
-	var switch_dialog_nodes : bool = current_message_handler and host.last_dialog_object and host.last_dialog_object != self.node_path.evaluate_deep(host.data_root)
-	print("Need to switch: ", switch_dialog_nodes)
+	var do_create_incoming_node : bool = true
+	if remaining_dialog_object:
+		remaining_dialog_node = remaining_dialog_object.local_instance
+		do_create_incoming_node = not (remaining_dialog_node and remaining_dialog_object == incoming_dialog_object)
 
-	var message_handler : PennyNode = get_or_create_node(host, dialog_node_path)
-	message_handler.populate(host, self.dialog_node_path.evaluate_deep(host.data_root))
+	if do_create_incoming_node:
+		incoming_dialog_node = self.get_or_create_node(host, subject_dialog_path)
+		incoming_dialog_node.populate(host, incoming_dialog_object)
+		incoming_dialog_node.open_on_ready = remaining_dialog_node == null
 
-	# if switch_dialog_nodes:
-	# 	message_handler.close()
+		if not incoming_dialog_node.open_on_ready:
+			remaining_dialog_node.tree_exited.connect(incoming_dialog_node.open)
+			remaining_dialog_node.close()
+			remaining_dialog_node.resume_host_on_free = false
+	else:
+		incoming_dialog_node = remaining_dialog_node
 
-
-	if message_handler is MessageHandler:
-		host.is_halting = true
-		message_handler.receive(result, node_path.evaluate_deep(host.data_root))
-	elif message_handler:
+	host.is_halting = true
+	if incoming_dialog_node is MessageHandler:
+		incoming_dialog_node.receive(result, subject_path.evaluate_deep(host.data_root))
+	elif incoming_dialog_node:
 		host.cursor.create_exception("Attempted to send a message to a node, but it isn't a MessageHandler.").push()
 	else:
 		host.cursor.create_exception("Attempted to send a message to a node, but it wasn't created.").push()
@@ -100,6 +108,6 @@ func _validate() -> PennyException:
 func _setup() -> void:
 	raw_text = tokens.pop_back().value
 	super._setup()
-	dialog_node_path = node_path.duplicate()
-	dialog_node_path.ids.push_back(PennyObject.BILTIN_DIALOG_NAME)
+	subject_dialog_path = subject_path.duplicate()
+	subject_dialog_path.ids.push_back(PennyObject.BILTIN_DIALOG_NAME)
 
