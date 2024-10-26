@@ -65,9 +65,6 @@ var line : int
 var depth : int
 var tokens : Array[Token]
 
-var is_halting : bool :
-	get: return _get_is_halting()
-
 var verbosity : int :
 	get: return _get_verbosity()
 
@@ -250,62 +247,74 @@ func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) ->
 func _to_string() -> String:
 	return "%s %s : %s" % [line_string, depth_string, reconstructed_string]
 
-## Whether or not this statement should pause the execution flow, for an indeterminate amount of time.
-func _get_is_halting() -> bool:
-	return false
 
 ## Helper keyword to define what this statement does.
 func _get_keyword() -> StringName:
 	return 'INVALID'
 
+
 ## Defines whether or not this statement should show up in history. -1 = always show, even to end user. Values greater than 0 are used for debugging purposes.
 func _get_verbosity() -> Verbosity:
 	return Verbosity.USER_FACING
 
-func is_record_shown_in_history(record: Record) -> bool: return _is_record_shown_in_history(record)
-func _is_record_shown_in_history(record: Record) -> bool:
-	return true
 
-## Executes just once, as soon as all scripts have been validated.
+## Called once to check this statement has all its pieces in the proper places. Penny can't run unless EVERY STATEMENT IN ALL SCRIPTS are successfully validated. Return null to indicate success.
+func validate() -> PennyException: return _validate()
+## Called once to check this statement has all its pieces in the proper places. Penny can't run unless EVERY STATEMENT IN ALL SCRIPTS are successfully validated. Return null to indicate success.
+func _validate() -> PennyException:
+	return create_exception("_validate() method needs to be overridden and/or statement was never recycled into the proper type (not implemented).")
+
+
+## Called once after THIS script has been successfully validated (after [member validate], before [member load]). Use to initialize data for this script. Effectively an extension of [member validate].
+func setup() -> void: _setup()
+## Called once after THIS script has been successfully validated (after [member validate], before [member load]). Use to initialize data for this script. Effectively an extension of [member validate].
+func _setup() -> void:
+	pass
+
+
+## Called once, after ALL scripts have been successfully validated (after [member setup]). Use to initialize date between scripts.
 func load() -> PennyException: return _load()
+## Called once, after ALL scripts have been successfully validated (after [member setup]). Use to initialize date between scripts.
 func _load() -> PennyException:
 	return null
 
+
 ## Executes when it is reached as the user encounters it.
 func execute(host: PennyHost) -> Record: return _execute(host)
+## Executes when it is reached as the user encounters it.
 func _execute(host: PennyHost) -> Record:
 	return create_record(host)
 
+
 ## Executes when the user rewinds through history to undo this action.
 func undo(record: Record) -> void: _undo(record)
+## Executes when the user rewinds through history to undo this action.
 func _undo(record: Record) -> void:
 	pass
 
+
 ## Returns the address of the next statement to go to, based on what happened.
 func next(record: Record) -> Stmt_: return _next(record)
+## Returns the address of the next statement to go to, based on what happened.
 func _next(record: Record) -> Stmt_:
 	return next_in_order
 
+
 ## Creates a message to be shown in the statement history or displayed to a dialogue box.
 func message(record: Record) -> Message: return _message(record)
+## Creates a message to be shown in the statement history or displayed to a dialogue box.
 func _message(record: Record) -> Message:
 	return Message.new(reconstructed_string)
+
 
 func create_history_node(record: Record) -> Control: return _create_history_node(record)
 func _create_history_node(record: Record) -> Control:
 	return null
 
-## Returns an exception to check what may be wrong with the statement (or null if OK)
-func validate() -> PennyException: return _validate()
-func _validate() -> PennyException:
-	return create_exception("_validate() method needs to be overridden and/or statement was never recycled into the proper type (not implemented).")
-
-func setup() -> void: _setup()
-func _setup() -> void:
-	pass
 
 func create_record(host: PennyHost, halt: bool = false, attachment: Variant = null) -> Record:
 	return Record.new(host, self, halt, attachment)
+
 
 func create_exception(s: String = "Uncaught exception.") -> PennyException:
 	return PennyExceptionRef.new(file_address, s)
@@ -334,6 +343,7 @@ func recycle() -> Stmt_:
 				'else': 	return StmtConditionalElse.new(address, line, depth, tokens)
 				'elif': 	return StmtConditionalElif.new(address, line, depth, tokens)
 				'if': 		return StmtConditionalIf.new(address, line, depth, tokens)
+				'init':		return StmtInit.new(address, line, depth, tokens)
 				'jump': 	return StmtJump.new(address, line, depth, tokens)
 				'label': 	return StmtLabel.new(address, line, depth, tokens)
 				'open': 	return StmtNode_.new(address, line, depth, tokens)
@@ -354,10 +364,12 @@ func recycle() -> Stmt_:
 				return StmtObject_.new(address, line, depth, tokens)
 	return self
 
+
 func validate_as_no_tokens() -> PennyException:
 	if not tokens.is_empty():
 		return create_exception("Unexpected token(s) in standalone statement.")
 	return null
+
 
 func validate_path(expr: Array[Token]) -> PennyException:
 	var relative : bool = expr[0].value == '.'
@@ -373,6 +385,7 @@ func validate_path(expr: Array[Token]) -> PennyException:
 				return create_exception("Expected dot operator in path.")
 	return null
 
+
 func validate_as_identifier_only() -> PennyException:
 	if tokens.size() != 1:
 		return create_exception("Statement requires exactly 1 token.")
@@ -380,13 +393,16 @@ func validate_as_identifier_only() -> PennyException:
 		return create_exception("Unexpected token '%s' is not an identifier." % tokens[0])
 	return null
 
+
 func validate_as_lookup() -> PennyException:
 	return null
+
 
 func validate_as_expression(require: bool = true) -> PennyException:
 	if not require and tokens.is_empty():
 		return null
 	return validate_expression(tokens)
+
 
 func validate_expression(expr: Array[Token]) -> PennyException:
 	if expr.is_empty():

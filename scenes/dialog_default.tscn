@@ -1,6 +1,5 @@
-[gd_scene load_steps=8 format=3 uid="uid://b8sp6ey8fsgt7"]
+[gd_scene load_steps=7 format=3 uid="uid://b8sp6ey8fsgt7"]
 
-[ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="1_0b5nk"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/message_handler.gd" id="2_44j7f"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/typewriter.gd" id="3_q7721"]
 
@@ -75,7 +74,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id="Animation_kij65"]
 resource_name = "fade_in"
-length = 0.3
+length = 0.66667
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -107,7 +106,7 @@ tracks/2/path = NodePath(".")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0.3),
+"times": PackedFloat32Array(0.666667),
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
@@ -125,71 +124,73 @@ _data = {
 [node name="dialog_default" type="Control" node_paths=PackedStringArray("name_label", "text_label", "typewriter", "skip_prevent_timer")]
 visible = false
 layout_mode = 3
-anchors_preset = 0
-offset_right = 1152.0
-offset_bottom = 648.0
-theme = ExtResource("1_0b5nk")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("2_44j7f")
-name_label = NodePath("v_box_container/margin_container/name_label")
-text_label = NodePath("v_box_container/panel/margin_container/scroll_container/margin_container/text_label")
+name_label = NodePath("name_label")
+text_label = NodePath("panel/margin_container/scroll_container/margin_container/text_label")
 typewriter = NodePath("typewriter")
 skip_prevent_timer = NodePath("skip_prevent_timer")
 
 [node name="typewriter" type="Node" parent="." node_paths=PackedStringArray("rtl", "scroll_container")]
 script = ExtResource("3_q7721")
-rtl = NodePath("../v_box_container/panel/margin_container/scroll_container/margin_container/text_label")
-scroll_container = NodePath("../v_box_container/panel/margin_container/scroll_container")
+rtl = NodePath("../panel/margin_container/scroll_container/margin_container/text_label")
+scroll_container = NodePath("../panel/margin_container/scroll_container")
 
 [node name="skip_prevent_timer" type="Timer" parent="."]
 wait_time = 0.125
 one_shot = true
 
-[node name="v_box_container" type="VBoxContainer" parent="."]
+[node name="name_label" type="RichTextLabel" parent="."]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.025
+anchor_top = 0.5
+anchor_right = -0.025
+anchor_bottom = 0.5
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 2
+focus_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/bold_italics_font_size = 36
+theme_override_font_sizes/italics_font_size = 36
+theme_override_font_sizes/normal_font_size = 36
+theme_override_font_sizes/bold_font_size = 36
+bbcode_enabled = true
+text = "[p align=r jst=w,k,sl][b][i]Object Name"
+fit_content = true
+scroll_active = false
+shortcut_keys_enabled = false
+selection_enabled = true
+visible_characters_behavior = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="panel" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="margin_container" type="MarginContainer" parent="v_box_container"]
-layout_mode = 2
-theme_override_constants/margin_left = 40
-theme_override_constants/margin_bottom = 0
-
-[node name="name_label" type="RichTextLabel" parent="v_box_container/margin_container"]
-layout_mode = 2
 size_flags_horizontal = 3
-focus_mode = 2
-mouse_filter = 2
-theme_override_font_sizes/bold_italics_font_size = 28
-theme_override_font_sizes/italics_font_size = 28
-theme_override_font_sizes/normal_font_size = 28
-theme_override_font_sizes/bold_font_size = 28
-bbcode_enabled = true
-text = "[p align=fill jst=w,k,sl][b][i]Object Name"
-fit_content = true
-scroll_active = false
-shortcut_keys_enabled = false
-selection_enabled = true
-visible_characters_behavior = 1
-
-[node name="panel" type="PanelContainer" parent="v_box_container"]
-layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="margin_container" type="MarginContainer" parent="v_box_container/panel"]
+[node name="margin_container" type="MarginContainer" parent="panel"]
 layout_mode = 2
-theme = ExtResource("1_0b5nk")
 
-[node name="scroll_container" type="ScrollContainer" parent="v_box_container/panel/margin_container"]
+[node name="scroll_container" type="ScrollContainer" parent="panel/margin_container"]
 layout_mode = 2
 follow_focus = true
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 3
 
-[node name="margin_container" type="MarginContainer" parent="v_box_container/panel/margin_container/scroll_container"]
+[node name="margin_container" type="MarginContainer" parent="panel/margin_container/scroll_container"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 2
@@ -198,7 +199,7 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
-[node name="text_label" type="RichTextLabel" parent="v_box_container/panel/margin_container/scroll_container/margin_container"]
+[node name="text_label" type="RichTextLabel" parent="panel/margin_container/scroll_container/margin_container"]
 layout_mode = 2
 focus_mode = 2
 mouse_filter = 2

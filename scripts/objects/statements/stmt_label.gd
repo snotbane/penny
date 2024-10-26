@@ -2,11 +2,14 @@
 ## Speaks nothing. Hears nothing. Sees nothing. Is nothing.
 class_name StmtLabel extends Stmt_
 
+
 func _get_keyword() -> StringName:
 	return "label"
 
+
 func _get_verbosity() -> int:
 	return Verbosity.IGNORED
+
 
 func _load() -> PennyException:
 	if Penny.labels.has(tokens[0].value):
@@ -15,11 +18,14 @@ func _load() -> PennyException:
 		Penny.labels[tokens[0].value] = self
 		return super._load()
 
+
 func _execute(host: PennyHost) -> Record:
 	return super._execute(host)
 
+
 func _undo(record: Record) -> void:
 	pass
+
 
 func _validate() -> PennyException:
 	return validate_as_identifier_only()

@@ -1,0 +1,46 @@
+
+## No description
+class_name StmtInit extends Stmt_
+
+var order := 0
+
+func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
+	super._init(_address, _line, _depth, _tokens)
+
+
+func _get_keyword() -> StringName:
+	return 'init'
+
+
+func _get_verbosity() -> Verbosity:
+	return Verbosity.FLOW_ACTIVITY
+
+
+func _validate() -> PennyException:
+	if tokens.is_empty(): return null
+	if tokens.size() > 1 or tokens[0].type != Token.VALUE_NUMBER:
+		return create_exception("Init statement should only have one int parameter or none.")
+	return null
+
+
+func _setup() -> void:
+	if tokens.size() >= 1:
+		order = int(tokens[0].value)
+
+
+func _load() -> PennyException:
+	Penny.inits.push_back(self)
+	return null
+
+
+func _execute(host: PennyHost) -> Record:
+	return super._execute(host)
+
+# func _next(record: Record) -> Stmt_:
+# 	return next_in_order
+
+# func _undo(record: Record) -> void:
+# 	pass
+
+func _message(record: Record) -> Message:
+	return super._message(record)

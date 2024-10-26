@@ -13,6 +13,7 @@ const ERROR_COLOR = Color(1, 0.471, 0.42)	## Matches editor
 
 static var stmt_dict : Dictionary		## StringName : Array[Stmt_]
 static var labels : Dictionary			## StringName : Stmt_
+static var inits : Array[StmtInit]
 static var valid : bool = true
 static var clean : bool = true
 
@@ -49,7 +50,15 @@ static func validate() -> Array[PennyException]:
 			var exception = stmt.load()
 			if exception:
 				result.push_back(exception)
+
 	return result
+
+static func load() -> void:
+	inits.sort_custom(stmt_init_sort)
+
+	for host in PennyHost.insts:
+		host.reload()
+
 
 static func get_stmt_from_label(label: StringName) -> Stmt_:
 	if labels.has(label):
@@ -59,14 +68,16 @@ static func get_stmt_from_label(label: StringName) -> Stmt_:
 		return null
 
 static func log(s: String, c: Color = DEFAULT_COLOR) -> void:
-	active_dock.log(s, c)
+	if active_dock:
+		active_dock.log(s, c)
 
 static func log_error(s: String, c: Color = ERROR_COLOR) -> void:
 	Penny.log(s, c)
 	push_error(s)
 
 static func log_clear() -> void:
-	active_dock.log_clear()
+	if active_dock:
+		active_dock.log_clear()
 
 static func log_timed(s: String, c: Color = DEFAULT_COLOR) -> void:
 	Penny.log("[%s] %s" % [get_formatted_time(), s], c)
@@ -101,3 +112,7 @@ static func get_debug_string(value: Variant) -> String:
 	elif value is String:
 		return "\"%s\"" % value
 	return str(value)
+
+
+static func stmt_init_sort(a: StmtInit, b: StmtInit) -> bool:
+	return a.order >= b.order

@@ -2,6 +2,12 @@
 ## Node that actualizes Penny statements. This stores local data_root and records based on what the player chooses to do. Most applications will simply use an autoloaded, global host. For more advanced uses, you can instantiate multiple of these simultaneously for concurrent or even network-replicated instances. The records/state can be saved.
 class_name PennyHost extends Node
 
+enum State {
+	UNLOADED,
+	INITING,
+	READY
+}
+
 signal on_data_modified
 
 @export_subgroup("Instantiation")
@@ -25,6 +31,8 @@ signal on_data_modified
 
 static var insts : Array[PennyHost] = []
 
+var state := State.UNLOADED
+
 var data_root := PennyObject.STATIC_ROOT
 
 var records : Array[Record]
@@ -43,10 +51,20 @@ var last_dialog_object : PennyObject :
 				return record.stmt.subject_dialog_path.evaluate_deep(self.data_root)
 		return null
 
-
-func _ready() -> void:
+func _init() -> void:
 	insts.push_back(self)
-	if Penny.valid and not autostart_label.is_empty():
+
+func reload() -> void:
+	state = State.UNLOADED
+	if not Penny.valid: return
+
+	state = State.INITING
+	for init in Penny.inits:
+		cursor = init
+		invoke_at_cursor()
+
+	state = State.READY
+	if not autostart_label.is_empty():
 		jump_to.call_deferred(autostart_label)
 
 
@@ -66,7 +84,7 @@ func invoke_at_cursor() -> void:
 	records.push_back(record)
 	history_handler.receive(record)
 
-	if not record.halt:
+	if not record.halt or state == State.INITING:
 		advance()
 
 

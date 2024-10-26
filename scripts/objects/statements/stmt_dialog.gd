@@ -90,8 +90,12 @@ func _message(record: Record) -> Message:
 			break
 
 		var inter_expr := Expr.from_tokens(self, parser.tokens)
-		var result = inter_expr.evaluate(record.host.data_root)
-		var result_string := str(result)
+		var result = inter_expr.evaluate_deep(record.host.data_root)
+		var result_string : String
+		if result is PennyObject:
+			result_string = result.rich_name
+		else:
+			result_string = str(result)
 
 		text = text.substr(0, match.get_start()) + result_string + text.substr(match.get_end(), text.length() - match.get_end())
 

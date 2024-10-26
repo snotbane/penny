@@ -8,10 +8,14 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_11om5"]
 bg_color = Color(0.15, 0.15, 0.15, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [resource]
 default_font = ExtResource("1_2b1x8")
-default_font_size = 20
+default_font_size = 28
 EditorIcons/icons/2D = null
 EditorIcons/icons/3D = null
 EditorIcons/icons/AABB = null

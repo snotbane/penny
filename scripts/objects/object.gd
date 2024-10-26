@@ -18,9 +18,10 @@ static var DEFAULT_BASE := Path.from_single(BILTIN_OBJECT_NAME, false)
 static var STATIC_ROOT := PennyObject.new(BILTIN_STATIC_NAME, null)
 
 static var BILTIN_OBJECT := PennyObject.new(BILTIN_OBJECT_NAME, STATIC_ROOT, {
-	'name_prefix': "<>",							## Prepended when getting the rich name.
-	'name_suffix': "</>",							## Appended when getting the rich name.
-	'dialog': Path.new([BILTIN_DIALOG_NAME]),		## Lookup for the message box scene.
+	NAME_KEY: "",
+	NAME_PREFIX_KEY: "<>",							## Prepended when getting the rich name.
+	NAME_SUFFIX_KEY: "</>",							## Appended when getting the rich name.
+	DIALOG_KEY: Path.new([BILTIN_DIALOG_NAME]),		## Lookup for the message box scene.
 	# 'dialog_shared': true,							## Whether or not to use a shared message box. All objects that have this set to true will share one message box object that won't be destroyed until someone who doesn't share decides to send dialog.
 	# 'inst': null									## Reference to the instanced node of this object.
 })
@@ -35,22 +36,22 @@ static var BILTIN_OPTION := PennyObject.new(BILTIN_OPTION_NAME, STATIC_ROOT, {
 
 static var BILTIN_PROMPT := PennyObject.new(BILTIN_PROMPT_NAME, STATIC_ROOT, {
 	BASE_KEY: Path.new([BILTIN_OBJECT_NAME]),
-	LINK_KEY: Lookup.new('prompt_default'),
+	LINK_KEY: Lookup.new(StringName('prompt_default')),
 	OPTIONS_KEY: [],
 	RESPONSE_KEY: -1,
 })
 
 static var BILTIN_DIALOG := PennyObject.new(BILTIN_DIALOG_NAME, STATIC_ROOT, {
 	BASE_KEY: Path.new([BILTIN_OBJECT_NAME]),
-	LINK_KEY: Lookup.new('dialog_default'),
+	LINK_KEY: Lookup.new(StringName('dialog_default')),
 	LINK_LAYER_KEY: 0,								## Prefer the bottom layer.
 })
 
 
 static var PRIORITY_DATA_ENTRIES := [
-	"base",
-	"link",
-	"name",
+	BASE_KEY,
+	LINK_KEY,
+	NAME_KEY,
 ]
 
 const BILTIN_STATIC_NAME := StringName('static')
@@ -60,9 +61,12 @@ const BILTIN_PROMPT_NAME := StringName('prompt')
 const BILTIN_DIALOG_NAME := StringName('dialog')
 const ABLE_KEY := StringName('able')
 const BASE_KEY := StringName('base')
+const DIALOG_KEY := BILTIN_DIALOG_NAME
 const LINK_KEY := StringName('link')
 const LINK_LAYER_KEY := StringName('link_layer')
 const NAME_KEY := StringName('name')
+const NAME_PREFIX_KEY := StringName('name_prefix')
+const NAME_SUFFIX_KEY := StringName('name_suffix')
 const ICON_KEY := StringName('icon')
 const INST_KEY := StringName('inst')
 const OPTIONS_KEY := StringName('options')
@@ -79,7 +83,8 @@ var name : String :
 
 
 var rich_name : String :
-	get: return "%s%s%s" % [self.get_value('name_prefix'), name, self.get_value('name_suffix')]
+	# get: return "%s%s%s" % [self.get_value('name_prefix'), name, self.get_value('name_suffix')]
+	get: return name
 
 
 var node_name : String :

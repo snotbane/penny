@@ -62,6 +62,7 @@ func reload(hard: bool = false) -> void:
 			exceptions = Penny.validate()
 
 		if exceptions.is_empty():
+			Penny.load()
 			Penny.log_timed("Successfully loaded all scripts.", Penny.HAPPY_COLOR)
 		else:
 			Penny.log_timed("Failed to load one or more scripts:", Penny.ERROR_COLOR)
