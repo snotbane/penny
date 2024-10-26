@@ -13,7 +13,8 @@ const PNY_FILE_OMIT = [
 	"addons",
 
 	## Temporary
-	"assets",
+	# "assets",
+	"ignore",
 ]
 
 var paths_dates : Dictionary

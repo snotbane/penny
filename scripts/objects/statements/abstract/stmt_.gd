@@ -329,16 +329,19 @@ func recycle() -> Stmt_:
 		Token.KEYWORD:
 			var key = tokens.pop_front().value
 			match key:
-				'call': return StmtJumpCall.new(address, line, depth, tokens)
-				'close': return StmtClose.new(address, line, depth, tokens)
-				'else': return StmtConditionalElse.new(address, line, depth, tokens)
-				'elif': return StmtConditionalElif.new(address, line, depth, tokens)
-				'if': return StmtConditionalIf.new(address, line, depth, tokens)
-				'jump': return StmtJump.new(address, line, depth, tokens)
-				'label': return StmtLabel.new(address, line, depth, tokens)
-				'open': return StmtNode_.new(address, line, depth, tokens)
-				'pass': return StmtPass.new(address, line, depth, tokens)
-				'print': return StmtPrint.new(address, line, depth, tokens)
+				'call': 	return StmtJumpCall.new(address, line, depth, tokens)
+				'close': 	return StmtClose.new(address, line, depth, tokens)
+				'else': 	return StmtConditionalElse.new(address, line, depth, tokens)
+				'elif': 	return StmtConditionalElif.new(address, line, depth, tokens)
+				'if': 		return StmtConditionalIf.new(address, line, depth, tokens)
+				'jump': 	return StmtJump.new(address, line, depth, tokens)
+				'label': 	return StmtLabel.new(address, line, depth, tokens)
+				'open': 	return StmtNode_.new(address, line, depth, tokens)
+				'pass': 	return StmtPass.new(address, line, depth, tokens)
+				'print': 	return StmtPrint.new(address, line, depth, tokens)
+				'return':	return StmtReturn.new(address, line, depth, tokens)
+			PennyException.new("The keyword '%s' was detected, but no method is registered for it in Stmt_.recycle()." % key).push()
+			return self
 	match tokens.back().type:
 			Token.VALUE_STRING:
 				return StmtDialog.new(address, line, depth, tokens)

@@ -28,7 +28,7 @@ enum {
 static var PATTERNS := {
 	Token.INDENTATION: 		RegEx.create_from_string("(?m)^\\t+"),
 	Token.VALUE_STRING: 	RegEx.create_from_string("(?s)(\"\"\"|\"|'''|'|```|`).*?\\1"),
-	Token.KEYWORD: 			RegEx.create_from_string("\\b(dec|dive|call|close|elif|else|if|filter|jump|label|open|pass|print|return|wait)\\b"),
+	Token.KEYWORD: 			RegEx.create_from_string("\\b(call|close|else|elif|if|jump|label|open|pass|print|return)\\b"),
 	Token.VALUE_BOOLEAN: 	RegEx.create_from_string("\\b([Tt]rue|TRUE|[Ff]alse|FALSE)\\b"),
 	Token.VALUE_COLOR: 		RegEx.create_from_string("(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
 	Token.OPERATOR: 		RegEx.create_from_string("([=!<>]=)|&&|\\|\\||(\\b(and|nand|or|nor|not|new)\\b)|([\\.!+\\-*/@\\$%&|<>\\[\\]\\(\\),](?!=))"),
@@ -73,8 +73,8 @@ static var PRIMITIVE_PATTERNS = [
 	RegEx.create_from_string("\\b([Nn]ull|NULL)\\b"),
 	RegEx.create_from_string("\\b([Tt]rue|TRUE)\\b"),
 	RegEx.create_from_string("\\b([Ff]alse|FALSE)\\b"),
-	RegEx.create_from_string("(?<!\\D)(\\d+\\.\\d+|\\d+\\.|\\.\\d+)(?!=\\D)"),
-	RegEx.create_from_string("(?<!\\D)\\d+(?!=\\D)"),
+	RegEx.create_from_string("\\b(\\d+\\.\\d+|\\d+\\.|\\.\\d+)\\b"),
+	RegEx.create_from_string("\\b\\d+\\b"),
 ]
 
 enum Operator {

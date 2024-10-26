@@ -134,24 +134,25 @@ func get_local_value(key: StringName) -> Variant:
 ## Returns the inherited value from this object's base object using a given [key]. If it doesn't exist, return [null].
 func get_base_value(key: StringName) -> Variant:
 	var base : Path = self.get_local_value(BASE_KEY)
-	if base:
-		var path : Path = base.duplicate()
-		path.ids.push_back(key)
-		return path.evaluate_deep(root)
-	return null
+	if base == null: return null
+	var path : Path = base.duplicate()
+	path.ids.push_back(key)
+	return path.evaluate_deep(root)
 
 ## Returns the value stored in this object's [member data] using a given [key]. If it doesn't exist, look for it in the base (inherited) object.
 func get_value(key: StringName) -> Variant:
-	var local : Variant = self.get_local_value(key)
-	if local != null: return local
-	return get_base_value(key)
+	if self.has_local(key):
+		return self.data[key]
+	else:
+		return self.get_base_value(key)
 
 
 ## Returns the value stored at the given [key], else use [default].
 func get_local_value_or_default(key: StringName, default: Variant) -> Variant:
-	var value : Variant = self.get_local_value(key)
-	if value != null: return value
-	return default
+	if data.has(key):
+		return data[key]
+	else:
+		return default
 
 ## Returns the value stored at the given [key], else use [default].
 func get_value_or_default(key: StringName, default: Variant) -> Variant:
