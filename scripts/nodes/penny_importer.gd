@@ -34,6 +34,7 @@ func _notification(what: int) -> void:
 		reload()
 
 func reload(hard: bool = false) -> void:
+	create_resources()
 
 	var files : Array[FileAccess]
 	if hard:
@@ -136,3 +137,8 @@ static func get_all_paths(path: StringName = PNY_FILE_ROOT) -> Array[StringName]
 		pass
 
 	return result
+
+
+
+func create_resources() -> void:
+	pass
