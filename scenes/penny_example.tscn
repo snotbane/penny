@@ -1,13 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://gtm2kenc70u7"]
+[gd_scene load_steps=8 format=3 uid="uid://gtm2kenc70u7"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_host.gd" id="1_jmae0"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/lookup_table.gd" id="2_4q0nq"]
 [ext_resource type="Resource" uid="uid://cxfy5qyeucf76" path="res://addons/penny_godot/assets/lookup_table_default.tres" id="3_lw4vb"]
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="4_dsf1v"]
 [ext_resource type="PackedScene" uid="uid://ckwmom7w0dvh1" path="res://addons/penny_godot/scenes/penny_history_box.tscn" id="4_hm4jj"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/mouse_input_catcher.gd" id="5_bg7b0"]
 [ext_resource type="PackedScene" uid="uid://cfkhtume00g5e" path="res://addons/penny_godot/scenes/penny_debug.tscn" id="5_vsnrl"]
 
-[node name="penny_example" type="Node" node_paths=PackedStringArray("layers", "history_handler")]
+[node name="penny_host" type="Node" node_paths=PackedStringArray("layers", "history_handler")]
 script = ExtResource("1_jmae0")
 lookup_tables = Array[ExtResource("2_4q0nq")]([ExtResource("3_lw4vb")])
 layers = [NodePath("canvas_layer/ui/v_box_container/message_layer"), NodePath("canvas_layer/ui/other_layer")]
@@ -23,7 +24,18 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 theme = ExtResource("4_dsf1v")
+
+[node name="input_catcher" type="Control" parent="canvas_layer/ui"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("5_bg7b0")
 
 [node name="v_box_container" type="VBoxContainer" parent="canvas_layer/ui"]
 layout_mode = 1
@@ -32,6 +44,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+alignment = 2
 
 [node name="history_layer" type="MarginContainer" parent="canvas_layer/ui/v_box_container"]
 layout_mode = 2
@@ -45,10 +60,11 @@ theme_override_constants/margin_right = 200
 layout_mode = 2
 
 [node name="message_layer" type="MarginContainer" parent="canvas_layer/ui/v_box_container"]
-custom_minimum_size = Vector2(0, 280)
+custom_minimum_size = Vector2(0, 240)
 layout_mode = 2
-theme_override_constants/margin_left = 200
-theme_override_constants/margin_right = 200
+mouse_filter = 2
+theme_override_constants/margin_left = 300
+theme_override_constants/margin_right = 300
 theme_override_constants/margin_bottom = 40
 
 [node name="other_layer" type="Control" parent="canvas_layer/ui"]
@@ -62,3 +78,5 @@ mouse_filter = 2
 
 [node name="debug_overlay" parent="canvas_layer" instance=ExtResource("5_vsnrl")]
 visible = false
+
+[connection signal="on_click" from="canvas_layer/ui/input_catcher" to="." method="advance"]

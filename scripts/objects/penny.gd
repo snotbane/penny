@@ -19,8 +19,8 @@ static var clean : bool = true
 
 static var active_dock : PennyDock:
 	get:
-		if PennyPlugin.inst:
-			return PennyPlugin.inst.dock
+		# if PennyPlugin.inst:
+		# 	return PennyPlugin.inst.dock
 		return PennyDock.inst
 
 static func clear_all() -> void:

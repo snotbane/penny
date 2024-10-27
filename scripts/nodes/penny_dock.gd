@@ -18,6 +18,7 @@ func log(s: String, c: Color = Penny.DEFAULT_COLOR) -> void:
 func log_clear() -> void:
 	message_log.text = String()
 	message_log.append_text("[code]")
+	self.log("Cleared log.")
 
 func _on_button_reload_pressed() -> void:
 	PennyImporter.inst.reload(true)

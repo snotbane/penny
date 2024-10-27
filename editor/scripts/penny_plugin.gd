@@ -7,7 +7,7 @@ static var inst : PennyPlugin
 static var prefab_dock: PackedScene = load("res://addons/penny_godot/scenes/penny_dock.tscn")
 
 var dock : Control
-var importer : PennyImporter
+# var importer : PennyImporter
 
 func _enter_tree() -> void:
 	inst = self

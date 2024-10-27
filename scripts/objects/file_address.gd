@@ -8,7 +8,8 @@ var col : int
 
 func _init(_path: String, _line: int = -1, _col: int = -1) -> void:
 	path = _path
-	path_absolute = FileAccess.open(_path, FileAccess.READ).get_path_absolute()
+	path_absolute = "null"
+	# path_absolute = FileAccess.open(_path, FileAccess.READ).get_path_absolute()
 	line = _line
 	col = _col
 
