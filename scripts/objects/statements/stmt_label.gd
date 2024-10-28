@@ -15,21 +15,28 @@ func _get_verbosity() -> int:
 	return Verbosity.IGNORED
 
 
-func _load() -> PennyException:
+func _validate_self() -> PennyException:
+	return validate_as_identifier_only()
+
+
+# func _validate_self_post_setup() -> void:
+# 	pass
+
+func _validate_cross() -> PennyException:
 	if Penny.labels.has(tokens[0].value):
 		return create_exception("Label '%s' already exists (%s)" % [tokens[0].value, Penny.get_stmt_from_label(tokens[0].value).file_address.pretty_string])
 	else:
 		Penny.labels[tokens[0].value] = self
-		return super._load()
+		return super._validate_cross()
 
 
-func _execute(host: PennyHost) -> Record:
-	return super._execute(host)
+# func _undo(record: Record) -> void:
+# 	pass
 
 
-func _undo(record: Record) -> void:
-	pass
+# func _next(record: Record) -> Stmt_:
+# 	return next_in_order
 
 
-func _validate() -> PennyException:
-	return validate_as_identifier_only()
+func _message(record: Record) -> Message:
+	return super._message(record)

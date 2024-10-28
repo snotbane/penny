@@ -1,7 +1,6 @@
 
 class_name StmtPrint extends Stmt_
 
-
 func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
 	super._init(_address, _line, _depth, _tokens)
 
@@ -12,6 +11,18 @@ func _get_keyword() -> StringName:
 
 func _get_verbosity() -> Verbosity:
 	return Verbosity.DEBUG_MESSAGES
+
+
+func _validate_self() -> PennyException:
+	return validate_as_expression()
+
+
+# func _validate_self_post_setup() -> void:
+# 	pass
+
+
+# func _validate_cross() -> PennyException:
+# 	return null
 
 
 func _execute(host: PennyHost) -> Record:
@@ -26,9 +37,9 @@ func _execute(host: PennyHost) -> Record:
 # 	pass
 
 
+# func _next(record: Record) -> Stmt_:
+# 	return next_in_order
+
+
 func _message(record: Record) -> Message:
 	return Message.new(record.attachment)
-
-
-func _validate() -> PennyException:
-	return validate_as_expression()

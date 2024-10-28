@@ -259,23 +259,23 @@ func _get_verbosity() -> Verbosity:
 
 
 ## Called once to check this statement has all its pieces in the proper places. Penny can't run unless EVERY STATEMENT IN ALL SCRIPTS are successfully validated. Return null to indicate success.
-func validate() -> PennyException: return _validate()
+func validate_self() -> PennyException: return _validate_self()
 ## Called once to check this statement has all its pieces in the proper places. Penny can't run unless EVERY STATEMENT IN ALL SCRIPTS are successfully validated. Return null to indicate success.
-func _validate() -> PennyException:
-	return create_exception("_validate() method needs to be overridden and/or statement was never recycled into the proper type (not implemented).")
+func _validate_self() -> PennyException:
+	return create_exception("Stmt was never recycled; probably needs new Stmt class or registration.")
 
 
-## Called once after THIS script has been successfully validated (after [member validate], before [member load]). Use to initialize data for this script. Effectively an extension of [member validate].
-func setup() -> void: _setup()
-## Called once after THIS script has been successfully validated (after [member validate], before [member load]). Use to initialize data for this script. Effectively an extension of [member validate].
-func _setup() -> void:
+## Called once after THIS script has been successfully validated (after [member validate_self], before [member load]). Use to initialize data for this script. Effectively an extension of [member validate_self].
+func validate_self_post_setup() -> void: _validate_self_post_setup()
+## Called once after THIS script has been successfully validated (after [member validate_self], before [member load]). Use to initialize data for this script. Effectively an extension of [member validate_self].
+func _validate_self_post_setup() -> void:
 	pass
 
 
-## Called once, after ALL scripts have been successfully validated (after [member setup]). Use to initialize date between scripts.
-func load() -> PennyException: return _load()
-## Called once, after ALL scripts have been successfully validated (after [member setup]). Use to initialize date between scripts.
-func _load() -> PennyException:
+## Called once, after ALL scripts have been successfully validated (after [member validate_self_post_setup]). Use to initialize date between scripts.
+func validate_cross() -> PennyException: return _validate_cross()
+## Called once, after ALL scripts have been successfully validated (after [member validate_self_post_setup]). Use to initialize date between scripts.
+func _validate_cross() -> PennyException:
 	return null
 
 

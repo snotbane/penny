@@ -6,17 +6,34 @@ var expr : Expr
 func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
 	super._init(_address, _line, _depth, _tokens)
 
+
 func _get_keyword() -> StringName:
 	return 'check'
+
 
 func _get_verbosity() -> Verbosity:
 	return Verbosity.FLOW_ACTIVITY
 
-func _is_record_shown_in_history(record: Record) -> bool:
-	return record.attachment != null
+
+func _validate_self() -> PennyException:
+	return create_exception()
+
+
+func _validate_self_post_setup() -> void:
+	expr = Expr.from_tokens(self, tokens)
+
+
+# func _validate_cross() -> PennyException:
+# 	return null
+
 
 func _execute(host: PennyHost) -> Record:
 	return create_record(host, _evaluate_self(host))
+
+
+# func _undo(record: Record) -> void:
+# 	pass
+
 
 func _next(record: Record) -> Stmt_:
 	if record.attachment == null:
@@ -36,6 +53,7 @@ func _next(record: Record) -> Stmt_:
 		record.host.expecting_conditional = false
 		return next_in_depth
 
+
 func _message(record: Record) -> Message:
 	match record.attachment:
 		true:
@@ -45,12 +63,8 @@ func _message(record: Record) -> Message:
 		_:
 			return Message.new("[s]%s [code]SKIPPED[/code]" % reconstructed_string)
 
-func _validate() -> PennyException:
-	return create_exception()
-
-func _setup() -> void:
-	expr = Expr.from_tokens(self, tokens)
 
 func _evaluate_self(host: PennyHost) -> Variant: return null
+
 
 func _should_skip(record: Record) -> bool: return true

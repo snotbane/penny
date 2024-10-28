@@ -140,10 +140,10 @@ func statementize() -> Array[PennyException]:
 		recycle.file_address = FileAddress.new(file.get_path(), stmt.line)
 		stmts[i] = recycle
 	for i in stmts:
-		var e := i.validate()
+		var e := i.validate_self()
 		if e:
 			result.push_back(e)
 		else:
-			i.setup()
+			i.validate_self_post_setup()
 
 	return result

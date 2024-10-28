@@ -39,14 +39,6 @@ static func validate() -> Array[PennyException]:
 	labels.clear()
 
 	var i := -1
-	# for path in stmt_dict.keys():
-	# 	i = -1
-	# 	for stmt in stmt_dict[path]:
-	# 		i += 1
-	# 		stmt.address = Stmt_.Address.new(path, i)
-	# 		var exception = stmt.load()
-	# 		if exception:
-	# 			result.push_back(exception)
 
 	var j : int
 	for script in scripts:
@@ -55,7 +47,7 @@ static func validate() -> Array[PennyException]:
 		for stmt in script.stmts:
 			j += 1
 			stmt.address = Stmt_.Address.new(i, j)
-			var e := stmt.load()
+			var e := stmt.validate_cross()
 			if e:
 				result.push_back(e)
 

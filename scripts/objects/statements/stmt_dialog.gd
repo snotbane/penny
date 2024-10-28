@@ -20,23 +20,43 @@ var text_stripped : String :
 		result = REGEX_DECORATION.sub(result, "", true)
 		return result
 
+
 var word_count : int :
 	get: return REGEX_WORD_COUNT.search_all(text_stripped).size()
+
 
 var char_count : int :
 	get: return text_stripped.length()
 
+
 var char_count_non_whitespace : int :
 	get: return REGEX_CHAR_COUNT.search_all(text_stripped).size()
 
-func _get_is_halting() -> bool:
-	return true
+
+func _get_keyword() -> StringName:
+	return 'message'
+
 
 func _get_verbosity() -> Verbosity:
 	return Verbosity.MAX
 
-func _get_keyword() -> StringName:
-	return 'message'
+
+func _validate_self() -> PennyException:
+	if tokens.back().type != Token.VALUE_STRING:
+		return create_exception("The last token must be a String.")
+	return null
+
+
+func _validate_self_post_setup() -> void:
+	raw_text = tokens.pop_back().value
+	super._validate_self_post_setup()
+	subject_dialog_path = subject_path.duplicate()
+	subject_dialog_path.ids.push_back(PennyObject.BILTIN_DIALOG_NAME)
+
+
+# func _validate_cross() -> PennyException:
+# 	return null
+
 
 func _execute(host: PennyHost) -> Record:
 	var result := create_record(host, true)
@@ -71,6 +91,7 @@ func _execute(host: PennyHost) -> Record:
 		host.cursor.create_exception("Attempted to send a message to a node, but it wasn't created.").push()
 	return result
 
+
 func _message(record: Record) -> Message:
 	var text : String = raw_text
 
@@ -101,15 +122,3 @@ func _message(record: Record) -> Message:
 
 	text = rx_whitespace.sub(text, "", true)
 	return Message.new(text)
-
-func _validate() -> PennyException:
-	if tokens.back().type != Token.VALUE_STRING:
-		return create_exception("The last token must be a String.")
-	return null
-
-func _setup() -> void:
-	raw_text = tokens.pop_back().value
-	super._setup()
-	subject_dialog_path = subject_path.duplicate()
-	subject_dialog_path.ids.push_back(PennyObject.BILTIN_DIALOG_NAME)
-
