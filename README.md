@@ -1,7 +1,7 @@
 [nulture](https://nulture.carrd.co) presents...
 # Penny, an Interactive Narrative Language
 
-Penny is a coding language used to write interactive narrative content for video games. It is capable to, and appropriate for, handling any narrative demand, from short NPC dialogue, all the way up to full visual novel trees.
+Penny is a coding language used to write interactive narrative content for video games. It is capable of, and appropriate for, handling any narrative demand, from short NPC dialogue, all the way up to full visual novel trees.
 
 # Quickstart
 
@@ -12,7 +12,7 @@ Penny is a coding language used to write interactive narrative content for video
 
 # Why?
 
-Penny's purpose is to provide a dedicated environment for writers to focus on front-end visuals, audio, and (most importantly) text. Rather than being a fully-featured engine, Penny is designed to work along side a host engine. This is to separate game logic from narrative content.
+Penny's purpose is to provide a dedicated environment for writers to focus on front-end visuals, audio, and (most importantly) text. Rather than being a fully-featured engine, Penny is designed to work along side a host engine. This is to separate visual details from narrative content.
 
 ## Key Features
 

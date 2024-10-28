@@ -59,27 +59,14 @@ func reload(hard: bool = false) -> void:
 		files = open_modified()
 
 	if files.size() > 0:
-		# var host_application_string : String
-		# if Engine.is_editor_hint():
-		# 	host_application_string = "engine"
-		# else:
-		# 	host_application_string = "game"
-
-		# print("***	RELOADING %s PENNY SCRIPTS ( %s )" % [files.size(), host_application_string])
-
 		Penny.log_clear()
 		Penny.valid = true
 
-		var parsers = get_parsers(files)
-		var exceptions : Array[PennyException] = []
-		for i in parsers:
-			Penny.clear(i.file.get_path())
-			exceptions.append_array(i.parse_file())
-		if exceptions.is_empty():
-			exceptions = Penny.validate()
+		Penny.import_scripts(scripts)
+		var exceptions = Penny.validate()
 
 		if exceptions.is_empty():
-			# Penny.load()
+			Penny.load()
 			Penny.log_timed("Successfully loaded all scripts.", Penny.HAPPY_COLOR)
 		else:
 			Penny.log_timed("Failed to load one or more scripts:", Penny.ERROR_COLOR)

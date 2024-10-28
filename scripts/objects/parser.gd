@@ -26,7 +26,7 @@ var file : FileAccess
 var raw : String
 var tokens : Array[Token]
 var token_lines : Array[int]
-# var stmts : Array[Stmt_]
+var stmts : Array[Stmt_]
 
 static func from_file(_file: FileAccess) -> PennyParser:
 	return PennyParser.new(_file.get_as_text(true), _file)
@@ -47,9 +47,9 @@ func parse_statements() -> Array[PennyException]:
 	var exceptions = tokenize()
 	if exceptions.is_empty():
 		exceptions = statementize()
-	Penny.log("================================================================")
-	for i in tokens:
-		Penny.log(i.to_string())
+	# Penny.log("================================================================")
+	# for i in tokens:
+	# 	Penny.log(i.to_string())
 	# for i in stmts:
 	# 	print(i)
 	return exceptions
@@ -106,7 +106,7 @@ func tokenize() -> Array[PennyException]:
 
 # Separates statements based on terminators and indentation; For type assignment, etc. see Statement validations.
 func statementize() -> Array[PennyException]:
-	var stmts : Array[Stmt_] = []
+	stmts.clear()
 
 	var stmt : Stmt_ = null
 	var depth : int = 0
@@ -126,22 +126,24 @@ func statementize() -> Array[PennyException]:
 			if not stmt:
 				if token.type == Token.INDENTATION:
 					depth = token.value.length()
-				stmt = Stmt_.new(Stmt_.Address.new(file.get_path(), stmts.size()), token_lines[i], depth, [])
+				stmt = Stmt_.new(Stmt_.Address.new(0, stmts.size()), token_lines[i], depth, [])
 			if not token.type == Token.INDENTATION:
 				stmt.tokens.push_back(token)
 	if stmt:
 		stmts.push_back(stmt)
 
+
 	var result : Array[PennyException] = []
-	Penny.stmt_dict[file.get_path()] = []
+	for i in stmts.size():
+		stmt = stmts[i]
+		var recycle = stmt.recycle()
+		recycle.file_address = FileAddress.new(file.get_path(), stmt.line)
+		stmts[i] = recycle
 	for i in stmts:
-		var recycle = i.recycle()
-		recycle.file_address = FileAddress.new(file.get_path(), i.line)
-		Penny.stmt_dict[file.get_path()].push_back(recycle)
-	for i in Penny.stmt_dict[file.get_path()]:
-		var exception : PennyException = i.validate()
-		if exception:
-			result.push_back(exception)
+		var e := i.validate()
+		if e:
+			result.push_back(e)
 		else:
 			i.setup()
+
 	return result

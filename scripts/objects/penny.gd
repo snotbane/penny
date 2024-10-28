@@ -11,7 +11,7 @@ const ANGRY_COLOR = Color.DEEP_PINK
 const WARNING_COLOR = Color(1, 0.871, 0.4)	## Matches editor
 const ERROR_COLOR = Color(1, 0.471, 0.42)	## Matches editor
 
-static var stmt_dict : Dictionary		## StringName : Array[Stmt_]
+static var scripts : Array[PennyScriptResource]
 static var labels : Dictionary			## StringName : Stmt_
 static var inits : Array[StmtInit]
 static var valid : bool = true
@@ -25,14 +25,11 @@ static var active_dock : PennyDock:
 
 static func clear_all() -> void:
 	valid = true
-	stmt_dict.clear()
+	scripts.clear()
 	labels.clear()
 
-static func clear(path: StringName) -> void:
-	stmt_dict.erase(path)
-
-static func import_statements(path: StringName, _statements: Array[Stmt_]) -> void:
-	stmt_dict[path] = _statements
+static func import_scripts(_scripts: Array[PennyScriptResource]) -> void:
+	scripts = _scripts
 
 	clean = false
 
@@ -42,14 +39,25 @@ static func validate() -> Array[PennyException]:
 	labels.clear()
 
 	var i := -1
-	for path in stmt_dict.keys():
-		i = -1
-		for stmt in stmt_dict[path]:
-			i += 1
-			stmt.address = Stmt_.Address.new(path, i)
-			var exception = stmt.load()
-			if exception:
-				result.push_back(exception)
+	# for path in stmt_dict.keys():
+	# 	i = -1
+	# 	for stmt in stmt_dict[path]:
+	# 		i += 1
+	# 		stmt.address = Stmt_.Address.new(path, i)
+	# 		var exception = stmt.load()
+	# 		if exception:
+	# 			result.push_back(exception)
+
+	var j : int
+	for script in scripts:
+		i += 1
+		j = -1
+		for stmt in script.stmts:
+			j += 1
+			stmt.address = Stmt_.Address.new(i, j)
+			var e := stmt.load()
+			if e:
+				result.push_back(e)
 
 	return result
 
@@ -95,13 +103,13 @@ static func get_script_info() -> Array:
 	var words := 0
 	var chars := 0
 	# var non_whitespace_chars := 0
-	for path in stmt_dict.keys():
+	for scr in scripts:
 		files += 1
-		for i in stmt_dict[path]:
-			if i is	StmtDialog:
+		for stmt in scr.stmts:
+			if stmt is	StmtDialog:
 				blocks += 1
-				words += i.word_count
-				chars += i.char_count
+				words += stmt.word_count
+				chars += stmt.char_count
 				# non_whitespace_chars += i.char_count_non_whitespace
 				continue
 	return [files, blocks, words, chars]

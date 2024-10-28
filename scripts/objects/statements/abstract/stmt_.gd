@@ -6,27 +6,27 @@ class_name Stmt_ extends RefCounted
 class Address extends RefCounted:
 
 	var path : StringName
-
+	var file_index : int
 	var index : int
 
 	var stmt : Stmt_ :
 		get:
 			if valid:
-				return Penny.stmt_dict[path][index]
+				return Penny.scripts[file_index].stmts[index]
 			return null
 
 	var valid : bool :
 		get:
-			if Penny.stmt_dict.has(path):
-				return index >= 0 and index < Penny.stmt_dict[path].size()
+			if file_index < Penny.scripts.size():
+				return index >= 0 and index < Penny.scripts[file_index].stmts.size()
 			return false
 
-	func _init(__path: StringName, __index: int) -> void:
-		path = __path
+	func _init(_file_index: int, __index: int) -> void:
+		file_index = _file_index
 		index = __index
 
 	func copy(offset: int = 0) -> Address:
-		return Address.new(path, index + offset)
+		return Address.new(file_index, index + offset)
 
 	func hash() -> int:
 		return path.hash() + hash(index)
@@ -215,7 +215,7 @@ var reconstructed_string : String :
 		for i in tokens:
 			result += str(i.value) + " "
 		result = result.substr(0, result.length() - 1)
-		return "%s %s" % [_get_keyword(), result]
+		return result
 
 
 func get_full_path(path: Path) -> Path:
@@ -245,7 +245,7 @@ func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) ->
 	tokens = _tokens
 
 func _to_string() -> String:
-	return "%s %s : %s" % [line_string, depth_string, reconstructed_string]
+	return "%s %s : %s %s" % [line_string, depth_string, _get_keyword(), reconstructed_string]
 
 
 ## Helper keyword to define what this statement does.

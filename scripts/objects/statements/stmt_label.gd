@@ -3,6 +3,10 @@
 class_name StmtLabel extends Stmt_
 
 
+func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
+	super._init(_address, _line, _depth, _tokens)
+
+
 func _get_keyword() -> StringName:
 	return "label"
 

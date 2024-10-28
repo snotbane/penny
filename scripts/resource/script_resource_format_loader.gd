@@ -22,7 +22,6 @@ func _load(path: String, original_path: String, use_sub_threads: bool, cache_mod
 	if file:
 		var result := PennyScriptResource.new()
 		result.update_from_file(file)
-		print("Loaded '%s' with id %s" % [file.get_path(), result.id])
 		return result
 	else:
 		printerr("Failed to load file at path: ", path)
