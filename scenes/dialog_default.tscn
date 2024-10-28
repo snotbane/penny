@@ -157,6 +157,7 @@ anchor_bottom = 0.523148
 grow_horizontal = 0
 grow_vertical = 2
 size_flags_horizontal = 2
+focus_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/bold_italics_font_size = 36
 theme_override_font_sizes/italics_font_size = 36
@@ -205,6 +206,7 @@ theme_override_constants/margin_bottom = 0
 [node name="text_label" type="RichTextLabel" parent="panel/margin_container/scroll_container/margin_container"]
 clip_contents = false
 layout_mode = 2
+focus_mode = 2
 mouse_filter = 2
 bbcode_enabled = true
 text = "[p align=fill jst=w,k,sl]Everybody needs a friend. Use your imagination, let it go. We're not trying to teach you a thing to copy. We're just here to teach you a technique, then let you loose into the world. That is when you can experience true joy, when you have no fear. Just let these leaves jump off the brush The first step to doing anything is to believe you can do it. See it finished in your mind before you ever start. We're trying to teach you a technique here and how to use it. You can't make a mistake. Anything that happens you can learn to use - and make something beautiful out of it. This is the fun part Work on one thing at a time. Don't get carried away - we have plenty of time.
