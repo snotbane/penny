@@ -12,9 +12,17 @@ func _get_keyword() -> StringName:
 
 
 func _validate_self() -> PennyException:
+	return validate_as_no_tokens()
+
+
+# func _validate_self_post_setup() -> void:
+# 	super._validate_self_post_setup()
+
+
+func _validate_cross() -> PennyException:
 	if not (prev_in_chain is StmtConditionalIf or prev_in_chain is StmtConditionalElif):
 		return create_exception("Expected if or elif before else statement")
-	return validate_as_no_tokens()
+	return null
 
 
 func _evaluate_self(host: PennyHost) -> Variant:

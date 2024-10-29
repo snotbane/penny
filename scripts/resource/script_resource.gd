@@ -16,7 +16,10 @@ func update_from_file(file: FileAccess) -> void:
 	# id = hash(content)
 
 	var parser := PennyParser.from_file(file)
-	parser.parse_file()
+	var errors := parser.parse_file()
+	if errors:
+		for error in errors:
+			error.push()
 	stmts = parser.stmts
 
 

@@ -19,11 +19,11 @@ func _validate_self() -> PennyException:
 
 
 # func _validate_self_post_setup() -> void:
-# 	pass
+# 	super._validate_self_post_setup()
 
 
 # func _validate_cross() -> PennyException:
-# 	return null
+# 	return super._validate_cross()
 
 
 func _execute(host: PennyHost) -> Record:
@@ -31,11 +31,11 @@ func _execute(host: PennyHost) -> Record:
 
 
 # func _undo(record: Record) -> void:
-# 	pass
+# 	super._undo(record)
 
 
 # func _next(record: Record) -> Stmt_:
-# 	return next_in_order
+# 	return super._next(record)
 
 
 func _message(record: Record) -> Message:

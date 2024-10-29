@@ -1,11 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://cfkhtume00g5e"]
+[gd_scene load_steps=12 format=3 uid="uid://cfkhtume00g5e"]
 
 [ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_hv265"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_debug.gd" id="2_4v1jc"]
 [ext_resource type="Texture2D" uid="uid://5dmiewmbmtxq" path="res://addons/penny_godot/assets/textures/overlay.png" id="2_7s783"]
 [ext_resource type="PackedScene" uid="uid://ehssrfkq0q6c" path="res://addons/penny_godot/scenes/penny_dock.tscn" id="2_if5x3"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/data_viewer_tree.gd" id="5_2yu6x"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/other/tabs_with_icons.gd" id="5_uv7g7"]
 [ext_resource type="Texture2D" uid="uid://c5nb4l2ge7dlq" path="res://addons/penny_godot/assets/icons/Clear.svg" id="5_uw3ek"]
+[ext_resource type="Texture2D" uid="uid://c3g6mc5ihxqvj" path="res://addons/penny_godot/assets/icons/Label.svg" id="6_6v586"]
+[ext_resource type="Texture2D" uid="uid://dfir03166e6r2" path="res://addons/penny_godot/assets/icons/Object.svg" id="7_44hdu"]
 [ext_resource type="Texture2D" uid="uid://dbn36dthttn4c" path="res://addons/penny_godot/assets/icons/Search.svg" id="7_yvqnl"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_337gi"]
@@ -48,56 +51,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 1
-
-[node name="Labels" type="Control" parent="margin_container/h_box_container/penny_runtime_dock/tab_container"]
-visible = false
-layout_mode = 2
-metadata/_tab_index = 0
-
-[node name="v_box_container" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="margin_container" type="MarginContainer" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="v_box_container" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/margin_container"]
-layout_mode = 2
-
-[node name="button" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/margin_container/v_box_container"]
-layout_mode = 2
-text = "start"
-
-[node name="button_2" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/margin_container/v_box_container"]
-layout_mode = 2
-text = "ch1"
-
-[node name="button_3" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/margin_container/v_box_container"]
-layout_mode = 2
-text = "ch2"
-
-[node name="h_box_container" type="HBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container"]
-layout_mode = 2
-
-[node name="button_jump" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/h_box_container"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Jump"
-
-[node name="button_call" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/h_box_container"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Call"
+current_tab = 0
+drag_to_rearrange_enabled = true
+tab_focus_mode = 1
+script = ExtResource("5_uv7g7")
+tab_icons = Array[Texture2D]([ExtResource("7_44hdu"), ExtResource("6_6v586")])
 
 [node name="Data" type="Control" parent="margin_container/h_box_container/penny_runtime_dock/tab_container"]
 layout_mode = 2
-metadata/_tab_index = 1
+metadata/_tab_index = 0
 
 [node name="vbox" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Data"]
 layout_mode = 1
@@ -191,6 +153,51 @@ tick_count = 5
 layout_mode = 2
 icon = ExtResource("7_yvqnl")
 flat = true
+
+[node name="Labels" type="Control" parent="margin_container/h_box_container/penny_runtime_dock/tab_container"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="v_box_container" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="margin_container" type="MarginContainer" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="v_box_container" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/margin_container"]
+layout_mode = 2
+
+[node name="button" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/margin_container/v_box_container"]
+layout_mode = 2
+text = "start"
+
+[node name="button_2" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/margin_container/v_box_container"]
+layout_mode = 2
+text = "ch1"
+
+[node name="button_3" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/margin_container/v_box_container"]
+layout_mode = 2
+text = "ch2"
+
+[node name="h_box_container" type="HBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container"]
+layout_mode = 2
+
+[node name="button_jump" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/h_box_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Jump"
+
+[node name="button_call" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/h_box_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Call"
 
 [connection signal="toggled" from="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/vbox/hbox_search/search_values_toggle" to="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/vbox/data_tree" method="_on_search_values_toggle_toggled"]
 [connection signal="text_changed" from="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/vbox/hbox_search/search_bar" to="margin_container/h_box_container/penny_runtime_dock/tab_container/Data/vbox/data_tree" method="_on_search_bar_text_changed"]

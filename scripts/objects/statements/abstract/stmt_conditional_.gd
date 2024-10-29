@@ -28,7 +28,7 @@ func _validate_self_post_setup() -> void:
 
 
 func _execute(host: PennyHost) -> Record:
-	return create_record(host, _evaluate_self(host))
+	return create_record(host, false, _evaluate_self(host))
 
 
 # func _undo(record: Record) -> void:
