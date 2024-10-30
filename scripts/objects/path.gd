@@ -44,7 +44,7 @@ func duplicate() -> Path:
 	return Path.new(ids.duplicate())
 
 
-func _evaluate(context: PennyObject) -> Variant:
+func _evaluate_shallow(context: PennyObject) -> Variant:
 	return get_value_for(context)
 
 

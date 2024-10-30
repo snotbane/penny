@@ -48,7 +48,7 @@ var last_dialog_object : PennyObject :
 		for i in records.size():
 			var record := records[-i-1]
 			if record.stmt is StmtDialog:
-				return record.stmt.subject_dialog_path.evaluate_deep(self.data_root)
+				return record.stmt.subject_dialog_path.evaluate(self.data_root)
 		return null
 
 func _init() -> void:

@@ -3,12 +3,13 @@
 class_name Evaluable extends RefCounted
 
 ## Evaluate one layer. Non-recursive.
-func evaluate(context: PennyObject) -> Variant: return _evaluate(context)
-func _evaluate(context: PennyObject) -> Variant:
+func evaluate_shallow(context: PennyObject) -> Variant: return _evaluate_shallow(context)
+func _evaluate_shallow(context: PennyObject) -> Variant:
 	return null
 
+
 ## Evaluate until no further evaluations can be made.
-func evaluate_deep(context: PennyObject) -> Variant:
+func evaluate(context: PennyObject) -> Variant:
 	var evals_seen : Array[Evaluable]
 	var result : Variant = self
 	while result is Evaluable:
@@ -16,20 +17,16 @@ func evaluate_deep(context: PennyObject) -> Variant:
 			PennyException.new("Cyclical evaluation '%s' for object '%s'" % [result, context]).push()
 			return null
 		evals_seen.push_back(result)
-		result = result.evaluate(context)
+		result = result.evaluate_shallow(context)
 	return result
 
 
-# func evaluate_deep(context: PennyObject) -> Variant: return _evaluate_deep(context)
-# func _evaluate_deep(context: PennyObject) -> Variant:
-# 	return _evaluate(context)
-
 func evaluate_as_lookup(root: PennyObject) -> Lookup:
-	var result = _evaluate(root)
+	var result = _evaluate_shallow(root)
 	# if not result is Lookup:
-	# 	host.cursor.create_exception("Couldn't evaluate '%s' as Lookup because it isn't a Lookup." % self).push()
+	# 	host.cursor.create_exception("Couldn't evaluate_shallow '%s' as Lookup because it isn't a Lookup." % self).push()
 	# 	return null
 	# if not result.valid:
-	# 	host.cursor.create_exception("Couldn't evaluate '%s' as Lookup because it doesn't exist in any LookupTable." % result).push()
+	# 	host.cursor.create_exception("Couldn't evaluate_shallow '%s' as Lookup because it doesn't exist in any LookupTable." % result).push()
 	# 	return null
 	return result

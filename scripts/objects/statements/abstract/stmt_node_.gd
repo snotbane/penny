@@ -17,8 +17,8 @@ func _get_verbosity() -> Verbosity:
 	return Verbosity.NODE_ACTIVITY
 
 
-func _validate_self() -> PennyException:
-	return null
+# func _validate_self() -> PennyException:
+# 	return super._validate_self()
 
 
 func _validate_self_post_setup() -> void:
@@ -50,7 +50,7 @@ func _message(record: Record) -> Message:
 
 
 func instantiate_node(host: PennyHost, path := subject_path) -> Node:
-	var obj : PennyObject = path.evaluate_deep(host.data_root)
+	var obj : PennyObject = path.evaluate(host.data_root)
 	if obj:
 		var node = obj.instantiate_from_lookup(host)
 		return node
@@ -58,7 +58,7 @@ func instantiate_node(host: PennyHost, path := subject_path) -> Node:
 
 
 func get_existing_node(host: PennyHost, path := subject_path) -> Node:
-	var obj : PennyObject = path.evaluate_deep(host.data_root)
+	var obj : PennyObject = path.evaluate(host.data_root)
 	if obj:
 		var node : Node = obj.local_instance
 		return node

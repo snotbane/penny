@@ -17,7 +17,7 @@ func _validate_self() -> PennyException:
 
 func _evaluate_self(host: PennyHost) -> Variant:
 	## Always returns TRUE or FALSE
-	return expr.evaluate(host.data_root)
+	return self.expr.evaluate(host.data_root)
 
 
 func _should_skip(record: Record) -> bool:

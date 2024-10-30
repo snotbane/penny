@@ -1,6 +1,5 @@
 
-@tool
-class_name PennyMenuButton extends BaseButton
+class_name PromptButton extends BaseButton
 
 @export var label : RichTextLabel
 

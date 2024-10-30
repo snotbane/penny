@@ -31,13 +31,13 @@ func _validate_self() -> PennyException:
 
 
 func _execute(host: PennyHost) -> Record:
-	var before : Variant = path.evaluate(host.data_root)
-	if before: return super._execute(host)
+	var prior : Variant = path.evaluate_shallow(host.data_root)
+	if prior: return super._execute(host)
 	var after : Variant = self.get_context_parent(host).add_object(path.ids.back(), PennyObject.DEFAULT_BASE)
 	if after is PennyObject:
 		after.self_key = path.ids.back()
 	print(after.rich_name)
-	return create_assignment_record(host, before, after)
+	return create_assignment_record(host, prior, after)
 
 
 func _undo(record: Record) -> void:

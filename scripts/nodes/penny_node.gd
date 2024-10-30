@@ -17,6 +17,9 @@ signal on_open
 signal on_close
 signal on_present
 
+## If enabled, this node will stop Penny execution when it is opened.
+@export var halt_on_instantiate : bool = false
+
 ## If enabled, this node will immediately open (visually) on ready.
 @export var open_on_ready  : bool = true
 

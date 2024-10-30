@@ -230,12 +230,12 @@ func get_full_path(path: Path) -> Path:
 
 ## Returns the object which this statement refers to.
 func get_nested_object(context: PennyObject) -> PennyObject:
-	return nested_object_path.evaluate_deep(context)
+	return nested_object_path.evaluate(context)
 
 
 ## Returns the value at the path with some starting point [root]
 func get_value_from_path(context: PennyObject, path: Path) -> Variant:
-	return get_full_path(path).evaluate_deep(context)
+	return get_full_path(path).evaluate(context)
 
 
 func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
@@ -346,7 +346,7 @@ func recycle() -> Stmt_:
 				'init':		return StmtInit.new(address, line, depth, tokens)
 				'jump': 	return StmtJump.new(address, line, depth, tokens)
 				'label': 	return StmtLabel.new(address, line, depth, tokens)
-				'open': 	return StmtNode_.new(address, line, depth, tokens)
+				'open': 	return StmtOpen.new(address, line, depth, tokens)
 				'pass': 	return StmtPass.new(address, line, depth, tokens)
 				'print': 	return StmtPrint.new(address, line, depth, tokens)
 				'return':	return StmtReturn.new(address, line, depth, tokens)

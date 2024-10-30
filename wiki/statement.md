@@ -33,7 +33,7 @@ jump start						# Jump to the label `start`
 **Compiled** statements occur when the game starts. These are the only compiled statements in Penny:
 
 -   `label`
--   `menu`
+-   `prompt`
 -   `filter`
 
 **Runtime** statements occur in order from start to finish while the game is running. Most statements occur in this manner.
@@ -117,7 +117,7 @@ exit 2
 ```
 
 > [!TIP] The Right Tools
-> Most visual novels will almost exclusively use the `return` statement as they will not need to exit the Penny loop at all while reading (except, e.g. to navigate the main menu).
+> Most visual novels will almost exclusively use the `return` statement as they will not need to exit the Penny loop at all while reading (except, e.g. to navigate the main prompt).
 >
 > Conversely, games that use Penny for isolated dialogue integration (e.g. how most games handle dialogue) will probably make more use of the `exit` statement in order to completely suspend the Penny environment while not in use.
 
@@ -127,13 +127,13 @@ Abstractly speaking, a **fork** is any point at which the story diverges into mu
 
 ### Conditionals
 
-### `menu`
+### `prompt`
 
 ###### Example 1
 ```pny
 `What kind of fruit would you like to eat?`
 
-menu
+prompt
 	`Apple`
 		`You choose to eat an apple.`
 	`Banana`
@@ -142,10 +142,10 @@ menu
 		`You choose to eat an orange.`
 ```
 
-The `menu` statement indicates that the player can make a decision here and select a different path depending on what they want to do. The branch string indicates one of these paths to help them choose.
+The `prompt` statement indicates that the player can make a decision here and select a different path depending on what they want to do. The branch string indicates one of these paths to help them choose.
 
 > [!NOTE]
-> The `menu` statement **does not** clear the previous message block until a branch has been selected. This is to allow for the player to see the previous message (usually a question someone asks them) while making their decision. Use the `clear` statement to force a Message Block to close before prompting a menu.
+> The `prompt` statement **does not** clear the previous message block until a branch has been selected. This is to allow for the player to see the previous message (usually a question someone asks them) while making their decision. Use the `clear` statement to force a Message Block to close before prompting promptnu.
 
 > [!NOTE]
 > Branch strings are not printed out and instead displayed all at once.
@@ -155,7 +155,7 @@ The `menu` statement indicates that the player can make a decision here and sele
 banana_available = false
 
 `What kind of fruit would you like to eat?`
-menu
+prompt
 	`Banana` if banana_available
 		`You choose to eat a banana.`
 ```
@@ -163,7 +163,7 @@ menu
 Use the `if` statement after a branch to dictate whether or not the branch appears. If the expression is `true`, the branch will appear. If the expression is `false`, the branch will not appear.
 
 > [!NOTE]
-> If no branches are open, or if the menu is otherwise interrupted, no selection will be made and the script will continue to the next statement in the same tab depth as the menu.
+> If no branches are open, or if the prompt is otherwise interrupted, no selection will be made and the script will continue to the next statement in the same tab depth as thpromptnu.
 
 ###### Example 3
 
@@ -172,7 +172,7 @@ banana_available = false
 banana_unvisited = true
 
 `What kind of fruit would you like to eat?`
-menu menu_fruit
+promppromptnu_fruit
 	label branch_apple
 	`Apple`
 		`You choose to eat an apple.`
@@ -184,17 +184,17 @@ menu menu_fruit
 		`You choose to eat a banana.`
 ```
 
-This example shows a way of writing branches in expanded form. You may assign a label to a branch by writing the name of the label before the display text. `jump`ing to this `label` will jump to the branch as if it was selected in the menu.
+This example shows a way of writing branches in expanded form. You may assign a label to a branch by writing the name of the label before the display text. `jump`ing to this `label` will jump to the branch as if it was selected in the prompt.
 
 > [!TIP]
-> You may also assign a label to the menu, but this will not preserve the preceding text. This can be useful in certain situations, but if you wish to make sure the preceding text is always used, it is better to place a label before the text, like so:
+> You may also assign a label to the prompt, but this will not preserve the preceding text. This can be useful in certain situations, but if you wish to make sure the preceding text is always used, it is better to place a label before the text, like so:
 > > ```pny
 > > ...
 > >
-> > label menu_fruit
+> > label prompt_fruit
 > >
 > > `What kind of fruit would you like to eat?`
-> > menu
+> > prompt
 > > 	label branch_apple
 > >
 > > 	...
@@ -203,7 +203,7 @@ This example shows a way of writing branches in expanded form. You may assign a 
 ###### Example 4
 
 ```pny
-menu
+prompt
 branch branch_apple
 	text = `Apple`
 	enable = apple_unvisited
@@ -214,7 +214,7 @@ content
 
 Branches have some attributes that define how or if the branch is displayed. Attributes must be placed before any other statements are made.
 
-- `text` is the string used in the menu
+- `text` is the string used in the prompt
 - `enabled` is whether or not the branch can be chosen
 - `visible` is whether or not the branch is shown at all
   - A branch must be both `enabled` and `visible` in order to be selected. Both default to `true`.

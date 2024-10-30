@@ -59,12 +59,11 @@ func _validate_self_post_setup() -> void:
 
 
 func _execute(host: PennyHost) -> Record:
-	var result := create_record(host, true)
 
 	var previous_dialog : PennyObject = host.last_dialog_object
 	var previous_dialog_node : PennyNode
 
-	var incoming_dialog : PennyObject = self.subject_dialog_path.evaluate_deep(host.data_root)
+	var incoming_dialog : PennyObject = self.subject_dialog_path.evaluate(host.data_root)
 	var incoming_dialog_node : PennyNode
 
 	var incoming_needs_creation : bool = true
@@ -83,13 +82,20 @@ func _execute(host: PennyHost) -> Record:
 	else:
 		incoming_dialog_node = previous_dialog_node
 
-	if incoming_dialog_node is MessageHandler:
-		incoming_dialog_node.receive(result, subject_path.evaluate_deep(host.data_root))
-	elif incoming_dialog_node:
-		host.cursor.create_exception("Attempted to send a message to a node, but it isn't a MessageHandler.").push()
+	if OS.is_debug_build():
+		if incoming_dialog_node is MessageHandler:
+			var result := create_record(host, incoming_dialog_node.halt_on_instantiate)
+			incoming_dialog_node.receive(result, subject_path.evaluate(host.data_root))
+			return result
+		elif incoming_dialog_node:
+			host.cursor.create_exception("Attempted to send a message to a node, but it isn't a MessageHandler.").push()
+		else:
+			host.cursor.create_exception("Attempted to send a message to a node, but it wasn't created.").push()
 	else:
-		host.cursor.create_exception("Attempted to send a message to a node, but it wasn't created.").push()
-	return result
+		var result := create_record(host, incoming_dialog_node.halt_on_instantiate)
+		incoming_dialog_node.receive(result, subject_path.evaluate(host.data_root))
+		return result
+	return create_record(host)
 
 
 func _message(record: Record) -> Message:
@@ -111,7 +117,7 @@ func _message(record: Record) -> Message:
 			break
 
 		var inter_expr := Expr.from_tokens(self, parser.tokens)
-		var result = inter_expr.evaluate_deep(record.host.data_root)
+		var result = inter_expr.evaluate(record.host.data_root)
 		var result_string : String
 		if result is PennyObject:
 			result_string = result.rich_name

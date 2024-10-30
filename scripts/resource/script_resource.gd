@@ -23,4 +23,6 @@ func update_from_file(file: FileAccess) -> void:
 	stmts = parser.stmts
 
 
+func validate() -> PennyException:
+	return null
 

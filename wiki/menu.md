@@ -16,7 +16,7 @@ option
 	.used = false				## Whether or not the option has been selected.
 								## Updates when chosen.
 prompt
-	.link = $menu_default
+	.link = $prompt_default
 	.response = null			## The most recently chosen option (path). Updates when chosen.
 _
 	.base = prompt

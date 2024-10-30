@@ -46,7 +46,7 @@ Rubin
 ```pny
 `Which path do you choose?`
 
-menu
+prompt
 	branch `Left`
 		`You choose to go left...`
 	branch `Right`

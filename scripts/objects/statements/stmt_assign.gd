@@ -48,8 +48,8 @@ func _validate_self() -> PennyException:
 
 
 func _execute(host: PennyHost) -> Record:
-	var prior : Variant = path.evaluate(get_context_parent(host))
-	var after : Variant = expr.evaluate(get_context_parent(host))
+	var prior : Variant = path.evaluate_shallow(get_context_parent(host))
+	var after : Variant = expr.evaluate_shallow(get_context_parent(host))
 	if after is PennyObject:
 		after.self_key = path.ids.back()
 

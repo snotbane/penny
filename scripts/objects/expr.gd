@@ -201,7 +201,7 @@ func _to_string() -> String:
 		result += "%s " % symbol
 	return result.substr(0, result.length() - 1)
 
-func _evaluate(context: PennyObject) -> Variant:
+func _evaluate_shallow(context: PennyObject) -> Variant:
 	var stack : Array[Variant] = []
 	var ops : Array[Op] = []
 
