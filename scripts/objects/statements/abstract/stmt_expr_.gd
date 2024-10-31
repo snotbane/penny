@@ -16,8 +16,8 @@ var expr : Expr
 # 	return super._get_verbosity()
 
 
-# func _validate_self() -> PennyException:
-# 	return super._validate_self()
+func _validate_self() -> PennyException:
+	return validate_as_expression()
 
 
 func _validate_self_post_setup() -> void:

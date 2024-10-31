@@ -1,7 +1,5 @@
 
-class_name StmtConditional_ extends Stmt_
-
-var expr : Expr
+class_name StmtConditional_ extends StmtExpr_
 
 # func _init() -> void:
 # 	pass
@@ -19,8 +17,8 @@ func _validate_self() -> PennyException:
 	return create_exception()
 
 
-func _validate_self_post_setup() -> void:
-	expr = Expr.from_tokens(self, tokens)
+# func _validate_self_post_setup() -> void:
+# 	super._validate_self_post_setup()
 
 
 # func _validate_cross() -> PennyException:

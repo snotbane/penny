@@ -28,7 +28,7 @@ enum {
 static var PATTERNS := {
 	Token.INDENTATION: 		RegEx.create_from_string("(?m)^\\t+"),
 	Token.VALUE_STRING: 	RegEx.create_from_string("(?s)(\"\"\"|\"|'''|'|```|`).*?\\1"),
-	Token.KEYWORD: 			RegEx.create_from_string("\\b(call|close|else|elif|if|init|jump|label|open|pass|print|return)\\b"),
+	Token.KEYWORD: 			RegEx.create_from_string("\\b(call|close|else|elif|if|init|jump|label|match|open|pass|print|return)\\b"),
 	Token.VALUE_BOOLEAN: 	RegEx.create_from_string("\\b([Tt]rue|TRUE|[Ff]alse|FALSE)\\b"),
 	Token.VALUE_COLOR: 		RegEx.create_from_string("(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
 	Token.OPERATOR: 		RegEx.create_from_string("([=!<>]=)|&&|\\|\\||(\\b(and|nand|or|nor|not|new)\\b)|([\\.!+\\-*/@\\$%&|<>\\[\\]\\(\\),](?!=))"),

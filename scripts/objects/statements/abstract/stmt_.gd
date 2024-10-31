@@ -309,9 +309,6 @@ func get_recycle_typed_version() -> Stmt_:
 		match i.type:
 			Token.ASSIGNMENT:
 				return StmtAssign.new()
-			Token.KEYWORD:
-				if tokens.size() == 1 and tokens[0].value == 'object':
-					return StmtObject_.new()
 	match tokens.front().type:
 		Token.KEYWORD:
 			var key = tokens.pop_front().value
@@ -324,12 +321,19 @@ func get_recycle_typed_version() -> Stmt_:
 				'init':		return StmtInit.new()
 				'jump': 	return StmtJump.new()
 				'label': 	return StmtLabel.new()
+				'match': 	return StmtMatch.new()
 				'open': 	return StmtOpen.new()
 				'pass': 	return StmtPass.new()
 				'print': 	return StmtPrint.new()
 				'return':	return StmtReturn.new()
 			PennyException.new("The keyword '%s' was detected, but no method is registered for it in Stmt_.recycle()." % key).push()
 			return self
+
+	var block_header := self.prev_in_lower_depth
+	if block_header:
+		if block_header is StmtMatch:
+			return StmtConditionalMatch.new()
+
 	match tokens.back().type:
 			Token.VALUE_STRING:
 				return StmtDialog.new()

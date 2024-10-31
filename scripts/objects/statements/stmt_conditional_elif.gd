@@ -11,8 +11,8 @@ func _get_keyword() -> StringName:
 	return super._get_keyword() + ' elif'
 
 
-func _validate_self() -> PennyException:
-	return validate_as_expression()
+# func _validate_self() -> PennyException:
+# 	return validate_as_expression()
 
 
 # func _validate_self_post_setup() -> void:
