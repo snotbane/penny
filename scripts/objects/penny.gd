@@ -41,15 +41,15 @@ static func validate() -> Array[PennyException]:
 
 	labels.clear()
 
-	var i := -1
+	# var i := -1
 
-	var j : int
+	# var j : int
 	for script in scripts:
-		i += 1
-		j = -1
+		# i += 1
+		# j = -1
 		for stmt in script.stmts:
-			j += 1
-			stmt.address = Stmt_.Address.new(i, j)
+			# j += 1
+			# stmt.address = Stmt_.Address.new(i, j)
 			var e := stmt.validate_cross()
 			if e:
 				result.push_back(e)

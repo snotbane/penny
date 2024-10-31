@@ -101,7 +101,7 @@ func _execute(host: PennyHost) -> Record:
 func _message(record: Record) -> Message:
 	var text : String = raw_text
 
-	var rx_whitespace = RegEx.create_from_string(REGEX_DEPTH_REMOVAL_PATTERN % depth)
+	var rx_whitespace = RegEx.create_from_string(REGEX_DEPTH_REMOVAL_PATTERN % nest_depth)
 
 	while true:
 		var match := REGEX_INTERPOLATION.search(text)
@@ -110,7 +110,7 @@ func _message(record: Record) -> Message:
 		var interp_expr_string := match.get_string(2) + match.get_string(3)	## ~= $2$3
 
 		var parser = PennyParser.new(interp_expr_string)
-		var exceptions = parser.tokenize()
+		var exceptions = parser.parse_tokens()
 		if not exceptions.is_empty():
 			for i in exceptions:
 				i.push()

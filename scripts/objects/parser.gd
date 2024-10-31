@@ -36,36 +36,8 @@ func _init(_raw: String, _file: FileAccess = null) -> void:
 	raw = _raw
 	file = _file
 
+
 func parse_tokens() -> Array[PennyException]:
-	var exceptions = tokenize()
-	# for i in tokens:
-	# 	print(i)
-	return exceptions
-
-
-func parse_statements() -> Array[PennyException]:
-	var exceptions = tokenize()
-	if exceptions.is_empty():
-		exceptions = statementize()
-	# Penny.log("================================================================")
-	# for i in tokens:
-	# 	Penny.log(i.to_string())
-	# for i in stmts:
-	# 	print(i)
-	return exceptions
-
-func parse_file() -> Array[PennyException]:
-	# print("***			Parsing file \"" + file.get_path() + "\"...")
-	PennyException.active_file_path = file.get_path()
-
-	var result = parse_statements()
-
-	PennyException.active_file_path = PennyException.UNKNOWN_FILE
-	# print("***			Finished parsing file \"" + file.get_path() + "\".")
-
-	return result
-
-func tokenize() -> Array[PennyException]:
 	var result : Array[PennyException] = []
 
 	tokens.clear()
@@ -102,10 +74,25 @@ func tokenize() -> Array[PennyException]:
 			# cursor += 1
 			break
 
+	for exception in result:
+		exception.push()
 	return result
 
+
+func parse_file() -> Array[PennyException]:
+	# print("***			Parsing file \"" + file.get_path() + "\"...")
+	PennyException.active_file_path = file.get_path()
+
+	var result = parse_statements(null)
+
+	PennyException.active_file_path = PennyException.UNKNOWN_FILE
+	# print("***			Finished parsing file \"" + file.get_path() + "\".")
+
+	return result
+
+
 # Separates statements based on terminators and indentation; For type assignment, etc. see Statement validations.
-func statementize() -> Array[PennyException]:
+func parse_statements(context_script: PennyScriptResource) -> Array[PennyException]:
 	stmts.clear()
 
 	var stmt : Stmt_ = null
@@ -127,19 +114,23 @@ func statementize() -> Array[PennyException]:
 				if token.type == Token.INDENTATION:
 					depth = token.value.length()
 				stmt = Stmt_.new()
-				stmt.populate(Stmt_.Address.new(0, stmts.size()), token_lines[i], depth, [])
+				stmt.populate(context_script, stmts.size(), token_lines[i], depth, [])
 			if not token.type == Token.INDENTATION:
 				stmt.tokens.push_back(token)
 	if stmt:
 		stmts.push_back(stmt)
 
+	context_script.stmts.resize(stmts.size())
 
 	var result : Array[PennyException] = []
 	for i in stmts.size():
 		stmt = stmts[i]
 		var recycle = stmt.recycle()
-		recycle.file_address = FileAddress.new(file.get_path(), stmt.line)
+		recycle.file_address = FileAddress.new(file.get_path(), stmt.index_in_file)
 		stmts[i] = recycle
+		context_script.stmts[i] = recycle
+		if recycle is StmtConditional_:
+			prints(recycle, " - ", stmt.prev_in_same_depth, " - ", recycle.prev_in_same_depth)
 	for i in stmts:
 		var e := i.validate_self()
 		if e:

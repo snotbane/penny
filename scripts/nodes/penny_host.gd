@@ -36,7 +36,7 @@ var state := State.UNLOADED
 var data_root := PennyObject.STATIC_ROOT
 
 var records : Array[Record]
-var call_stack : Array[Stmt_.Address]
+var call_stack : Array[Stmt_]
 
 var cursor : Stmt_
 var expecting_conditional : bool
@@ -92,7 +92,7 @@ func advance() -> void:
 	cursor = records.back().next()
 	if cursor == null:
 		if call_stack:
-			cursor = call_stack.pop_back().stmt
+			cursor = call_stack.pop_back()
 		else:
 			return
 	invoke_at_cursor()

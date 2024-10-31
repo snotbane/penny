@@ -12,17 +12,14 @@ func _init() -> void:
 
 
 func update_from_file(file: FileAccess) -> void:
-	# content = file.get_as_text()
-	# id = hash(content)
-
 	var parser := PennyParser.from_file(file)
-	var errors := parser.parse_file()
-	if errors:
-		for error in errors:
-			error.push()
+	parser.parse_tokens()
+	parser.parse_statements(self)
+
 	stmts = parser.stmts
 
 
-func validate() -> PennyException:
-	return null
+func validate() -> Array[PennyException]:
+	return []
+
 

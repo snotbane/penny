@@ -27,7 +27,7 @@ func _validate_self() -> PennyException:
 
 
 func _execute(host: PennyHost) -> Record:
-	host.call_stack.push_back(next_in_order.address)
+	host.call_stack.push_back(next_in_order)
 	return super._execute(host)
 
 

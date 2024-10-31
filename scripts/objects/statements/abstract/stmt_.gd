@@ -2,43 +2,6 @@
 @tool
 class_name Stmt_ extends RefCounted
 
-## Location of a Statement specified by a file path and array index.
-class Address extends RefCounted:
-
-	var path : StringName
-	var file_index : int
-	var index : int
-
-	var stmt : Stmt_ :
-		get:
-			if valid:
-				return Penny.scripts[file_index].stmts[index]
-			return null
-
-	var valid : bool :
-		get:
-			if file_index < Penny.scripts.size():
-				return index >= 0 and index < Penny.scripts[file_index].stmts.size()
-			return false
-
-	func _init(_file_index: int, __index: int) -> void:
-		file_index = _file_index
-		index = __index
-
-	func copy(offset: int = 0) -> Address:
-		return Address.new(file_index, index + offset)
-
-	func hash() -> int:
-		return path.hash() + hash(index)
-
-	func equals(other: Address) -> bool:
-		return self.hash() == other.hash()
-
-	func _to_string() -> String:
-		return "%s:%s (ln %s)" % [path, index, stmt.line]
-
-
-
 enum Verbosity {
 	NONE = 0,
 	USER_FACING = 1 << 0,
@@ -59,127 +22,139 @@ const VERBOSITY_NAMES : PackedStringArray = [
 	"Ignored:32"
 ]
 
-var address : Address
+var owning_script : PennyScriptResource
+var index_in_script : int
 var file_address : FileAddress
-var line : int
-var depth : int
+var index_in_file : int
+var nest_depth : int
 var tokens : Array[Token]
+
 
 var verbosity : int :
 	get: return _get_verbosity()
 
+
 var keyword : StringName :
 	get: return _get_keyword()
 
+
 var line_string : String :
-	get: return "ln %s" % line
+	get: return "ln %s" % index_in_file
+
 
 var depth_string : String :
-	get: return "dp %s" % depth
+	get: return "dp %s" % nest_depth
 
-## The next statement in order, regardless of depth.
+
 var next_in_order : Stmt_ :
-	get: return address.copy(1).stmt
+	get:
+		var i := self.index_in_script + 1
+		if i >= owning_script.stmts.size():
+			return null
+		return owning_script.stmts[i]
+
 
 var next_in_same_depth : Stmt_ :
 	get:
-		var cursor := address.copy(1)
-		while true:
-			if cursor.stmt.depth == depth:
-				return cursor.stmt
-			if not cursor.valid or cursor.stmt.depth < depth:
-				return null
-			cursor.index += 1
+		var cursor := self.next_in_order
+		while cursor:
+			if cursor.nest_depth == self.nest_depth:
+				return cursor
+			if cursor.nest_depth < self.nest_depth:
+				break
+			cursor = cursor.next_in_order
 		return null
+
 
 var next_in_same_or_lower_depth : Stmt_ :
 	get:
-		var cursor := address.copy(1)
-		while cursor.valid:
-			if cursor.stmt.depth <= depth:
-				return cursor.stmt
-			cursor.index += 1
+		var cursor := self.next_in_order
+		while cursor:
+			if cursor.nest_depth <= self.nest_depth:
+				return cursor
+			cursor = cursor.next_in_order
 		return null
+
 
 var next_in_lower_depth : Stmt_ :
 	get:
-		if depth == 0: return null
-		var cursor := address.copy(1)
-		while cursor.valid:
-			if cursor.stmt.depth < depth:
-				return cursor.stmt
-			cursor.index += 1
+		if self.nest_depth == 0:
+			return null
+
+		var cursor := self.next_in_order
+		while cursor:
+			if cursor.nest_depth < self.nest_depth:
+				return cursor
+			cursor = cursor.next_in_order
 		return null
+
 
 var next_in_higher_depth : Stmt_ :
 	get:
-		var cursor := address.copy(1)
-		while cursor.valid:
-			if cursor.stmt.depth > depth:
-				return cursor.stmt
-			cursor.index += 1
+		var cursor := self.next_in_order
+		while cursor:
+			if cursor.nest_depth > self.nest_depth:
+				return cursor
+			cursor = cursor.next_in_order
 		return null
 
-var next_nested_block : Array[Stmt_] :
-	get:
-		var cursor := address.copy(1)
-		if cursor.stmt.depth <= depth:
-			return []
-		var result : Array[Stmt_] = []
-		while cursor and cursor.valid:
-			result.push_back(cursor)
-			cursor = cursor.stmt.next_in_same_depth.address.copy()
-		return result
 
 var prev_in_order : Stmt_ :
-	get: return address.copy(-1).stmt
+	get:
+		var i := self.index_in_script - 1
+		if i < 0:
+			return null
+		return owning_script.stmts[i]
 
-## The previous statement in the exact same depth as this one. If we ever exit this depth (lower), return null (start of chain).
+
 var prev_in_same_depth : Stmt_ :
 	get:
-		var cursor := address.copy(-1)
-		while cursor.valid:
-			if cursor.stmt.depth == depth:
-				return cursor.stmt
-			if cursor.stmt.depth < depth:
-				return null
-			cursor.index -= 1
+		var cursor := self.prev_in_order
+		while cursor:
+			if cursor.nest_depth == self.nest_depth:
+				return cursor
+			if cursor.nest_depth < self.nest_depth:
+				break
+			cursor = cursor.prev_in_order
 		return null
 
-## The previous statement in the same depth (or lower) as this one.
+
 var prev_in_same_or_lower_depth : Stmt_ :
 	get:
-		var cursor := address.copy(-1)
-		while cursor.valid:
-			if cursor.stmt.depth <= depth:
-				return cursor.stmt
-			cursor.index -= 1
+		var cursor := self.prev_in_order
+		while cursor:
+			if cursor.nest_depth <= self.nest_depth:
+				return cursor
+			cursor = cursor.prev_in_order
 		return null
 
-## The previous statement in a lower depth than this one. (less nested)
+
 var prev_in_lower_depth : Stmt_ :
 	get:
-		if depth == 0: return null
-		var cursor := address.copy(-1)
-		while cursor.valid:
-			if cursor.stmt.depth < depth:
-				return cursor.stmt
-			cursor.index -= 1
+		if self.nest_depth == 0:
+			return null
+
+		var cursor := self.prev_in_order
+		while cursor:
+			if cursor.nest_depth < self.nest_depth:
+				return cursor
+			cursor = cursor.prev_in_order
 		return null
 
-## The previous statement in a higher depth than this one. (more nested)
+
 var prev_in_higher_depth : Stmt_ :
 	get:
-		var cursor := address.copy(-1)
-		while cursor.valid:
-			if cursor.stmt.depth > depth:
-				return cursor.stmt
-			cursor.index -= 1
+		var cursor := self.prev_in_order
+		while cursor:
+			if cursor.nest_depth > self.nest_depth:
+				return cursor
+			cursor = cursor.prev_in_order
 		return null
+
 
 var owning_object_stmt : StmtObject_ :
 	get:
-		var result := prev_in_lower_depth
+		var result := self.prev_in_lower_depth
 		if result:
 			if result is StmtObject_:
 				return result
@@ -190,15 +165,15 @@ var owning_object_stmt : StmtObject_ :
 
 var owning_object_path : Path :
 	get:
-		var stmt := self
+		var cursor := self
 		var result := Path.new([], true)
 		while result.relative:
-			stmt = stmt.prev_in_lower_depth
-			if not stmt:
+			cursor = cursor.prev_in_lower_depth
+			if not cursor:
 				result.relative = false
 				break
-			if stmt is StmtObject_:
-				result.prepend(stmt.path)
+			if cursor is StmtObject_:
+				result.prepend(cursor.path)
 		return result
 
 
@@ -221,25 +196,24 @@ func get_path_relative_to_here(path: Path) -> Path:
 	return result
 
 
-## Returns the object which this statement refers to.
 func get_owning_object(context: PennyObject) -> PennyObject:
 	return owning_object_path.evaluate(context)
 
 
-## Returns the value at the path with some starting point [root]
 func get_value_from_path_relative_to_here(context: PennyObject, path: Path) -> Variant:
 	return get_path_relative_to_here(path).evaluate(context)
 
 
-func populate(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
-	self.address = _address
-	self.depth = _depth
-	self.line = _line
+func populate(_owning_script: PennyScriptResource, _index_in_script: int, _index_in_file: int, _depth: int, _tokens: Array[Token]) -> void:
+	self.owning_script = _owning_script
+	self.index_in_script = _index_in_script
+	self.index_in_file = _index_in_file
+	self.nest_depth = _depth
 	self.tokens = _tokens
 
 
 func populate_from_other(other: Stmt_) -> void:
-	self.populate(other.address.copy(), other.depth, other.line, other.tokens.duplicate(true))
+	self.populate(other.owning_script, other.index_in_script, other.index_in_file, other.nest_depth, other.tokens)
 
 
 func _to_string() -> String:
