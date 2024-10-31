@@ -201,6 +201,7 @@ func _to_string() -> String:
 		result += "%s " % symbol
 	return result.substr(0, result.length() - 1)
 
+
 func _evaluate_shallow(context: PennyObject) -> Variant:
 	var stack : Array[Variant] = []
 	var ops : Array[Op] = []
@@ -225,3 +226,9 @@ func _evaluate_shallow(context: PennyObject) -> Variant:
 		return null
 
 	return result
+
+
+static func type_safe_equals(a: Variant, b: Variant) -> bool:
+	if typeof(a) != typeof(b):
+		return false
+	return a == b

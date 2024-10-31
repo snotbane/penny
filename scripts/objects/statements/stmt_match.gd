@@ -26,8 +26,9 @@ func _get_verbosity() -> Verbosity:
 # 	return super._validate_cross()
 
 
-# func _execute(host: PennyHost) -> Record:
-# 	return super._execute(host)
+func _execute(host: PennyHost) -> Record:
+	host.expecting_conditional = true
+	return super._execute(host)
 
 
 # func _undo(record: Record) -> void:

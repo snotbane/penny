@@ -13,8 +13,8 @@ func _get_verbosity() -> Verbosity:
 	return Verbosity.FLOW_ACTIVITY
 
 
-func _validate_self() -> PennyException:
-	return create_exception()
+# func _validate_self() -> PennyException:
+# 	return create_exception()
 
 
 # func _validate_self_post_setup() -> void:
