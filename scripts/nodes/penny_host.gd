@@ -12,9 +12,6 @@ signal on_data_modified
 
 @export_subgroup("Instantiation")
 
-## Settings.
-@export var settings : PennySettings
-
 ## Lookup tables.
 @export var lookup_tables : Array[LookupTable]
 
