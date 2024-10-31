@@ -11,7 +11,7 @@ const ANGRY_COLOR = Color.DEEP_PINK
 const WARNING_COLOR = Color(1, 0.871, 0.4)	## Matches editor
 const ERROR_COLOR = Color(1, 0.471, 0.42)	## Matches editor
 
-static var scripts : Array[PennyScriptResource]
+static var scripts : Array[PennyScript]
 static var labels : Dictionary			## StringName : Stmt_
 static var inits : Array[StmtInit]
 static var valid : bool = true
@@ -30,7 +30,7 @@ static func clear_all() -> void:
 	labels.clear()
 
 
-static func import_scripts(_scripts: Array[PennyScriptResource]) -> void:
+static func import_scripts(_scripts: Array[PennyScript]) -> void:
 	scripts = _scripts
 
 	clean = false

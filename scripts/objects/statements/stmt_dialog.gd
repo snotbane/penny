@@ -108,15 +108,7 @@ func _message(record: Record) -> Message:
 		if not match : break
 
 		var interp_expr_string := match.get_string(2) + match.get_string(3)	## ~= $2$3
-
-		var parser = PennyParser.new(interp_expr_string)
-		var exceptions = parser.parse_tokens()
-		if not exceptions.is_empty():
-			for i in exceptions:
-				i.push()
-			break
-
-		var inter_expr := Expr.from_tokens(self, parser.tokens)
+		var inter_expr := Expr.from_tokens(self, PennyScript.parse_tokens_from_raw(interp_expr_string))
 		var result = inter_expr.evaluate(record.host.data_root)
 		var result_string : String
 		if result is PennyObject:

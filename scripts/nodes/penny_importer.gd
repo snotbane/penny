@@ -3,7 +3,7 @@
 @tool
 class_name PennyImporter extends Node
 
-static var SCRIPT_RESOURCE_LOADER = preload("res://addons/penny_godot/scripts/resource/script_resource_format_loader.gd").new()
+static var SCRIPT_RESOURCE_LOADER = preload("res://addons/penny_godot/scripts/resource/penny_script_format_loader.gd").new()
 
 static var inst : PennyImporter
 static var REGEX : RegEx = RegEx.new()
@@ -49,7 +49,7 @@ static func register_formats() -> void:
 	ResourceLoader.add_resource_format_loader(SCRIPT_RESOURCE_LOADER)
 
 func reload(hard: bool = false) -> void:
-	var scripts : Array[PennyScriptResource]
+	var scripts : Array[PennyScript]
 	var files : Array[FileAccess]
 	if hard:
 		scripts = load_all_script_resources()
@@ -116,8 +116,8 @@ func open_all() -> Array[FileAccess]:
 
 	return result
 
-func load_modified_script_resources() -> Array[PennyScriptResource]:
-	var result : Array[PennyScriptResource] = []
+func load_modified_script_resources() -> Array[PennyScript]:
+	var result : Array[PennyScript] = []
 	var new_paths := get_all_paths()
 	var del_paths : Array[String] = []
 	for k in paths_dates2.keys():
@@ -134,19 +134,13 @@ func load_modified_script_resources() -> Array[PennyScriptResource]:
 		paths_dates2.erase(path)
 	return result
 
-func load_all_script_resources() -> Array[PennyScriptResource]:
-	var result : Array[PennyScriptResource] = []
+func load_all_script_resources() -> Array[PennyScript]:
+	var result : Array[PennyScript] = []
 
 	paths_dates2.clear()
 	for path in get_all_paths():
 		paths_dates2[path] = FileAccess.get_modified_time(path)
 		result.push_back(load(path))
-	return result
-
-static func get_parsers(files: Array[FileAccess]) -> Array[PennyParser]:
-	var result : Array[PennyParser]
-	for i in files:
-		result.append(PennyParser.from_file(i))
 	return result
 
 static func get_all_paths(path: String = PNY_FILE_ROOT) -> Array[String]:

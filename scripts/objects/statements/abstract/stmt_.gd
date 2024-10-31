@@ -22,7 +22,7 @@ const VERBOSITY_NAMES : PackedStringArray = [
 	"Ignored:32"
 ]
 
-var owning_script : PennyScriptResource
+var owning_script : PennyScript
 var index_in_script : int
 var file_address : FileAddress
 var index_in_file : int
@@ -204,7 +204,7 @@ func get_value_from_path_relative_to_here(context: PennyObject, path: Path) -> V
 	return get_path_relative_to_here(path).evaluate(context)
 
 
-func populate(_owning_script: PennyScriptResource, _index_in_script: int, _index_in_file: int, _depth: int, _tokens: Array[Token]) -> void:
+func populate(_owning_script: PennyScript, _index_in_script: int, _index_in_file: int, _depth: int, _tokens: Array[Token]) -> void:
 	self.owning_script = _owning_script
 	self.index_in_script = _index_in_script
 	self.index_in_file = _index_in_file
