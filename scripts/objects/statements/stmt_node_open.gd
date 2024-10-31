@@ -2,8 +2,8 @@
 ## No description
 class_name StmtOpen extends StmtNode_
 
-func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
-	super._init(_address, _line, _depth, _tokens)
+# func _init() -> void:
+# 	pass
 
 
 func _get_keyword() -> StringName:

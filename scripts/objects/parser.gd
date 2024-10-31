@@ -126,7 +126,8 @@ func statementize() -> Array[PennyException]:
 			if not stmt:
 				if token.type == Token.INDENTATION:
 					depth = token.value.length()
-				stmt = Stmt_.new(Stmt_.Address.new(0, stmts.size()), token_lines[i], depth, [])
+				stmt = Stmt_.new()
+				stmt.populate(Stmt_.Address.new(0, stmts.size()), token_lines[i], depth, [])
 			if not token.type == Token.INDENTATION:
 				stmt.tokens.push_back(token)
 	if stmt:

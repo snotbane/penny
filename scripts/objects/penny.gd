@@ -23,15 +23,18 @@ static var active_dock : PennyDock:
 		# 	return PennyPlugin.inst.dock
 		return PennyDock.inst
 
+
 static func clear_all() -> void:
 	valid = true
 	scripts.clear()
 	labels.clear()
 
+
 static func import_scripts(_scripts: Array[PennyScriptResource]) -> void:
 	scripts = _scripts
 
 	clean = false
+
 
 static func validate() -> Array[PennyException]:
 	var result : Array[PennyException] = []
@@ -53,9 +56,9 @@ static func validate() -> Array[PennyException]:
 
 	return result
 
+
 static func load() -> void:
 	inits.sort_custom(stmt_init_sort)
-
 	for host in PennyHost.insts:
 		host.reload()
 
@@ -67,27 +70,34 @@ static func get_stmt_from_label(label: StringName) -> Stmt_:
 		PennyException.new("Label '%s' does not exist in the current Penny environment." % label).push()
 		return null
 
+
 static func log(s: String, c: Color = DEFAULT_COLOR) -> void:
 	if active_dock:
 		active_dock.log(s, c)
+
 
 static func log_error(s: String, c: Color = ERROR_COLOR) -> void:
 	Penny.log(s, c)
 	push_error(s)
 
+
 static func log_clear() -> void:
 	if active_dock:
 		active_dock.log_clear()
 
+
 static func log_timed(s: String, c: Color = DEFAULT_COLOR) -> void:
 	Penny.log("[%s] %s" % [get_formatted_time(), s], c)
+
 
 static func log_info() -> void:
 	Penny.log("%s files / %s blocks / %s words / %s chars" % get_script_info())
 
+
 static func get_formatted_time() -> String:
 	var time = Time.get_time_dict_from_system()
 	return "%s:%s:%s" % [str(time.hour).pad_zeros(2), str(time.minute).pad_zeros(2), str(time.second).pad_zeros(2)]
+
 
 static func get_script_info() -> Array:
 	var files := 0
@@ -105,6 +115,7 @@ static func get_script_info() -> Array:
 				# non_whitespace_chars += i.char_count_non_whitespace
 				continue
 	return [files, blocks, words, chars]
+
 
 static func get_debug_string(value: Variant) -> String:
 	if value is PennyObject:

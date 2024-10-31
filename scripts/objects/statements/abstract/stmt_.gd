@@ -231,11 +231,15 @@ func get_value_from_path_relative_to_here(context: PennyObject, path: Path) -> V
 	return get_path_relative_to_here(path).evaluate(context)
 
 
-func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
-	address = _address
-	depth = _depth
-	line = _line
-	tokens = _tokens
+func populate(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
+	self.address = _address
+	self.depth = _depth
+	self.line = _line
+	self.tokens = _tokens
+
+
+func populate_from_other(other: Stmt_) -> void:
+	self.populate(other.address.copy(), other.depth, other.line, other.tokens.duplicate(true))
 
 
 func _to_string() -> String:
@@ -321,41 +325,47 @@ func push_exception(s: String = "Uncaught exception.") -> PennyException:
 
 
 func recycle() -> Stmt_:
+	var result := get_recycle_typed_version()
+	result.populate_from_other(self)
+	return result
+
+
+func get_recycle_typed_version() -> Stmt_:
 	for i in tokens:
 		match i.type:
 			Token.ASSIGNMENT:
-				return StmtAssign.new(address, line, depth, tokens)
+				return StmtAssign.new()
 			Token.KEYWORD:
 				if tokens.size() == 1 and tokens[0].value == 'object':
-					return StmtObject_.new(address, line, depth, tokens)
+					return StmtObject_.new()
 	match tokens.front().type:
 		Token.KEYWORD:
 			var key = tokens.pop_front().value
 			match key:
-				'call': 	return StmtJumpCall.new(address, line, depth, tokens)
-				'close': 	return StmtClose.new(address, line, depth, tokens)
-				'else': 	return StmtConditionalElse.new(address, line, depth, tokens)
-				'elif': 	return StmtConditionalElif.new(address, line, depth, tokens)
-				'if': 		return StmtConditionalIf.new(address, line, depth, tokens)
-				'init':		return StmtInit.new(address, line, depth, tokens)
-				'jump': 	return StmtJump.new(address, line, depth, tokens)
-				'label': 	return StmtLabel.new(address, line, depth, tokens)
-				'open': 	return StmtOpen.new(address, line, depth, tokens)
-				'pass': 	return StmtPass.new(address, line, depth, tokens)
-				'print': 	return StmtPrint.new(address, line, depth, tokens)
-				'return':	return StmtReturn.new(address, line, depth, tokens)
+				'call': 	return StmtJumpCall.new()
+				'close': 	return StmtClose.new()
+				'else': 	return StmtConditionalElse.new()
+				'elif': 	return StmtConditionalElif.new()
+				'if': 		return StmtConditionalIf.new()
+				'init':		return StmtInit.new()
+				'jump': 	return StmtJump.new()
+				'label': 	return StmtLabel.new()
+				'open': 	return StmtOpen.new()
+				'pass': 	return StmtPass.new()
+				'print': 	return StmtPrint.new()
+				'return':	return StmtReturn.new()
 			PennyException.new("The keyword '%s' was detected, but no method is registered for it in Stmt_.recycle()." % key).push()
 			return self
 	match tokens.back().type:
 			Token.VALUE_STRING:
-				return StmtDialog.new(address, line, depth, tokens)
+				return StmtDialog.new()
 	match tokens.front().type:
 		Token.IDENTIFIER:
 			if tokens.size() == 1 or tokens[1].value == '.':
-				return StmtObject_.new(address, line, depth, tokens)
+				return StmtObject_.new()
 		Token.OPERATOR:
 			if tokens[0].value == '.' and tokens[1].type == Token.IDENTIFIER:
-				return StmtObject_.new(address, line, depth, tokens)
+				return StmtObject_.new()
 	return self
 
 
