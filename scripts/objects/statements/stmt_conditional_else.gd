@@ -20,7 +20,7 @@ func _validate_self() -> PennyException:
 
 
 func _validate_cross() -> PennyException:
-	if not (prev_in_chain is StmtConditionalIf or prev_in_chain is StmtConditionalElif):
+	if not (prev_in_same_depth is StmtConditionalIf or prev_in_same_depth is StmtConditionalElif):
 		return create_exception("Expected if or elif before else statement")
 	return null
 

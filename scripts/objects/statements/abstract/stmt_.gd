@@ -81,8 +81,7 @@ var depth_string : String :
 var next_in_order : Stmt_ :
 	get: return address.copy(1).stmt
 
-## The next statement in the exact same depth as this one. If we ever exit this depth (lower), return null (end of chain).
-var next_in_chain : Stmt_ :
+var next_in_same_depth : Stmt_ :
 	get:
 		var cursor := address.copy(1)
 		while true:
@@ -93,8 +92,7 @@ var next_in_chain : Stmt_ :
 			cursor.index += 1
 		return null
 
-## The next statement in the same depth (or lower) as this one.
-var next_in_depth : Stmt_ :
+var next_in_same_or_lower_depth : Stmt_ :
 	get:
 		var cursor := address.copy(1)
 		while cursor.valid:
@@ -103,8 +101,7 @@ var next_in_depth : Stmt_ :
 			cursor.index += 1
 		return null
 
-## The next statement in a lower depth than this one. (less nested)
-var next_lower_depth : Stmt_ :
+var next_in_lower_depth : Stmt_ :
 	get:
 		if depth == 0: return null
 		var cursor := address.copy(1)
@@ -114,8 +111,7 @@ var next_lower_depth : Stmt_ :
 			cursor.index += 1
 		return null
 
-## The next statement in a higher depth than this one. (more nested)
-var next_higher_depth : Stmt_ :
+var next_in_higher_depth : Stmt_ :
 	get:
 		var cursor := address.copy(1)
 		while cursor.valid:
@@ -124,8 +120,7 @@ var next_higher_depth : Stmt_ :
 			cursor.index += 1
 		return null
 
-## Returns all statements exactly one depth higher than this one. (more nested)
-var next_higher_chain : Array[Stmt_] :
+var next_nested_block : Array[Stmt_] :
 	get:
 		var cursor := address.copy(1)
 		if cursor.stmt.depth <= depth:
@@ -133,15 +128,14 @@ var next_higher_chain : Array[Stmt_] :
 		var result : Array[Stmt_] = []
 		while cursor and cursor.valid:
 			result.push_back(cursor)
-			cursor = cursor.stmt.next_in_chain.address.copy()
+			cursor = cursor.stmt.next_in_same_depth.address.copy()
 		return result
 
-## The previous statement in order, regardless of depth.
 var prev_in_order : Stmt_ :
 	get: return address.copy(-1).stmt
 
 ## The previous statement in the exact same depth as this one. If we ever exit this depth (lower), return null (start of chain).
-var prev_in_chain : Stmt_ :
+var prev_in_same_depth : Stmt_ :
 	get:
 		var cursor := address.copy(-1)
 		while cursor.valid:
@@ -153,7 +147,7 @@ var prev_in_chain : Stmt_ :
 		return null
 
 ## The previous statement in the same depth (or lower) as this one.
-var prev_in_depth : Stmt_ :
+var prev_in_same_or_lower_depth : Stmt_ :
 	get:
 		var cursor := address.copy(-1)
 		while cursor.valid:
@@ -163,7 +157,7 @@ var prev_in_depth : Stmt_ :
 		return null
 
 ## The previous statement in a lower depth than this one. (less nested)
-var prev_lower_depth : Stmt_ :
+var prev_in_lower_depth : Stmt_ :
 	get:
 		if depth == 0: return null
 		var cursor := address.copy(-1)
@@ -174,7 +168,7 @@ var prev_lower_depth : Stmt_ :
 		return null
 
 ## The previous statement in a higher depth than this one. (more nested)
-var prev_higher_depth : Stmt_ :
+var prev_in_higher_depth : Stmt_ :
 	get:
 		var cursor := address.copy(-1)
 		while cursor.valid:
@@ -183,24 +177,23 @@ var prev_higher_depth : Stmt_ :
 			cursor.index -= 1
 		return null
 
-var nested_object_stmt : StmtObject_ :
+var owning_object_stmt : StmtObject_ :
 	get:
-		var result := prev_lower_depth
+		var result := prev_in_lower_depth
 		if result:
 			if result is StmtObject_:
 				return result
 			else:
-				return result.nested_object_stmt
+				return result.owning_object_stmt
 		return null
 
 
-## Returns the object [Path] under which this [Stmt_] is nested.
-var nested_object_path : Path :
+var owning_object_path : Path :
 	get:
 		var stmt := self
 		var result := Path.new([], true)
 		while result.relative:
-			stmt = stmt.prev_lower_depth
+			stmt = stmt.prev_in_lower_depth
 			if not stmt:
 				result.relative = false
 				break
@@ -218,10 +211,10 @@ var reconstructed_string : String :
 		return result
 
 
-func get_full_path(path: Path) -> Path:
+func get_path_relative_to_here(path: Path) -> Path:
 	var result : Path = path.duplicate()
 	if path.relative:
-		var root : Path = nested_object_path
+		var root : Path = owning_object_path
 		if root:
 			result.prepend(root)
 		result.relative = false
@@ -229,13 +222,13 @@ func get_full_path(path: Path) -> Path:
 
 
 ## Returns the object which this statement refers to.
-func get_nested_object(context: PennyObject) -> PennyObject:
-	return nested_object_path.evaluate(context)
+func get_owning_object(context: PennyObject) -> PennyObject:
+	return owning_object_path.evaluate(context)
 
 
 ## Returns the value at the path with some starting point [root]
-func get_value_from_path(context: PennyObject, path: Path) -> Variant:
-	return get_full_path(path).evaluate(context)
+func get_value_from_path_relative_to_here(context: PennyObject, path: Path) -> Variant:
+	return get_path_relative_to_here(path).evaluate(context)
 
 
 func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) -> void:
@@ -243,6 +236,7 @@ func _init(_address: Address, _line: int, _depth: int, _tokens: Array[Token]) ->
 	depth = _depth
 	line = _line
 	tokens = _tokens
+
 
 func _to_string() -> String:
 	return "%s %s : %s %s" % [line_string, depth_string, _get_keyword(), reconstructed_string]

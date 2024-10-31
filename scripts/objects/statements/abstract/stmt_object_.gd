@@ -58,14 +58,14 @@ func _message(record: Record) -> Message:
 
 ## Returns the object that this statement is working with.
 func get_context_object(host: PennyHost) -> PennyObject:
-	return self.get_value_from_path(host.data_root, path)
+	return self.get_value_from_path_relative_to_here(host.data_root, path)
 
 
 ## Returns the parent of the object that this statement (primarily for setting values to it).
 func get_context_parent(host: PennyHost) -> PennyObject:
 	var parent_path := path.duplicate()
 	parent_path.ids.pop_back()
-	var result : PennyObject = self.get_nested_object(host.data_root)
+	var result : PennyObject = self.get_owning_object(host.data_root)
 	if result: return result
 	return host.data_root
 
