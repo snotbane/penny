@@ -25,9 +25,6 @@ func _validate_self_post_setup() -> void:
 	for stmt in self.nested_stmts_single_depth:
 		if stmt is StmtConditionalMenu:
 			nested_option_stmts.push_back(stmt)
-	for i in nested_option_stmts.size():
-		nested_option_stmts[i].menu_stmt = self
-		nested_option_stmts[i].expected_path = Path.from_single('_' + str(i))
 
 
 # func _validate_cross() -> PennyException:
@@ -44,11 +41,17 @@ func _execute(host: PennyHost) -> Record:
 	var i := -1
 	for stmt in nested_option_stmts:
 		i += 1
-		var key := "_" + str(i)
-		var option := PennyObject.new(key, host.data_root, {
-			PennyObject.BASE_KEY: Path.from_single(PennyObject.BILTIN_OPTION_NAME),
-			PennyObject.NAME_KEY: stmt.expr.evaluate(host.data_root)
-		})
+		var key : StringName
+		var option : PennyObject
+		if stmt.is_raw_text_option:
+			key = "_" + str(i)
+			option = PennyObject.new(key, host.data_root, {
+				PennyObject.BASE_KEY: Path.from_single(PennyObject.BILTIN_OPTION_NAME),
+				PennyObject.NAME_KEY: stmt.expr.evaluate(host.data_root)
+			})
+		else:
+			option = stmt.expr.evaluate(host.data_root)
+			key = option.self_key
 		host.data_root.set_value(key, option)
 		prompt_options.push_back(Path.from_single(key))
 

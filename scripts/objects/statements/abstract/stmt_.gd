@@ -187,6 +187,16 @@ var nested_stmts_single_depth : Array[Stmt_] :
 		return result
 
 
+var index_in_same_depth_chain : int:
+	get:
+		var cursor := self.prev_in_same_depth
+		var result := 0
+		while cursor:
+			result += 1
+			cursor = cursor.prev_in_same_depth
+		return result
+
+
 var reconstructed_string : String :
 	get:
 		var result := ""

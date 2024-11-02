@@ -4,6 +4,8 @@ class_name StmtConditionalMenu extends StmtConditional_
 
 var menu_stmt : StmtMenu
 var expected_path : Path
+var is_raw_text_option : bool :
+	get: return expr.evaluate_shallow(null) is not Path
 
 # func _init() -> void:
 # 	pass
@@ -23,7 +25,13 @@ func _validate_self() -> PennyException:
 
 func _validate_self_post_setup() -> void:
 	super._validate_self_post_setup()
-	# expected_path = "_" + str(self.index_in_chain)
+
+	menu_stmt = self.prev_in_lower_depth
+
+	if is_raw_text_option:
+		expected_path = Path.from_single("_" + str(self.index_in_same_depth_chain))
+	else:
+		expected_path = expr.evaluate_shallow(null)
 
 
 # func _validate_cross() -> PennyException:
