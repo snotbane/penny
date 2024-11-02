@@ -177,6 +177,16 @@ var owning_object_path : Path :
 		return result
 
 
+var nested_stmts_single_depth : Array[Stmt_] :
+	get:
+		var cursor := self.next_in_higher_depth
+		var result : Array[Stmt_]
+		while cursor:
+			result.push_back(cursor)
+			cursor = cursor.next_in_same_depth
+		return result
+
+
 var reconstructed_string : String :
 	get:
 		var result := ""
@@ -322,6 +332,7 @@ func get_recycle_typed_version() -> Stmt_:
 				'jump': 	return StmtJump.new()
 				'label': 	return StmtLabel.new()
 				'match': 	return StmtMatch.new()
+				'menu': 	return StmtMenu.new()
 				'open': 	return StmtOpen.new()
 				'pass': 	return StmtPass.new()
 				'print': 	return StmtPrint.new()
@@ -333,6 +344,8 @@ func get_recycle_typed_version() -> Stmt_:
 	if block_header:
 		if block_header is StmtMatch:
 			return StmtConditionalMatch.new()
+		elif block_header is StmtMenu:
+			return StmtConditionalMenu.new()
 
 	match tokens.back().type:
 			Token.VALUE_STRING:

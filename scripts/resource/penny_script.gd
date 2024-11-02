@@ -21,6 +21,10 @@ func update_from_file(file: FileAccess) -> void:
 			exception.push()
 		else:
 			stmt.validate_self_post_setup()
+	for stmt in stmts:
+		var exception := stmt.validate_cross()
+		if exception:
+			exception.push()
 
 
 func parse_and_register_stmts(tokens: Array[Token], context_file: FileAccess) -> void:
