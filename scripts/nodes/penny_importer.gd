@@ -20,6 +20,8 @@ const PNY_FILE_OMIT = [
 	"ignore",
 ]
 
+signal on_reloaded
+
 var paths_dates : Dictionary
 var paths_dates2 : Dictionary
 
@@ -75,6 +77,8 @@ func reload(hard: bool = false) -> void:
 			Penny.valid = false
 
 		Penny.log_info()
+
+		on_reloaded.emit()
 
 		# print("***	RELOADING COMPLETE\n")
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cfkhtume00g5e"]
+[gd_scene load_steps=14 format=3 uid="uid://cfkhtume00g5e"]
 
 [ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_hv265"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_debug.gd" id="2_4v1jc"]
@@ -10,6 +10,8 @@
 [ext_resource type="Texture2D" uid="uid://c3g6mc5ihxqvj" path="res://addons/penny_godot/assets/icons/Label.svg" id="6_6v586"]
 [ext_resource type="Texture2D" uid="uid://dfir03166e6r2" path="res://addons/penny_godot/assets/icons/Object.svg" id="7_44hdu"]
 [ext_resource type="Texture2D" uid="uid://dbn36dthttn4c" path="res://addons/penny_godot/assets/icons/Search.svg" id="7_yvqnl"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/debug_label_viewer.gd" id="11_epa23"]
+[ext_resource type="PackedScene" uid="uid://drv4a57pwbptd" path="res://addons/penny_godot/scenes/debug_label_listing.tscn" id="11_v4nj7"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_337gi"]
 texture = ExtResource("2_7s783")
@@ -51,13 +53,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 0
+current_tab = 1
 drag_to_rearrange_enabled = true
 tab_focus_mode = 1
 script = ExtResource("5_uv7g7")
 tab_icons = Array[Texture2D]([ExtResource("7_44hdu"), ExtResource("6_6v586")])
 
 [node name="Data" type="Control" parent="margin_container/h_box_container/penny_runtime_dock/tab_container"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -155,7 +158,6 @@ icon = ExtResource("7_yvqnl")
 flat = true
 
 [node name="Labels" type="Control" parent="margin_container/h_box_container/penny_runtime_dock/tab_container"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -171,20 +173,11 @@ grow_vertical = 2
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="v_box_container" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/margin_container"]
+[node name="v_box_container" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/margin_container" node_paths=PackedStringArray("debug")]
 layout_mode = 2
-
-[node name="button" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/margin_container/v_box_container"]
-layout_mode = 2
-text = "start"
-
-[node name="button_2" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/margin_container/v_box_container"]
-layout_mode = 2
-text = "ch1"
-
-[node name="button_3" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container/margin_container/v_box_container"]
-layout_mode = 2
-text = "ch2"
+script = ExtResource("11_epa23")
+debug = NodePath("../../../../../../../..")
+label_listing_prefab = ExtResource("11_v4nj7")
 
 [node name="h_box_container" type="HBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels/v_box_container"]
 layout_mode = 2

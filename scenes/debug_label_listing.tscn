@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3 uid="uid://drv4a57pwbptd"]
+
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/debug_label_listing.gd" id="1_nu7gm"]
+
+[node name="debug_label_listing" type="HBoxContainer" node_paths=PackedStringArray("label_node")]
+custom_minimum_size = Vector2(0, 32)
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -16.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nu7gm")
+label_node = NodePath("label")
+
+[node name="label" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "start"
+
+[node name="undo_button" type="Button" parent="."]
+visible = false
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+tooltip_text = "Undo time until this label was most recently encountered."
+text = "Undo
+"
+
+[node name="jump_button" type="Button" parent="."]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+tooltip_text = "Jump directly to this label."
+text = "Jump"
+
+[node name="call_button" type="Button" parent="."]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+tooltip_text = "Jump to this label and return here afterwards."
+text = "Call"
+
+[connection signal="pressed" from="undo_button" to="." method="_on_undo_button_pressed"]
+[connection signal="pressed" from="jump_button" to="." method="_on_jump_button_pressed"]
+[connection signal="pressed" from="call_button" to="." method="_on_call_button_pressed"]
