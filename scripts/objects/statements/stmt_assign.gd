@@ -43,7 +43,7 @@ func _validate_self() -> PennyException:
 		return right_exception
 
 	path = Path.from_tokens(left)
-	expr = Expr.from_tokens(self, right)
+	expr = Expr.from_tokens(right, self)
 	return null
 
 

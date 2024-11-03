@@ -21,7 +21,7 @@ func _validate_self() -> PennyException:
 
 
 func _validate_self_post_setup() -> void:
-	expr = Expr.from_tokens(self, tokens)
+	expr = Expr.from_tokens(tokens, self)
 
 
 # func _validate_cross() -> PennyException:

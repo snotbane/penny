@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_dock.gd" id="1_2yk42"]
 [ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_wbnl2"]
 
-[node name="Penny" type="Control" node_paths=PackedStringArray("message_log", "verbosity_selector")]
+[node name="Penny" type="Control" node_paths=PackedStringArray("message_log")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,7 +15,6 @@ size_flags_vertical = 3
 theme = ExtResource("1_wbnl2")
 script = ExtResource("1_2yk42")
 message_log = NodePath("vbox/panel/margin/message_log")
-verbosity_selector = NodePath("")
 
 [node name="vbox" type="VBoxContainer" parent="."]
 layout_mode = 1

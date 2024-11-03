@@ -2,10 +2,7 @@
 @tool
 class_name StmtDialog extends StmtNode_
 
-const REGEX_DEPTH_REMOVAL_PATTERN := "(?<=\\n)\\t{0,%s}"
-static var REGEX_INTERPOLATION := RegEx.create_from_string("(?<!\\\\)(@([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)|\\[(.*?)\\])")
-static var REGEX_INTERJECTION := RegEx.create_from_string("(?<!\\\\)(\\{.*?\\})")
-static var REGEX_DECORATION := RegEx.create_from_string("(?<!\\\\)(<.*?>)")
+const DEPTH_REMOVAL_PATTERN := "(?<=\\n)\\t{0,%s}"
 static var REGEX_WORD_COUNT := RegEx.create_from_string("\\b\\S+\\b")
 static var REGEX_CHAR_COUNT := RegEx.create_from_string("\\S")
 
@@ -15,11 +12,10 @@ var raw_text : String
 var text_stripped : String :
 	get:
 		var result : String = raw_text
-		# result = REGEX_INTERPOLATION.sub(result, "$1", true)
-		result = REGEX_INTERJECTION.sub(result, "", true)
-		result = REGEX_DECORATION.sub(result, "", true)
+		# result = Message.REGEX_INTERPOLATION.sub(result, "$1", true)
+		result = Message.INTERJECTION_PATTERN.sub(result, "", true)
+		result = Message.DECORATION_PATTERN.sub(result, "", true)
 		return result
-
 
 var word_count : int :
 	get: return REGEX_WORD_COUNT.search_all(text_stripped).size()
@@ -34,7 +30,7 @@ var char_count_non_whitespace : int :
 
 
 func _get_keyword() -> StringName:
-	return 'message'
+	return 'dialog'
 
 
 func _get_verbosity() -> Verbosity:
@@ -48,7 +44,10 @@ func _validate_self() -> PennyException:
 
 
 func _validate_self_post_setup() -> void:
-	raw_text = tokens.pop_back().value
+	var rx_whitespace = RegEx.create_from_string(DEPTH_REMOVAL_PATTERN % nest_depth)
+	raw_text = rx_whitespace.sub(tokens.pop_back().value, "", true)
+
+
 	super._validate_self_post_setup()
 	subject_dialog_path = subject_path.duplicate()
 	subject_dialog_path.ids.push_back(PennyObject.BILTIN_DIALOG_NAME)
@@ -86,7 +85,7 @@ func _execute(host: PennyHost) -> Record:
 	else:
 		incoming_dialog_node = previous_dialog_node
 
-	var message = get_message(host)
+	var message := Message.new(raw_text, host)
 
 	if OS.is_debug_build():
 		if incoming_dialog_node is MessageHandler:
@@ -102,30 +101,6 @@ func _execute(host: PennyHost) -> Record:
 		incoming_dialog_node.receive(result, subject_path.evaluate(host.data_root))
 		return result
 	return create_record(host, false, message)
-
-
-func get_message(host: PennyHost) -> Message:
-	var text : String = raw_text
-
-	var rx_whitespace = RegEx.create_from_string(REGEX_DEPTH_REMOVAL_PATTERN % nest_depth)
-
-	while true:
-		var match := REGEX_INTERPOLATION.search(text)
-		if not match : break
-
-		var interp_expr_string := match.get_string(2) + match.get_string(3)	## ~= $2$3
-		var inter_expr := Expr.from_tokens(self, PennyScript.parse_tokens_from_raw(interp_expr_string))
-		var result = inter_expr.evaluate(host.data_root)
-		var result_string : String
-		if result is PennyObject:
-			result_string = result.rich_name
-		else:
-			result_string = str(result)
-
-		text = text.substr(0, match.get_start()) + result_string + text.substr(match.get_end(), text.length() - match.get_end())
-
-	text = rx_whitespace.sub(text, "", true)
-	return Message.new(text)
 
 
 func _create_history_listing(record: Record) -> HistoryListing:

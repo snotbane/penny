@@ -235,29 +235,192 @@ Decorations are defined with the following data:
 
 ### Decoration List
 
--   `<a=string>` Anchor
--   `<alpha=float>` Opacity
--   `<alt=string>` Alt text for image
--   `<b>` Bold
--   `<color=color>` Color
--   `<d=float>` Delay (wait w/o input) (print only)
--   `<font=string>` Font Family
--   `<i>` Italic
--   `<image=string>` Image
--   `<k=float>` Kerning
--   `<next>` Auto-advance to the next statement without waiting for user input (see {nw})
--   `<raw>` Prevents string evaluation
--   `<s>` Strikethrough
--   `<size=int>` Font Size
--   `<skip>` Instantly print (print only) (see `{fast}`)
--   `<space=float>` Space
--   `<speed=float>` Characters per second (print only) (see `{cps}`)
--   `<u>` Underline
--   `<va=string>` Plays a voice acting sound and prevents text from continuing until the sound is finished (print only)
--   `<vspace=float>` New line + space
--   `<w>` Wait for input. Advancing while text is printing will stop at the next one of these to be encountered. (print only)
+#### `a` (Anchor)
 
-These decorations will be removed from Ren'Py (for now):
+- From Ren'Py
+- Creates a `[url]` bbcode tag.
+- Optional string argument
+- Usage:
+
+```pny
+<a>https://www.google.com/</>
+
+<a="https://www.google.com/">Google</>
+```
+
+#### <s>`alpha` (Opacity)</s>
+
+- From Ren'Py
+- Deprecated, see [`color`](#color)
+
+#### <s>`alt` (Alt text for image)</s>
+
+- From Ren'Py
+- Deprecated, no replacement.
+
+#### `b` or `bold` (bold, strong)
+
+- Used in both Ren'Py and bbcode
+- Creates a `[b]` bbcode tag.
+- No arguments
+
+#### `color`
+
+- Used in both Ren'Py and bbcode
+- Creates a `[color]` bbcode tag.
+- Required color argument
+- Usage:
+
+```pny
+<color=#ff0000>Solid red</>
+<color=#ffffff80>Transparent white</>
+```
+
+#### `delay`
+
+- Modified from Ren'Py, unique to Penny
+- Creates a timed break in printing out text via typewriter
+- Not affected by input (trying to advance before/during a delay will skip all the way till the next [`wait`](#wait) tag)
+- Only affects typewriters
+- Required float argument, time in seconds
+- Usage:
+
+```pny
+String A <delay=0.5>String B
+```
+
+#### `fast`
+
+- Used in Ren'Py
+- Sets the starting point of a message to this point
+- Use only one per message
+- Usage:
+
+```pny
+I thought you were going to go to the party—<next>
+I thought you were going to go to <fast>school...
+```
+
+#### `font`
+
+- Used in Ren'Py and bbcode
+- Creates a `[font]` bbcode tag
+- Required string argument
+
+#### `i` (Italics, emphasis)
+
+- Used in Ren'Py and bbcode
+- Creates a `[i]` bbcode tag
+- No arguments
+
+#### `if, elif, else`
+
+- Unique to Penny
+- Use these tags to create text that conditionally appears
+- Required bool argument
+- Usage:
+
+```pny
+seen_echo_before = false
+Rubin `Hello, nice to meet you. <if=seen_echo_before>Haven't I seen you somewhere before?<else>I've never seen anyone quite like you before.</>`
+```
+
+#### `img`
+
+- Used in Ren'Py as `image`
+- Creates a `[img]` bbcode tag
+
+#### `k` (Kerning)
+
+- From Ren'Py
+- ***Unknown implementation in bbcode***
+
+#### `next`
+
+- From Ren'Py as `nw`
+- When encountered, instantly advance to the next statement without waiting for user input
+- No arguments, no close tag
+- Typically at the end of a message
+- Usage:
+
+```pny
+I thought you were going to—<next>
+```
+
+#### `s` (Strikethrough)
+
+- Used in bbcode
+- Creates a `[s]` tag
+- No arguments
+
+#### `sfx`
+
+- Unique to Penny
+- Plays a sound effect when printed out
+- Required link argument
+
+#### `size`
+
+- Used in Ren'Py and bbcode
+- Creates a `[font_size]` bbcode tag
+- Required int argument
+
+#### <s>`space`</s>
+
+- From Ren'Py
+- Deprecated for now, does anyone actually use this?
+
+#### `type_sound`
+
+- Unique to Penny
+- Sets the sound effects the typewriter uses during printout
+- Required link argument
+- Usage:
+
+```pny
+Normal text <typesound=$angry_text>Angry text!!!</> Normal text again.
+```
+
+#### `type_speed`
+
+- From Ren'Py as `cps`
+- Temporarily sets the typewriter's print speed in characters per second
+- Required float parameter
+
+#### `u` (Underline)
+
+- Used in Ren'Py and bbcode
+- Creates a `[u]` bbcode tag
+- No arguments
+
+
+#### `va` (Voice acting)
+
+- Unique to Penny
+- Plays a voice acting sound
+- Prevents text from continuing until both sound and text are finished playing/displaying (unless manually interrupted) at the tag end or the next `va` tag
+- Only affects typewritten text
+- Required link argument
+- Usage
+
+```pny
+<va=$va_going_to_store>I was just going to go to the store. <va=$va_need_some_milk>I really need some milk.
+```
+
+#### <s>`vspace`</s>
+
+- Used in Ren'Py
+- Deprecated for now
+
+#### `wait`
+
+- Used in Ren'Py as `w` (partially)
+- Acts as a stopping point for the typewriter
+- Waits for input from the user to continue printing text.
+- Trying to advance while currently printing will auto complete text up to the next one of these
+- Trying to advacne while stopped at one of these will begin printing again
+
+### These decorations will be removed from Ren'Py (for now):
 
 -   `{art}`
 -   `{done}` Stop printing (for spacing parity between separate lines)

@@ -158,7 +158,7 @@ func _init(_stmt: Stmt_, _symbols: Array) -> void:
 	symbols = _symbols
 
 ## Converts raw tokens into workable symbols (Variants).
-static func from_tokens(_stmt: Stmt_, tokens: Array[Token]) -> Expr:
+static func from_tokens(tokens: Array[Token], _stmt: Stmt_ = null) -> Expr:
 	var stack : Array[Variant] = []
 	var ops : Array[Op] = []
 
@@ -181,7 +181,10 @@ static func from_tokens(_stmt: Stmt_, tokens: Array[Token]) -> Expr:
 					_:
 						stack.push_back(op)
 			_:
-				_stmt.create_exception("Expression not evaluated: unexpected token '%s'" % token)
+				if _stmt:
+					_stmt.push_exception("Expression not evaluated: unexpected token '%s'" % token)
+				else:
+					PennyException.new("Expression not evaluated: unexpected token '%s'" % token).push()
 				return null
 
 	while ops:

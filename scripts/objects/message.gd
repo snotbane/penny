@@ -1,18 +1,87 @@
 
-## Displayable text capable of producing decorations.
+## Displayable text_with_bbcode capable of producing decorations.
 class_name Message extends RefCounted
 
-var pure : String
-var text : String
+static var INTERPOLATION_PATTERN := RegEx.create_from_string("(@([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)|\\[(.*?)\\])")
+static var INTERJECTION_PATTERN := RegEx.create_from_string("(\\{.*?\\})")
+static var DECORATION_PATTERN := RegEx.create_from_string("(<.*?>)")
+static var DECORATION_FULL_PATTERN := RegEx.create_from_string("(?s)<(.*?)>(.*?)(?:(?:<\\/(.*?)>)|$)")
 
-func _init(_pure: String) -> void:
-	pure = _pure
-	text = "[p align=fill jst=w,k,sl]" + pure
+static var ESCAPE_PATTERN := RegEx.create_from_string("\\\\(.)")
+static var ESCAPE_SUBSITUTIONS := {
+	"n": "\n",
+	"t": "\t",
+	"[": "[lb]",
+	"]": "[rb]"
+}
+
+var raw : String
+var text_evaluated : String
+var text_with_bbcode : String
+
+
+func _init(_raw: String, host: PennyHost) -> void:
+	raw = _raw
+	text_evaluated = raw
+
+	# INTERPOLATION
+	while true:
+		var pattern_match := INTERPOLATION_PATTERN.search(text_evaluated)
+		if pattern_match:
+			var interp_expr_string := pattern_match.get_string(2) + pattern_match.get_string(3)	## ~= $2$3
+			var inter_expr := Expr.from_tokens(PennyScript.parse_tokens_from_raw(interp_expr_string))
+			var result = inter_expr.evaluate(host.data_root)
+			var result_string : String
+			if result is PennyObject:
+				result_string = result.rich_name
+			else:
+				result_string = str(result)
+
+			text_evaluated = substitute_entire_match(pattern_match, result_string)
+			continue
+		break
+
+	## FILTERS
+
+	## ESCAPES
+	while true:
+		var pattern_match := ESCAPE_PATTERN.search(text_evaluated)
+		if pattern_match:
+			if ESCAPE_SUBSITUTIONS.has(pattern_match.get_string(1)):
+				text_evaluated = substitute_entire_match(pattern_match, ESCAPE_SUBSITUTIONS[pattern_match.get_string(1)])
+			else:
+				text_evaluated = substitute_entire_match(pattern_match, pattern_match.get_string(1))
+			continue
+		break
+
+
+	## TRANSLATE DECORATIONS TO BBCODE
+	text_with_bbcode = text_evaluated
+	while true:
+		var pattern_match := DECORATION_FULL_PATTERN.search(text_with_bbcode)
+		if pattern_match:
+			var start_tag := pattern_match.get_string(1)
+			var content := pattern_match.get_string(2)
+			var end_tag := pattern_match.get_string(3)
+
+			if end_tag.is_empty():
+				end_tag = start_tag
+
+			text_with_bbcode = substitute_entire_match(pattern_match, "[%s]%s[/%s]" % [start_tag, content, end_tag])
+			continue
+
+		break
+
+	text_with_bbcode = "[p align=fill jst=w,k,sl]" + text_with_bbcode
+
+
+static func substitute_entire_match(match: RegExMatch, sub: String) -> String:
+	return match.subject.substr(0, match.get_start()) + sub + match.subject.substr(match.get_end(), match.subject.length() - match.get_end())
 
 
 func _to_string() -> String:
-	return text
+	return text_with_bbcode
 
 
-func append(_pure: String) -> void:
-	text += _pure
+func append(_raw: String) -> void:
+	text_with_bbcode += _raw
