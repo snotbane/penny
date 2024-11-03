@@ -9,6 +9,7 @@ enum State {
 }
 
 signal on_data_modified
+signal on_record_created(record: Record)
 
 @export_subgroup("Instantiation")
 
@@ -17,9 +18,6 @@ signal on_data_modified
 
 ## [PennyNode]s instantiated via script will be added to their preferred layer, else the last in this list. Require at least one element. Any node/space can be used.
 @export var layers : Array[Node]
-
-## Reference to the history handler.
-@export var history_handler : HistoryHandler
 
 @export_subgroup("Flow")
 
@@ -79,7 +77,7 @@ func invoke_at_cursor() -> void:
 	var record := cursor.execute(self)
 
 	records.push_back(record)
-	history_handler.receive(record)
+	on_record_created.emit(record)
 
 	if not record.halt or state == State.INITING:
 		advance()
@@ -105,7 +103,6 @@ func rewind_to(record: Record) -> void:
 	cursor = record.stmt
 	while records.size() > record.stamp:
 		records.pop_back().undo()
-	history_handler.rewind_to(record)
 	invoke_at_cursor()
 
 

@@ -299,9 +299,15 @@ func _message(record: Record) -> Message:
 	return Message.new(reconstructed_string)
 
 
-func create_history_node(record: Record) -> Control: return _create_history_node(record)
-func _create_history_node(record: Record) -> Control:
-	return null
+func _get_history_listing_scene() -> PackedScene :
+	return load("res://addons/penny_godot/scenes/history_listing_default.tscn")
+
+
+func create_history_listing(record: Record) -> HistoryListing: return _create_history_listing(record)
+func _create_history_listing(record: Record) -> HistoryListing:
+	var result : HistoryListing = _get_history_listing_scene().instantiate()
+	result.label.text = reconstructed_string
+	return result
 
 
 func create_record(host: PennyHost, halt: bool = false, attachment: Variant = null) -> Record:

@@ -36,3 +36,6 @@ func equals(other: Record) -> bool:
 
 func next() -> Stmt_:
 	return stmt.next(self)
+
+func create_history_listing() -> HistoryListing:
+	return stmt.create_history_listing(self)

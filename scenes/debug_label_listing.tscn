@@ -15,11 +15,6 @@ grow_vertical = 2
 script = ExtResource("1_nu7gm")
 label_node = NodePath("label")
 
-[node name="label" type="Label" parent="."]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "start"
-
 [node name="undo_button" type="Button" parent="."]
 visible = false
 custom_minimum_size = Vector2(100, 0)
@@ -39,6 +34,11 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 tooltip_text = "Jump to this label and return here afterwards."
 text = "Call"
+
+[node name="label" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "start"
 
 [connection signal="pressed" from="undo_button" to="." method="_on_undo_button_pressed"]
 [connection signal="pressed" from="jump_button" to="." method="_on_jump_button_pressed"]

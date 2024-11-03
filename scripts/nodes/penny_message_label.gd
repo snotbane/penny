@@ -13,7 +13,7 @@ func _init() -> void:
 	mouse_default_cursor_shape = Control.CursorShape.CURSOR_POINTING_HAND
 
 func _ready() -> void:
-	pass
+	self.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func populate(__rec: Record) -> void:
 	rec = __rec
@@ -27,7 +27,8 @@ func populate(__rec: Record) -> void:
 		grab_focus.call_deferred()
 
 func refresh_visibility() -> void:
-	visible = rec.host.history_handler.verbosity & rec.stmt.verbosity
+	visible = true
+	# visible = handler.verbosity & rec.stmt.verbosity
 
 func _gui_input(event: InputEvent) -> void:
 	if event.is_pressed():

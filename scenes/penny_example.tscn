@@ -8,11 +8,10 @@
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/mouse_input_catcher.gd" id="5_bg7b0"]
 [ext_resource type="PackedScene" uid="uid://cfkhtume00g5e" path="res://addons/penny_godot/scenes/penny_debug.tscn" id="5_vsnrl"]
 
-[node name="penny_host" type="Node" node_paths=PackedStringArray("layers", "history_handler")]
+[node name="penny_host" type="Node" node_paths=PackedStringArray("layers")]
 script = ExtResource("1_jmae0")
 lookup_tables = Array[ExtResource("2_4q0nq")]([ExtResource("3_lw4vb")])
 layers = [NodePath("canvas_layer/ui/v_box_container/message_layer"), NodePath("canvas_layer/ui/other_layer")]
-history_handler = NodePath("canvas_layer/ui/v_box_container/history_layer/penny_history_box")
 autostart_label = &"start"
 
 [node name="canvas_layer" type="CanvasLayer" parent="."]
@@ -56,8 +55,10 @@ mouse_filter = 2
 theme_override_constants/margin_left = 200
 theme_override_constants/margin_right = 200
 
-[node name="penny_history_box" parent="canvas_layer/ui/v_box_container/history_layer" instance=ExtResource("4_hm4jj")]
+[node name="penny_history_box" parent="canvas_layer/ui/v_box_container/history_layer" node_paths=PackedStringArray("host") instance=ExtResource("4_hm4jj")]
 layout_mode = 2
+host = NodePath("../../../../..")
+_shown = false
 
 [node name="message_layer" type="MarginContainer" parent="canvas_layer/ui/v_box_container"]
 custom_minimum_size = Vector2(0, 240)
@@ -79,4 +80,8 @@ mouse_filter = 2
 [node name="debug_overlay" parent="canvas_layer" instance=ExtResource("5_vsnrl")]
 visible = false
 
+[connection signal="on_record_created" from="." to="canvas_layer/ui/v_box_container/history_layer/penny_history_box" method="_on_record_created"]
+[connection signal="on_record_created" from="." to="canvas_layer/debug_overlay/margin_container/h_box_container/penny_runtime_dock/tab_container/History/v_box_container/penny_history_box" method="_on_record_created"]
 [connection signal="on_click" from="canvas_layer/ui/input_catcher" to="." method="advance"]
+
+[editable path="canvas_layer/debug_overlay"]

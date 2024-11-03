@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://ckwmom7w0dvh1"]
+[gd_scene load_steps=8 format=3 uid="uid://ckwmom7w0dvh1"]
 
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="1_lr0qd"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/history_handler.gd" id="1_vh1ak"]
+[ext_resource type="PackedScene" uid="uid://7xgdiuu2qk3s" path="res://addons/penny_godot/scenes/history_listing_default.tscn" id="3_axknw"]
 
 [sub_resource type="Animation" id="Animation_05s11"]
 length = 0.001
@@ -103,7 +104,6 @@ grow_vertical = 2
 script = ExtResource("1_vh1ak")
 animation_player = NodePath("animation_player")
 vbox = NodePath("panel_container/margin_container/scroll_container/margin_container/scroll_contents")
-verbosity = 31
 
 [node name="panel_container" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -135,7 +135,10 @@ theme_override_constants/margin_bottom = 0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme = ExtResource("1_lr0qd")
+theme_override_constants/separation = 0
+
+[node name="history_listing_default" parent="panel_container/margin_container/scroll_container/margin_container/scroll_contents" instance=ExtResource("3_axknw")]
+layout_mode = 2
 
 [node name="animation_player" type="AnimationPlayer" parent="."]
 libraries = {

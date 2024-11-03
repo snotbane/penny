@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://ehssrfkq0q6c"]
+[gd_scene load_steps=3 format=3 uid="uid://ehssrfkq0q6c"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_dock.gd" id="1_2yk42"]
 [ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_wbnl2"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/verbosity_selector.gd" id="2_7bn1p"]
 
 [node name="Penny" type="Control" node_paths=PackedStringArray("message_log", "verbosity_selector")]
 layout_mode = 3
@@ -16,7 +15,7 @@ size_flags_vertical = 3
 theme = ExtResource("1_wbnl2")
 script = ExtResource("1_2yk42")
 message_log = NodePath("vbox/panel/margin/message_log")
-verbosity_selector = NodePath("vbox/hbox_header/verbosity_selector")
+verbosity_selector = NodePath("")
 
 [node name="vbox" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -37,30 +36,6 @@ text = "Auto"
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Reload"
-
-[node name="verbosity_selector" type="OptionButton" parent="vbox/hbox_header"]
-layout_mode = 2
-selected = 7
-item_count = 8
-popup/item_0/text = "Story"
-popup/item_0/id = 1
-popup/item_1/id = 1
-popup/item_1/disabled = true
-popup/item_1/separator = true
-popup/item_2/text = "+ Print Msgs"
-popup/item_2/id = 3
-popup/item_3/text = "+ Flow Activity"
-popup/item_3/id = 7
-popup/item_4/text = "+ Data Activity"
-popup/item_4/id = 15
-popup/item_5/text = "+ Node Activity"
-popup/item_5/id = 31
-popup/item_6/id = 6
-popup/item_6/disabled = true
-popup/item_6/separator = true
-popup/item_7/text = "ALL"
-popup/item_7/id = 63
-script = ExtResource("2_7bn1p")
 
 [node name="panel" type="Panel" parent="vbox"]
 layout_mode = 2
@@ -95,4 +70,3 @@ text = "Export..."
 
 [connection signal="toggled" from="vbox/hbox_header/toggle_auto_reload" to="vbox/hbox_header/button_reload" method="set_disabled"]
 [connection signal="pressed" from="vbox/hbox_header/button_reload" to="." method="_on_button_reload_pressed"]
-[connection signal="item_selected" from="vbox/hbox_header/verbosity_selector" to="vbox/hbox_header/verbosity_selector" method="_on_item_selected"]

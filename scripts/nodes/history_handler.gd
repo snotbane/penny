@@ -5,8 +5,10 @@ static var inst : HistoryHandler
 @export var animation_player : AnimationPlayer
 @export var vbox : VBoxContainer
 
-var _shown : bool = false
-var shown : bool = false :
+@export var host: PennyHost
+
+@export var _shown : bool = true
+var shown : bool :
 	get: return _shown
 	set (value) :
 		if _shown == value: return
@@ -17,7 +19,7 @@ var shown : bool = false :
 			animation_player.play('hide')
 
 var _verbosity : int
-@export_flags(Stmt_.VERBOSITY_NAMES[0], Stmt_.VERBOSITY_NAMES[1], Stmt_.VERBOSITY_NAMES[2], Stmt_.VERBOSITY_NAMES[3], Stmt_.VERBOSITY_NAMES[4], Stmt_.VERBOSITY_NAMES[5]) var verbosity : int = Stmt_.Verbosity.USER_FACING | Stmt_.Verbosity.DEBUG_MESSAGES :
+@export_flags(Stmt_.VERBOSITY_NAMES[0], Stmt_.VERBOSITY_NAMES[1], Stmt_.VERBOSITY_NAMES[2], Stmt_.VERBOSITY_NAMES[3], Stmt_.VERBOSITY_NAMES[4], Stmt_.VERBOSITY_NAMES[5]) var verbosity : int = Stmt_.Verbosity.USER_FACING :
 	get: return _verbosity
 	set (value):
 		if _verbosity == value: return
@@ -31,18 +33,25 @@ func _ready() -> void:
 	inst = self
 	visible = shown
 
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed('penny_history'):
-		shown = not shown
 
 func receive(rec: Record) -> void:
-	var control := PennyMessageLabel.new()
-	control.populate(rec)
-	controls.push_back(control)
-	vbox.add_child(control)
+	var listing := rec.create_history_listing()
+	vbox.add_child(listing)
+	# var control := PennyMessageLabel.new()
+	# control.populate(rec)
+	# controls.push_back(control)
+	# vbox.add_child(control)
 
 func rewind_to(rec: Record) -> void:
 	while controls.size() > rec.stamp:
 		var control = controls.pop_back()
 		vbox.remove_child(control)
 		control.queue_free()
+
+
+func _on_record_created(record:Record) -> void:
+	receive(record)
+
+
+func _on_verbosity_selector_item_selected(index:int) -> void:
+	self.verbosity = index
