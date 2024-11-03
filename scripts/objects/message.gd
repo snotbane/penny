@@ -24,7 +24,9 @@ func _init(_raw: String, host: PennyHost) -> void:
 	raw = _raw
 	text_evaluated = raw
 
-	# INTERPOLATION
+	## INTERJECTIONS
+
+	## INTERPOLATION
 	while true:
 		var pattern_match := INTERPOLATION_PATTERN.search(text_evaluated)
 		if pattern_match:
@@ -42,6 +44,12 @@ func _init(_raw: String, host: PennyHost) -> void:
 		break
 
 	## FILTERS
+	var filters : Array = host.data_root.get_value(PennyObject.FILTERS_KEY)
+	for filter_path in filters:
+		var filter : PennyObject = filter_path.evaluate(host.data_root)
+		var pattern := RegEx.create_from_string(filter.get_value(PennyObject.FILTER_PATTERN_KEY))
+		var replace : String = filter.get_value(PennyObject.FILTER_REPLACE_KEY)
+		text_evaluated = pattern.sub(text_evaluated, replace, true)
 
 	## ESCAPES
 	while true:
@@ -54,6 +62,7 @@ func _init(_raw: String, host: PennyHost) -> void:
 			continue
 		break
 
+	# print("DECOS: %s" % Deco.REGISTRY)
 
 	## TRANSLATE DECORATIONS TO BBCODE
 	text_with_bbcode = text_evaluated
@@ -62,13 +71,19 @@ func _init(_raw: String, host: PennyHost) -> void:
 		if pattern_match:
 			var start_tag := pattern_match.get_string(1)
 			var content := pattern_match.get_string(2)
-			var end_tag := pattern_match.get_string(3)
+			# var end_tag := pattern_match.get_string(3)
 
-			if end_tag.is_empty():
-				end_tag = start_tag
+			var deco_method_from_id := Deco.get_method_by_id(start_tag)
+			text_with_bbcode = substitute_entire_match(pattern_match, deco_method_from_id.call(self, start_tag, content))
 
-			text_with_bbcode = substitute_entire_match(pattern_match, "[%s]%s[/%s]" % [start_tag, content, end_tag])
-			continue
+			# if end_tag.is_empty():
+			# 	end_tag = start_tag
+
+			# if start_tag.is_empty():
+			# 	text_with_bbcode = substitute_entire_match(pattern_match, "%s" % content)
+			# else:
+			# 	text_with_bbcode = substitute_entire_match(pattern_match, "[%s]%s[/%s]" % [start_tag, content, end_tag])
+			# continue
 
 		break
 

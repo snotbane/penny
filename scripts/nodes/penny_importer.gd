@@ -147,18 +147,6 @@ func load_all_script_resources() -> Array[PennyScript]:
 		result.push_back(load(path))
 	return result
 
+
 static func get_all_paths(path: String = PNY_FILE_ROOT) -> Array[String]:
-	var result : Array[String] = []
-	var dir = DirAccess.open(path)
-	if dir:
-		dir.list_dir_begin()
-		var file_name = dir.get_next()
-		while file_name != "":
-			if dir.current_is_dir():
-				if ! PNY_FILE_OMIT.has(file_name):
-					result.append_array(get_all_paths(path + file_name + "/"))
-			else:
-				if file_name.ends_with(PENNY_FILE_EXT):
-					result.append(path + file_name)
-			file_name = dir.get_next()
-	return result
+	return Utils.get_paths_in_project(PENNY_FILE_EXT, PNY_FILE_OMIT)
