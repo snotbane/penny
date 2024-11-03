@@ -64,6 +64,10 @@ func _execute(host: PennyHost) -> Record:
 	var previous_dialog_node : PennyNode
 
 	var incoming_dialog : PennyObject = self.subject_dialog_path.evaluate(host.data_root)
+	if not incoming_dialog:
+		push_exception("Attempted to create dialog box for '%s', but no such object exists" % self.subject_dialog_path)
+		return create_record(host)
+
 	var incoming_dialog_node : PennyNode
 
 	var incoming_needs_creation : bool = true
@@ -126,5 +130,5 @@ func get_message(host: PennyHost) -> Message:
 
 func _create_history_listing(record: Record) -> HistoryListing:
 	var result := super._create_history_listing(record)
-	result.label.text = record.attachment.to_string()
+	result.label.text = str(record.attachment)
 	return result

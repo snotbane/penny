@@ -36,6 +36,8 @@ var call_stack : Array[Stmt_]
 var cursor : Stmt_
 var expecting_conditional : bool
 
+var is_skipping : bool
+
 
 ## Returns the object in data that has most recently sent a message.
 var last_dialog_object : PennyObject :
@@ -48,6 +50,19 @@ var last_dialog_object : PennyObject :
 
 func _init() -> void:
 	insts.push_back(self)
+
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("penny_skip"):
+		is_skipping = true
+	elif event.is_action_released("penny_skip"):
+		is_skipping = false
+
+
+func _physics_process(delta: float) -> void:
+	if is_skipping:
+		skip_process()
+
 
 func reload() -> void:
 	state = State.UNLOADED
@@ -91,6 +106,11 @@ func advance() -> void:
 		else:
 			return
 	invoke_at_cursor()
+
+
+func skip_process() -> void:
+	if records.back().stmt is StmtDialog:
+		advance()
 
 
 func close() -> void:

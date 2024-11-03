@@ -54,6 +54,8 @@ func get_value_for(context: PennyObject) -> Variant:
 		context = context.root
 	var result : Variant = context
 	for id in ids:
+		if not result:
+			return null
 		result = result.get_value(id)
 	return result
 
