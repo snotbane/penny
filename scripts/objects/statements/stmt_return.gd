@@ -36,7 +36,3 @@ func _execute(host: PennyHost) -> Record:
 
 func _next(record: Record) -> Stmt_:
 	return null
-
-
-func _message(record: Record) -> Message:
-	return super._message(record)

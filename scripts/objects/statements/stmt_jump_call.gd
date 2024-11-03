@@ -37,7 +37,3 @@ func _undo(record: Record) -> void:
 
 # func _next(record: Record) -> Stmt_:
 # 	return next_in_order
-
-
-func _message(record: Record) -> Message:
-	return super._message(record)

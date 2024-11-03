@@ -45,10 +45,6 @@ func _validate_self_post_setup() -> void:
 # 	return next_in_order
 
 
-func _message(record: Record) -> Message:
-	return super._message(record)
-
-
 func _get_default_subject() -> Path:
 	return Path.from_single(PennyObject.BILTIN_OBJECT_NAME)
 

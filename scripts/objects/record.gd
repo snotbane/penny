@@ -6,7 +6,6 @@ var host : PennyHost
 var halt : bool
 var stamp : int
 var stmt : Stmt_
-var message : Message
 var attachment : Variant
 
 var verbosity : int :
@@ -23,7 +22,6 @@ func _init(_host: PennyHost, _stmt: Stmt_, _halt: bool, _attachment: Variant = n
 	stmt = _stmt
 	halt = _halt
 	attachment = _attachment
-	message = stmt.message(self)
 
 func undo() -> void:
 	stmt.undo(self)

@@ -50,10 +50,6 @@ func _execute(host: PennyHost) -> Record:
 # 	return super._next(record)
 
 
-func _message(record: Record) -> Message:
-	return super._message(record)
-
-
 func _evaluate_self(host: PennyHost) -> Variant:
 	if not host.expecting_conditional:
 		return null

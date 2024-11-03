@@ -292,13 +292,6 @@ func _next(record: Record) -> Stmt_:
 	return next_in_order
 
 
-## Creates a message to be shown in the statement history or displayed to a dialogue box.
-func message(record: Record) -> Message: return _message(record)
-## Creates a message to be shown in the statement history or displayed to a dialogue box.
-func _message(record: Record) -> Message:
-	return Message.new(reconstructed_string)
-
-
 func _get_history_listing_scene() -> PackedScene :
 	return load("res://addons/penny_godot/scenes/history_listing_default.tscn")
 

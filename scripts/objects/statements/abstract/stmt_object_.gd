@@ -49,10 +49,11 @@ func _undo(record: Record) -> void:
 # 	return next_in_order
 
 
-func _message(record: Record) -> Message:
-	var result := Message.new("[color=#%s][code]%s[/code][/color]" % [Penny.IDENTIFIER_COLOR.to_html(), path])
+func _create_history_listing(record: Record) -> HistoryListing:
+	var result := super._create_history_listing(record)
+	result.label.text = "[color=#%s][code]%s[/code][/color]" % [Penny.IDENTIFIER_COLOR.to_html(), path]
 	if record.attachment:
-		result.append(" = %s" % record.attachment)
+		result.label.text += " = %s" % record.attachment
 	return result
 
 

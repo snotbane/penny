@@ -41,10 +41,6 @@ func _validate_self_post_setup() -> void:
 # 	return super._next(record)
 
 
-# func _message(record: Record) -> Message:
-	# return super._message(record)
-
-
 func _evaluate_self(host: PennyHost) -> Variant:
 	## May return TRUE, FALSE, or NULL
 	if host.expecting_conditional:

@@ -66,10 +66,6 @@ func _execute(host: PennyHost) -> Record:
 # 	return super._next(record)
 
 
-func _message(record: Record) -> Message:
-	return super._message(record)
-
-
 func _get_default_subject() -> Path:
 	return Path.from_single(PennyObject.BILTIN_PROMPT_NAME)
 

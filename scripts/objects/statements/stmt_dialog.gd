@@ -82,9 +82,11 @@ func _execute(host: PennyHost) -> Record:
 	else:
 		incoming_dialog_node = previous_dialog_node
 
+	var message = get_message(host)
+
 	if OS.is_debug_build():
 		if incoming_dialog_node is MessageHandler:
-			var result := create_record(host, incoming_dialog_node.halt_on_instantiate)
+			var result := create_record(host, incoming_dialog_node.halt_on_instantiate, message)
 			incoming_dialog_node.receive(result, subject_path.evaluate(host.data_root))
 			return result
 		elif incoming_dialog_node:
@@ -92,13 +94,13 @@ func _execute(host: PennyHost) -> Record:
 		else:
 			host.cursor.create_exception("Attempted to send a message to a node, but it wasn't created.").push()
 	else:
-		var result := create_record(host, incoming_dialog_node.halt_on_instantiate)
+		var result := create_record(host, incoming_dialog_node.halt_on_instantiate, message)
 		incoming_dialog_node.receive(result, subject_path.evaluate(host.data_root))
 		return result
-	return create_record(host)
+	return create_record(host, false, message)
 
 
-func _message(record: Record) -> Message:
+func get_message(host: PennyHost) -> Message:
 	var text : String = raw_text
 
 	var rx_whitespace = RegEx.create_from_string(REGEX_DEPTH_REMOVAL_PATTERN % nest_depth)
@@ -109,7 +111,7 @@ func _message(record: Record) -> Message:
 
 		var interp_expr_string := match.get_string(2) + match.get_string(3)	## ~= $2$3
 		var inter_expr := Expr.from_tokens(self, PennyScript.parse_tokens_from_raw(interp_expr_string))
-		var result = inter_expr.evaluate(record.host.data_root)
+		var result = inter_expr.evaluate(host.data_root)
 		var result_string : String
 		if result is PennyObject:
 			result_string = result.rich_name
@@ -120,3 +122,9 @@ func _message(record: Record) -> Message:
 
 	text = rx_whitespace.sub(text, "", true)
 	return Message.new(text)
+
+
+func _create_history_listing(record: Record) -> HistoryListing:
+	var result := super._create_history_listing(record)
+	result.label.text = record.attachment.to_string()
+	return result

@@ -55,15 +55,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 2
+current_tab = 0
 drag_to_rearrange_enabled = true
 tab_focus_mode = 1
 script = ExtResource("5_uv7g7")
 tab_icons = Array[Texture2D]([ExtResource("7_44hdu"), ExtResource("6_6v586"), ExtResource("8_506l5")])
 
 [node name="Data" type="Control" parent="margin_container/h_box_container/penny_runtime_dock/tab_container"]
-visible = false
 layout_mode = 2
+tooltip_text = "Check current state of objects, variables, and their values."
 metadata/_tab_index = 0
 
 [node name="vbox" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Data"]
@@ -162,6 +162,7 @@ flat = true
 [node name="Labels" type="Control" parent="margin_container/h_box_container/penny_runtime_dock/tab_container"]
 visible = false
 layout_mode = 2
+tooltip_text = "Navigation tools."
 metadata/_tab_index = 1
 
 [node name="v_box_container" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/Labels"]
@@ -208,7 +209,9 @@ size_flags_horizontal = 3
 text = "Call"
 
 [node name="History" type="Control" parent="margin_container/h_box_container/penny_runtime_dock/tab_container"]
+visible = false
 layout_mode = 2
+tooltip_text = "Detailed history view with customizable verbosity settings."
 metadata/_tab_index = 2
 
 [node name="v_box_container" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/tab_container/History"]

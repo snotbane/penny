@@ -38,7 +38,3 @@ func _validate_self_post_setup() -> void:
 
 # func _next(record: Record) -> Stmt_:
 # 	return next_in_order
-
-
-# func _message(record: Record) -> Message:
-# 	return super._message(record)

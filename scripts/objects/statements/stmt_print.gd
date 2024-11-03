@@ -41,5 +41,7 @@ func _execute(host: PennyHost) -> Record:
 # 	return next_in_order
 
 
-func _message(record: Record) -> Message:
-	return Message.new(record.attachment)
+func _create_history_listing(record: Record) -> HistoryListing:
+	var result := super._create_history_listing(record)
+	result.label.text = record.attachment
+	return result

@@ -41,6 +41,3 @@ func _execute(host: PennyHost) -> Record:
 
 # func _undo(record: Record) -> void:
 # 	pass
-
-func _message(record: Record) -> Message:
-	return super._message(record)

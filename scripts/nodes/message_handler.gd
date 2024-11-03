@@ -26,7 +26,7 @@ func _gui_input(event: InputEvent) -> void:
 
 func receive(record: Record, subject: PennyObject) -> void:
 	name_label.text = subject.rich_name
-	text_label.text = record.message.text
+	text_label.text = record.attachment.to_string()
 	received.emit()
 
 

@@ -24,10 +24,10 @@ var _verbosity : int
 	set (value):
 		if _verbosity == value: return
 		_verbosity = value
-		for i in controls:
-			i.refresh_visibility()
+		# for i in controls:
+		# 	i.refresh_visibility()
 
-var controls : Array[PennyMessageLabel]
+# var controls : Array[PennyMessageLabel]
 
 func _ready() -> void:
 	inst = self
@@ -37,16 +37,13 @@ func _ready() -> void:
 func receive(rec: Record) -> void:
 	var listing := rec.create_history_listing()
 	vbox.add_child(listing)
-	# var control := PennyMessageLabel.new()
-	# control.populate(rec)
-	# controls.push_back(control)
-	# vbox.add_child(control)
 
 func rewind_to(rec: Record) -> void:
-	while controls.size() > rec.stamp:
-		var control = controls.pop_back()
-		vbox.remove_child(control)
-		control.queue_free()
+	# while controls.size() > rec.stamp:
+	# 	var control = controls.pop_back()
+		# vbox.remove_child(control)
+		# control.queue_free()
+	pass
 
 
 func _on_record_created(record:Record) -> void:

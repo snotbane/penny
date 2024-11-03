@@ -52,14 +52,16 @@ func _next(record: Record) -> Stmt_:
 		return next_in_same_or_lower_depth
 
 
-func _message(record: Record) -> Message:
+func _create_history_listing(record: Record) -> HistoryListing:
+	var result := super._create_history_listing(record)
 	match record.attachment:
 		true:
-			return Message.new("%s [code][color=#%s]PASSED[/color][/code]" % [reconstructed_string, Penny.HAPPY_COLOR.to_html()])
+			result.label.text = "%s [code][color=#%s]PASSED[/color][/code]" % [reconstructed_string, Penny.HAPPY_COLOR.to_html()]
 		false:
-			return Message.new("%s [code][color=#%s]FAILED[/color][/code]" % [reconstructed_string, Penny.ANGRY_COLOR.to_html()])
+			result.label.text = "%s [code][color=#%s]FAILED[/color][/code]" % [reconstructed_string, Penny.ANGRY_COLOR.to_html()]
 		_:
-			return Message.new("[s]%s [code]SKIPPED[/code]" % reconstructed_string)
+			result.label.text = "[s]%s [code]SKIPPED[/code]" % reconstructed_string
+	return result
 
 
 func _evaluate_self(host: PennyHost) -> Variant: return null
