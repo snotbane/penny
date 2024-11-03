@@ -76,8 +76,6 @@ func _init(_raw: String, host: PennyHost) -> void:
 			var deco_method_from_id := Deco.get_method_by_id(start_tag)
 			text_with_bbcode = substitute_entire_match(pattern_match, deco_method_from_id.call(self, start_tag, content))
 
-			# if end_tag.is_empty():
-			# 	end_tag = start_tag
 
 			# if start_tag.is_empty():
 			# 	text_with_bbcode = substitute_entire_match(pattern_match, "%s" % content)

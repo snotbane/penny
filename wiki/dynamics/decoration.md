@@ -211,27 +211,21 @@ dec bik = k				# Use `k` as the proxy attribute.
 
 #### Custom Decorations
 
-This kind of user-defined decoration allows one to create custom functionality. All base decorations are of this kind and must be defined with the following attributes:
+This kind of user-defined decoration allows one to create custom functionality. This must be done in GDScript from within the engine. Use this template to begin:
 
-```pny
-dec i
-	scope = 1
-	init_start = 'italic_start'
-	init_end = 'italic_end'
+```gd
+extends Deco
+
+## Used to identify the decoration, for example "<new>"
+static func _get_id() -> String:
+	return "new"
+
+## Used to modify the message.
+static func _modify_message(message: Message, tag: String, content: String) -> String:
+	return content
 ```
 
-Decorations are defined with the following data:
 
--   `id : String` How to identify this decoration in a start tag.
--   `scope : int` Defines the scope.
-	-   `0` self-closing. Closes in the same start tag. Trying to close one later will issue a `TrailingEndTagWarning`.
-	-   `1` spanning. Closes explicitly after some length or at string end. Trying to self-close one will issue a `ZeroLengthDecorationWarning`.
-	-   `2` non-warning. Can be closed anywhere, does not generate warnings.
--   `sub_decorations : Dictionary` Defines any sub decorations to use and overridden values. Custom decorations cannot have any sub decorations. Only proxy decorations can use sub decorations.
--   `init_start` Method to execute when the start (or self-closing) tag is encountered during any string evaluation.
--   `init_end` Method to execute when the end tag (or self-closing, if scope == 2) is encountered during any string evaluation.
--   `print_start` Method to execute when the start (or self-closing) tag is encountered during Message Block printout.
--   `print_end` Method to execute when the end tag (or self-closing, if scope == 2) is encountered during Message Block printout.
 
 ### Decoration List
 
@@ -258,7 +252,7 @@ Decorations are defined with the following data:
 - From Ren'Py
 - Deprecated, no replacement.
 
-#### `b` or `bold` (bold, strong)
+#### `b` (bold, strong)
 
 - Used in both Ren'Py and bbcode
 - Creates a `[b]` bbcode tag.

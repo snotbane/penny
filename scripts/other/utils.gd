@@ -32,7 +32,6 @@ static func get_scripts_in_project(type: String, omit := DEFAULT_OMIT_FILE_SEARC
 	for path in paths:
 		var script : Script = load(path)
 		if Utils.script_extends_from(script, type):
-			print(path)
 			result.push_back(script)
 	return result
 
