@@ -26,9 +26,9 @@ static func _static_init() -> void:
 		Deco.REGISTRY[deco.penny_tag_id] = deco
 
 
-static func get_method_by_id(tag_id: StringName) -> Deco:
-	if REGISTRY.has(tag_id):
-		return REGISTRY[tag_id]
+static func get_template_by_penny_id(penny_id: StringName) -> Deco:
+	if REGISTRY.has(penny_id):
+		return REGISTRY[penny_id]
 	return REGISTRY[""]
 
 

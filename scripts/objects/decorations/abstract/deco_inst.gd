@@ -10,7 +10,7 @@ var args : Dictionary
 
 
 var template : Deco :
-	get: return Deco.get_method_by_id(id)
+	get: return Deco.get_template_by_penny_id(id)
 
 
 var bbcode_tag_start : String :
