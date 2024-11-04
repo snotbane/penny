@@ -8,8 +8,20 @@ static var ARG_PATTERN := RegEx.create_from_string("([^=\\s]+)\\s*=\\s*([^=\\s]+
 var id : StringName
 var args : Dictionary
 
-var method : Callable :
+
+var template : Deco :
 	get: return Deco.get_method_by_id(id)
+
+
+var bbcode_tag_start : String :
+	get:
+		if template.bbcode_tag_id.is_empty(): return String()
+		return "[%s]" % template._get_bbcode_start_tag(self)
+
+var bbcode_tag_end : String :
+	get:
+		if template.bbcode_tag_id.is_empty(): return String()
+		return "[/%s]" % template.bbcode_tag_id
 
 
 func _init(tag_string: String) -> void:
@@ -25,6 +37,13 @@ func _to_string() -> String:
 	return "<%s>" % result
 
 
-func invoke(message: Message) -> String:
-	return method.call(message, self)
+func invoke(message: Message) -> void:
+	template._invoke(message, self)
+
+
+func get_argument(key: StringName) -> Variant:
+	if not args.has(key):
+		PennyException.new("Trying to access an argument that doesn't exist.").push()
+		return "null"
+	return args[key]
 

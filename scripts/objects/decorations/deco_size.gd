@@ -1,19 +1,13 @@
 
 extends Deco
 
-
-func _get_id() -> String:
-	return "size"
-
-
-func _get_remapped_id() -> String:
-	return "font_size"
+func _get_penny_tag_id() -> StringName:
+	return StringName('size')
 
 
-func _modify_message(message: Message, tag: DecoInst) -> String:
-	return direct_deco_to_bbcode_tag_with_single_argument(tag)
+func _get_bbcode_tag_id() -> StringName:
+	return StringName('font_size')
 
 
-func _get_arguments() -> Dictionary : return {
-	"pt": null
-}
+func _get_bbcode_start_tag(inst: DecoInst) -> String:
+	return "%s=%s" % [self.bbcode_tag_id, inst.get_argument('pt')]

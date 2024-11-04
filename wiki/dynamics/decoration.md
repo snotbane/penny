@@ -1,62 +1,15 @@
 
 ## Decorations
 
-Use a **Decoration** to modify the formatting of a Message Block or have it take on unique properties. Decorations are defined using a `<start>` tag and an `</end>` tag like so:
+Use a **Decoration** to modify the formatting of a Message Block or have it take on unique properties. Decorations are defined using a `<start>` tag and an `</>` tag like so:
 
 ```pny
-`Hello, my name is <i>Rubin</i>, it's nice to meet you.`
+`Hello, my name is <i>Rubin</>, it's nice to meet you.`
 ```
 > Hello, my name is _Rubin_, it's nice to meet you.
 
-Or they can be _implicitly terminated_ using an auto-terminator `</>`:
-
-```pny
-`Hello, my name is <i>Rubin</>, it's nice to meet you.`
-```
-> Hello, my name is _Rubin_, it's nice to meet you. _(Same result)_
-
-An end tag is not necessary but may cause unintended side-effects (_especially_ if the decoration is part of an Eval):
-
-```pny
-`Hello, my name is <i>Rubin, it's nice to meet you.`
-```
-
-> Hello, my name is _Rubin, it's nice to meet you._
-
-> [!NOTE]
-> Some decorations can trigger an execution or act as a "pseudo-ject", such as `<va>`, which triggers a sound effect. Normally a sound is played by using a Ject like `{ sfx 'sound.ogg' }`.
-
 > [!WARNING]
-> Using a decoration that does not exist or placing parameters out of order is likely to issue a [`UndefinedDecorationWarning`](#missingdecorationwarning) or similar.
-
-### Parameters
-
-#### Zero-Parameter Decors
-
-Many decors do not have any parameters. Very simple.
-
-```pny
-`Hello, my name is <i>Rubin</>, it's nice to meet you.`
-```
-#### Single-Parameter Decors
-
-Many decors have exactly one attribute. These can be changed by setting them inside the start tag. Also very simple.
-
-```pny
-`Hello, my name is <color=#ff4128>Rubin</>.`
-```
-
-#### Multi-Parameter Decors
-
-Some decorations contain multiple attributes that are set by placing whitespace in between each identifier.
-
-```pny
-`<wave a=10 p=2 s=5>Hello, world.</>`
-```
-
-#### Parameter Defaults
-
-You can set the default values for decoration parameters. See [Custom Decorations](#custom-decorations)
+> Decorations must be closed with a generic auto-terminator. They cannot be closed with an explicit terminator (e.g. `</i>`). They CAN be left unclosed (closed by the end of the string)
 
 ### Combining Multiple Decorations
 
@@ -70,7 +23,7 @@ Multiple decorations may be combined into one set of tags. They'll be applied in
 > [!TIP] Decorations Best Practice
 > It is best practice to apply decorations in this way — use a single start tag to list all decors, and close it with a single auto-terminator tag.
 
-However, multiple decorations may be applied or unapplied explicitly. Decorations may also overlap.
+<!-- However, multiple decorations may be applied or unapplied explicitly. Decorations may also overlap.
 
 ```pny
 `<i, b>Hello, my name is Rubin,</b> it's nice to meet you.`
@@ -82,9 +35,9 @@ However, multiple decorations may be applied or unapplied explicitly. Decoration
 > <i><b>Hello, my name is Rubin,</b> it's nice to meet you.</i><br>
 > <i>Hello, my name is <b>Rubin,</i> it's nice to meet you.</b><br>
 > <i>Hello, my name is <b>Rubin,</b></i> it's nice to meet you.<br>
-> <i><b>Hello, my name is <u>Rubin,</u></b> it's nice to meet you.</i>
+> <i><b>Hello, my name is <u>Rubin,</u></b> it's nice to meet you.</i> -->
 
-### Custom Decorations
+<!-- ### Custom Decorations
 
 You can consolidate multiple decorations into one and add custom functionality for the start and end tags.
 
@@ -119,8 +72,24 @@ wave = decor
 ```pny
 d = decor
 	value = 0.5
-```
+``` -->
 
+### Custom Decorations
+
+This kind of user-defined decoration allows one to create custom functionality. This must be done in GDScript from within the engine. Use this template to begin:
+
+```gd
+extends Deco
+
+func _get_penny_tag_id() -> StringName:
+	return StringName('')
+
+func _get_bbcode_tag_id() -> StringName:
+	return super._get_bbcode_tag_id()
+
+func _invoke(message: Message, tag: DecoInst) -> void:
+	pass
+```
 
 
 
@@ -131,8 +100,8 @@ d = decor
 Using an auto-terminator tag will terminate the most recent open decoration. It will unapply the decorations in reverse order.
 
 ```pny
-`<i>Hello, my name is <b>Rubin,</> it's nice to meet you.`
-`<i>Hello, my name is <u, b>Rubin,</> it's nice to meet you.`
+`<i>Hello, my name is <b>Rubin,</> it's nice to meet you.</>`
+`<i>Hello, my name is <u, b>Rubin,</> it's nice to meet you.</>`
 ```
 
 > <i>Hello, my name is <b>Rubin,</b> it's nice to meet you.</i><br><i>Hello, my name is <b><u>Rubin,</u></b> it's nice to meet you.</i>
@@ -142,21 +111,17 @@ Using an auto-terminator tag will terminate the most recent open decoration. It 
 Empty start tags are valid but are completely vestigial and are basically only used as placeholders:
 
 ```pny
-`<i>Hello, my name is <>Rubin,</> it's nice to meet you.`
-`<i>Hello, my name is Rubin,</> it's nice to meet you.`
+`<i>Hello, my name is <>Rubin,</> it's nice to meet you.</>`
 ```
 
-> <i>Hello, my name is Rubin, it's nice to meet you.</i><br>
-> <i>Hello, my name is Rubin,</i> it's nice to meet you.
+> <i>Hello, my name is Rubin, it's nice to meet you.</i>
 
 #### Self-Closing Decorations
 
 Some decorations are self-closing.
 
 ```pny
-`Hello, <d=0.5/>world.`		# Valid
-`Hello, <d=0.5>world.`		# Valid
-`Hello, <d=0.5>world.</>`	# Issues warning for trailing end tag
+`Hello, <delay seconds=0.5>world.`
 ```
 
 Self-closing decorations may be combined with non-self-closing decorations (and will be treated like it closes there).
@@ -164,68 +129,6 @@ Self-closing decorations may be combined with non-self-closing decorations (and 
 ```pny
 `Hello, <d=0.5, i>world.</>`
 ```
-
-Non-self-closing decorations may be self-closed, but this will issue a warning.
-
-```pny
-`Hello, <d=0.5, i/>world.`	# Issues warning for self-closed `<i/>`
-```
-
-### User-Defined Decorations
-
-#### Proxy Decorations
-
-This kind of user-defined decoration allows one to use multiple decorations at once using the `proxy` statement. This will create a new decoration that can be accessed in any string.
-
-```pny
-dec heavy
-	b
-	i
-
-`<heavy>Hello, world.</>`
-```
-
-> <b><i>Hello, world.</b></i>
-
-One may set the default values for attributes in the decoration definition. These can then be overridden in a string later.
-
-```pny
-slow = decor
-	b; i; speed = 10			# Set the default value for `slow.speed`
-
-`<slow>Hello, world.</>`
-`<slow speed=2>Hello, world.</>`
-```
-
-> <b><i>Hello, world.</b></i> _(Printed at 10 chars per second)_<br>
-> <b><i>Hello, world.</b></i> _(Printed at 2 chars per second)_
-
-```pny
-dec bik = k				# Use `k` as the proxy attribute.
-	b; i; k = 2.0			# Set the default for `k`
-
-`<bik=10>Hello, world.</>`	# Setting `bik` will actually set `k`.
-```
-
-> <b><i>H e l l o , w o r l d .</b></i>
-
-#### Custom Decorations
-
-This kind of user-defined decoration allows one to create custom functionality. This must be done in GDScript from within the engine. Use this template to begin:
-
-```gd
-extends Deco
-
-## Used to identify the decoration, for example "<new>"
-static func _get_id() -> String:
-	return "new"
-
-## Used to modify the message.
-static func _modify_message(message: Message, tag: DecoInst, content: String) -> String:
-	return content
-```
-
-
 
 ### Decoration List
 

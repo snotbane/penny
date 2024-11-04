@@ -2,9 +2,17 @@
 extends Deco
 
 
-func _get_id() -> String:
-	return ""
+func _get_penny_tag_id() -> StringName:
+	return StringName('')
 
 
-func _modify_message(message: Message, tag: DecoInst) -> String:
-	return direct_deco_to_bbcode_tags(tag)
+func _get_bbcode_tag_id() -> StringName:
+	return super._get_bbcode_tag_id()
+
+
+func _get_bbcode_start_tag(inst: DecoInst) -> String:
+	return super._get_bbcode_start_tag(inst)
+
+
+func _invoke(message: Message, tag: DecoInst) -> void:
+	pass
