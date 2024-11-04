@@ -15,23 +15,39 @@ static func _static_init() -> void:
 		Deco.REGISTRY[deco._get_id()] = deco._modify_message
 
 
-static func _get_id() -> String:
+func _get_id() -> String:
 	return "_"
 
 
-static func _modify_message(message: Message, tag: String, content: String) -> String:
-	return content
+func _get_remapped_id() -> String:
+	return self._get_id()
 
 
-static func _keep_message(message: Message, tag: String, content: String) -> String:
-	return "<%s>%s</%s>" % [tag, content, tag]
+func _modify_message(message: Message, tag: DecoInst) -> String:
+	return "%s"
 
 
-static func direct_deco_to_bbcode_tags(message: Message, tag: String, content: String) -> String:
-	return "[%s]%s[/%s]" % [tag, content, tag]
+func _get_is_self_closing() -> bool:
+	return false
+
+
+static func _keep_message(message: Message, tag: DecoInst) -> String:
+	return "<%s>%s</%s>" % [tag, "%s", tag.id]
+
+
+func _get_arguments() -> Dictionary : return {}
+
+
+func direct_deco_to_bbcode_tags(tag: DecoInst) -> String:
+	return "[%s]%s[/%s]" % [_get_remapped_id(), "%s", _get_remapped_id()]
+
+
+func direct_deco_to_bbcode_tag_with_single_argument(tag: DecoInst) -> String:
+	return "[%s=%s]%s[/%s]" % [_get_remapped_id(), tag.args[tag.args.keys()[0]], "%s", _get_remapped_id()]
 
 
 static func get_method_by_id(tag_id: String) -> Callable:
 	if REGISTRY.has(tag_id):
 		return REGISTRY[tag_id]
 	return _keep_message
+

@@ -14,7 +14,7 @@ var text_stripped : String :
 		var result : String = raw_text
 		# result = Message.REGEX_INTERPOLATION.sub(result, "$1", true)
 		result = Message.INTERJECTION_PATTERN.sub(result, "", true)
-		result = Message.DECORATION_PATTERN.sub(result, "", true)
+		result = Message.DECO_TAG_PATTERN.sub(result, "", true)
 		return result
 
 var word_count : int :

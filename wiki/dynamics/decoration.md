@@ -221,7 +221,7 @@ static func _get_id() -> String:
 	return "new"
 
 ## Used to modify the message.
-static func _modify_message(message: Message, tag: String, content: String) -> String:
+static func _modify_message(message: Message, tag: DecoInst, content: String) -> String:
 	return content
 ```
 

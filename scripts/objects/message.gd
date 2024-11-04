@@ -4,8 +4,8 @@ class_name Message extends RefCounted
 
 static var INTERPOLATION_PATTERN := RegEx.create_from_string("(@([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)|\\[(.*?)\\])")
 static var INTERJECTION_PATTERN := RegEx.create_from_string("(\\{.*?\\})")
-static var DECORATION_PATTERN := RegEx.create_from_string("(<.*?>)")
-static var DECORATION_FULL_PATTERN := RegEx.create_from_string("(?s)<(.*?)>(.*?)(?:(?:<\\/(.*?)>)|$)")
+static var DECO_TAG_PATTERN := RegEx.create_from_string("(<.*?>)")
+static var DECO_SPAN_PATTERN := RegEx.create_from_string("(?s)<(.*?)>(.*)(?:<\\/>)")
 
 static var ESCAPE_PATTERN := RegEx.create_from_string("\\\\(.)")
 static var ESCAPE_SUBSITUTIONS := {
@@ -49,7 +49,25 @@ func _init(_raw: String, host: PennyHost) -> void:
 		var filter : PennyObject = filter_path.evaluate(host.data_root)
 		var pattern := RegEx.create_from_string(filter.get_value(PennyObject.FILTER_PATTERN_KEY))
 		var replace : String = filter.get_value(PennyObject.FILTER_REPLACE_KEY)
-		text_evaluated = pattern.sub(text_evaluated, replace, true)
+
+
+		var start := 0
+		while true:
+			var match := pattern.search(text_evaluated, start)
+			if not match: break
+
+			var tag_match_found := false
+			var tag_matches := DECO_TAG_PATTERN.search_all(text_evaluated, start)
+			for tag_match in tag_matches:
+				if match.get_start() >= tag_match.get_start() and match.get_start() < tag_match.get_end():
+					start = tag_match.get_end()
+					tag_match_found = true
+					break
+			if tag_match_found:
+				continue
+
+			text_evaluated = pattern.sub(text_evaluated, replace, false, start)
+			start = match.get_end()
 
 	## ESCAPES
 	while true:
@@ -62,27 +80,20 @@ func _init(_raw: String, host: PennyHost) -> void:
 			continue
 		break
 
-	# print("DECOS: %s" % Deco.REGISTRY)
-
 	## TRANSLATE DECORATIONS TO BBCODE
 	text_with_bbcode = text_evaluated
 	while true:
-		var pattern_match := DECORATION_FULL_PATTERN.search(text_with_bbcode)
+		var pattern_match := DECO_SPAN_PATTERN.search(text_with_bbcode)
 		if pattern_match:
-			var start_tag := pattern_match.get_string(1)
-			var content := pattern_match.get_string(2)
-			# var end_tag := pattern_match.get_string(3)
-
-			var deco_method_from_id := Deco.get_method_by_id(start_tag)
-			text_with_bbcode = substitute_entire_match(pattern_match, deco_method_from_id.call(self, start_tag, content))
-
-
-			# if start_tag.is_empty():
-			# 	text_with_bbcode = substitute_entire_match(pattern_match, "%s" % content)
-			# else:
-			# 	text_with_bbcode = substitute_entire_match(pattern_match, "[%s]%s[/%s]" % [start_tag, content, end_tag])
-			# continue
-
+			var tags := pattern_match.get_string(1).split(",", false)
+			tags.reverse()
+			var tag_wrapper := "%s"
+			for tag in tags:
+				var deco_inst := DecoInst.new(tag)
+				print(deco_inst)
+				tag_wrapper = deco_inst.invoke(self) % tag_wrapper
+			text_with_bbcode = substitute_entire_match(pattern_match, tag_wrapper % pattern_match.get_string(2))
+			continue
 		break
 
 	text_with_bbcode = "[p align=fill jst=w,k,sl]" + text_with_bbcode
