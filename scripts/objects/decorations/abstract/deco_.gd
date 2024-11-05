@@ -29,7 +29,7 @@ static func _static_init() -> void:
 static func get_template_by_penny_id(penny_id: StringName) -> Deco:
 	if REGISTRY.has(penny_id):
 		return REGISTRY[penny_id]
-	return REGISTRY[""]
+	return REGISTRY["invalid"]
 
 
 ## Whether or not this tag makes use of an end tag ("</>")
@@ -53,7 +53,11 @@ func _get_bbcode_start_tag(inst: DecoInst) -> String:
 
 
 ## Extra functionality used to modify the message data.
-func _invoke(message: Message, tag: DecoInst) -> void:
+func _on_register_start(message: Message, tag: DecoInst) -> void:
+	pass
+
+
+func _on_register_end(message: Message, tag: DecoInst) -> void:
 	pass
 
 

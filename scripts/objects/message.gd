@@ -4,11 +4,11 @@ class_name Message extends RefCounted
 
 static var INTERPOLATION_PATTERN := RegEx.create_from_string("(@([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)|\\[(.*?)\\])")
 static var INTERJECTION_PATTERN := RegEx.create_from_string("(\\{.*?\\})")
-static var DECO_TAG_PATTERN := RegEx.create_from_string("(<.*?>)")
+static var DECO_TAG_PATTERN := RegEx.create_from_string("<(.*?)>")
 static var DECO_SPAN_PATTERN := RegEx.create_from_string("(?s)<(.*?)>(.*)(?:<\\/>)")
 
 static var DECO_START_TAG_PATTERN := RegEx.create_from_string("<>|<([^/].*?)>")
-static var DECO_END_TAG_PATTERN := RegEx.create_from_string("(</>)|$")
+static var DECO_END_TAG_PATTERN := RegEx.create_from_string("$|<\\/>")
 
 static var ESCAPE_PATTERN := RegEx.create_from_string("\\\\(.)")
 static var ESCAPE_SUBSITUTIONS := {
@@ -43,7 +43,7 @@ func _init(_raw: String, host: PennyHost) -> void:
 		else:
 			result_string = str(result)
 
-		text_evaluated = substitute_entire_match(pattern_match, result_string)
+		text_evaluated = sub_match(pattern_match, result_string)
 
 	## FILTERS
 	var filters : Array = host.data_root.get_value(PennyObject.FILTERS_KEY)
@@ -76,48 +76,53 @@ func _init(_raw: String, host: PennyHost) -> void:
 		if not pattern_match: break
 
 		if ESCAPE_SUBSITUTIONS.has(pattern_match.get_string(1)):
-			text_evaluated = substitute_entire_match(pattern_match, ESCAPE_SUBSITUTIONS[pattern_match.get_string(1)])
+			text_evaluated = sub_match(pattern_match, ESCAPE_SUBSITUTIONS[pattern_match.get_string(1)])
 		else:
-			text_evaluated = substitute_entire_match(pattern_match, pattern_match.get_string(1))
+			text_evaluated = sub_match(pattern_match, pattern_match.get_string(1))
 
 	## TRANSLATE DECORATIONS TO BBCODE
 	text_with_bbcode = text_evaluated
+
+	var tags_needing_end_stack : Array[int]
+	var deco_stack : Array[DecoInst]
 	while true:
-		var start_tag_match := DECO_START_TAG_PATTERN.search(text_with_bbcode)
-		if not start_tag_match:
-			DECO_END_TAG_PATTERN.sub(text_with_bbcode, "", true)
-			break
-
-		var bbcode_start_tag_string := ""
-		var tags := start_tag_match.get_string(1).split(",", false)
-		var decos_needing_end : Array[DecoInst]
-		for tag in tags:
-			var deco_inst := DecoInst.new(tag)
-			if deco_inst.template.requires_end_tag:
-				decos_needing_end.push_back(deco_inst)
-			deco_inst.invoke(self)
-			bbcode_start_tag_string += deco_inst.bbcode_tag_start
-		text_with_bbcode = DECO_START_TAG_PATTERN.sub(text_with_bbcode, bbcode_start_tag_string)
-
-		var bbcode_end_tag_string := ""
-		decos_needing_end.reverse()
-		for deco_inst in decos_needing_end:
-			bbcode_end_tag_string += deco_inst.bbcode_tag_end
-
-		var end_tag_match := get_start_tag_corresponding_end_tag_match(start_tag_match, text_with_bbcode)
-		text_with_bbcode = substitute_entire_match(end_tag_match, bbcode_end_tag_string)
+		var tag_match := DECO_TAG_PATTERN.search(text_with_bbcode)
+		if not tag_match: break
+		print(tag_match.get_string())
+		if tag_match.get_string() == "</>":
+			if not tags_needing_end_stack:
+				text_with_bbcode = sub_match(tag_match, "")
+				continue
+			var start_tag_deco_count : int = tags_needing_end_stack.pop_back()
+			var bbcode_end_tags_string := ""
+			while start_tag_deco_count > 0:
+				var deco : DecoInst = deco_stack.pop_back()
+				deco.register_end(self)
+				bbcode_end_tags_string += deco.bbcode_tag_end
+				start_tag_deco_count -= 1
+			text_with_bbcode = sub_match(tag_match, bbcode_end_tags_string)
+		else:
+			var bbcode_start_tags_string := ""
+			tags_needing_end_stack.push_back(0)
+			var deco_strings := tag_match.get_string(1).split(",", false)
+			for deco_string in deco_strings:
+				var deco := DecoInst.new(deco_string)
+				deco.register_start(self)
+				bbcode_start_tags_string += deco.bbcode_tag_start
+				if deco.template.requires_end_tag:
+					deco_stack.push_back(deco)
+					tags_needing_end_stack.push_back(tags_needing_end_stack.pop_back() + 1)
+			if tags_needing_end_stack.back() == 0:
+				tags_needing_end_stack.pop_back()
+			text_with_bbcode = sub_match(tag_match, bbcode_start_tags_string)
+	while deco_stack:
+		var deco : DecoInst = deco_stack.pop_back()
+		deco.register_end(self)
+		text_with_bbcode += deco.bbcode_tag_end
 
 	text_with_bbcode = "[p align=fill jst=w,k,sl]" + text_with_bbcode
 
-
-static func get_start_tag_corresponding_end_tag_match(start_tag_match: RegExMatch, source: String) -> RegExMatch:
-	var remaining_start_tags := DECO_START_TAG_PATTERN.search_all(source, start_tag_match.get_end())
-	var remaining_end_tags := DECO_END_TAG_PATTERN.search_all(source, start_tag_match.get_end())
-	var diff := remaining_end_tags.size() - remaining_start_tags.size()
-	return remaining_end_tags[remaining_end_tags.size() - (diff + 1)]
-
-
-static func substitute_entire_match(match: RegExMatch, sub: String) -> String:
+static func sub_match(match: RegExMatch, sub: String) -> String:
 	return match.subject.substr(0, match.get_start()) + sub + match.subject.substr(match.get_end(), match.subject.length() - match.get_end())
 
 

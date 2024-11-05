@@ -14,5 +14,5 @@ func _get_bbcode_start_tag(inst: DecoInst) -> String:
 	return super._get_bbcode_start_tag(inst)
 
 
-func _invoke(message: Message, tag: DecoInst) -> void:
+func _on_register_start(message: Message, tag: DecoInst) -> void:
 	pass

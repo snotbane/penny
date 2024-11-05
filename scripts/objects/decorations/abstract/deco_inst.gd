@@ -20,15 +20,20 @@ var bbcode_tag_start : String :
 
 var bbcode_tag_end : String :
 	get:
-		if template.bbcode_tag_id.is_empty(): return String()
+		if not template.requires_end_tag or template.bbcode_tag_id.is_empty(): return String()
 		return "[/%s]" % template.bbcode_tag_id
 
 
-func _init(tag_string: String) -> void:
-	id = ID_PATTERN.search(tag_string).get_string(1)
-	var matches := ARG_PATTERN.search_all(tag_string)
-	for match in matches:
-		args[StringName(match.get_string(1))] = match.get_string(2)
+func _init(string: String) -> void:
+	var arg_matches := ARG_PATTERN.search_all(string)
+	for arg_match in arg_matches:
+		args[StringName(arg_match.get_string(1))] = arg_match.get_string(2)
+	var id_match := ID_PATTERN.search(string)
+	if id_match:
+		id = id_match.get_string(1)
+	else:
+		id = args.keys()[0]
+
 
 func _to_string() -> String:
 	var result := id
@@ -37,8 +42,12 @@ func _to_string() -> String:
 	return "<%s>" % result
 
 
-func invoke(message: Message) -> void:
-	template._invoke(message, self)
+func register_start(message: Message) -> void:
+	template._on_register_start(message, self)
+
+
+func register_end(message: Message) -> void:
+	template._on_register_end(message, self)
 
 
 func get_argument(key: StringName) -> Variant:
