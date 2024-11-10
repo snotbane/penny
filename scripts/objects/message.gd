@@ -88,7 +88,6 @@ func _init(_raw: String, host: PennyHost) -> void:
 	while true:
 		var tag_match := DECO_TAG_PATTERN.search(text_with_bbcode)
 		if not tag_match: break
-		print(tag_match.get_string())
 		if tag_match.get_string() == "</>":
 			if not tags_needing_end_stack:
 				text_with_bbcode = sub_match(tag_match, "")

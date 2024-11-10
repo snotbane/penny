@@ -49,7 +49,8 @@ func _ready() -> void:
 
 
 func setup() -> void:
-	debug.host.on_data_modified.connect(refresh)
+	if debug.host:
+		debug.host.on_data_modified.connect(refresh)
 
 
 func refresh() -> void:
@@ -58,8 +59,7 @@ func refresh() -> void:
 	if debug.host:
 		root = debug.host.data_root.create_tree_item(self, sort_method)
 		root.set_text(0, "root")
-
-	refresh_search()
+		refresh_search()
 
 
 func refresh_search() -> void:

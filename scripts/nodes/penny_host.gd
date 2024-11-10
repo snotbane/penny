@@ -3,6 +3,7 @@
 class_name PennyHost extends Node
 
 enum State {
+	INVALID,
 	UNLOADED,
 	INITING,
 	READY
@@ -21,13 +22,15 @@ signal on_record_created(record: Record)
 
 @export_subgroup("Flow")
 
-## If populated, this host will start at this label on ready. Leave empty to wait for manual invocation.
-@export var autostart_label := StringName()
+## If enabled, the host will begin execution on ready.
+@export var autostart := false
+
+## The label in Penny scripts to start at. Make sure this is populated with a valid label.
+@export var start_label := StringName('start')
 
 static var insts : Array[PennyHost] = []
 
 var state := State.UNLOADED
-
 var data_root := PennyObject.STATIC_ROOT
 
 var records : Array[Record]
@@ -37,7 +40,6 @@ var cursor : Stmt_
 var expecting_conditional : bool
 
 var is_skipping : bool
-
 
 ## Returns the object in data that has most recently sent a message.
 var last_dialog_object : PennyObject :
@@ -73,9 +75,14 @@ func reload() -> void:
 		cursor = init
 		invoke_at_cursor()
 
+	cursor = Penny.get_stmt_from_label(start_label)
+	if not cursor:
+		state = State.INVALID
+		return
+
 	state = State.READY
-	if not autostart_label.is_empty():
-		jump_to.call_deferred(autostart_label)
+	if autostart:
+		invoke_at_cursor()
 
 
 func _exit_tree() -> void:
@@ -99,6 +106,7 @@ func invoke_at_cursor() -> void:
 
 
 func advance() -> void:
+	if cursor == null: return
 	cursor = records.back().next()
 	if cursor == null:
 		if call_stack:

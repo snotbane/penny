@@ -12,7 +12,7 @@ func _init() -> void:
 
 
 func update_from_file(file: FileAccess) -> void:
-	var tokens := parse_tokens_from_raw(file.get_as_text(true))
+	var tokens := parse_tokens_from_raw(file.get_as_text(true), file)
 	parse_and_register_stmts(tokens, file)
 
 	for stmt in stmts:

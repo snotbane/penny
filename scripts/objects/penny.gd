@@ -89,7 +89,9 @@ static func log_clear() -> void:
 
 
 static func log_timed(s: String, c: Color = DEFAULT_COLOR) -> void:
-	Penny.log("[%s] %s" % [get_formatted_time(), s], c)
+	var full_message := "[%s] %s" % [get_formatted_time(), s]
+	Penny.log(full_message, c)
+	print(full_message)
 
 
 static func log_info() -> void:

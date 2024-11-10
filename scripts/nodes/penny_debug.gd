@@ -7,7 +7,8 @@ var host : PennyHost
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	inst = self
-	host = PennyHost.insts[0]
+	if PennyHost.insts:
+		host = PennyHost.insts[0]
 
 	if OS.is_debug_build():
 		visible = false
