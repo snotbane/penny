@@ -3,7 +3,6 @@
 class_name PennyHost extends Node
 
 enum State {
-	INVALID,
 	UNLOADED,
 	INITING,
 	READY
@@ -50,8 +49,17 @@ var last_dialog_object : PennyObject :
 				return record.stmt.subject_dialog_path.evaluate(self.data_root)
 		return null
 
+var valid : bool :
+	get: return Penny.valid and cursor != null
+
 func _init() -> void:
 	insts.push_back(self)
+
+
+func _ready() -> void:
+	reload()
+	if autostart and self.valid:
+		invoke_at_cursor()
 
 
 func _input(event: InputEvent) -> void:
@@ -77,12 +85,10 @@ func reload() -> void:
 
 	cursor = Penny.get_stmt_from_label(start_label)
 	if not cursor:
-		state = State.INVALID
+		state = State.UNLOADED
 		return
 
 	state = State.READY
-	if autostart:
-		invoke_at_cursor()
 
 
 func _exit_tree() -> void:
@@ -106,12 +112,13 @@ func invoke_at_cursor() -> void:
 
 
 func advance() -> void:
-	if cursor == null: return
+	if not self.valid: return
 	cursor = records.back().next()
 	if cursor == null:
 		if call_stack:
 			cursor = call_stack.pop_back()
 		else:
+			on_reach_end()
 			return
 	invoke_at_cursor()
 
@@ -119,6 +126,12 @@ func advance() -> void:
 func skip_process() -> void:
 	if records.back().stmt is StmtDialog:
 		advance()
+
+
+func on_reach_end() -> void:
+	match state:
+		State.READY:
+			close()
 
 
 func close() -> void:

@@ -73,10 +73,10 @@ horizontal_alignment = 1
 [node name="v_box_container" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_selector"]
 layout_mode = 2
 
-[node name="refresh" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/host_selector/v_box_container"]
+[node name="label" type="Label" parent="margin_container/h_box_container/penny_runtime_dock/host_selector/v_box_container"]
 layout_mode = 2
-text = "Refresh
-"
+text = "Select a PennyHost to view it."
+horizontal_alignment = 1
 
 [node name="host_list" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_selector/v_box_container"]
 layout_mode = 2
@@ -322,7 +322,7 @@ tooltip_text = "Back to PennyHost list"
 icon = ExtResource("15_mpfsm")
 flat = true
 
-[connection signal="pressed" from="margin_container/h_box_container/penny_runtime_dock/host_selector/v_box_container/refresh" to="margin_container/h_box_container/penny_runtime_dock/host_selector" method="refresh"]
+[connection signal="visibility_changed" from="." to="margin_container/h_box_container/penny_runtime_dock/host_selector" method="refresh"]
 [connection signal="visibility_changed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="refresh"]
 [connection signal="toggled" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_values_toggle" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="_on_search_values_toggle_toggled"]
 [connection signal="text_changed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_bar" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="_on_search_bar_text_changed"]

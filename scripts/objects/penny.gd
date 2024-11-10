@@ -3,6 +3,7 @@
 @tool
 class_name Penny extends Object
 
+
 const DEFAULT_COLOR = Color.LIGHT_GRAY
 const IDENTIFIER_COLOR = Color.PERU
 const FUTURE_COLOR = Color.DODGER_BLUE
@@ -15,7 +16,6 @@ static var scripts : Array[PennyScript]
 static var labels : Dictionary			## StringName : Stmt_
 static var inits : Array[StmtInit]
 static var valid : bool = true
-static var clean : bool = true
 
 static var active_dock : PennyDock:
 	get:
@@ -33,34 +33,22 @@ static func clear_all() -> void:
 static func import_scripts(_scripts: Array[PennyScript]) -> void:
 	scripts = _scripts
 
-	clean = false
-
 
 static func validate() -> Array[PennyException]:
 	var result : Array[PennyException] = []
 
 	labels.clear()
 
-	# var i := -1
-
-	# var j : int
 	for script in scripts:
-		# i += 1
-		# j = -1
 		for stmt in script.stmts:
-			# j += 1
-			# stmt.address = Stmt_.Address.new(i, j)
 			var e := stmt.validate_cross()
 			if e:
 				result.push_back(e)
-
 	return result
 
 
 static func load() -> void:
 	inits.sort_custom(stmt_init_sort)
-	for host in PennyHost.insts:
-		host.reload()
 
 
 static func get_stmt_from_label(label: StringName) -> Stmt_:
