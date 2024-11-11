@@ -33,14 +33,14 @@ func _execute(host: PennyHost) -> Record:
 # 	pass
 
 
-func _next(record: Record) -> Stmt_:
+func _next(record: Record) -> Stmt:
 	if record.attachment == null:
 		record.host.expecting_conditional = false
 		return next_in_same_or_lower_depth
 
 	var skip := _should_skip(record)
 
-	var result : Stmt_
+	var result : Stmt
 	if skip: 	result = next_in_same_depth
 	else:		result = next_in_order
 

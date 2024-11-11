@@ -1,5 +1,5 @@
 
-class_name StmtPrint extends Stmt_
+class_name StmtPrint extends Stmt
 
 # func _init() -> void:
 # 	pass
@@ -37,7 +37,7 @@ func _execute(host: PennyHost) -> Record:
 # 	pass
 
 
-# func _next(record: Record) -> Stmt_:
+# func _next(record: Record) -> Stmt:
 # 	return next_in_order
 
 

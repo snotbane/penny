@@ -1,6 +1,6 @@
 
 ## No description
-class_name StmtInit extends Stmt_
+class_name StmtInit extends Stmt
 
 var order := 0
 
@@ -36,7 +36,7 @@ func _validate_cross() -> PennyException:
 func _execute(host: PennyHost) -> Record:
 	return super._execute(host)
 
-# func _next(record: Record) -> Stmt_:
+# func _next(record: Record) -> Stmt:
 # 	return next_in_order
 
 # func _undo(record: Record) -> void:

@@ -1,6 +1,6 @@
 
 ## Statement that interacts with a PennyObject and its Node instance via the supplied Path.
-class_name StmtNode_ extends Stmt_
+class_name StmtNode_ extends Stmt
 
 var subject_path : Path
 
@@ -41,7 +41,7 @@ func _validate_self_post_setup() -> void:
 # 		record.attachment.queue_free()
 
 
-# func _next(record: Record) -> Stmt_:
+# func _next(record: Record) -> Stmt:
 # 	return next_in_order
 
 

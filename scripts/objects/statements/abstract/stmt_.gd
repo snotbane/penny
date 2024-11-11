@@ -1,6 +1,6 @@
 
 @tool
-class_name Stmt_ extends RefCounted
+class_name Stmt extends RefCounted
 
 enum Verbosity {
 	NONE = 0,
@@ -46,7 +46,7 @@ var depth_string : String :
 	get: return "dp %s" % nest_depth
 
 
-var next_in_order : Stmt_ :
+var next_in_order : Stmt :
 	get:
 		var i := self.index_in_script + 1
 		if i >= owning_script.stmts.size():
@@ -54,7 +54,7 @@ var next_in_order : Stmt_ :
 		return owning_script.stmts[i]
 
 
-var next_in_same_depth : Stmt_ :
+var next_in_same_depth : Stmt :
 	get:
 		var cursor := self.next_in_order
 		while cursor:
@@ -66,7 +66,7 @@ var next_in_same_depth : Stmt_ :
 		return null
 
 
-var next_in_same_or_lower_depth : Stmt_ :
+var next_in_same_or_lower_depth : Stmt :
 	get:
 		var cursor := self.next_in_order
 		while cursor:
@@ -76,7 +76,7 @@ var next_in_same_or_lower_depth : Stmt_ :
 		return null
 
 
-var next_in_lower_depth : Stmt_ :
+var next_in_lower_depth : Stmt :
 	get:
 		if self.nest_depth == 0:
 			return null
@@ -89,7 +89,7 @@ var next_in_lower_depth : Stmt_ :
 		return null
 
 
-var next_in_higher_depth : Stmt_ :
+var next_in_higher_depth : Stmt :
 	get:
 		var cursor := self.next_in_order
 		while cursor:
@@ -99,7 +99,7 @@ var next_in_higher_depth : Stmt_ :
 		return null
 
 
-var prev_in_order : Stmt_ :
+var prev_in_order : Stmt :
 	get:
 		var i := self.index_in_script - 1
 		if i < 0:
@@ -107,7 +107,7 @@ var prev_in_order : Stmt_ :
 		return owning_script.stmts[i]
 
 
-var prev_in_same_depth : Stmt_ :
+var prev_in_same_depth : Stmt :
 	get:
 		var cursor := self.prev_in_order
 		while cursor:
@@ -119,7 +119,7 @@ var prev_in_same_depth : Stmt_ :
 		return null
 
 
-var prev_in_same_or_lower_depth : Stmt_ :
+var prev_in_same_or_lower_depth : Stmt :
 	get:
 		var cursor := self.prev_in_order
 		while cursor:
@@ -129,7 +129,7 @@ var prev_in_same_or_lower_depth : Stmt_ :
 		return null
 
 
-var prev_in_lower_depth : Stmt_ :
+var prev_in_lower_depth : Stmt :
 	get:
 		if self.nest_depth == 0:
 			return null
@@ -142,7 +142,7 @@ var prev_in_lower_depth : Stmt_ :
 		return null
 
 
-var prev_in_higher_depth : Stmt_ :
+var prev_in_higher_depth : Stmt :
 	get:
 		var cursor := self.prev_in_order
 		while cursor:
@@ -177,10 +177,10 @@ var owning_object_path : Path :
 		return result
 
 
-var nested_stmts_single_depth : Array[Stmt_] :
+var nested_stmts_single_depth : Array[Stmt] :
 	get:
 		var cursor := self.next_in_higher_depth
-		var result : Array[Stmt_]
+		var result : Array[Stmt]
 		while cursor:
 			result.push_back(cursor)
 			cursor = cursor.next_in_same_depth
@@ -232,7 +232,7 @@ func populate(_owning_script: PennyScript, _index_in_script: int, _index_in_file
 	self.tokens = _tokens
 
 
-func populate_from_other(other: Stmt_) -> void:
+func populate_from_other(other: Stmt) -> void:
 	self.populate(other.owning_script, other.index_in_script, other.index_in_file, other.nest_depth, other.tokens)
 
 
@@ -286,9 +286,9 @@ func _undo(record: Record) -> void:
 
 
 ## Returns the address of the next statement to go to, based on what happened.
-func next(record: Record) -> Stmt_: return _next(record)
+func next(record: Record) -> Stmt: return _next(record)
 ## Returns the address of the next statement to go to, based on what happened.
-func _next(record: Record) -> Stmt_:
+func _next(record: Record) -> Stmt:
 	return next_in_order
 
 
@@ -317,13 +317,13 @@ func push_exception(s: String = "Uncaught exception.") -> PennyException:
 	return result
 
 
-func recycle() -> Stmt_:
+func recycle() -> Stmt:
 	var result := get_recycle_typed_version()
 	result.populate_from_other(self)
 	return result
 
 
-func get_recycle_typed_version() -> Stmt_:
+func get_recycle_typed_version() -> Stmt:
 	for i in tokens:
 		match i.type:
 			Token.ASSIGNMENT:
@@ -346,7 +346,7 @@ func get_recycle_typed_version() -> Stmt_:
 				'pass': 	return StmtPass.new()
 				'print': 	return StmtPrint.new()
 				'return':	return StmtReturn.new()
-			PennyException.new("The keyword '%s' was detected, but no method is registered for it in Stmt_.recycle()." % key).push()
+			PennyException.new("The keyword '%s' was detected, but no method is registered for it in Stmt.recycle()." % key).push()
 			return self
 
 	var block_header := self.prev_in_lower_depth

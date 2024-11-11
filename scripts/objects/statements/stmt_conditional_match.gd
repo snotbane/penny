@@ -37,7 +37,7 @@ func _validate_self_post_setup() -> void:
 # 	super._undo(record)
 
 
-# func _next(record: Record) -> Stmt_:
+# func _next(record: Record) -> Stmt:
 # 	return super._next(record)
 
 

@@ -1,6 +1,6 @@
 
 ## Simple statement that stores all its tokens as an expression.
-class_name StmtExpr_ extends Stmt_
+class_name StmtExpr_ extends Stmt
 
 var expr : Expr
 
@@ -36,5 +36,5 @@ func _validate_self_post_setup() -> void:
 # 	pass
 
 
-# func _next(record: Record) -> Stmt_:
+# func _next(record: Record) -> Stmt:
 # 	return next_in_order

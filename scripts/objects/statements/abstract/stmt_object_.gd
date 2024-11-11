@@ -1,6 +1,6 @@
 
 ## Statement that interacts with an object and can have nested statements that interact with said object.
-class_name StmtObject_ extends Stmt_
+class_name StmtObject_ extends Stmt
 
 var path : Path
 
@@ -45,7 +45,7 @@ func _undo(record: Record) -> void:
 		path.set_data(record.host, record.attachment.before)
 
 
-# func _next(record: Record) -> Stmt_:
+# func _next(record: Record) -> Stmt:
 # 	return next_in_order
 
 

@@ -1,6 +1,6 @@
 
 ## No description
-class_name StmtReturn extends Stmt_
+class_name StmtReturn extends Stmt
 
 # func _init() -> void:
 # 	pass
@@ -34,5 +34,5 @@ func _execute(host: PennyHost) -> Record:
 # 	pass
 
 
-func _next(record: Record) -> Stmt_:
+func _next(record: Record) -> Stmt:
 	return null

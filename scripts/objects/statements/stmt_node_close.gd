@@ -42,5 +42,5 @@ func _execute(host: PennyHost) -> Record:
 # 	pass
 
 
-# func _next(record: Record) -> Stmt_:
+# func _next(record: Record) -> Stmt:
 # 	return next_in_order

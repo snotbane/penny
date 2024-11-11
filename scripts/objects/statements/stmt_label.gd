@@ -1,6 +1,6 @@
 
 ## Speaks nothing. Hears nothing. Sees nothing. Is nothing.
-class_name StmtLabel extends Stmt_
+class_name StmtLabel extends Stmt
 
 
 # func _init() -> void:
@@ -34,5 +34,5 @@ func _validate_cross() -> PennyException:
 # 	pass
 
 
-# func _next(record: Record) -> Stmt_:
+# func _next(record: Record) -> Stmt:
 # 	return next_in_order

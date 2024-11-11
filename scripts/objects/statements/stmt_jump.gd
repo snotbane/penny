@@ -1,6 +1,6 @@
 
 ## No description
-class_name StmtJump extends Stmt_
+class_name StmtJump extends Stmt
 
 
 # func _init() -> void:
@@ -36,6 +36,6 @@ func _execute(host: PennyHost) -> Record:
 # 	pass
 
 
-func _next(record: Record) -> Stmt_:
+func _next(record: Record) -> Stmt:
 	print("Jumping to ", record.attachment)
 	return Penny.get_stmt_from_label(record.attachment)

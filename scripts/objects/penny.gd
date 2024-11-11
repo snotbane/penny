@@ -14,7 +14,7 @@ const ERROR_COLOR = Color(1, 0.471, 0.42)	## Matches editor
 
 static var deco_registry := preload("res://addons/penny_godot/assets/penny_decos_default.tres")
 static var scripts : Array[PennyScript]
-static var labels : Dictionary			## StringName : Stmt_
+static var labels : Dictionary			## StringName : Stmt
 static var inits : Array[StmtInit]
 static var valid : bool = true
 
@@ -62,7 +62,7 @@ static func load() -> void:
 	inits.sort_custom(stmt_init_sort)
 
 
-static func get_stmt_from_label(label: StringName) -> Stmt_:
+static func get_stmt_from_label(label: StringName) -> Stmt:
 	if labels.has(label):
 		return labels[label]
 	else:

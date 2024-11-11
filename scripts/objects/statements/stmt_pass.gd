@@ -1,6 +1,6 @@
 
 ## Speaks nothing. Hears nothing. Sees nothing. Is nothing.
-class_name StmtPass extends Stmt_
+class_name StmtPass extends Stmt
 
 # func _init() -> void:
 # 	pass
@@ -34,5 +34,5 @@ func _execute(host: PennyHost) -> Record:
 # 	pass
 
 
-# func _next(record: Record) -> Stmt_:
+# func _next(record: Record) -> Stmt:
 # 	return next_in_order

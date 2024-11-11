@@ -138,7 +138,7 @@ class Op extends RefCounted:
 							stack.push_back(a)
 							stack.push_back(Path.new([b], true))
 
-var stmt : Stmt_
+var stmt : Stmt
 var symbols : Array[Variant]
 
 var returns_self_softly : bool :
@@ -153,12 +153,12 @@ var returns_self_softly : bool :
 				dval_count += 1
 		return dval_count < eval_count
 
-func _init(_stmt: Stmt_, _symbols: Array) -> void:
+func _init(_stmt: Stmt, _symbols: Array) -> void:
 	stmt = _stmt
 	symbols = _symbols
 
 ## Converts raw tokens into workable symbols (Variants).
-static func from_tokens(tokens: Array[Token], _stmt: Stmt_ = null) -> Expr:
+static func from_tokens(tokens: Array[Token], _stmt: Stmt = null) -> Expr:
 	var stack : Array[Variant] = []
 	var ops : Array[Op] = []
 

@@ -5,7 +5,7 @@ class_name PennyScript extends Resource
 static var LINE_FEED_REGEX := RegEx.create_from_string("\\n")
 
 @export_storage var id : int
-@export_storage var stmts : Array[Stmt_]
+@export_storage var stmts : Array[Stmt]
 
 func _init() -> void:
 	pass
@@ -29,7 +29,7 @@ func update_from_file(file: FileAccess) -> void:
 
 func parse_and_register_stmts(tokens: Array[Token], context_file: FileAccess) -> void:
 	stmts.clear()
-	var stmt : Stmt_ = null
+	var stmt : Stmt = null
 	var depth : int = 0
 	for i in tokens.size():
 		var token = tokens[i]
@@ -47,7 +47,7 @@ func parse_and_register_stmts(tokens: Array[Token], context_file: FileAccess) ->
 			if not stmt:
 				if token.type == Token.INDENTATION:
 					depth = token.value.length()
-				stmt = Stmt_.new()
+				stmt = Stmt.new()
 				stmt.populate(self, stmts.size(), 0, depth, [])
 			if not token.type == Token.INDENTATION:
 				stmt.tokens.push_back(token)

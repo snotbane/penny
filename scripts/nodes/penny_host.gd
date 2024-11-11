@@ -33,9 +33,9 @@ var state := State.UNLOADED
 var data_root := PennyObject.STATIC_ROOT
 
 var records : Array[Record]
-var call_stack : Array[Stmt_]
+var call_stack : Array[Stmt]
 
-var cursor : Stmt_
+var cursor : Stmt
 var expecting_conditional : bool
 
 var is_skipping : bool

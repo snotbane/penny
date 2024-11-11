@@ -5,7 +5,7 @@ class_name Record extends Object
 var host : PennyHost
 var halt : bool
 var stamp : int
-var stmt : Stmt_
+var stmt : Stmt
 var attachment : Variant
 
 var verbosity : int :
@@ -16,7 +16,7 @@ var prev : Record :
 		if stamp == 0 : return null
 		return host.records[stamp - 1]
 
-func _init(_host: PennyHost, _stmt: Stmt_, _halt: bool, _attachment: Variant = null) -> void:
+func _init(_host: PennyHost, _stmt: Stmt, _halt: bool, _attachment: Variant = null) -> void:
 	host = _host
 	stamp = host.records.size()
 	stmt = _stmt
@@ -32,7 +32,7 @@ func _to_string() -> String:
 func equals(other: Record) -> bool:
 	return host == other.host and stamp == other.stamp
 
-func next() -> Stmt_:
+func next() -> Stmt:
 	return stmt.next(self)
 
 func create_history_listing() -> HistoryListing:
