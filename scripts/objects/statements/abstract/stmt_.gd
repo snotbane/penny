@@ -152,11 +152,11 @@ var prev_in_higher_depth : Stmt :
 		return null
 
 
-var owning_object_stmt : StmtObject_ :
+var owning_object_stmt : StmtObject :
 	get:
 		var result := self.prev_in_lower_depth
 		if result:
-			if result is StmtObject_:
+			if result is StmtObject:
 				return result
 			else:
 				return result.owning_object_stmt
@@ -172,7 +172,7 @@ var owning_object_path : Path :
 			if not cursor:
 				result.relative = false
 				break
-			if cursor is StmtObject_:
+			if cursor is StmtObject:
 				result.prepend(cursor.path)
 		return result
 
@@ -362,10 +362,10 @@ func get_recycle_typed_version() -> Stmt:
 	match tokens.front().type:
 		Token.IDENTIFIER:
 			if tokens.size() == 1 or tokens[1].value == '.':
-				return StmtObject_.new()
+				return StmtObject.new()
 		Token.OPERATOR:
 			if tokens[0].value == '.' and tokens[1].type == Token.IDENTIFIER:
-				return StmtObject_.new()
+				return StmtObject.new()
 	return self
 
 

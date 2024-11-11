@@ -1,6 +1,6 @@
 
 ## No description
-class_name StmtConditionalIf extends StmtConditional_
+class_name StmtConditionalIf extends StmtConditional
 
 
 # func _init() -> void:

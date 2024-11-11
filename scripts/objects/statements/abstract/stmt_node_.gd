@@ -1,6 +1,6 @@
 
 ## Statement that interacts with a PennyObject and its Node instance via the supplied Path.
-class_name StmtNode_ extends Stmt
+class_name StmtNode extends Stmt
 
 var subject_path : Path
 

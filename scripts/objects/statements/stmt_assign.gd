@@ -1,5 +1,5 @@
 
-class_name StmtAssign extends StmtObject_
+class_name StmtAssign extends StmtObject
 
 var expr : Expr
 

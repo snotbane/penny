@@ -1,6 +1,6 @@
 
 @tool
-class_name StmtDialog extends StmtNode_
+class_name StmtDialog extends StmtNode
 
 const DEPTH_REMOVAL_PATTERN := "(?<=\\n)\\t{0,%s}"
 static var REGEX_WORD_COUNT := RegEx.create_from_string("\\b\\S+\\b")

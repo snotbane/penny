@@ -1,5 +1,5 @@
 
-class_name PennyPromptControl extends PennyPrompt_
+class_name PennyPromptControl extends PennyPrompt
 
 @export var button_prefab : PackedScene = load("res://addons/penny_godot/scenes/prompt_button_default.tscn")
 @export var button_container : Container

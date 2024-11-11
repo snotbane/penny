@@ -1,6 +1,6 @@
 
 ## No description
-class_name StmtMatch extends StmtExpr_
+class_name StmtMatch extends StmtExpr
 
 # func _init() -> void:
 # 	pass

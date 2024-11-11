@@ -1,6 +1,6 @@
 
 ## No description
-class_name StmtConditionalElif extends StmtConditional_
+class_name StmtConditionalElif extends StmtConditional
 
 
 # func _init() -> void:

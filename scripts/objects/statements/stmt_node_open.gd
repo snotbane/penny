@@ -1,6 +1,6 @@
 
 ## No description
-class_name StmtOpen extends StmtNode_
+class_name StmtOpen extends StmtNode
 
 # func _init() -> void:
 # 	pass

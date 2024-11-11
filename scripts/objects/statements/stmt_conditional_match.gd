@@ -1,6 +1,6 @@
 
 ## No description
-class_name StmtConditionalMatch extends StmtConditional_
+class_name StmtConditionalMatch extends StmtConditional
 
 var match_header_stmt : StmtMatch
 

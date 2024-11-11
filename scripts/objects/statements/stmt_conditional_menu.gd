@@ -1,6 +1,6 @@
 
 ## No description
-class_name StmtConditionalMenu extends StmtConditional_
+class_name StmtConditionalMenu extends StmtConditional
 
 var menu_stmt : StmtMenu
 var expected_path : Path

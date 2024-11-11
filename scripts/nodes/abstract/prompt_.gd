@@ -1,5 +1,5 @@
 
-class_name PennyPrompt_ extends PennyNode
+class_name PennyPrompt extends PennyNode
 
 var options : Array
 

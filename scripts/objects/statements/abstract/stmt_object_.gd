@@ -1,6 +1,6 @@
 
 ## Statement that interacts with an object and can have nested statements that interact with said object.
-class_name StmtObject_ extends Stmt
+class_name StmtObject extends Stmt
 
 var path : Path
 

@@ -1,5 +1,5 @@
 
-class_name StmtConditional_ extends StmtExpr_
+class_name StmtConditional extends StmtExpr
 
 # func _init() -> void:
 # 	pass
@@ -45,7 +45,7 @@ func _next(record: Record) -> Stmt:
 	else:		result = next_in_order
 
 	if result:
-		record.host.expecting_conditional = skip and result is StmtConditional_
+		record.host.expecting_conditional = skip and result is StmtConditional
 		return result
 	else:
 		record.host.expecting_conditional = false
