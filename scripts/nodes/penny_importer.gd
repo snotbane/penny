@@ -37,15 +37,14 @@ func _ready() -> void:
 	if !REGEX.is_valid():
 		print("RegEx expression is not valid: \"" + PNY_FILE_EXPR + "\"")
 
-	var debug_canvas := CanvasLayer.new()
-	debug_canvas.layer = 256
-	self.add_child.call_deferred(debug_canvas)
-	var debug := DEBUG_SCENE.instantiate()
-	debug_canvas.add_child.call_deferred(debug)
-
+	if OS.is_debug_build() and not Engine.is_editor_hint():
+		var debug_canvas := CanvasLayer.new()
+		debug_canvas.layer = 256
+		self.add_child.call_deferred(debug_canvas)
+		var debug := DEBUG_SCENE.instantiate()
+		debug_canvas.add_child.call_deferred(debug)
 
 	reload.call_deferred()
-
 
 
 func _notification(what: int) -> void:
@@ -61,6 +60,8 @@ static func register_formats() -> void:
 
 
 func reload(hard: bool = false) -> void:
+	print(Deco.MASTER_REGISTRY)
+
 	var scripts : Array[PennyScript]
 	var files : Array[FileAccess]
 	if hard:

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="PennyDecorations" load_steps=9 format=3 uid="uid://bsrrbmeopuowc"]
+
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_invalid.gd" id="1_fdgl7"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_empty_span.gd" id="2_07t51"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_bold.gd" id="2_yhdmr"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_italic.gd" id="3_jopdq"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/resource/penny_deco_registry.gd" id="4_pdc3q"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_underline.gd" id="5_4axiw"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_size.gd" id="6_835lb"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_strikethrough.gd" id="7_cvvcy"]
+
+[resource]
+script = ExtResource("4_pdc3q")
+deco_scripts = Array[Script]([ExtResource("2_yhdmr"), ExtResource("2_07t51"), ExtResource("1_fdgl7"), ExtResource("3_jopdq"), ExtResource("5_4axiw"), ExtResource("6_835lb"), ExtResource("7_cvvcy")])

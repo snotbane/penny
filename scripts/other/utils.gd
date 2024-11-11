@@ -1,14 +1,19 @@
 
 class_name Utils
 
-const DEFAULT_OMIT_FILE_SEARCH := [
+const OMIT_FILE_SEARCH_DEFAULT := [
 	".godot",
 	".vscode",
 	".templates",
 	"addons"
 ]
+const OMIT_FILE_SEARCH_INCLUDE_ADDONS := [
+	".godot",
+	".vscode",
+	".templates",
+]
 
-static func get_paths_in_project(ext: String, omit := DEFAULT_OMIT_FILE_SEARCH, start_path := "res://") -> Array[String]:
+static func get_paths_in_project(ext: String, omit := OMIT_FILE_SEARCH_DEFAULT, start_path := "res://") -> Array[String]:
 	var dir := DirAccess.open(start_path)
 	if not dir: return []
 	var result : Array[String]
@@ -25,9 +30,13 @@ static func get_paths_in_project(ext: String, omit := DEFAULT_OMIT_FILE_SEARCH, 
 	return result
 
 
-static func get_scripts_in_project(type: String, omit := DEFAULT_OMIT_FILE_SEARCH, start_path := "res://") -> Array[Script]:
+static func get_scripts_in_project(type: String, omit := OMIT_FILE_SEARCH_DEFAULT, start_path := "res://") -> Array[Script]:
+	if not OS.is_debug_build():
+		print("Attempting to access scripts directly in non-debug build. This is likely to cause issues unless GDScript Export Mode is set to Text (easier debugging). Whatever you are doing, use an alternative method for release.")
+
 	var result : Array[Script]
 	var paths := Utils.get_paths_in_project(".gd", omit, start_path)
+	# print(paths)
 
 	for path in paths:
 		var script : Script = load(path)

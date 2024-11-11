@@ -1,7 +1,7 @@
 
 class_name Deco extends Object
 
-static var REGISTRY : Dictionary
+static var MASTER_REGISTRY : Dictionary
 const DECO_FILE_OMIT = [
 	".godot",
 	".vscode",
@@ -19,17 +19,23 @@ var bbcode_tag_id : StringName :
 	get: return _get_bbcode_tag_id()
 
 
+
 static func _static_init() -> void:
-	var deco_scripts := Utils.get_scripts_in_project("Deco", DECO_FILE_OMIT)
-	for deco_script in deco_scripts:
-		var deco : Deco = deco_script.new()
-		Deco.REGISTRY[deco.penny_tag_id] = deco
+	pass
 
 
 static func get_template_by_penny_id(penny_id: StringName) -> Deco:
-	if REGISTRY.has(penny_id):
-		return REGISTRY[penny_id]
-	return REGISTRY["invalid"]
+	if MASTER_REGISTRY.has(penny_id):
+		return MASTER_REGISTRY[penny_id]
+	return MASTER_REGISTRY[StringName('invalid')]
+
+
+static func register_instance(deco: Deco) -> void:
+	Deco.MASTER_REGISTRY[deco.penny_tag_id] = deco
+
+
+static func _get_instance_for_registry() -> Deco:
+	return null
 
 
 ## Whether or not this tag makes use of an end tag ("</>")

@@ -12,6 +12,7 @@ const ANGRY_COLOR = Color.DEEP_PINK
 const WARNING_COLOR = Color(1, 0.871, 0.4)	## Matches editor
 const ERROR_COLOR = Color(1, 0.471, 0.42)	## Matches editor
 
+static var deco_registry := preload("res://addons/penny_godot/assets/penny_decos_default.tres")
 static var scripts : Array[PennyScript]
 static var labels : Dictionary			## StringName : Stmt_
 static var inits : Array[StmtInit]
@@ -22,6 +23,16 @@ static var active_dock : PennyDock:
 		# if PennyPlugin.inst:
 		# 	return PennyPlugin.inst.dock
 		return PennyDock.inst
+
+
+# static func _static_init() -> void:
+#	## This doesn't work because the resources need to be *pre*loaded
+# 	var deco_registry_resources : Array[PennyDecoRegistry]
+# 	var tres_paths := Utils.get_paths_in_project(".tres", Utils.OMIT_FILE_SEARCH_INCLUDE_ADDONS)
+# 	for tres_path in tres_paths:
+# 		var tres : Resource = load(tres_path)
+# 		if tres is PennyDecoRegistry:
+# 			deco_registry_resources.push_back(tres)
 
 
 static func clear_all() -> void:

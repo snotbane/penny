@@ -57,6 +57,10 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	ready_deferred.call_deferred()
+
+
+func ready_deferred() -> void:
 	reload()
 	if autostart and self.valid:
 		invoke_at_cursor()
