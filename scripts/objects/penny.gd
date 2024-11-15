@@ -82,6 +82,11 @@ static func log_error(s: String, c: Color = ERROR_COLOR) -> void:
 		PennyDebug.inst.visible = true
 
 
+static func log_warn(s: String, c: Color = WARNING_COLOR) -> void:
+	Penny.log(s, c)
+	push_warning(s)
+
+
 static func log_clear() -> void:
 	if active_dock:
 		active_dock.log_clear()

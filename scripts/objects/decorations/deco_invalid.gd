@@ -21,3 +21,7 @@ func _get_requires_end_tag() -> bool:
 
 func _get_bbcode_start_tag(inst: DecoInst) -> String:
 	return inst.id
+
+
+func _on_register_start(message: Message, tag: DecoInst) -> void:
+	Penny.log_warn("Unrecognized tag %s" % tag)

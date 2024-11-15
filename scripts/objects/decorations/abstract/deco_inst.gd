@@ -8,7 +8,6 @@ static var ARG_PATTERN := RegEx.create_from_string("([^=\\s]+)\\s*=\\s*([^=\\s]+
 var id : StringName
 var args : Dictionary
 
-
 var template : Deco :
 	get: return Deco.get_template_by_penny_id(id)
 
