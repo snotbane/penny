@@ -36,9 +36,9 @@ func _get_requires_end_tag() -> bool:
 func _on_encounter_start(typewriter: Typewriter, tag: DecoInst) -> void:
 	var delay_seconds := float(tag.args.get(StringName('seconds'), DEFAULT_SECONDS))
 
-	typewriter.is_delayed = true
+	typewriter.is_playing = false
 	await typewriter.get_tree().create_timer(delay_seconds).timeout
-	typewriter.is_delayed = false
+	typewriter.is_playing = true
 
 
 # func _on_encounter_end(typewriter: Typewriter, tag: DecoInst) -> void:

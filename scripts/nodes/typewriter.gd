@@ -24,7 +24,6 @@ var scrollbar : VScrollBar
 
 var is_ready : bool = false
 var is_playing : bool = false
-var is_delayed : bool = false
 
 var message : Message
 
@@ -58,6 +57,9 @@ var visible_characters : int :
 
 		if rtl.visible_characters == -1:
 			is_playing = false
+			for deco in unclosed_decos:
+				deco.encounter_end(self)
+			unclosed_decos.clear()
 			if scroll_container:
 				scroll_container.mouse_filter = Control.MOUSE_FILTER_PASS
 				scrollbar.mouse_filter = Control.MOUSE_FILTER_PASS
@@ -86,7 +88,6 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if not working: return
-	if is_delayed: return
 
 	if is_playing:
 		cursor += cps * delta
