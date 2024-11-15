@@ -1,13 +1,16 @@
 
 class_name MessageHandler extends PennyNode
 
-signal received
+signal received(message: Message)
 signal advanced
 
 @export var name_label : RichTextLabel
 @export var text_label : RichTextLabel
 @export var typewriter : Typewriter
 @export var skip_prevent_timer : Timer
+
+
+var message : Message
 
 
 func _populate(_host: PennyHost, _object: PennyObject) -> void:
@@ -26,8 +29,7 @@ func _gui_input(event: InputEvent) -> void:
 
 func receive(record: Record, subject: PennyObject) -> void:
 	name_label.text = subject.rich_name
-	text_label.text = record.attachment.to_string()
-	received.emit()
+	received.emit(record.attachment)
 
 
 func prevent_skip() -> void:

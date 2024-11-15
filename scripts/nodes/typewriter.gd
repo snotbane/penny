@@ -24,6 +24,12 @@ var scrollbar : VScrollBar
 
 var is_ready : bool = false
 var is_playing : bool = false
+var is_delayed : bool = false
+
+var message : Message
+
+var unencountered_decos : Array[DecoInst]
+var unclosed_decos : Array[DecoInst]
 
 var cursor : float = 0.0
 var expected_characters : int
@@ -32,10 +38,26 @@ var visible_characters : int :
 	set (value):
 		if rtl.visible_characters == value: return
 		rtl.visible_characters = value
+
+		if unencountered_decos:
+			while rtl.visible_characters >= unencountered_decos.front().start_remapped:
+				var deco : DecoInst = unencountered_decos.pop_front()
+				deco.encounter_start(self)
+				if deco.template.requires_end_tag:
+					unclosed_decos.push_back(deco)
+				if not unencountered_decos:
+					break
+		if unclosed_decos:
+			for deco in unclosed_decos:
+				if rtl.visible_characters >= deco.end_remapped:
+					deco.encounter_end(self)
+					unclosed_decos.erase(deco)
+
 		if rtl.visible_characters >= expected_characters:
 			rtl.visible_characters = -1
-		## Kind of weird syntax but we do this so that we ensure these methods get called whether the visible characters reached the end or if we manually skipped to the end by setting it directly to -1
+
 		if rtl.visible_characters == -1:
+			is_playing = false
 			if scroll_container:
 				scroll_container.mouse_filter = Control.MOUSE_FILTER_PASS
 				scrollbar.mouse_filter = Control.MOUSE_FILTER_PASS
@@ -45,6 +67,7 @@ var visible_characters : int :
 
 var cps : float :
 	get: return print_speed
+
 
 func _ready() -> void:
 	if scroll_container:
@@ -60,8 +83,10 @@ func _ready() -> void:
 	reset()
 	is_ready = true
 
+
 func _process(delta: float) -> void:
 	if not working: return
+	if is_delayed: return
 
 	if is_playing:
 		cursor += cps * delta
@@ -69,6 +94,7 @@ func _process(delta: float) -> void:
 
 	if scroll_container:
 		scrollbar.value = fake_rtl.get_content_height() - scroll_container.size.y
+
 
 func reset() -> void:
 	if scroll_container:
@@ -83,9 +109,18 @@ func reset() -> void:
 func present() -> void:
 	is_playing = true
 
-func _on_dialog_received() -> void:
+
+func _on_message_received(_message: Message) -> void:
+	message = _message
+	rtl.text = message.to_string()
+	unencountered_decos = message.decos.duplicate()
+	unclosed_decos.clear()
+	for deco in message.decos:
+		deco.create_remap_for(self)
 	if is_ready:
 		reset()
+		present()
+
 
 func _on_dialog_present() -> void:
 	present()

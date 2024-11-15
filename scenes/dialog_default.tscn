@@ -227,5 +227,5 @@ libraries = {
 [connection signal="on_close" from="." to="animation_player" method="play" binds= [&"dialog_close"]]
 [connection signal="on_open" from="." to="animation_player" method="play" binds= [&"dialog_open"]]
 [connection signal="on_present" from="." to="typewriter" method="_on_dialog_present"]
-[connection signal="received" from="." to="typewriter" method="_on_dialog_received"]
+[connection signal="received" from="." to="typewriter" method="_on_message_received"]
 [connection signal="completed" from="typewriter" to="." method="prevent_skip"]

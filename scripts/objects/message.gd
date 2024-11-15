@@ -22,6 +22,8 @@ var raw : String
 var text_evaluated : String
 var text_with_bbcode : String
 
+var decos : Array[DecoInst]
+
 
 func _init(_raw: String, host: PennyHost) -> void:
 	raw = _raw
@@ -81,7 +83,7 @@ func _init(_raw: String, host: PennyHost) -> void:
 			text_evaluated = sub_match(pattern_match, pattern_match.get_string(1))
 
 	## TRANSLATE DECORATIONS TO BBCODE
-	text_with_bbcode = text_evaluated
+	text_with_bbcode = "[p align=fill jst=w,k,sl]" + text_evaluated
 
 	var tags_needing_end_stack : Array[int]
 	var deco_stack : Array[DecoInst]
@@ -96,7 +98,7 @@ func _init(_raw: String, host: PennyHost) -> void:
 			var bbcode_end_tags_string := ""
 			while start_tag_deco_count > 0:
 				var deco : DecoInst = deco_stack.pop_back()
-				deco.register_end(self)
+				deco.register_end(self, tag_match.get_start())
 				bbcode_end_tags_string += deco.bbcode_tag_end
 				start_tag_deco_count -= 1
 			text_with_bbcode = sub_match(tag_match, bbcode_end_tags_string)
@@ -106,7 +108,7 @@ func _init(_raw: String, host: PennyHost) -> void:
 			var deco_strings := tag_match.get_string(1).split(",", false)
 			for deco_string in deco_strings:
 				var deco := DecoInst.new(deco_string)
-				deco.register_start(self)
+				deco.register_start(self, tag_match.get_start())
 				bbcode_start_tags_string += deco.bbcode_tag_start
 				if deco.template.requires_end_tag:
 					deco_stack.push_back(deco)
@@ -116,10 +118,8 @@ func _init(_raw: String, host: PennyHost) -> void:
 			text_with_bbcode = sub_match(tag_match, bbcode_start_tags_string)
 	while deco_stack:
 		var deco : DecoInst = deco_stack.pop_back()
-		deco.register_end(self)
+		deco.register_end(self, text_with_bbcode.length() - 1)
 		text_with_bbcode += deco.bbcode_tag_end
-
-	text_with_bbcode = "[p align=fill jst=w,k,sl]" + text_with_bbcode
 
 static func sub_match(match: RegExMatch, sub: String) -> String:
 	return match.subject.substr(0, match.get_start()) + sub + match.subject.substr(match.get_end(), match.subject.length() - match.get_end())

@@ -4,9 +4,16 @@ class_name DecoInst extends RefCounted
 
 static var ID_PATTERN := RegEx.create_from_string("^\\s*(\\w+)")
 static var ARG_PATTERN := RegEx.create_from_string("([^=\\s]+)\\s*=\\s*([^=\\s]+)")
+static var STRIP_BBCODE_PATTERN := RegEx.create_from_string("\\[.+?\\]")
 
 var id : StringName
 var args : Dictionary
+
+var start_index : int
+var end_index : int = -1
+
+var start_remapped : int
+var end_remapped : int
 
 var template : Deco :
 	get: return Deco.get_template_by_penny_id(id)
@@ -41,12 +48,23 @@ func _to_string() -> String:
 	return "<%s>" % result
 
 
-func register_start(message: Message) -> void:
+func register_start(message: Message, index: int) -> void:
+	message.decos.push_back(self)
+	start_index = index
 	template._on_register_start(message, self)
 
 
-func register_end(message: Message) -> void:
+func register_end(message: Message, index: int) -> void:
+	end_index = index
 	template._on_register_end(message, self)
+
+
+func encounter_start(typewriter: Typewriter) -> void:
+	self.template._on_encounter_start(typewriter, self)
+
+
+func encounter_end(typewriter: Typewriter) -> void:
+	self.template._on_encounter_end(typewriter, self)
 
 
 func get_argument(key: StringName) -> Variant:
@@ -55,3 +73,14 @@ func get_argument(key: StringName) -> Variant:
 		return "null"
 	return args[key]
 
+
+func create_remap_for(typewriter: Typewriter) -> void:
+	var original : String = typewriter.rtl.text
+
+	start_remapped = start_index
+	end_remapped = end_index
+	for strip_match in STRIP_BBCODE_PATTERN.search_all(original):
+		if strip_match.get_start() < start_index:
+			start_remapped -= strip_match.get_end() - strip_match.get_start()
+		if strip_match.get_start() < end_index:
+			end_remapped -= strip_match.get_end() - strip_match.get_start()

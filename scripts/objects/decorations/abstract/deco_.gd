@@ -67,3 +67,10 @@ func _on_register_end(message: Message, tag: DecoInst) -> void:
 	pass
 
 
+func _on_encounter_start(typewriter: Typewriter, tag: DecoInst) -> void:
+	pass
+
+
+func _on_encounter_end(typewriter: Typewriter, tag: DecoInst) -> void:
+	pass
+
