@@ -14,12 +14,12 @@ signal completed
 signal prodded
 
 
-var speed_stack : Array[float] = [ 50.0 ]
-## How many characters per second to print out. For specific speeds mid-printout, use the <speed=X> decoration.
+## How many characters per second to print out. For specific speeds mid-printout, use the <speed=x> decoration.
 @export var print_speed : float = 50.0 :
 	get: return speed_stack[0]
 	set(value):
 		speed_stack[0] = value
+var speed_stack : Array[float] = [ 50.0 ]
 
 ## How many sfx per second to play. This will also scale with a <speed> decoration.
 @export var audio_speed : float = 10.0
@@ -110,7 +110,11 @@ var visible_characters : int :
 
 
 var speed : float :
-	get: return speed_stack.back()
+	get: return self.speed_stack.back()
+
+
+var audio_speed_ratio : float :
+	get: return audio_speed / speed
 
 
 var is_working : bool :
