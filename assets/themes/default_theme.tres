@@ -1,10 +1,4 @@
-[gd_resource type="Theme" load_steps=7 format=3 uid="uid://bsvx4hbyp1r46"]
-
-[ext_resource type="FontFile" uid="uid://8xm7vwqkgqmo" path="res://addons/penny_godot/assets/fonts/IBMPlexSans-Regular.ttf" id="1_2b1x8"]
-[ext_resource type="FontFile" uid="uid://cv2tq6ygvdndq" path="res://addons/penny_godot/assets/fonts/IBMPlexSans-Bold.ttf" id="1_oh03k"]
-[ext_resource type="FontFile" uid="uid://cgxoa5vuur6al" path="res://addons/penny_godot/assets/fonts/NotoSansMono-Medium.ttf" id="1_xrj26"]
-[ext_resource type="FontFile" uid="uid://dwidsc5m3kiw" path="res://addons/penny_godot/assets/fonts/IBMPlexSans-BoldItalic.ttf" id="2_vx6im"]
-[ext_resource type="FontFile" uid="uid://bl7n2l7k27iv2" path="res://addons/penny_godot/assets/fonts/IBMPlexSans-Italic.ttf" id="3_xsqjd"]
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://bsvx4hbyp1r46"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_11om5"]
 bg_color = Color(0.15, 0.15, 0.15, 1)
@@ -14,7 +8,6 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [resource]
-default_font = ExtResource("1_2b1x8")
 default_font_size = 28
 EditorIcons/icons/2D = null
 EditorIcons/icons/3D = null
@@ -902,9 +895,9 @@ MarginContainer/constants/margin_left = 16
 MarginContainer/constants/margin_right = 16
 MarginContainer/constants/margin_top = 16
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_11om5")
-RichTextLabel/fonts/bold_font = ExtResource("1_oh03k")
-RichTextLabel/fonts/bold_italics_font = ExtResource("2_vx6im")
-RichTextLabel/fonts/italics_font = ExtResource("3_xsqjd")
-RichTextLabel/fonts/mono_font = ExtResource("1_xrj26")
-RichTextLabel/fonts/normal_font = ExtResource("1_2b1x8")
+RichTextLabel/fonts/bold_font = null
+RichTextLabel/fonts/bold_italics_font = null
+RichTextLabel/fonts/italics_font = null
+RichTextLabel/fonts/mono_font = null
+RichTextLabel/fonts/normal_font = null
 VBoxContainer/constants/separation = 20
