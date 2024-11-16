@@ -2,6 +2,14 @@
 ## Decorator class for a [RichTextLabel]. Prints out text over time in accordance with the Penny script.
 class_name Typewriter extends Node
 
+enum PlayState {
+	READY,
+	PLAYING,
+	DELAYED,
+	PAUSED,
+	COMPLETED
+}
+
 signal completed
 signal prodded
 
@@ -14,24 +22,51 @@ signal prodded
 ## Audio stream to play while printing non-whitespace characters. Leave blank if using voice acting, probably.
 @export var audio_sample : AudioStream
 
+## If enabled, delays will be treated like wait tags in that when we try to prod the typewriter to continue, we will stop at both delays and waits. (This mimics Ren'Py behavior.)
+@export var treat_delay_as_wait : bool = false
+
+
 @export var rtl : RichTextLabel
 
 ## (optional) controls scroll behavior.
 @export var scroll_container : ScrollContainer
+
 
 ## Fake label used to calculate appropriate scroll amount.
 var fake_rtl : RichTextLabel
 var scrollbar : VScrollBar
 
 var is_ready : bool = false
-var is_playing : bool = false
+var is_locked : bool = false
+var is_typing : bool :
+	get: return play_state == PlayState.PLAYING
+var is_playing : bool :
+	get: return play_state == PlayState.PLAYING || play_state == PlayState.DELAYED
+
+var _play_state := PlayState.READY
+var play_state : PlayState :
+	get: return _play_state
+	set(value):
+		if _play_state == value: return
+		_play_state = value
+
+		match _play_state:
+			PlayState.READY, PlayState.COMPLETED:
+				is_locked = false
 
 var message : Message
 
 var unencountered_decos : Array[DecoInst]
 var unclosed_decos : Array[DecoInst]
 
-var cursor : float = 0.0
+var _cursor : float
+var cursor : float :
+	get: return _cursor
+	set(value):
+		_cursor = value
+		visible_characters = floori(_cursor)
+
+
 var expected_characters : int
 var visible_characters : int :
 	get: return rtl.visible_characters
@@ -39,25 +74,26 @@ var visible_characters : int :
 		if rtl.visible_characters == value: return
 		rtl.visible_characters = value
 
-		if unencountered_decos:
-			while rtl.visible_characters >= unencountered_decos.front().start_remapped:
-				var deco : DecoInst = unencountered_decos.pop_front()
-				deco.encounter_start(self)
-				if deco.template.requires_end_tag:
-					unclosed_decos.push_back(deco)
-				if not unencountered_decos:
-					break
-		if unclosed_decos:
-			for deco in unclosed_decos:
-				if rtl.visible_characters >= deco.end_remapped:
-					deco.encounter_end(self)
-					unclosed_decos.erase(deco)
+		if is_playing:
+			if unencountered_decos:
+				while rtl.visible_characters >= unencountered_decos.front().start_remapped:
+					var deco : DecoInst = unencountered_decos.pop_front()
+					await deco.encounter_start(self)
+					if deco.template.requires_end_tag:
+						unclosed_decos.push_back(deco)
+					if not unencountered_decos:
+						break
+			if unclosed_decos:
+				for deco in unclosed_decos:
+					if rtl.visible_characters >= deco.end_remapped:
+						await deco.encounter_end(self)
+						unclosed_decos.erase(deco)
 
 		if rtl.visible_characters >= expected_characters:
 			rtl.visible_characters = -1
 
 		if rtl.visible_characters == -1:
-			is_playing = false
+			play_state = PlayState.COMPLETED
 			for deco in unclosed_decos:
 				deco.encounter_end(self)
 			unclosed_decos.clear()
@@ -72,16 +108,17 @@ var cps : float :
 	get: return print_speed
 
 
-var working : bool :
+var is_working : bool :
 	get: return visible_characters != -1
 
 
 var next_prod_stop : int :
 	get:
-		if unencountered_decos:
-			for deco in unencountered_decos:
-				if deco.template is DecoWait:
-					return deco.start_remapped
+		for deco in unencountered_decos:
+			if self.visible_characters >= deco.start_remapped:
+				continue
+			if deco_is_prod_stop(deco):
+				return deco.start_remapped
 		return -1
 
 
@@ -101,11 +138,10 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if not working: return
+	if not is_working: return
 
-	if is_playing:
+	if is_typing:
 		cursor += cps * delta
-		visible_characters = floori(cursor)
 
 	if scroll_container:
 		scrollbar.value = fake_rtl.get_content_height() - scroll_container.size.y
@@ -117,19 +153,20 @@ func reset() -> void:
 		scroll_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		scrollbar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	expected_characters = rtl.get_total_character_count()
+	play_state = PlayState.READY
 	cursor = 0
-	visible_characters = 0
 
 
 func present() -> void:
-	is_playing = true
+	play_state = PlayState.PLAYING
+	cursor = 0
 
 
 func prod() -> void:
-	prodded.emit()
+	if is_playing and not is_locked:
+		cursor = next_prod_stop
 
-	if working:
-		visible_characters = next_prod_stop
+	prodded.emit()
 
 
 func _on_message_received(_message: Message) -> void:
@@ -139,10 +176,31 @@ func _on_message_received(_message: Message) -> void:
 	unclosed_decos.clear()
 	for deco in message.decos:
 		deco.create_remap_for(self)
-	if is_ready:
-		reset()
-		present()
+
+	if not is_ready: return
+
+	reset()
+	present()
 
 
 func _on_dialog_present() -> void:
 	present()
+
+
+func deco_is_prod_stop(deco: DecoInst) -> bool:
+	return deco.template is DecoWait or (treat_delay_as_wait and deco.template is DecoDelay)
+
+
+func delay(seconds: float):
+	if self.treat_delay_as_wait:
+		self.play_state = PlayState.PAUSED
+	else:
+		self.play_state = PlayState.DELAYED
+	await self.get_tree().create_timer(seconds).timeout
+	self.play_state = PlayState.PLAYING
+
+
+func wait():
+	self.play_state = PlayState.PAUSED
+	await self.prodded
+	self.play_state = PlayState.PLAYING

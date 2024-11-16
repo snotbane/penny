@@ -42,7 +42,7 @@ func prevent_skip() -> void:
 
 func try_advance() -> void:
 	if appear_state != AppearState.PRESENT: return
-	if typewriter.working:
+	if typewriter.is_working:
 		typewriter.prod()
 		return
 	if is_preventing_skip: return

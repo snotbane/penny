@@ -3,3 +3,8 @@
 class_name PennyDecoRegistry extends Resource
 
 @export var deco_scripts : Array[Script]
+
+func register_scripts() -> void:
+	for script in deco_scripts:
+		var deco : Deco = script.new()
+		Deco.register_instance(deco)

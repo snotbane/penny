@@ -1,8 +1,7 @@
 
 class_name Deco extends Object
 
-static var MASTER_REGISTRY : Dictionary :
-	get: return Penny.deco_dict
+static var MASTER_REGISTRY : Dictionary
 
 const DECO_FILE_OMIT = [
 	".godot",
@@ -21,12 +20,6 @@ var bbcode_tag_id : StringName :
 	get: return _get_bbcode_tag_id()
 
 
-
-static func _static_init() -> void:
-	print("MASTER STATIC INIT", MASTER_REGISTRY)
-	pass
-
-
 static func get_template_by_penny_id(penny_id: StringName) -> Deco:
 	if MASTER_REGISTRY.has(penny_id):
 		return MASTER_REGISTRY[penny_id]
@@ -34,9 +27,7 @@ static func get_template_by_penny_id(penny_id: StringName) -> Deco:
 
 
 static func register_instance(deco: Deco) -> void:
-	print(deco.penny_tag_id)
 	Deco.MASTER_REGISTRY[deco.penny_tag_id] = deco
-	print(Deco.MASTER_REGISTRY)
 
 
 static func _get_instance_for_registry() -> Deco:
@@ -72,10 +63,9 @@ func _on_register_end(message: Message, tag: DecoInst) -> void:
 	pass
 
 
-func _on_encounter_start(typewriter: Typewriter, tag: DecoInst) -> void:
+func _on_encounter_start(typewriter: Typewriter, tag: DecoInst):
 	pass
 
 
-func _on_encounter_end(typewriter: Typewriter, tag: DecoInst) -> void:
+func _on_encounter_end(typewriter: Typewriter, tag: DecoInst):
 	pass
-

@@ -57,7 +57,15 @@ func _init() -> void:
 	insts.push_back(self)
 
 
+
+
 func _ready() -> void:
+	for meta_name in self.get_meta_list():
+		var meta : Variant = self.get_meta(meta_name)
+		if meta is PennyDecoRegistry:
+			var registry : PennyDecoRegistry = meta
+			registry.register_scripts()
+
 	ready_deferred.call_deferred()
 
 

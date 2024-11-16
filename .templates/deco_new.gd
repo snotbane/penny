@@ -1,11 +1,6 @@
 
 class_name DecoNew extends Deco
 
-## REQUIRED: Call [register_instance] and pass in an instance of THIS script.
-## REQUIRED: Ensure that this script is registered in a PennyDecoRegistry resource SOMEWHERE in the project.
-static func _static_init() -> void:
-	Deco.register_instance(DecoNew.new())
-
 
 # func _get_requires_end_tag() -> bool:
 # 	return true
@@ -31,10 +26,10 @@ func _get_penny_tag_id() -> StringName:
 # 	pass
 
 
-# func _on_encounter_start(typewriter: Typewriter, tag: DecoInst) -> void:
+# func _on_encounter_start(typewriter: Typewriter, tag: DecoInst):
 # 	pass
 
 
-# func _on_encounter_end(typewriter: Typewriter, tag: DecoInst) -> void:
+# func _on_encounter_end(typewriter: Typewriter, tag: DecoInst):
 # 	pass
 

@@ -60,11 +60,11 @@ func register_end(message: Message, index: int) -> void:
 
 
 func encounter_start(typewriter: Typewriter) -> void:
-	self.template._on_encounter_start(typewriter, self)
+	await self.template._on_encounter_start(typewriter, self)
 
 
 func encounter_end(typewriter: Typewriter) -> void:
-	self.template._on_encounter_end(typewriter, self)
+	await self.template._on_encounter_end(typewriter, self)
 
 
 func get_argument(key: StringName) -> Variant:

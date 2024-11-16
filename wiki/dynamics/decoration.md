@@ -232,6 +232,18 @@ Rubin `Hello, nice to meet you. <if=seen_echo_before>Haven't I seen you somewher
 - From Ren'Py
 - ***Unknown implementation in bbcode***
 
+#### `lock`
+
+- Unique to Penny
+- Prevents skipping dialogue / prodding the typewriter, except during `wait`
+- Use for very important pieces of dialogue
+- No arguments
+- Usage:
+
+```pny
+I never thought <lock>you would actually believe me...</>
+```
+
 #### `next`
 
 - From Ren'Py as `nw`
@@ -327,3 +339,14 @@ Normal text <typesound=$angry_text>Angry text!!!</> Normal text again.
 -   `{rt}`
 -   `{clear}`
 
+# Troubleshooting
+
+Decorations work well but are strange to set up. When creating a new deco script, ensure the following:
+
+- The new script calls `Deco.register_instance(DecoNew.new())` in its `_static_init()` method
+- The new script belongs to a `PennyDecoRegistry` resource somewhere in the FileSystem
+- The `PennyDecoRegistry` exists as metadata somewhere in a scene in the project.
+
+All of this is to ensure that the scripts get loaded properly when packaged.
+
+I have experienced an issue where a new deco script will not appear after following the above steps. My observations are that somehow it is getting statically initialized before the base `Deco` class does, which clears `Deco.MASTER_REGISTRY`. To fix, I removed the new script from the project, ran the game, then placed the script back in. That's all I needed to do.
