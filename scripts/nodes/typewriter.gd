@@ -188,7 +188,7 @@ func _on_dialog_present() -> void:
 
 
 func deco_is_prod_stop(deco: DecoInst) -> bool:
-	return deco.template is DecoWait or (treat_delay_as_wait and deco.template is DecoDelay)
+	return deco.template is DecoWait or deco.template is DecoLock or (treat_delay_as_wait and deco.template is DecoDelay)
 
 
 func delay(seconds: float):

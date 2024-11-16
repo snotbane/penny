@@ -1,13 +1,13 @@
 
-class_name DecoWait extends Deco
+class_name DecoLock extends Deco
 
 
 func _get_requires_end_tag() -> bool:
-	return false
+	return true
 
 
 func _get_penny_tag_id() -> StringName:
-	return StringName('wait')
+	return StringName('lock')
 
 
 func _get_bbcode_tag_id() -> StringName:
@@ -27,9 +27,9 @@ func _get_bbcode_tag_id() -> StringName:
 
 
 func _on_encounter_start(typewriter: Typewriter, tag: DecoInst):
-	await typewriter.wait()
+	typewriter.is_locked = true
 
 
-# func _on_encounter_end(typewriter: Typewriter, tag: DecoInst) -> void:
-# 	pass
+func _on_encounter_end(typewriter: Typewriter, tag: DecoInst):
+	typewriter.is_locked = false
 
