@@ -227,9 +227,9 @@ Rubin `Hello, nice to meet you. <if=seen_echo_before>Haven't I seen you somewher
 - Used in Ren'Py as `image`
 - Creates a `[img]` bbcode tag
 
-#### `k` (Kerning)
+#### `kern` (Kerning)
 
-- From Ren'Py
+- From Ren'Py as `k`
 - ***Unknown implementation in bbcode***
 
 #### `lock`
@@ -237,6 +237,7 @@ Rubin `Hello, nice to meet you. <if=seen_echo_before>Haven't I seen you somewher
 - Unique to Penny
 - Prevents skipping dialogue / prodding the typewriter, except during `wait`
 - Use for very important pieces of dialogue
+- Dialogue can still be skipped entirely if holding skip
 - No arguments
 - Usage:
 

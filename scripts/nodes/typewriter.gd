@@ -13,8 +13,13 @@ enum PlayState {
 signal completed
 signal prodded
 
+
+var speed_stack : Array[float] = [ 50.0 ]
 ## How many characters per second to print out. For specific speeds mid-printout, use the <speed=X> decoration.
-@export var print_speed : float = 50.0
+@export var print_speed : float = 50.0 :
+	get: return speed_stack[0]
+	set(value):
+		speed_stack[0] = value
 
 ## How many sfx per second to play. This will also scale with a <speed> decoration.
 @export var audio_speed : float = 10.0
@@ -104,8 +109,8 @@ var visible_characters : int :
 		fake_rtl.visible_characters = rtl.visible_characters
 
 
-var cps : float :
-	get: return print_speed
+var speed : float :
+	get: return speed_stack.back()
 
 
 var is_working : bool :
@@ -141,7 +146,7 @@ func _process(delta: float) -> void:
 	if not is_working: return
 
 	if is_typing:
-		cursor += cps * delta
+		cursor += speed * delta
 
 	if scroll_container:
 		scrollbar.value = fake_rtl.get_content_height() - scroll_container.size.y
@@ -204,3 +209,11 @@ func wait():
 	self.play_state = PlayState.PAUSED
 	await self.prodded
 	self.play_state = PlayState.PLAYING
+
+
+func push_speed_tag(characters_per_second: float) -> void:
+	speed_stack.push_back(characters_per_second)
+
+func pop_speed_tag() -> void:
+	if speed_stack.size() <= 1: return
+	speed_stack.pop_back()

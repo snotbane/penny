@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="PennyDecoRegistry" load_steps=12 format=3 uid="uid://bsrrbmeopuowc"]
+[gd_resource type="Resource" script_class="PennyDecoRegistry" load_steps=13 format=3 uid="uid://bsrrbmeopuowc"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_invalid.gd" id="1_fdgl7"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_empty_span.gd" id="2_07t51"]
@@ -10,8 +10,9 @@
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_size.gd" id="6_835lb"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_lock.gd" id="6_hullg"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_strikethrough.gd" id="7_cvvcy"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_speed.gd" id="9_3e4wr"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_wait.gd" id="9_7b5ka"]
 
 [resource]
 script = ExtResource("4_pdc3q")
-deco_scripts = Array[Script]([ExtResource("2_yhdmr"), ExtResource("2_pyahk"), ExtResource("2_07t51"), ExtResource("1_fdgl7"), ExtResource("3_jopdq"), ExtResource("6_hullg"), ExtResource("5_4axiw"), ExtResource("6_835lb"), ExtResource("7_cvvcy"), ExtResource("9_7b5ka")])
+deco_scripts = Array[Script]([ExtResource("2_yhdmr"), ExtResource("2_pyahk"), ExtResource("2_07t51"), ExtResource("1_fdgl7"), ExtResource("3_jopdq"), ExtResource("6_hullg"), ExtResource("5_4axiw"), ExtResource("6_835lb"), ExtResource("9_3e4wr"), ExtResource("7_cvvcy"), ExtResource("9_7b5ka")])
