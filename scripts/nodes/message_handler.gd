@@ -1,19 +1,21 @@
 
 class_name MessageHandler extends PennyNode
 
+const PREVENT_SKIP_DELAY_SECONDS := 0.125
+
 signal received(message: Message)
 signal advanced
 
 @export var name_label : RichTextLabel
 @export var text_label : RichTextLabel
 @export var typewriter : Typewriter
-@export var skip_prevent_timer : Timer
 
-
+var is_preventing_skip : bool
 var message : Message
 
 
 func _populate(_host: PennyHost, _object: PennyObject) -> void:
+	_host.on_try_advance.connect(try_advance)
 	advanced.connect(_host.advance)
 
 
@@ -33,14 +35,15 @@ func receive(record: Record, subject: PennyObject) -> void:
 
 
 func prevent_skip() -> void:
-	if skip_prevent_timer.is_stopped():
-		skip_prevent_timer.start()
+	is_preventing_skip = true
+	await self.get_tree().create_timer(PREVENT_SKIP_DELAY_SECONDS, false, false, true).timeout
+	is_preventing_skip = false
 
 
 func try_advance() -> void:
 	if appear_state != AppearState.PRESENT: return
 	if typewriter.working:
-		typewriter.prod_work()
+		typewriter.prod()
 		return
-	if not skip_prevent_timer.is_stopped():	return
+	if is_preventing_skip: return
 	advanced.emit()

@@ -76,4 +76,4 @@ grow_vertical = 2
 mouse_filter = 2
 
 [connection signal="on_record_created" from="." to="canvas_layer/ui/v_box_container/history_layer/penny_history_box" method="_on_record_created"]
-[connection signal="on_click" from="canvas_layer/ui/input_catcher" to="." method="advance"]
+[connection signal="on_click" from="canvas_layer/ui/input_catcher" to="." method="try_advance"]

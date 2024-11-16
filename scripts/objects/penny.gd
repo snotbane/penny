@@ -13,6 +13,7 @@ const WARNING_COLOR = Color(1, 0.871, 0.4)	## Matches editor
 const ERROR_COLOR = Color(1, 0.471, 0.42)	## Matches editor
 
 static var deco_registry := preload("res://addons/penny_godot/assets/penny_decos_default.tres")
+static var deco_dict : Dictionary = {}
 static var scripts : Array[PennyScript]
 static var labels : Dictionary			## StringName : Stmt
 static var inits : Array[StmtInit]
@@ -33,6 +34,11 @@ static var active_dock : PennyDock:
 # 		var tres : Resource = load(tres_path)
 # 		if tres is PennyDecoRegistry:
 # 			deco_registry_resources.push_back(tres)
+
+
+func _init() -> void:
+
+	pass
 
 
 static func clear_all() -> void:

@@ -3,6 +3,7 @@
 class_name Typewriter extends Node
 
 signal completed
+signal prodded
 
 ## How many characters per second to print out. For specific speeds mid-printout, use the <speed=X> decoration.
 @export var print_speed : float = 50.0
@@ -71,6 +72,19 @@ var cps : float :
 	get: return print_speed
 
 
+var working : bool :
+	get: return visible_characters != -1
+
+
+var next_prod_stop : int :
+	get:
+		if unencountered_decos:
+			for deco in unencountered_decos:
+				if deco.template is DecoWait:
+					return deco.start_remapped
+		return -1
+
+
 func _ready() -> void:
 	if scroll_container:
 		scrollbar = scroll_container.get_v_scroll_bar()
@@ -111,6 +125,13 @@ func present() -> void:
 	is_playing = true
 
 
+func prod() -> void:
+	prodded.emit()
+
+	if working:
+		visible_characters = next_prod_stop
+
+
 func _on_message_received(_message: Message) -> void:
 	message = _message
 	rtl.text = message.to_string()
@@ -125,18 +146,3 @@ func _on_message_received(_message: Message) -> void:
 
 func _on_dialog_present() -> void:
 	present()
-
-
-
-## WATCHER METHODS
-
-var working : bool :
-	get: return visible_characters != -1
-
-func prod_work() -> void:
-	## Eventually, go to the next wait input chararcter -- not necessarily the whole thing.
-	visible_characters = -1
-
-
-
-

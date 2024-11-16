@@ -60,7 +60,7 @@ static func register_formats() -> void:
 
 
 func reload(hard: bool = false) -> void:
-	# print(Deco.MASTER_REGISTRY)
+	print(Deco.MASTER_REGISTRY)
 
 	var scripts : Array[PennyScript]
 	var files : Array[FileAccess]

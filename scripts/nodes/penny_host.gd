@@ -8,6 +8,7 @@ enum State {
 	READY
 }
 
+signal on_try_advance
 signal on_data_modified
 signal on_record_created(record: Record)
 
@@ -113,6 +114,10 @@ func invoke_at_cursor() -> void:
 
 	if not record.halt or state == State.INITING:
 		advance()
+
+
+func try_advance() -> void:
+	on_try_advance.emit()
 
 
 func advance() -> void:
