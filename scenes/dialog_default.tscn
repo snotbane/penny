@@ -1,7 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://b8sp6ey8fsgt7"]
+[gd_scene load_steps=7 format=3 uid="uid://b8sp6ey8fsgt7"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/message_handler.gd" id="2_44j7f"]
-[ext_resource type="AudioStream" uid="uid://bpnbbjju2hgue" path="res://assets/sfx/talk_husband.ogg" id="3_gm630"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/typewriter.gd" id="3_q7721"]
 
 [sub_resource type="Animation" id="Animation_th5j2"]
@@ -139,8 +138,6 @@ halt_on_instantiate = true
 
 [node name="typewriter" type="Node" parent="." node_paths=PackedStringArray("rtl", "scroll_container", "audio_player")]
 script = ExtResource("3_q7721")
-characters_per_audio = 2
-audio_sample = ExtResource("3_gm630")
 rtl = NodePath("../panel/margin_container/scroll_container/margin_container/text_label")
 scroll_container = NodePath("../panel/margin_container/scroll_container")
 audio_player = NodePath("nondirectional_audio_stream_player")
