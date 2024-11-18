@@ -1,6 +1,6 @@
 
 ## Displayable text_with_bbcode capable of producing decorations.
-class_name Message extends RefCounted
+class_name DisplayText extends RefCounted
 
 static var INTERPOLATION_PATTERN := RegEx.create_from_string("(@([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)|\\[(.*?)\\])")
 static var INTERJECTION_PATTERN := RegEx.create_from_string("(\\{.*?\\})")

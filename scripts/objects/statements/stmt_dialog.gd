@@ -12,9 +12,9 @@ var raw_text : String
 var text_stripped : String :
 	get:
 		var result : String = raw_text
-		# result = Message.REGEX_INTERPOLATION.sub(result, "$1", true)
-		result = Message.INTERJECTION_PATTERN.sub(result, "", true)
-		result = Message.DECO_TAG_PATTERN.sub(result, "", true)
+		# result = DisplayText.REGEX_INTERPOLATION.sub(result, "$1", true)
+		result = DisplayText.INTERJECTION_PATTERN.sub(result, "", true)
+		result = DisplayText.DECO_TAG_PATTERN.sub(result, "", true)
 		return result
 
 var word_count : int :
@@ -90,8 +90,8 @@ func _execute(host: PennyHost) -> Record:
 
 	var subject : PennyObject = subject_path.evaluate(host.data_root)
 
-	var who := Message.new(subject.rich_name, host)
-	var what := Message.new(raw_text, host)
+	var who := DisplayText.new(subject.rich_name, host)
+	var what := DisplayText.new(raw_text, host)
 	var attach := DialogRecord.new(who, what)
 
 	# if OS.is_debug_build():

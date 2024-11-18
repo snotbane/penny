@@ -55,11 +55,11 @@ func _get_bbcode_start_tag(inst: DecoInst) -> String:
 
 
 ## Extra functionality used to modify the message data.
-func _on_register_start(message: Message, tag: DecoInst) -> void:
+func _on_register_start(message: DisplayText, tag: DecoInst) -> void:
 	pass
 
 
-func _on_register_end(message: Message, tag: DecoInst) -> void:
+func _on_register_end(message: DisplayText, tag: DecoInst) -> void:
 	pass
 
 

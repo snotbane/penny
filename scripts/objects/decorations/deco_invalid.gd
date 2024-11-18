@@ -18,5 +18,5 @@ func _get_bbcode_start_tag(inst: DecoInst) -> String:
 	return inst.id
 
 
-func _on_register_start(message: Message, tag: DecoInst) -> void:
+func _on_register_start(message: DisplayText, tag: DecoInst) -> void:
 	Penny.log_warn("Unrecognized tag %s" % tag)
