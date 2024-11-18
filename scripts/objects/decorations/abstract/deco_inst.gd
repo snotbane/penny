@@ -54,13 +54,13 @@ func _to_string() -> String:
 	return "<%s>" % result
 
 
-func register_start(message: DisplayText, index: int) -> void:
+func register_start(message: DecoratedText, index: int) -> void:
 	message.decos.push_back(self)
 	start_index = index
 	template._on_register_start(message, self)
 
 
-func register_end(message: DisplayText, index: int) -> void:
+func register_end(message: DecoratedText, index: int) -> void:
 	end_index = index
 	template._on_register_end(message, self)
 

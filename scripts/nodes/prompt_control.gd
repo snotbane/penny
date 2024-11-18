@@ -16,6 +16,6 @@ func _receive_options(_options: Array) -> void:
 		var button : PromptButton = button_prefab.instantiate()
 		button.pressed.connect(receive_response.bind(path))
 
-		button.receive(option.rich_name)
+		button.receive(option.rich_name.text)
 
 		button_container.add_child(button)

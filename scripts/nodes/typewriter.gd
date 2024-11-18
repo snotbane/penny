@@ -68,7 +68,7 @@ var play_state : PlayState :
 			PlayState.READY, PlayState.COMPLETED:
 				is_locked = false
 
-var message : DisplayText
+var message : DecoratedText
 
 var unencountered_decos : Array[DecoInst]
 var unclosed_decos : Array[DecoInst]
@@ -196,7 +196,7 @@ func prod() -> void:
 	prodded.emit()
 
 
-func _on_message_received(_message: DisplayText) -> void:
+func _on_message_received(_message: DecoratedText) -> void:
 	message = _message
 	rtl.text = message.to_string()
 	unencountered_decos = message.decos.duplicate()

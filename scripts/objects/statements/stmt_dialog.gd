@@ -12,9 +12,9 @@ var raw_text : String
 var text_stripped : String :
 	get:
 		var result : String = raw_text
-		# result = DisplayText.REGEX_INTERPOLATION.sub(result, "$1", true)
-		result = DisplayText.INTERJECTION_PATTERN.sub(result, "", true)
-		result = DisplayText.DECO_TAG_PATTERN.sub(result, "", true)
+		# result = DecoratedText.REGEX_INTERPOLATION.sub(result, "$1", true)
+		result = DecoratedText.INTERJECTION_PATTERN.sub(result, "", true)
+		result = DecoratedText.DECO_TAG_PATTERN.sub(result, "", true)
 		return result
 
 var word_count : int :
@@ -90,23 +90,10 @@ func _execute(host: PennyHost) -> Record:
 
 	var subject : PennyObject = subject_path.evaluate(host.data_root)
 
-	var who := DisplayText.new(subject.rich_name, host.data_root)
-	var what := DisplayText.new(raw_text, host.data_root)
+	var who := DecoratedText.from_filtered(subject.rich_name, host.data_root)
+	var what := DecoratedText.from_raw(raw_text, host.data_root)
 	var attach := DialogRecord.new(who, what)
 
-	# if OS.is_debug_build():
-	# 	if incoming_dialog_node is MessageHandler:
-	# 		var result := create_record(host, incoming_dialog_node.halt_on_instantiate, message)
-	# 		incoming_dialog_node.receive(result, message.subject)
-	# 		return result
-	# 	elif incoming_dialog_node:
-	# 		host.cursor.create_exception("Attempted to send a message to a node, but it isn't a MessageHandler.").push()
-	# 	else:
-	# 		host.cursor.create_exception("Attempted to send a message to a node, but it wasn't created.").push()
-	# else:
-	# 	var result := create_record(host, incoming_dialog_node.halt_on_instantiate, message)
-	# 	incoming_dialog_node.receive(result, message.subject)
-	# 	return result
 	var result := create_record(host, incoming_dialog_node.halt_on_instantiate, attach)
 	incoming_dialog_node.receive(result, subject)
 	return result

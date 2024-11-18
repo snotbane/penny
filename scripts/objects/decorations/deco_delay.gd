@@ -20,11 +20,11 @@ func _get_bbcode_tag_id() -> StringName:
 # 	return ""
 
 
-# func _on_register_start(message: DisplayText, tag: DecoInst) -> void:
+# func _on_register_start(message: DecoratedText, tag: DecoInst) -> void:
 # 	pass
 
 
-# func _on_register_end(message: DisplayText, tag: DecoInst) -> void:
+# func _on_register_end(message: DecoratedText, tag: DecoInst) -> void:
 # 	pass
 
 

@@ -121,7 +121,7 @@ static func get_script_info() -> Array:
 
 static func get_debug_string(value: Variant) -> String:
 	if value is PennyObject:
-		return value.name
+		return value.name.text
 	elif value is String:
 		return "\"%s\"" % value
 	elif value is Color:

@@ -224,11 +224,11 @@ func _evaluate_shallow(context: PennyObject) -> Variant:
 		ops.pop_back().apply(stack, context)
 
 	if stack.size() != 1:
-		stmt.create_exception("Expression not evaluated: stack size is not 1. Symbols: %s | Stack: %s" % [str(symbols), str(stack)])
+		PennyException.new("Expression not evaluated: stack size is not 1. Symbols: %s | Stack: %s" % [str(symbols), str(stack)]).push()
 		return null
 	var result = stack.pop_back()
 	if result == null:
-		stmt.create_exception("Expression evaluated to null.")
+		PennyException.new("Expression evaluated to null.").push()
 		return null
 
 	return result

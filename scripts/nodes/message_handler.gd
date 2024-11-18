@@ -3,7 +3,7 @@ class_name MessageHandler extends PennyNode
 
 const PREVENT_SKIP_DELAY_SECONDS := 0.125
 
-signal received(message: DisplayText)
+signal received(message: DecoratedText)
 signal advanced
 
 @export var name_label : RichTextLabel
@@ -11,7 +11,7 @@ signal advanced
 @export var typewriter : Typewriter
 
 var is_preventing_skip : bool
-var message : DisplayText
+var message : DecoratedText
 
 
 func _populate(_host: PennyHost, _object: PennyObject) -> void:

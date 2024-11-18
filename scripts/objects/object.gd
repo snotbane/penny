@@ -82,12 +82,17 @@ var parent : PennyObject
 var self_key : StringName
 var data : Dictionary
 
-var name : String :
-	get: return self.get_value_or_default(NAME_KEY, self_key)
+var name : FilteredText :
+	get: return FilteredText.from_raw(self.get_value_or_default(NAME_KEY, self_key), self)
 
+var name_prefix : FilteredText :
+	get: return FilteredText.from_raw(self.get_value_or_default(NAME_PREFIX_KEY, "<>"), self)
 
-var rich_name : String :
-	get: return "<b, color=#%s>%s</>" % [self.get_value_or_default(COLOR_KEY, Color.WHITE).to_html(), name]
+var name_suffix : FilteredText :
+	get: return FilteredText.from_raw(self.get_value_or_default(NAME_SUFFIX_KEY, "</>"), self)
+
+var rich_name : FilteredText :
+	get: return FilteredText.from_many([name_prefix, name, name_suffix])
 
 
 var node_name : String :

@@ -14,11 +14,11 @@ func _get_bbcode_start_tag(inst: DecoInst) -> String:
 	return "%s=%s" % [self.bbcode_tag_id, inst.get_argument('color').to_html()]
 
 
-# func _on_register_start(message: DisplayText, tag: DecoInst) -> void:
+# func _on_register_start(message: DecoratedText, tag: DecoInst) -> void:
 # 	pass
 
 
-# func _on_register_end(message: DisplayText, tag: DecoInst) -> void:
+# func _on_register_end(message: DecoratedText, tag: DecoInst) -> void:
 # 	pass
 
 
