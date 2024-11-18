@@ -24,7 +24,7 @@ var text_with_bbcode : String
 
 var decos : Array[DecoInst]
 
-func _init(_raw: String, host: PennyHost) -> void:
+func _init(_raw: String, host: PennyHost, relative_object: PennyObject = null) -> void:
 	raw = _raw
 	text_evaluated = raw
 
@@ -107,7 +107,7 @@ func _init(_raw: String, host: PennyHost) -> void:
 			tags_needing_end_stack.push_back(0)
 			var deco_strings := tag_match.get_string(1).split(",", false)
 			for deco_string in deco_strings:
-				var deco := DecoInst.new(deco_string)
+				var deco := DecoInst.new(deco_string, Path.from_string("Rubin").evaluate(host.data_root))
 				deco.register_start(self, tag_match.get_start())
 				bbcode_start_tags_string += deco.bbcode_tag_start
 				if deco.template.requires_end_tag:

@@ -157,6 +157,9 @@ func _init(_stmt: Stmt, _symbols: Array) -> void:
 	stmt = _stmt
 	symbols = _symbols
 
+static func from_string(string: String, _stmt: Stmt = null) -> Expr:
+	return Expr.from_tokens(PennyScript.parse_tokens_from_raw(string), _stmt)
+
 ## Converts raw tokens into workable symbols (Variants).
 static func from_tokens(tokens: Array[Token], _stmt: Stmt = null) -> Expr:
 	var stack : Array[Variant] = []

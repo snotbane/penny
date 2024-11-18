@@ -30,10 +30,16 @@ var bbcode_tag_end : String :
 		return "[/%s]" % template.bbcode_tag_id
 
 
-func _init(string: String) -> void:
+func _init(string: String, context: PennyObject) -> void:
 	var arg_matches := ARG_PATTERN.search_all(string)
 	for arg_match in arg_matches:
-		args[StringName(arg_match.get_string(1))] = arg_match.get_string(2)
+		var expr := Expr.from_string(arg_match.get_string(2))
+		var bind : Variant 	= expr.evaluate(context)
+		if bind:
+			args[StringName(arg_match.get_string(1))] = bind
+		else:
+			PennyException.new("deco argument '%s' evaluated to null." % arg_match.get_string(1)).push()
+
 	var id_match := ID_PATTERN.search(string)
 	if id_match:
 		id = id_match.get_string(1)
