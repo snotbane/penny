@@ -58,7 +58,6 @@ func _validate_self_post_setup() -> void:
 
 
 func _execute(host: PennyHost) -> Record:
-
 	var previous_dialog : PennyObject = host.last_dialog_object
 	var previous_dialog_node : PennyNode
 

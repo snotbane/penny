@@ -52,10 +52,11 @@ layout_mode = 2
 [node name="penny_runtime_dock" type="TabContainer" parent="margin_container/h_box_container"]
 layout_mode = 2
 size_flags_horizontal = 3
-current_tab = 0
+current_tab = 1
 tabs_visible = false
 
 [node name="host_selector" type="PanelContainer" parent="margin_container/h_box_container/penny_runtime_dock" node_paths=PackedStringArray("vbox", "none_available_node")]
+visible = false
 layout_mode = 2
 script = ExtResource("5_roq4y")
 vbox = NodePath("v_box_container/host_list")
@@ -83,7 +84,6 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="host_menu" type="Control" parent="margin_container/h_box_container/penny_runtime_dock"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -326,8 +326,8 @@ flat = true
 [connection signal="visibility_changed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="refresh"]
 [connection signal="toggled" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_values_toggle" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="_on_search_values_toggle_toggled"]
 [connection signal="text_changed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_bar" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="_on_search_bar_text_changed"]
-[connection signal="pressed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_bar/search_clear" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_bar" method="clear"]
 [connection signal="pressed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_bar/search_clear" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_bar" method="release_focus"]
+[connection signal="pressed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_bar/search_clear" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_bar" method="clear"]
 [connection signal="item_selected" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/sort_selector" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="_on_sort_selector_item_selected"]
 [connection signal="value_changed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/hbox_zoom/zoom_slider" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="_on_zoom_slider_value_changed"]
 [connection signal="pressed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/hbox_zoom/zoom_reset" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/hbox_zoom/zoom_slider" method="set_value" binds= [10.0]]

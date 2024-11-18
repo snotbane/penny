@@ -50,6 +50,7 @@ func _init(_raw: String, host: PennyHost) -> void:
 	## FILTERS
 	var filters : Array = host.data_root.get_value(PennyObject.FILTERS_KEY)
 	for filter_path in filters:
+
 		var filter : PennyObject = filter_path.evaluate(host.data_root)
 		var pattern := RegEx.create_from_string(filter.get_value(PennyObject.FILTER_PATTERN_KEY))
 		var replace : String = filter.get_value(PennyObject.FILTER_REPLACE_KEY)
@@ -70,7 +71,7 @@ func _init(_raw: String, host: PennyHost) -> void:
 				continue
 
 			text_evaluated = pattern.sub(text_evaluated, replace, false, start)
-			start = pattern_match.get_end()
+			start = pattern_match.get_start() + replace.length()
 
 	## ESCAPES
 	while true:
@@ -120,6 +121,7 @@ func _init(_raw: String, host: PennyHost) -> void:
 		var deco : DecoInst = deco_stack.pop_back()
 		deco.register_end(self, text_with_bbcode.length() - 1)
 		text_with_bbcode += deco.bbcode_tag_end
+
 
 static func sub_match(match: RegExMatch, sub: String) -> String:
 	return match.subject.substr(0, match.get_start()) + sub + match.subject.substr(match.get_end(), match.subject.length() - match.get_end())
