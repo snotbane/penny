@@ -1,17 +1,9 @@
 extends Control
 
+signal on_selected
+
 @export var vbox : VBoxContainer
 @export var none_available_node : Control
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	# refresh()
-	pass
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
 
 
 func refresh() -> void:
@@ -23,12 +15,11 @@ func refresh() -> void:
 	for host in PennyHost.insts:
 		var button := Button.new()
 		button.text = host.name
-		button.pressed.connect(select.bind(host))
+		button.pressed.connect(self.select.bind(host))
 		vbox.add_child.call_deferred(button)
 
 
 func select(host: PennyHost) -> void:
-	# PennyDebug.inst.host = host
-	# tab switch
-	pass
+	PennyDebug.inst.host = host
+	on_selected.emit()
 

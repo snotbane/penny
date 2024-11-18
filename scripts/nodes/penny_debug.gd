@@ -2,7 +2,13 @@
 class_name PennyDebug extends Control
 
 static var inst : PennyDebug
-var host : PennyHost
+
+var _host: PennyHost
+var host : PennyHost :
+	get: return _host
+	set(value):
+		_host = value
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

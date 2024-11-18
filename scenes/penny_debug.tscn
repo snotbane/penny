@@ -52,40 +52,12 @@ layout_mode = 2
 [node name="penny_runtime_dock" type="TabContainer" parent="margin_container/h_box_container"]
 layout_mode = 2
 size_flags_horizontal = 3
-current_tab = 1
+current_tab = 0
 tabs_visible = false
-
-[node name="host_selector" type="PanelContainer" parent="margin_container/h_box_container/penny_runtime_dock" node_paths=PackedStringArray("vbox", "none_available_node")]
-visible = false
-layout_mode = 2
-script = ExtResource("5_roq4y")
-vbox = NodePath("v_box_container/host_list")
-none_available_node = NodePath("no_hosts")
-metadata/_tab_index = 0
-
-[node name="no_hosts" type="Label" parent="margin_container/h_box_container/penny_runtime_dock/host_selector"]
-layout_mode = 2
-tooltip_text = "No PennyHosts exist in get_tree().root."
-mouse_filter = 1
-text = "NO HOSTS AVAILABLE"
-label_settings = SubResource("LabelSettings_kjwga")
-horizontal_alignment = 1
-
-[node name="v_box_container" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_selector"]
-layout_mode = 2
-
-[node name="label" type="Label" parent="margin_container/h_box_container/penny_runtime_dock/host_selector/v_box_container"]
-layout_mode = 2
-text = "Select a PennyHost to view it."
-horizontal_alignment = 1
-
-[node name="host_list" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_selector/v_box_container"]
-layout_mode = 2
-size_flags_vertical = 3
 
 [node name="host_menu" type="Control" parent="margin_container/h_box_container/penny_runtime_dock"]
 layout_mode = 2
-metadata/_tab_index = 1
+metadata/_tab_index = 0
 
 [node name="tab_container" type="TabContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_menu"]
 layout_mode = 2
@@ -113,10 +85,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="space" type="Control" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox"]
-visible = false
-layout_mode = 2
-
 [node name="data_tree" type="Tree" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox" node_paths=PackedStringArray("debug")]
 layout_mode = 2
 size_flags_vertical = 3
@@ -133,10 +101,23 @@ debug = NodePath("../../../../../../../..")
 layout_mode = 2
 
 [node name="search_values_toggle" type="CheckButton" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search"]
+visible = false
 layout_mode = 2
 tooltip_text = "Also search values in the query."
 focus_mode = 0
 button_pressed = true
+
+[node name="sort_selector" type="OptionButton" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search"]
+layout_mode = 2
+tooltip_text = "Sort order."
+selected = 0
+item_count = 3
+popup/item_0/text = "Default"
+popup/item_1/text = "A to Z"
+popup/item_1/id = 1
+popup/item_2/text = "Recent"
+popup/item_2/id = 2
+popup/item_2/disabled = true
 
 [node name="search_bar" type="LineEdit" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search"]
 layout_mode = 2
@@ -158,18 +139,6 @@ focus_mode = 0
 icon = ExtResource("5_uw3ek")
 flat = true
 icon_alignment = 2
-
-[node name="sort_selector" type="OptionButton" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search"]
-layout_mode = 2
-tooltip_text = "Sort order."
-selected = 0
-item_count = 3
-popup/item_0/text = "Default"
-popup/item_1/text = "A to Z"
-popup/item_1/id = 1
-popup/item_2/text = "Recent"
-popup/item_2/id = 2
-popup/item_2/disabled = true
 
 [node name="hbox_zoom" type="HBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search"]
 custom_minimum_size = Vector2(140, 0)
@@ -225,6 +194,7 @@ debug = NodePath("../../../../../../../../../..")
 label_listing_prefab = ExtResource("11_v4nj7")
 
 [node name="h_box_container" type="HBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Labels/v_box_container"]
+visible = false
 layout_mode = 2
 
 [node name="button_jump" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Labels/v_box_container/h_box_container"]
@@ -322,14 +292,44 @@ tooltip_text = "Back to PennyHost list"
 icon = ExtResource("15_mpfsm")
 flat = true
 
+[node name="host_selector" type="PanelContainer" parent="margin_container/h_box_container/penny_runtime_dock" node_paths=PackedStringArray("vbox", "none_available_node")]
+visible = false
+layout_mode = 2
+script = ExtResource("5_roq4y")
+vbox = NodePath("v_box_container/host_list")
+none_available_node = NodePath("no_hosts")
+metadata/_tab_index = 1
+
+[node name="no_hosts" type="Label" parent="margin_container/h_box_container/penny_runtime_dock/host_selector"]
+layout_mode = 2
+tooltip_text = "No PennyHosts exist in get_tree().root."
+mouse_filter = 1
+text = "NO HOSTS AVAILABLE"
+label_settings = SubResource("LabelSettings_kjwga")
+horizontal_alignment = 1
+
+[node name="v_box_container" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_selector"]
+layout_mode = 2
+
+[node name="label" type="Label" parent="margin_container/h_box_container/penny_runtime_dock/host_selector/v_box_container"]
+layout_mode = 2
+text = "Select a PennyHost to view it."
+horizontal_alignment = 1
+
+[node name="host_list" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_selector/v_box_container"]
+layout_mode = 2
+size_flags_vertical = 3
+
 [connection signal="visibility_changed" from="." to="margin_container/h_box_container/penny_runtime_dock/host_selector" method="refresh"]
 [connection signal="visibility_changed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="refresh"]
 [connection signal="toggled" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_values_toggle" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="_on_search_values_toggle_toggled"]
+[connection signal="item_selected" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/sort_selector" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="_on_sort_selector_item_selected"]
 [connection signal="text_changed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_bar" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="_on_search_bar_text_changed"]
 [connection signal="pressed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_bar/search_clear" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_bar" method="release_focus"]
 [connection signal="pressed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_bar/search_clear" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_bar" method="clear"]
-[connection signal="item_selected" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/sort_selector" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="_on_sort_selector_item_selected"]
 [connection signal="value_changed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/hbox_zoom/zoom_slider" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="_on_zoom_slider_value_changed"]
 [connection signal="pressed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/hbox_zoom/zoom_reset" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/hbox_zoom/zoom_slider" method="set_value" binds= [10.0]]
 [connection signal="item_selected" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/verbosity_selector" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/penny_history_box" method="_on_verbosity_selector_item_selected"]
 [connection signal="pressed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom/zoom_reset" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom/zoom_slider" method="set_value" binds= [10.0]]
+[connection signal="pressed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/control/return_to_hosts_button" to="margin_container/h_box_container/penny_runtime_dock" method="set_current_tab" binds= [1]]
+[connection signal="on_selected" from="margin_container/h_box_container/penny_runtime_dock/host_selector" to="margin_container/h_box_container/penny_runtime_dock" method="set_current_tab" binds= [0]]
