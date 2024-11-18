@@ -90,8 +90,8 @@ func _execute(host: PennyHost) -> Record:
 
 	var subject : PennyObject = subject_path.evaluate(host.data_root)
 
-	var who := DisplayText.new(subject.rich_name, host)
-	var what := DisplayText.new(raw_text, host)
+	var who := DisplayText.new(subject.rich_name, host.data_root)
+	var what := DisplayText.new(raw_text, host.data_root)
 	var attach := DialogRecord.new(who, what)
 
 	# if OS.is_debug_build():

@@ -34,8 +34,8 @@ func _init(string: String, context: PennyObject) -> void:
 	var arg_matches := ARG_PATTERN.search_all(string)
 	for arg_match in arg_matches:
 		var expr := Expr.from_string(arg_match.get_string(2))
-		var bind : Variant 	= expr.evaluate(context)
-		if bind:
+		var bind : Variant = expr.evaluate(context)
+		if bind != null:
 			args[StringName(arg_match.get_string(1))] = bind
 		else:
 			PennyException.new("deco argument '%s' evaluated to null." % arg_match.get_string(1)).push()
@@ -75,8 +75,10 @@ func encounter_end(typewriter: Typewriter) -> void:
 
 func get_argument(key: StringName) -> Variant:
 	if not args.has(key):
-		PennyException.new("Trying to access an argument that doesn't exist.").push()
+		PennyException.new("Trying to access an argument '%s' that doesn't exist." % key).push()
 		return "null"
+	if args[key] == null:
+		PennyException.new("The argument '%s' has a null value." % key).push()
 	return args[key]
 
 

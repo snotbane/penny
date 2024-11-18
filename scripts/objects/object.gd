@@ -87,8 +87,7 @@ var name : String :
 
 
 var rich_name : String :
-	get: return "%s%s%s" % [self.get_value_or_default('name_prefix', "<>"), name, self.get_value_or_default('name_suffix', "</>")]
-	# get: return "<b, color=#%s>%s</>" % [self.get_value_or_default(COLOR_KEY, Color.WHITE).to_html(), name]
+	get: return "<b, color=#%s>%s</>" % [self.get_value_or_default(COLOR_KEY, Color.WHITE).to_html(), name]
 
 
 var node_name : String :

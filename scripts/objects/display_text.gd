@@ -24,7 +24,7 @@ var text_with_bbcode : String
 
 var decos : Array[DecoInst]
 
-func _init(_raw: String, host: PennyHost, relative_object: PennyObject = null) -> void:
+func _init(_raw: String, context: PennyObject) -> void:
 	raw = _raw
 	text_evaluated = raw
 
@@ -37,7 +37,7 @@ func _init(_raw: String, host: PennyHost, relative_object: PennyObject = null) -
 
 		var interp_expr_string := pattern_match.get_string(2) + pattern_match.get_string(3)	## ~= $2$3
 		var inter_expr := Expr.from_tokens(PennyScript.parse_tokens_from_raw(interp_expr_string))
-		var result = inter_expr.evaluate(host.data_root)
+		var result = inter_expr.evaluate(context)
 		var result_string : String
 		if result is PennyObject:
 			result_string = result.rich_name
@@ -47,10 +47,10 @@ func _init(_raw: String, host: PennyHost, relative_object: PennyObject = null) -
 		text_evaluated = sub_match(pattern_match, result_string)
 
 	## FILTERS
-	var filters : Array = host.data_root.get_value(PennyObject.FILTERS_KEY)
+	var filters : Array = context.get_value(PennyObject.FILTERS_KEY)
 	for filter_path in filters:
 
-		var filter : PennyObject = filter_path.evaluate(host.data_root)
+		var filter : PennyObject = filter_path.evaluate(context)
 		var pattern := RegEx.create_from_string(filter.get_value(PennyObject.FILTER_PATTERN_KEY))
 		var replace : String = filter.get_value(PennyObject.FILTER_REPLACE_KEY)
 
@@ -107,7 +107,7 @@ func _init(_raw: String, host: PennyHost, relative_object: PennyObject = null) -
 			tags_needing_end_stack.push_back(0)
 			var deco_strings := tag_match.get_string(1).split(",", false)
 			for deco_string in deco_strings:
-				var deco := DecoInst.new(deco_string, Path.from_string("Rubin").evaluate(host.data_root))
+				var deco := DecoInst.new(deco_string, context)
 				deco.register_start(self, tag_match.get_start())
 				bbcode_start_tags_string += deco.bbcode_tag_start
 				if deco.template.requires_end_tag:

@@ -7,7 +7,12 @@ func evaluate_shallow(context: PennyObject) -> Variant: return _evaluate_shallow
 func _evaluate_shallow(context: PennyObject) -> Variant:
 	return null
 
-
+# func evaluate(context: PennyObject, fallback: PennyObject = null) -> Variant:
+# 	var result : Variant = self._evaluate(context)
+# 	if result == null and fallback:
+# 		result = self._evaluate(fallback)
+# 	return result
+# func _evaluate(context: PennyObject) -> Variant:
 ## Evaluate until no further evaluations can be made.
 func evaluate(context: PennyObject) -> Variant:
 	var evals_seen : Array[Evaluable]
@@ -18,15 +23,4 @@ func evaluate(context: PennyObject) -> Variant:
 			return null
 		evals_seen.push_back(result)
 		result = result.evaluate_shallow(context)
-	return result
-
-
-func evaluate_as_lookup(root: PennyObject) -> Lookup:
-	var result = _evaluate_shallow(root)
-	# if not result is Lookup:
-	# 	host.cursor.create_exception("Couldn't evaluate_shallow '%s' as Lookup because it isn't a Lookup." % self).push()
-	# 	return null
-	# if not result.valid:
-	# 	host.cursor.create_exception("Couldn't evaluate_shallow '%s' as Lookup because it doesn't exist in any LookupTable." % result).push()
-	# 	return null
 	return result
