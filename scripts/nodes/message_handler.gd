@@ -30,8 +30,8 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func receive(record: Record, subject: PennyObject) -> void:
-	name_label.text = subject.rich_name
-	received.emit(record.attachment)
+	name_label.text = str(record.attachment.who)
+	received.emit(record.attachment.what)
 
 
 func prevent_skip() -> void:

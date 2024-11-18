@@ -61,6 +61,7 @@ const BILTIN_PROMPT_NAME := StringName('prompt')
 const BILTIN_DIALOG_NAME := StringName('dialog')
 const ABLE_KEY := StringName('able')
 const BASE_KEY := StringName('base')
+const COLOR_KEY := StringName('color')
 const DIALOG_KEY := BILTIN_DIALOG_NAME
 const FILTERS_KEY := StringName('filters')
 const FILTER_PATTERN_KEY := StringName('pattern')
@@ -86,8 +87,8 @@ var name : String :
 
 
 var rich_name : String :
-	# get: return "%s%s%s" % [self.get_value('name_prefix'), name, self.get_value('name_suffix')]
-	get: return name
+	get: return "%s%s%s" % [self.get_value_or_default('name_prefix', "<>"), name, self.get_value_or_default('name_suffix', "</>")]
+	# get: return "<b, color=#%s>%s</>" % [self.get_value_or_default(COLOR_KEY, Color.WHITE).to_html(), name]
 
 
 var node_name : String :

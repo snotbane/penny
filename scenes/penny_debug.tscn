@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cfkhtume00g5e"]
+[gd_scene load_steps=22 format=3 uid="uid://cfkhtume00g5e"]
 
 [ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_hv265"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_debug.gd" id="2_4v1jc"]
@@ -12,8 +12,11 @@
 [ext_resource type="Texture2D" uid="uid://dfir03166e6r2" path="res://addons/penny_godot/assets/icons/Object.svg" id="7_44hdu"]
 [ext_resource type="Texture2D" uid="uid://dbn36dthttn4c" path="res://addons/penny_godot/assets/icons/Search.svg" id="7_yvqnl"]
 [ext_resource type="Texture2D" uid="uid://casyj4t5bxxe2" path="res://addons/penny_godot/assets/icons/History.svg" id="8_506l5"]
+[ext_resource type="Texture2D" uid="uid://yrrj3kgg2n2g" path="res://addons/penny_godot/assets/icons/PackedScene.svg" id="10_q5msf"]
+[ext_resource type="Texture2D" uid="uid://brecacl0mws63" path="res://addons/penny_godot/assets/icons/Array.svg" id="11_baclu"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/debug_label_viewer.gd" id="11_epa23"]
 [ext_resource type="PackedScene" uid="uid://drv4a57pwbptd" path="res://addons/penny_godot/scenes/debug_label_listing.tscn" id="11_v4nj7"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/option_button_advanced.gd" id="12_xgrrm"]
 [ext_resource type="PackedScene" uid="uid://ckwmom7w0dvh1" path="res://addons/penny_godot/scenes/penny_history_box.tscn" id="14_elw5r"]
 [ext_resource type="Texture2D" uid="uid://xpmyo52daraf" path="res://addons/penny_godot/assets/icons/Back.svg" id="15_mpfsm"]
 
@@ -72,10 +75,82 @@ tab_focus_mode = 1
 script = ExtResource("5_uv7g7")
 tab_icons = Array[Texture2D]([ExtResource("7_44hdu"), ExtResource("6_6v586"), ExtResource("8_506l5")])
 
+[node name="History" type="Control" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container"]
+layout_mode = 2
+tooltip_text = "Detailed history view with customizable verbosity settings."
+metadata/_tab_index = 0
+
+[node name="v_box_container" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="penny_history_box" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container" instance=ExtResource("14_elw5r")]
+layout_mode = 2
+size_flags_vertical = 3
+verbosity = 31
+
+[node name="panel_container" type="PanelContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container"]
+layout_mode = 2
+
+[node name="hbox_2" type="HBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container"]
+layout_mode = 2
+
+[node name="verbosity_selector" type="OptionButton" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2"]
+layout_mode = 2
+flat = true
+selected = 7
+item_count = 8
+popup/item_0/text = "Story"
+popup/item_0/icon = ExtResource("10_q5msf")
+popup/item_0/id = 1
+popup/item_1/id = 1
+popup/item_1/disabled = true
+popup/item_1/separator = true
+popup/item_2/text = "+ Print Msgs"
+popup/item_2/id = 3
+popup/item_3/text = "+ Flow Activity"
+popup/item_3/id = 7
+popup/item_4/text = "+ Data Activity"
+popup/item_4/id = 15
+popup/item_5/text = "+ Node Activity"
+popup/item_5/id = 31
+popup/item_6/id = 6
+popup/item_6/disabled = true
+popup/item_6/separator = true
+popup/item_7/text = "ALL"
+popup/item_7/icon = ExtResource("11_baclu")
+popup/item_7/id = 63
+script = ExtResource("12_xgrrm")
+
+[node name="hbox_zoom" type="HBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="zoom_slider" type="HSlider" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 10.0
+max_value = 18.0
+step = 2.0
+value = 12.0
+tick_count = 5
+
+[node name="zoom_reset" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom"]
+layout_mode = 2
+icon = ExtResource("7_yvqnl")
+flat = true
+
 [node name="Data" type="Control" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container"]
+visible = false
 layout_mode = 2
 tooltip_text = "Check current state of objects, variables, and their values."
-metadata/_tab_index = 0
+metadata/_tab_index = 1
 
 [node name="vbox" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data"]
 layout_mode = 1
@@ -164,7 +239,7 @@ flat = true
 visible = false
 layout_mode = 2
 tooltip_text = "Navigation tools."
-metadata/_tab_index = 1
+metadata/_tab_index = 2
 
 [node name="v_box_container" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Labels"]
 layout_mode = 1
@@ -206,73 +281,6 @@ text = "Jump"
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Call"
-
-[node name="History" type="Control" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container"]
-visible = false
-layout_mode = 2
-tooltip_text = "Detailed history view with customizable verbosity settings."
-metadata/_tab_index = 2
-
-[node name="v_box_container" type="VBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="penny_history_box" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container" instance=ExtResource("14_elw5r")]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="panel_container" type="PanelContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container"]
-layout_mode = 2
-
-[node name="hbox_2" type="HBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container"]
-layout_mode = 2
-
-[node name="verbosity_selector" type="OptionButton" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2"]
-layout_mode = 2
-selected = 7
-item_count = 8
-popup/item_0/text = "Story"
-popup/item_0/id = 1
-popup/item_1/id = 1
-popup/item_1/disabled = true
-popup/item_1/separator = true
-popup/item_2/text = "+ Print Msgs"
-popup/item_2/id = 3
-popup/item_3/text = "+ Flow Activity"
-popup/item_3/id = 7
-popup/item_4/text = "+ Data Activity"
-popup/item_4/id = 15
-popup/item_5/text = "+ Node Activity"
-popup/item_5/id = 31
-popup/item_6/id = 6
-popup/item_6/disabled = true
-popup/item_6/separator = true
-popup/item_7/text = "ALL"
-popup/item_7/id = 63
-
-[node name="hbox_zoom" type="HBoxContainer" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2"]
-custom_minimum_size = Vector2(140, 0)
-layout_mode = 2
-size_flags_horizontal = 10
-
-[node name="zoom_slider" type="HSlider" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-min_value = 10.0
-max_value = 18.0
-step = 2.0
-value = 12.0
-tick_count = 5
-
-[node name="zoom_reset" type="Button" parent="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom"]
-layout_mode = 2
-icon = ExtResource("7_yvqnl")
-flat = true
 
 [node name="control" type="Control" parent="margin_container/h_box_container/penny_runtime_dock/host_menu"]
 layout_mode = 1
@@ -320,7 +328,11 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 
-[connection signal="visibility_changed" from="." to="margin_container/h_box_container/penny_runtime_dock/host_selector" method="refresh"]
+[connection signal="on_host_changed" from="." to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/penny_history_box" method="_on_penny_debug_on_host_changed"]
+[connection signal="on_host_changed" from="." to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/penny_history_box" method="scroll_to_end" unbinds=1]
+[connection signal="visibility_changed" from="." to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/penny_history_box" method="scroll_to_end"]
+[connection signal="item_selected_id" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/verbosity_selector" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/penny_history_box" method="_on_verbosity_selector_item_selected_id"]
+[connection signal="pressed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom/zoom_reset" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom/zoom_slider" method="set_value" binds= [10.0]]
 [connection signal="visibility_changed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="refresh"]
 [connection signal="toggled" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_values_toggle" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="_on_search_values_toggle_toggled"]
 [connection signal="item_selected" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/sort_selector" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="_on_sort_selector_item_selected"]
@@ -329,7 +341,5 @@ size_flags_vertical = 3
 [connection signal="pressed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_bar/search_clear" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/search_bar" method="clear"]
 [connection signal="value_changed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/hbox_zoom/zoom_slider" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/data_tree" method="_on_zoom_slider_value_changed"]
 [connection signal="pressed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/hbox_zoom/zoom_reset" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/Data/vbox/hbox_search/hbox_zoom/zoom_slider" method="set_value" binds= [10.0]]
-[connection signal="item_selected" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/verbosity_selector" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/penny_history_box" method="_on_verbosity_selector_item_selected"]
-[connection signal="pressed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom/zoom_reset" to="margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom/zoom_slider" method="set_value" binds= [10.0]]
 [connection signal="pressed" from="margin_container/h_box_container/penny_runtime_dock/host_menu/control/return_to_hosts_button" to="margin_container/h_box_container/penny_runtime_dock" method="set_current_tab" binds= [1]]
 [connection signal="on_selected" from="margin_container/h_box_container/penny_runtime_dock/host_selector" to="margin_container/h_box_container/penny_runtime_dock" method="set_current_tab" binds= [0]]

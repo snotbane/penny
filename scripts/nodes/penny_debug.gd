@@ -3,11 +3,14 @@ class_name PennyDebug extends Control
 
 static var inst : PennyDebug
 
+signal on_host_changed(host: PennyHost)
+
 var _host: PennyHost
 var host : PennyHost :
 	get: return _host
 	set(value):
 		_host = value
+		on_host_changed.emit(_host)
 
 
 # Called when the node enters the scene tree for the first time.

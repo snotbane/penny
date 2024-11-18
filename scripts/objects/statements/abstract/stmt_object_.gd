@@ -51,9 +51,9 @@ func _undo(record: Record) -> void:
 
 func _create_history_listing(record: Record) -> HistoryListing:
 	var result := super._create_history_listing(record)
-	result.label.text = "[color=#%s][code]%s[/code][/color]" % [Penny.IDENTIFIER_COLOR.to_html(), path]
+	result.message_label.text = "[color=#%s][code]%s[/code][/color]" % [Penny.IDENTIFIER_COLOR.to_html(), path]
 	if record.attachment:
-		result.label.text += " = %s" % record.attachment
+		result.message_label.text += " = %s" % record.attachment
 	return result
 
 

@@ -56,11 +56,11 @@ func _create_history_listing(record: Record) -> HistoryListing:
 	var result := super._create_history_listing(record)
 	match record.attachment:
 		true:
-			result.label.text = "%s [code][color=#%s]PASSED[/color][/code]" % [reconstructed_string, Penny.HAPPY_COLOR.to_html()]
+			result.message_label.text = "%s [code][color=#%s]PASSED[/color][/code]" % [reconstructed_string, Penny.HAPPY_COLOR.to_html()]
 		false:
-			result.label.text = "%s [code][color=#%s]FAILED[/color][/code]" % [reconstructed_string, Penny.ANGRY_COLOR.to_html()]
+			result.message_label.text = "%s [code][color=#%s]FAILED[/color][/code]" % [reconstructed_string, Penny.ANGRY_COLOR.to_html()]
 		_:
-			result.label.text = "[s]%s [code]SKIPPED[/code]" % reconstructed_string
+			result.message_label.text = "[s]%s [code]SKIPPED[/code]" % reconstructed_string
 	return result
 
 

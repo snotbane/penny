@@ -53,6 +53,10 @@ func _validate_self_post_setup() -> void:
 	subject_dialog_path.ids.push_back(PennyObject.BILTIN_DIALOG_NAME)
 
 
+func _get_history_listing_scene() -> PackedScene :
+	return load("res://addons/penny_godot/scenes/history_listings/history_listing_dialog.tscn")
+
+
 # func _validate_cross() -> PennyException:
 # 	return null
 
@@ -84,25 +88,26 @@ func _execute(host: PennyHost) -> Record:
 	else:
 		incoming_dialog_node = previous_dialog_node
 
-	var message := Message.new(raw_text, host)
+	var subject : PennyObject = subject_path.evaluate(host.data_root)
 
-	if OS.is_debug_build():
-		if incoming_dialog_node is MessageHandler:
-			var result := create_record(host, incoming_dialog_node.halt_on_instantiate, message)
-			incoming_dialog_node.receive(result, subject_path.evaluate(host.data_root))
-			return result
-		elif incoming_dialog_node:
-			host.cursor.create_exception("Attempted to send a message to a node, but it isn't a MessageHandler.").push()
-		else:
-			host.cursor.create_exception("Attempted to send a message to a node, but it wasn't created.").push()
-	else:
-		var result := create_record(host, incoming_dialog_node.halt_on_instantiate, message)
-		incoming_dialog_node.receive(result, subject_path.evaluate(host.data_root))
-		return result
-	return create_record(host, false, message)
+	var who := Message.new(subject.rich_name, host)
+	var what := Message.new(raw_text, host)
+	var attach := DialogRecord.new(who, what)
 
-
-func _create_history_listing(record: Record) -> HistoryListing:
-	var result := super._create_history_listing(record)
-	result.label.text = str(record.attachment)
+	# if OS.is_debug_build():
+	# 	if incoming_dialog_node is MessageHandler:
+	# 		var result := create_record(host, incoming_dialog_node.halt_on_instantiate, message)
+	# 		incoming_dialog_node.receive(result, message.subject)
+	# 		return result
+	# 	elif incoming_dialog_node:
+	# 		host.cursor.create_exception("Attempted to send a message to a node, but it isn't a MessageHandler.").push()
+	# 	else:
+	# 		host.cursor.create_exception("Attempted to send a message to a node, but it wasn't created.").push()
+	# else:
+	# 	var result := create_record(host, incoming_dialog_node.halt_on_instantiate, message)
+	# 	incoming_dialog_node.receive(result, message.subject)
+	# 	return result
+	var result := create_record(host, incoming_dialog_node.halt_on_instantiate, attach)
+	incoming_dialog_node.receive(result, subject)
 	return result
+

@@ -293,13 +293,13 @@ func _next(record: Record) -> Stmt:
 
 
 func _get_history_listing_scene() -> PackedScene :
-	return load("res://addons/penny_godot/scenes/history_listing_default.tscn")
+	return load("res://addons/penny_godot/scenes/history_listings/history_listing_default.tscn")
 
 
 func create_history_listing(record: Record) -> HistoryListing: return _create_history_listing(record)
 func _create_history_listing(record: Record) -> HistoryListing:
 	var result : HistoryListing = _get_history_listing_scene().instantiate()
-	result.label.text = reconstructed_string
+	result.populate(record)
 	return result
 
 

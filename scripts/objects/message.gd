@@ -24,7 +24,6 @@ var text_with_bbcode : String
 
 var decos : Array[DecoInst]
 
-
 func _init(_raw: String, host: PennyHost) -> void:
 	raw = _raw
 	text_evaluated = raw

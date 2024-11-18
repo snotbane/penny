@@ -43,5 +43,5 @@ func _execute(host: PennyHost) -> Record:
 
 func _create_history_listing(record: Record) -> HistoryListing:
 	var result := super._create_history_listing(record)
-	result.label.text = record.attachment
+	result.message_label.text = record.attachment
 	return result

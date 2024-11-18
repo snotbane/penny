@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://7br0ixjsw2t"]
+
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/history_listing_dialog.gd" id="1_t6h63"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_up5ly"]
+
+[node name="history_listing_dialog" type="PanelContainer" node_paths=PackedStringArray("name_label", "message_label")]
+custom_minimum_size = Vector2(0, 36)
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 36.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_up5ly")
+script = ExtResource("1_t6h63")
+name_label = NodePath("h_box_container/name_label")
+message_label = NodePath("h_box_container/message_label")
+
+[node name="h_box_container" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="name_label" type="RichTextLabel" parent="h_box_container"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+focus_mode = 2
+mouse_filter = 2
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+visible_characters_behavior = 1
+
+[node name="message_label" type="RichTextLabel" parent="h_box_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 2
+mouse_filter = 2
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+visible_characters_behavior = 1

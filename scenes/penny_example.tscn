@@ -55,10 +55,12 @@ mouse_filter = 2
 theme_override_constants/margin_left = 200
 theme_override_constants/margin_right = 200
 
-[node name="penny_history_box" parent="canvas_layer/ui/v_box_container/history_layer" node_paths=PackedStringArray("host") instance=ExtResource("4_hm4jj")]
+[node name="penny_history_box" parent="canvas_layer/ui/v_box_container/history_layer" node_paths=PackedStringArray("linked_host") instance=ExtResource("4_hm4jj")]
 layout_mode = 2
-host = NodePath("../../../../..")
-_shown = false
+linked_host = NodePath("../../../../..")
+
+[node name="scroll_contents" parent="canvas_layer/ui/v_box_container/history_layer/penny_history_box/panel_container/margin_container/scroll_container/margin_container" index="0"]
+theme_override_constants/separation = 16
 
 [node name="message_layer" type="MarginContainer" parent="canvas_layer/ui/v_box_container"]
 custom_minimum_size = Vector2(0, 240)
@@ -77,5 +79,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[connection signal="on_record_created" from="." to="canvas_layer/ui/v_box_container/history_layer/penny_history_box" method="_on_record_created"]
 [connection signal="on_click" from="canvas_layer/ui/input_catcher" to="." method="try_advance"]
+
+[editable path="canvas_layer/ui/v_box_container/history_layer/penny_history_box"]

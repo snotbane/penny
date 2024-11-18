@@ -1,100 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://ckwmom7w0dvh1"]
+[gd_scene load_steps=3 format=3 uid="uid://ckwmom7w0dvh1"]
 
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="1_lr0qd"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/history_handler.gd" id="1_vh1ak"]
-[ext_resource type="PackedScene" uid="uid://7xgdiuu2qk3s" path="res://addons/penny_godot/scenes/history_listing_default.tscn" id="3_axknw"]
 
-[sub_resource type="Animation" id="Animation_05s11"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:visible")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_kv8hf"]
-resource_name = "hide"
-length = 0.25
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:visible")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0.233333),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.233333),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_jmvm4"]
-resource_name = "show"
-length = 0.25
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:visible")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.233333),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_v3oje"]
-_data = {
-"RESET": SubResource("Animation_05s11"),
-"hide": SubResource("Animation_kv8hf"),
-"show": SubResource("Animation_jmvm4")
-}
-
-[node name="penny_history_box" type="Control" node_paths=PackedStringArray("animation_player", "vbox")]
+[node name="penny_history_box" type="Control" node_paths=PackedStringArray("scroll_container", "vbox")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -102,8 +11,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_vh1ak")
-animation_player = NodePath("animation_player")
+scroll_container = NodePath("panel_container/margin_container/scroll_container")
 vbox = NodePath("panel_container/margin_container/scroll_container/margin_container/scroll_contents")
+verbosity = 1
 
 [node name="panel_container" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -136,11 +46,3 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 0
-
-[node name="history_listing_default" parent="panel_container/margin_container/scroll_container/margin_container/scroll_contents" instance=ExtResource("3_axknw")]
-layout_mode = 2
-
-[node name="animation_player" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_v3oje")
-}
