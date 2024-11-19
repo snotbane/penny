@@ -16,8 +16,8 @@ func _get_bbcode_tag_id() -> StringName:
 	return StringName('')
 
 
-# func _get_bbcode_start_tag(inst: DecoInst) -> String:
-# 	return ""
+func _get_bbcode_start_tag(inst: DecoInst) -> String:
+	return get_bbcode_start_tag_single_argument(inst)
 
 
 # func _on_register_start(message: DecoratedText, tag: DecoInst) -> void:
@@ -29,7 +29,7 @@ func _get_bbcode_tag_id() -> StringName:
 
 
 func _on_encounter_start(typewriter: Typewriter, tag: DecoInst):
-	await typewriter.delay(float(tag.args.get(StringName('seconds'), DEFAULT_SECONDS)))
+	await typewriter.delay(float(tag.args.get(self.penny_tag_id, DEFAULT_SECONDS)))
 
 
 # func _on_encounter_end(typewriter: Typewriter, tag: DecoInst) -> void:

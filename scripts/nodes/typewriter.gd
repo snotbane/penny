@@ -155,7 +155,7 @@ func _ready() -> void:
 		fake_rtl = rtl.duplicate()
 		fake_rtl.name = "%s (fake)" % rtl.name
 		fake_rtl.visible_characters_behavior = TextServer.VC_CHARS_BEFORE_SHAPING
-		fake_rtl.add_theme_color_override('default_color', Color(0,0,0,0))
+		fake_rtl.self_modulate = Color(0,0,0,0)
 
 		rtl.add_sibling.call_deferred(fake_rtl)
 

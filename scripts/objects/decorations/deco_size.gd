@@ -11,4 +11,4 @@ func _get_bbcode_tag_id() -> StringName:
 
 
 func _get_bbcode_start_tag(inst: DecoInst) -> String:
-	return "%s=%s" % [self.bbcode_tag_id, inst.get_argument('size')]
+	return self.get_bbcode_start_tag_single_argument(inst)

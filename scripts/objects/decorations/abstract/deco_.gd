@@ -69,3 +69,13 @@ func _on_encounter_start(typewriter: Typewriter, tag: DecoInst):
 
 func _on_encounter_end(typewriter: Typewriter, tag: DecoInst):
 	pass
+
+
+func get_bbcode_start_tag_single_argument(inst: DecoInst) -> String:
+	return "%s=%s" % [self.bbcode_tag_id, inst.args[inst.args.keys()[0]]]
+
+func get_bbcode_start_tag_all_arguments(inst: DecoInst) -> String:
+	var result : String = self.bbcode_tag_id
+	for k in inst.args.keys():
+		result += " %s=%s" % [k, inst.args[k]]
+	return result
