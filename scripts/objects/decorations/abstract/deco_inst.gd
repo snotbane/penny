@@ -16,18 +16,19 @@ var start_remapped : int
 var end_remapped : int
 
 var template : Deco :
-	get: return Deco.get_template_by_penny_id(id)
-
+	get: return Deco.get_resource_by_id(id)
 
 var bbcode_tag_start : String :
 	get:
-		if template.bbcode_tag_id.is_empty(): return String()
-		return "[%s]" % template._get_bbcode_start_tag(self)
+		if template:
+			return self.template._get_bbcode_tag_start(self)
+		return String()
 
 var bbcode_tag_end : String :
 	get:
-		if not template.requires_end_tag or template.bbcode_tag_id.is_empty(): return String()
-		return "[/%s]" % template.bbcode_tag_id
+		if template:
+			return self.template._get_bbcode_tag_end(self)
+		return String()
 
 
 func _init(string: String, context: PennyObject) -> void:
@@ -57,12 +58,14 @@ func _to_string() -> String:
 func register_start(message: DecoratedText, index: int) -> void:
 	message.decos.push_back(self)
 	start_index = index
-	template._on_register_start(message, self)
+	if template:
+		template._on_register_start(message, self)
 
 
 func register_end(message: DecoratedText, index: int) -> void:
 	end_index = index
-	template._on_register_end(message, self)
+	if template:
+		template._on_register_end(message, self)
 
 
 func encounter_start(typewriter: Typewriter) -> void:
@@ -74,12 +77,17 @@ func encounter_end(typewriter: Typewriter) -> void:
 
 
 func get_argument(key: StringName) -> Variant:
-	if not args.has(key):
-		PennyException.new("Trying to access an argument '%s' that doesn't exist." % key).push()
-		return "null"
-	if args[key] == null:
-		PennyException.new("The argument '%s' has a null value." % key).push()
-	return args[key]
+	var result : Variant
+	if args.has(key):
+		result = args[key]
+	elif self.template.argument_defaults.has(key):
+		result = self.template.argument_defaults[key]
+	else:
+		PennyException.new("The argument '%s' was not found in either the inst's args or the default args." % key).push()
+		return null
+	if result == null:
+		PennyException.new("The argument '%s' evaluated to null - this may mean that an argument is required but was never passed." % key).push()
+	return result
 
 
 func create_remap_for(typewriter: Typewriter) -> void:

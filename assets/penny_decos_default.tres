@@ -1,25 +1,179 @@
-[gd_resource type="Resource" script_class="PennyDecoRegistry" load_steps=20 format=3 uid="uid://bsrrbmeopuowc"]
+[gd_resource type="Resource" script_class="PennyDecoRegistry" load_steps=33 format=3 uid="uid://bsrrbmeopuowc"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_invalid.gd" id="1_fdgl7"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_color.gd" id="2_2j770"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_empty_span.gd" id="2_07t51"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/abstract/deco_.gd" id="1_xj7ad"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/abstract/deco_span.gd" id="2_cmtfw"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_delay.gd" id="2_pyahk"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_bold.gd" id="2_yhdmr"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_italic.gd" id="3_jopdq"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/resource/penny_deco_registry.gd" id="4_pdc3q"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_underline.gd" id="5_4axiw"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_fade.gd" id="5_llhgn"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_size.gd" id="6_835lb"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_lock.gd" id="6_hullg"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_strikethrough.gd" id="7_cvvcy"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/abstract/deco_combo.gd" id="7_v0yi6"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_speed.gd" id="9_3e4wr"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_wait.gd" id="9_7b5ka"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_pulse.gd" id="9_f3na2"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_rainbow.gd" id="11_ibtur"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_shake.gd" id="12_ma6wj"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_tornado.gd" id="16_cdht0"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_wave.gd" id="18_ag1sy"]
+
+[sub_resource type="Resource" id="Resource_3baju"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {}
+id = &""
+
+[sub_resource type="Resource" id="Resource_a1v7j"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {}
+id = &"b"
+
+[sub_resource type="Resource" id="Resource_og12b"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {
+"color": Color(1, 0, 0, 1)
+}
+id = &"color"
+
+[sub_resource type="Resource" id="Resource_8h33d"]
+script = ExtResource("2_pyahk")
+argument_defaults = {
+"delay": 0.667
+}
+id = &"delay"
+
+[sub_resource type="Resource" id="Resource_pemsi"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {
+"length": 14,
+"start": 4
+}
+id = &"fade"
+
+[sub_resource type="Resource" id="Resource_uscem"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {
+"font_size": null
+}
+id = &"font_size"
+
+[sub_resource type="Resource" id="Resource_tqw0f"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {
+"freq": 0.333,
+"sat": 0.8,
+"val": 0.8
+}
+id = &"rainbow"
+
+[sub_resource type="Resource" id="Resource_irh3p"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {
+"amp": 50.0,
+"connected": 0,
+"freq": 5.0
+}
+id = &"wave"
+
+[sub_resource type="Resource" id="Resource_sinjm"]
+script = ExtResource("7_v0yi6")
+components = Array[ExtResource("1_xj7ad")]([SubResource("Resource_tqw0f"), SubResource("Resource_irh3p")])
+id = &"highlight"
+
+[sub_resource type="Resource" id="Resource_albvk"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {}
+id = &"i"
+
+[sub_resource type="Resource" id="Resource_doduq"]
+script = ExtResource("6_hullg")
+argument_defaults = {}
+id = &"lock"
+
+[sub_resource type="Resource" id="Resource_giran"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {
+"color": Color(1, 1, 1, 0.25098),
+"ease": -2.0,
+"freq": 1.0
+}
+id = &"pulse"
+
+[sub_resource type="Resource" id="Resource_wum1r"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {
+"freq": 0.333,
+"sat": 0.8,
+"val": 0.8
+}
+id = &"rainbow"
+
+[sub_resource type="Resource" id="Resource_o5ffy"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {}
+id = &"s"
+
+[sub_resource type="Resource" id="Resource_ivmri"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {
+"connected": 0,
+"level": 22.5,
+"rate": 18.0
+}
+id = &"shake"
+
+[sub_resource type="Resource" id="Resource_qqgtp"]
+script = ExtResource("9_3e4wr")
+argument_defaults = {
+"speed": null
+}
+id = &"speed"
+
+[sub_resource type="Resource" id="Resource_g3fhu"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {
+"connected": 0,
+"freq": 3.5,
+"radius": 6.0
+}
+id = &"tornado"
+
+[sub_resource type="Resource" id="Resource_fiuc5"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {}
+id = &"u"
+
+[sub_resource type="Resource" id="Resource_8vwtp"]
+script = ExtResource("9_7b5ka")
+argument_defaults = {}
+id = &"wait"
+
+[sub_resource type="Resource" id="Resource_8puu3"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {
+"amp": 50.0,
+"connected": 0,
+"freq": 5.0
+}
+id = &"wave"
+
+[sub_resource type="Resource" id="Resource_ogpf2"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {
+"color": Color(1, 1, 1, 0.396078)
+}
+id = &"color"
+
+[sub_resource type="Resource" id="Resource_vq8nq"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {}
+id = &"i"
+
+[sub_resource type="Resource" id="Resource_83ngy"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {
+"connected": 0,
+"freq": 3.5,
+"radius": 6.0
+}
+id = &"tornado"
+
+[sub_resource type="Resource" id="Resource_62yjm"]
+script = ExtResource("7_v0yi6")
+components = Array[ExtResource("1_xj7ad")]([SubResource("Resource_ogpf2"), SubResource("Resource_vq8nq"), SubResource("Resource_83ngy")])
+id = &"whisper"
 
 [resource]
 script = ExtResource("4_pdc3q")
-deco_scripts = Array[Script]([ExtResource("2_yhdmr"), ExtResource("2_2j770"), ExtResource("2_pyahk"), ExtResource("2_07t51"), ExtResource("5_llhgn"), ExtResource("1_fdgl7"), ExtResource("3_jopdq"), ExtResource("6_hullg"), ExtResource("9_f3na2"), ExtResource("5_4axiw"), ExtResource("11_ibtur"), ExtResource("12_ma6wj"), ExtResource("6_835lb"), ExtResource("9_3e4wr"), ExtResource("7_cvvcy"), ExtResource("16_cdht0"), ExtResource("9_7b5ka"), ExtResource("18_ag1sy")])
+deco_resources = Array[ExtResource("1_xj7ad")]([SubResource("Resource_3baju"), SubResource("Resource_a1v7j"), SubResource("Resource_og12b"), SubResource("Resource_8h33d"), SubResource("Resource_pemsi"), SubResource("Resource_uscem"), SubResource("Resource_sinjm"), SubResource("Resource_albvk"), SubResource("Resource_doduq"), SubResource("Resource_giran"), SubResource("Resource_wum1r"), SubResource("Resource_o5ffy"), SubResource("Resource_ivmri"), SubResource("Resource_qqgtp"), SubResource("Resource_g3fhu"), SubResource("Resource_fiuc5"), SubResource("Resource_8vwtp"), SubResource("Resource_8puu3"), SubResource("Resource_62yjm")])

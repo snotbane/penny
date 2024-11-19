@@ -37,7 +37,7 @@ static func from_filtered(filtered: FilteredText, context: PennyObject) -> Decor
 				var deco := DecoInst.new(deco_string, context)
 				deco.register_start(result, tag_match.get_start())
 				bbcode_start_tags_string += deco.bbcode_tag_start
-				if deco.template.requires_end_tag:
+				if deco.template and deco.template.is_span:
 					deco_stack.push_back(deco)
 					tags_needing_end_stack.push_back(tags_needing_end_stack.pop_back() + 1)
 			if tags_needing_end_stack.back() == 0:

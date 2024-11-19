@@ -101,7 +101,7 @@ var visible_characters : int :
 				while rtl.visible_characters >= unencountered_decos.front().start_remapped:
 					var deco : DecoInst = unencountered_decos.pop_front()
 					await deco.encounter_start(self)
-					if deco.template.requires_end_tag:
+					if deco.template.is_span:
 						unclosed_decos.push_back(deco)
 					if not unencountered_decos:
 						break
