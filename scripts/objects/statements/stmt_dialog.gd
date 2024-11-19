@@ -12,9 +12,9 @@ var raw_text : String
 var text_stripped : String :
 	get:
 		var result : String = raw_text
-		# result = DecoratedText.REGEX_INTERPOLATION.sub(result, "$1", true)
-		result = DecoratedText.INTERJECTION_PATTERN.sub(result, "", true)
-		result = DecoratedText.DECO_TAG_PATTERN.sub(result, "", true)
+		# result = Text.REGEX_INTERPOLATION.sub(result, "$1", true)
+		result = Text.INTERJECTION_PATTERN.sub(result, "", true)
+		result = Text.DECO_TAG_PATTERN.sub(result, "", true)
 		return result
 
 var word_count : int :
