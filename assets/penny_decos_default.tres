@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="PennyDecoRegistry" load_steps=33 format=3 uid="uid://bsrrbmeopuowc"]
+[gd_resource type="Resource" script_class="PennyDecoRegistry" load_steps=34 format=3 uid="uid://bsrrbmeopuowc"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/abstract/deco_.gd" id="1_xj7ad"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/abstract/deco_span.gd" id="2_cmtfw"]
@@ -66,9 +66,14 @@ argument_defaults = {
 }
 id = &"wave"
 
+[sub_resource type="Resource" id="Resource_on38m"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {}
+id = &"b"
+
 [sub_resource type="Resource" id="Resource_sinjm"]
 script = ExtResource("7_v0yi6")
-components = Array[ExtResource("1_xj7ad")]([SubResource("Resource_tqw0f"), SubResource("Resource_irh3p")])
+components = Array[ExtResource("1_xj7ad")]([SubResource("Resource_tqw0f"), SubResource("Resource_irh3p"), SubResource("Resource_on38m")])
 id = &"highlight"
 
 [sub_resource type="Resource" id="Resource_albvk"]

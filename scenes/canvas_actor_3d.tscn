@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://cv88vnuj146aa"]
+
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/sprite_mesh_3d.gd" id="1_io2lp"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_4wn2m"]
+
+[node name="canvas_actor_3d" type="Node3D"]
+
+[node name="sprite_mesh_3d" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_4wn2m")
+script = ExtResource("1_io2lp")
+
+[node name="2d_viewport" type="SubViewport" parent="sprite_mesh_3d"]
+transparent_bg = true
+size = Vector2i(1500, 1900)
