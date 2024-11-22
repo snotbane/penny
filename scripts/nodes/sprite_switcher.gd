@@ -14,14 +14,13 @@ var _size : Vector2
 	get: return _size
 	set(value):
 		_size = value
-
 		var parent := get_parent()
 		if parent is SubViewport:
 			parent.size = self.size
 
-@export var mirror_pattern := "_([lr])_"
+@export var mirror_pattern := "(.+?)(_[lr])((?:\\W|_).+)"
 @export var mirror_replace := "_%s_"
-@export var texture_pattern := "_([aen]|rsm)\\."
+@export var texture_pattern := "(.+?)(_(?:rsm|[en]))?(\\.png)"
 @export var texture_replace := "_%s."
 
 var _mirror : bool = false
@@ -38,10 +37,11 @@ var _mirror : bool = false
 			var path : String = sprite.texture.resource_path
 			var sub : String
 			if _mirror:
-				sub = "l"
+				sub = "_l"
 			else:
-				sub = "r"
-			path = regex.sub(path, mirror_replace % sub)
+				sub = "_r"
+			var match : RegExMatch = regex.search(path)
+			path = match.get_string(1) + sub + match.get_string(3)
 			var tex := load(path)
 			if tex:
 				sprite.texture = tex
@@ -59,13 +59,12 @@ var _component : TextureComponent
 			var path : String = sprite.texture.resource_path
 			var sub : String
 			match _component:
-				TextureComponent.ALBEDO: sub = "a"
-				TextureComponent.NORMAL: sub = "n"
-				TextureComponent.EMISSIVE: sub = "e"
-				TextureComponent.RSM: sub = "rsm"
-				_: sub = "a"
-			path = regex.sub(path, texture_replace % sub)
-			var tex := load(path)
+				TextureComponent.NORMAL: sub = "_n"
+				TextureComponent.EMISSIVE: sub = "_e"
+				TextureComponent.RSM: sub = "_rsm"
+				_: sub = ""
+			var match : RegExMatch = regex.search(path)
+			var tex := load(match.get_string(1) + sub + match.get_string(3))
 			if tex:
 				sprite.texture = tex
 

@@ -48,6 +48,7 @@ var mesh_instance : MeshInstance3D
 func _ready() -> void:
 	mesh_instance = MeshInstance3D.new()
 	mesh_instance.mesh = QuadMesh.new()
+	mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_DOUBLE_SIDED
 	mesh_instance.mesh.surface_set_material(0, material)
 	self.add_child.call_deferred(mesh_instance)
 	ready_deferred.call_deferred()
