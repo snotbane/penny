@@ -9,7 +9,15 @@ enum TextureComponent {
 	RSM,
 }
 
-@export var size : Vector2
+var _size : Vector2
+@export var size : Vector2 :
+	get: return _size
+	set(value):
+		_size = value
+
+		var parent := get_parent()
+		if parent is SubViewport:
+			parent.size = self.size
 
 @export var mirror_pattern := "_([lr])_"
 @export var mirror_replace := "_%s_"
@@ -69,3 +77,6 @@ var sub_sprites : Array[Sprite2D] :
 				result.push_back(child)
 		return result
 
+
+func _ready() -> void:
+	size = size
