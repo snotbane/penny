@@ -41,7 +41,7 @@ var _mirror : bool = false
 				sub = "_r"
 			var match : RegExMatch = regex.search(path)
 			path = match.get_string(1) + sub + match.get_string(3)
-			if not SpriteSwitcher.valid_paths.has(path): continue
+			if OS.is_debug_build() and not SpriteSwitcher.valid_paths.has(path): continue
 			sprite.texture = load(path)
 
 var _component : TextureComponent
@@ -62,7 +62,7 @@ var _component : TextureComponent
 				_: sub = ""
 			var match : RegExMatch = regex.search(path)
 			path = match.get_string(1) + sub + match.get_string(3)
-			if not SpriteSwitcher.valid_paths.has(path): continue
+			if OS.is_debug_build() and not SpriteSwitcher.valid_paths.has(path): continue
 			sprite.texture = load(path)
 
 var sub_sprites : Array[Sprite2D] :
