@@ -5,6 +5,7 @@ class_name SpriteSwitcher extends CanvasGroup
 enum TextureComponent {
 	ALBEDO,
 	NORMAL,
+	SHADOW,
 	EMISSIVE,
 	RSM,
 }
@@ -21,13 +22,16 @@ var _size : Vector2
 		if parent is SubViewport:
 			parent.size = self.size
 
-@export var mirror_pattern := "(.+?)(_[lr])((?:\\W|_).+)"
-@export var texture_pattern := "(.+?)(_(?:rsm|[en]))?(\\.png)"
+@export var mirror_pattern := "(.+?)(?:_[lr])((?:\\W|_).+)"
+@export var texture_pattern := "(.+?)(?:_(?:ao|rsm|[en]))?(\\.png)"
 
 var _mirror : bool = false
 @export var mirror : bool = false :
 	get: return _mirror
 	set(value):
+		if Engine.is_editor_hint():
+			SpriteSwitcher.recompile_valid_paths()
+
 		if _mirror == value: return
 		_mirror = value
 		regex.compile(mirror_pattern)
@@ -40,7 +44,7 @@ var _mirror : bool = false
 			else:
 				sub = "_r"
 			var match : RegExMatch = regex.search(path)
-			path = match.get_string(1) + sub + match.get_string(3)
+			path = match.get_string(1) + sub + match.get_string(2)
 			if not SpriteSwitcher.valid_paths.has(path): continue
 			sprite.texture = load(path)
 
@@ -48,6 +52,9 @@ var _component : TextureComponent
 @export var component : TextureComponent :
 	get: return _component
 	set(value):
+		if Engine.is_editor_hint():
+			SpriteSwitcher.recompile_valid_paths()
+
 		if _component == value: return
 		_component = value
 		regex.compile(texture_pattern)
@@ -57,11 +64,12 @@ var _component : TextureComponent
 			var sub : String
 			match _component:
 				TextureComponent.NORMAL: sub = "_n"
+				TextureComponent.SHADOW: sub = "_ao"
 				TextureComponent.EMISSIVE: sub = "_e"
 				TextureComponent.RSM: sub = "_rsm"
 				_: sub = ""
 			var match : RegExMatch = regex.search(path)
-			path = match.get_string(1) + sub + match.get_string(3)
+			path = match.get_string(1) + sub + match.get_string(2)
 			if not SpriteSwitcher.valid_paths.has(path): continue
 			sprite.texture = load(path)
 
@@ -75,6 +83,9 @@ var sub_sprites : Array[Sprite2D] :
 
 
 static func _static_init() -> void:
+	SpriteSwitcher.recompile_valid_paths()
+
+static func recompile_valid_paths() -> void:
 	SpriteSwitcher.valid_paths = Utils.get_paths_in_project(".png")
 
 

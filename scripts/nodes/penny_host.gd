@@ -11,6 +11,7 @@ enum State {
 signal on_try_advance
 signal on_data_modified
 signal on_record_created(record: Record)
+signal on_close
 
 @export_subgroup("Instantiation")
 
@@ -152,6 +153,7 @@ func on_reach_end() -> void:
 
 
 func close() -> void:
+	on_close.emit()
 	queue_free()
 	return
 
