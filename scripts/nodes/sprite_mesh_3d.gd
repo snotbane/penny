@@ -3,6 +3,15 @@
 extends Node3D
 
 
+var _sprite_switcher : SpriteSwitcher
+@export var sprite_switcher : SpriteSwitcher :
+	get: return _sprite_switcher
+	set(value):
+		if _sprite_switcher == value: return
+		_sprite_switcher = value
+		pixel_size = _pixel_size
+
+
 var _material : Material
 @export var material : Material :
 	get: return _material
@@ -13,15 +22,6 @@ var _material : Material
 		if not mesh_instance: return
 
 		self.quad.surface_set_material(0, _material)
-
-
-var _sprite_switcher : SpriteSwitcher
-@export var sprite_switcher : SpriteSwitcher :
-	get: return _sprite_switcher
-	set(value):
-		if _sprite_switcher == value: return
-		_sprite_switcher = value
-		pixel_size = _pixel_size
 
 
 var _pixel_size : float = 0.001
@@ -37,6 +37,27 @@ var _pixel_size : float = 0.001
 			quad.size = Vector2.ONE
 
 
+var _cast_shadow := GeometryInstance3D.SHADOW_CASTING_SETTING_DOUBLE_SIDED
+@export var cast_shadow := GeometryInstance3D.SHADOW_CASTING_SETTING_DOUBLE_SIDED :
+	get: return _cast_shadow
+	set(value):
+		_cast_shadow = value
+		self.transparency = self.transparency
+
+
+@export var transparency : float :
+	get: return self.mesh_instance.transparency
+	set(value):
+		self.mesh_instance.transparency = value
+		self.mesh_instance.set_instance_shader_parameter('alpha', 1.0 - transparency)
+		(self.material as ShaderMaterial).set_shader_parameter('alpha', 1.0 - transparency)
+		if self.transparency > 0.0:
+			self.mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		else:
+			self.mesh_instance.cast_shadow = self.cast_shadow
+
+
+
 var quad : QuadMesh :
 	get: return self.mesh_instance.mesh
 
@@ -48,7 +69,6 @@ var mesh_instance : MeshInstance3D
 func _ready() -> void:
 	mesh_instance = MeshInstance3D.new()
 	mesh_instance.mesh = QuadMesh.new()
-	mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_DOUBLE_SIDED
 	mesh_instance.mesh.surface_set_material(0, material)
 	self.add_child.call_deferred(mesh_instance)
 	ready_deferred.call_deferred()
@@ -56,3 +76,4 @@ func _ready() -> void:
 
 func ready_deferred() -> void:
 	pixel_size = pixel_size
+	transparency = transparency

@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=40 format=3 uid="uid://qnvi2t0wwqhy"]
+[gd_resource type="VisualShader" load_steps=40 format=3 uid="uid://de7w4cmvbj0gb"]
 
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_bysli"]
 parameter_name = "rsm"
@@ -85,7 +85,6 @@ operator = 2
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_6dl1e"]
 parameter_name = "alpha"
-qualifier = 2
 hint = 1
 default_value_enabled = true
 default_value = 1.0
@@ -152,7 +151,7 @@ varying vec4 var_modulate;
 uniform bool unique_backface = false;
 uniform sampler2D albedo : source_color, repeat_disable;
 uniform sampler2D albedo_mirror : source_color, repeat_disable;
-instance uniform float alpha : hint_range(0, 1) = 1;
+uniform float alpha : hint_range(0, 1) = 1;
 uniform sampler2D rsm : hint_default_black, repeat_disable;
 uniform sampler2D normal : hint_normal, repeat_disable;
 uniform sampler2D normal_mirror : hint_normal, repeat_disable;
@@ -334,7 +333,7 @@ void fragment() {
 	var_modulate = vec4(0.0);
 }
 "
-graph_offset = Vector2(609.333, -10)
+graph_offset = Vector2(319.91, -89.0145)
 modes/cull = 2
 modes/diffuse = 1
 modes/specular = 1
