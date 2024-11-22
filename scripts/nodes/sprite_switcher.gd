@@ -9,6 +9,9 @@ enum TextureComponent {
 	RSM,
 }
 
+var regex : RegEx
+static var valid_paths : Array[String]
+
 var _size : Vector2
 @export var size : Vector2 :
 	get: return _size
@@ -19,9 +22,7 @@ var _size : Vector2
 			parent.size = self.size
 
 @export var mirror_pattern := "(.+?)(_[lr])((?:\\W|_).+)"
-@export var mirror_replace := "_%s_"
 @export var texture_pattern := "(.+?)(_(?:rsm|[en]))?(\\.png)"
-@export var texture_replace := "_%s."
 
 var _mirror : bool = false
 @export var mirror : bool = false :
@@ -29,9 +30,7 @@ var _mirror : bool = false
 	set(value):
 		if _mirror == value: return
 		_mirror = value
-
-		var regex := RegEx.create_from_string(mirror_pattern)
-
+		regex.compile(mirror_pattern)
 		for sprite in sub_sprites:
 			if not sprite.texture: continue
 			var path : String = sprite.texture.resource_path
@@ -42,9 +41,8 @@ var _mirror : bool = false
 				sub = "_r"
 			var match : RegExMatch = regex.search(path)
 			path = match.get_string(1) + sub + match.get_string(3)
-			var tex := load(path)
-			if tex:
-				sprite.texture = tex
+			if not SpriteSwitcher.valid_paths.has(path): continue
+			sprite.texture = load(path)
 
 var _component : TextureComponent
 @export var component : TextureComponent :
@@ -52,8 +50,7 @@ var _component : TextureComponent
 	set(value):
 		if _component == value: return
 		_component = value
-
-		var regex := RegEx.create_from_string(texture_pattern)
+		regex.compile(texture_pattern)
 		for sprite in sub_sprites:
 			if not sprite.texture: continue
 			var path : String = sprite.texture.resource_path
@@ -64,9 +61,9 @@ var _component : TextureComponent
 				TextureComponent.RSM: sub = "_rsm"
 				_: sub = ""
 			var match : RegExMatch = regex.search(path)
-			var tex := load(match.get_string(1) + sub + match.get_string(3))
-			if tex:
-				sprite.texture = tex
+			path = match.get_string(1) + sub + match.get_string(3)
+			if not SpriteSwitcher.valid_paths.has(path): continue
+			sprite.texture = load(path)
 
 var sub_sprites : Array[Sprite2D] :
 	get:
@@ -75,6 +72,14 @@ var sub_sprites : Array[Sprite2D] :
 			if child is Sprite2D:
 				result.push_back(child)
 		return result
+
+
+static func _static_init() -> void:
+	SpriteSwitcher.valid_paths = Utils.get_paths_in_project(".png")
+
+
+func _init() -> void:
+	regex = RegEx.new()
 
 
 func _ready() -> void:
