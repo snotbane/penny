@@ -1,4 +1,5 @@
 
+@tool
 class_name Utils
 
 const OMIT_FILE_SEARCH_DEFAULT := [
@@ -12,6 +13,8 @@ const OMIT_FILE_SEARCH_INCLUDE_ADDONS := [
 	".vscode",
 	".templates",
 ]
+
+static var valid_file_paths : Array[String] = get_paths_in_project("")
 
 static func get_paths_in_project(ext: String, omit := OMIT_FILE_SEARCH_DEFAULT, start_path := "res://") -> Array[String]:
 	var dir := DirAccess.open(start_path)
@@ -55,3 +58,7 @@ static func script_extends_from(script: Script, type: String) -> bool:
 		return true
 	else:
 		return script_extends_from(base, type)
+
+static func is_valid_path(path: String) -> bool:
+	if Engine.is_editor_hint(): valid_file_paths = get_paths_in_project("")
+	return OS.has_feature("template") or valid_file_paths.has(path)
