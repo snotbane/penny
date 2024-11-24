@@ -2,7 +2,6 @@
 @tool
 extends Node3D
 
-
 var _sprite_switcher : SpriteSwitcher
 @export var sprite_switcher : SpriteSwitcher :
 	get: return _sprite_switcher
@@ -37,25 +36,30 @@ var _pixel_size : float = 0.001
 			quad.size = Vector2.ONE
 
 
+@export var offset : Vector3 :
+	get: return self.mesh_instance.position
+	set(value):
+		self.mesh_instance.position = value
+
+
 var _cast_shadow := GeometryInstance3D.SHADOW_CASTING_SETTING_DOUBLE_SIDED
 @export var cast_shadow := GeometryInstance3D.SHADOW_CASTING_SETTING_DOUBLE_SIDED :
 	get: return _cast_shadow
 	set(value):
 		_cast_shadow = value
-		self.transparency = self.transparency
+		self.opacity = self.opacity
 
 
-@export var transparency : float :
-	get: return self.mesh_instance.transparency
+@export var opacity : float :
+	get: return 1.0 - self.mesh_instance.transparency
 	set(value):
-		self.mesh_instance.transparency = value
-		self.mesh_instance.set_instance_shader_parameter('alpha', 1.0 - transparency)
-		(self.material as ShaderMaterial).set_shader_parameter('alpha', 1.0 - transparency)
-		if self.transparency > 0.0:
+		self.mesh_instance.transparency = 1.0 - value
+		if self.material is ShaderMaterial:
+			self.material.set_shader_parameter('opacity_scalar', value)
+		if value < 1.0:
 			self.mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		else:
 			self.mesh_instance.cast_shadow = self.cast_shadow
-
 
 
 var quad : QuadMesh :
@@ -66,7 +70,7 @@ var mesh_instance : MeshInstance3D
 
 
 # Called when the node enters the scene tree for the first time.
-func _ready() -> void:
+func _init() -> void:
 	mesh_instance = MeshInstance3D.new()
 	mesh_instance.mesh = QuadMesh.new()
 	mesh_instance.mesh.surface_set_material(0, material)
@@ -74,6 +78,9 @@ func _ready() -> void:
 	ready_deferred.call_deferred()
 
 
+# func _ready() -> void:
+
+
 func ready_deferred() -> void:
 	pixel_size = pixel_size
-	transparency = transparency
+	opacity = opacity

@@ -26,7 +26,7 @@ If you want different characters to have *different* dialog boxes, or have the d
 Rubin = new object
 	.dialog = new dialog
 
-Echo = new object
+Esther = new object
 	.dialog = new dialog
 
 Argo = new object
@@ -49,7 +49,7 @@ Female = new Character
 Rubin = new Male
 	.dialog = new base.dialog
 
-Echo = new Female
+Esther = new Female
 	.dialog = new base.dialog
 
 ## These two will share THE SAME dialog box, not only the same link.

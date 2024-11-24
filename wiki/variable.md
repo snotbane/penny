@@ -162,10 +162,10 @@ Marigold = object
 ```pny
 Rubin = Character
 	name = "Rubin"
-	spouse = Echo
+	spouse = Esther
 
-Echo = Character
-	name = "Echo"
+Esther = Character
+	name = "Esther"
 
 Rubin
 	`Good day, [Rubin.spouse].
@@ -173,7 +173,7 @@ Rubin
 Rubin.spouse
 	`Good day, [Rubin].`
 ```
-> Good day, Echo.<br>
+> Good day, Esther.<br>
 > Good day, Rubin.
 
 This example shows how you can use dot notation to have characters speak even if you don't know specifically who they will be.

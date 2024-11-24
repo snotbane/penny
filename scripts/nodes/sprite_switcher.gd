@@ -34,19 +34,7 @@ var _mirror : bool = false
 
 		if _mirror == value: return
 		_mirror = value
-		regex.compile(mirror_pattern)
-		for sprite in sub_sprites:
-			if not sprite.texture: continue
-			var path : String = sprite.texture.resource_path
-			var sub : String
-			if _mirror:
-				sub = "_l"
-			else:
-				sub = "_r"
-			var match : RegExMatch = regex.search(path)
-			path = match.get_string(1) + sub + match.get_string(2)
-			if not SpriteSwitcher.valid_paths.has(path): continue
-			sprite.texture = load(path)
+		refresh_mirror()
 
 var _component : TextureComponent
 @export var component : TextureComponent :
@@ -57,21 +45,7 @@ var _component : TextureComponent
 
 		if _component == value: return
 		_component = value
-		regex.compile(texture_pattern)
-		for sprite in sub_sprites:
-			if not sprite.texture: continue
-			var path : String = sprite.texture.resource_path
-			var sub : String
-			match _component:
-				TextureComponent.NORMAL: sub = "_n"
-				TextureComponent.SHADOW: sub = "_ao"
-				TextureComponent.EMISSIVE: sub = "_e"
-				TextureComponent.RSM: sub = "_rsm"
-				_: sub = ""
-			var match : RegExMatch = regex.search(path)
-			path = match.get_string(1) + sub + match.get_string(2)
-			if not SpriteSwitcher.valid_paths.has(path): continue
-			sprite.texture = load(path)
+		refresh_component()
 
 var sub_sprites : Array[Sprite2D] :
 	get:
@@ -85,13 +59,54 @@ var sub_sprites : Array[Sprite2D] :
 static func _static_init() -> void:
 	SpriteSwitcher.recompile_valid_paths()
 
+
 static func recompile_valid_paths() -> void:
 	SpriteSwitcher.valid_paths = Utils.get_paths_in_project(".png")
 
 
 func _init() -> void:
 	regex = RegEx.new()
+	size = size
 
 
 func _ready() -> void:
-	size = size
+	refresh_all()
+
+
+func refresh_all() -> void:
+	refresh_mirror()
+	refresh_component()
+
+
+func refresh_mirror() -> void:
+	regex.compile(mirror_pattern)
+	for sprite in sub_sprites:
+		if not sprite.texture: continue
+		var path : String = sprite.texture.resource_path
+		var sub : String
+		if _mirror:
+			sub = "_l"
+		else:
+			sub = "_r"
+		var match : RegExMatch = regex.search(path)
+		path = match.get_string(1) + sub + match.get_string(2)
+		if not SpriteSwitcher.valid_paths.has(path): continue
+		sprite.texture = load(path)
+
+
+func refresh_component() -> void:
+	regex.compile(texture_pattern)
+	for sprite in sub_sprites:
+		if not sprite.texture: continue
+		var path : String = sprite.texture.resource_path
+		var sub : String
+		match _component:
+			TextureComponent.NORMAL: sub = "_n"
+			TextureComponent.SHADOW: sub = "_ao"
+			TextureComponent.EMISSIVE: sub = "_e"
+			TextureComponent.RSM: sub = "_rsm"
+			_: sub = ""
+		var match : RegExMatch = regex.search(path)
+		path = match.get_string(1) + sub + match.get_string(2)
+		if not SpriteSwitcher.valid_paths.has(path): continue
+		sprite.texture = load(path)

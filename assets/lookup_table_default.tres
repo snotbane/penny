@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="LookupTable" load_steps=4 format=3 uid="uid://cxfy5qyeucf76"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/lookup_table.gd" id="1_b288m"]
+[ext_resource type="PackedScene" uid="uid://cdfkg5kws5ph4" path="res://scenes/dialog_charybdis.tscn" id="1_hr5qi"]
 [ext_resource type="PackedScene" uid="uid://cuu7puh0nnyug" path="res://addons/penny_godot/scenes/prompt_default.tscn" id="2_704lb"]
-[ext_resource type="PackedScene" uid="uid://b8sp6ey8fsgt7" path="res://addons/penny_godot/scenes/dialog_default.tscn" id="2_mojvg"]
 
 [resource]
 script = ExtResource("1_b288m")
 local_data = {
-"dialog_default": ExtResource("2_mojvg"),
+"dialog_default": ExtResource("1_hr5qi"),
 "prompt_default": ExtResource("2_704lb")
 }

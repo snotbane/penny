@@ -1,9 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://cv88vnuj146aa"]
-
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/sprite_mesh_3d.gd" id="1_io2lp"]
-
-[sub_resource type="PlaceholderMaterial" id="PlaceholderMaterial_hbco5"]
-
-[node name="canvas_actor_3d" type="Node3D"]
-script = ExtResource("1_io2lp")
-material = SubResource("PlaceholderMaterial_hbco5")

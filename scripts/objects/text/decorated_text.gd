@@ -35,6 +35,7 @@ static func from_filtered(filtered: FilteredText, context: PennyObject) -> Decor
 			var deco_strings := tag_match.get_string(1).split(",", false)
 			for deco_string in deco_strings:
 				var deco := DecoInst.new(deco_string, context)
+				result.decos.push_back(deco)
 				deco.register_start(result, tag_match.get_start())
 				bbcode_start_tags_string += deco.bbcode_tag_start
 				if deco.template and deco.template.is_span:
@@ -46,8 +47,6 @@ static func from_filtered(filtered: FilteredText, context: PennyObject) -> Decor
 	while deco_stack:
 		var deco : DecoInst = deco_stack.pop_back()
 		deco.register_end(result, result_text.length() - 1)
-		# result_text += deco.bbcode_tag_end
-
 	result.text = result_text
 	return result
 

@@ -143,7 +143,6 @@ scroll_container = NodePath("../panel/margin_container/scroll_container")
 audio_player = NodePath("nondirectional_audio_stream_player")
 
 [node name="nondirectional_audio_stream_player" type="AudioStreamPlayer" parent="typewriter"]
-volume_db = -80.0
 
 [node name="name_label" type="RichTextLabel" parent="."]
 clip_contents = false

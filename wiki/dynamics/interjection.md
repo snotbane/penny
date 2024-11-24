@@ -23,11 +23,11 @@ This example demonstrates a simple logging statement to show how interjections w
 ```pny
 player_name = "Rubin"
 
-`Hello, my name is { player_name = "Echo" }[player_name].`
+`Hello, my name is { player_name = "Esther" }[player_name].`
 `My name has now been updated to [player_name].`
 ```
 > Hello, my name is Rubin.<br>
-> My name has now been updated to Echo.
+> My name has now been updated to Esther.
 
 This example demonstrates that Interjections cannot modify the contents of the string which they belong in, because they are only executed once they have been reached. You *can* modify variable values inside Interjections, but this isn't really useful. It's best practice to instead keep `set`ters outside Message Blocks. The result will be identical to last time but the syntax is much more readable:
 
@@ -36,7 +36,7 @@ player_name = "Rubin"
 
 `Hello, my name is [player_name].`
 
-player_name = "Echo"
+player_name = "Esther"
 
 `My name has now been updated to [player_name].`
 ```

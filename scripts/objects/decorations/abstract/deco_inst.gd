@@ -56,7 +56,6 @@ func _to_string() -> String:
 
 
 func register_start(message: DecoratedText, index: int) -> void:
-	message.decos.push_back(self)
 	start_index = index
 	if template:
 		template._on_register_start(message, self)

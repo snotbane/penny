@@ -76,29 +76,29 @@ When evaluating the first `Rubin.loop`, Penny will be on the lookout for any mor
 
 ```pny
 obj Rubin
-	spouse = Echo
-obj Echo
+	spouse = Esther
+obj Esther
 	spouse = Rubin
 	colleague = Argo
 obj Argo
 	loop = Rubin.spouse.colleague.loop.unreachable
 
-`[Echo.colleague.loop.unreachable]`
+`[Esther.colleague.loop.unreachable]`
 
-# <global>.Echo					# manually written
-# Echo.colleague				# manually written
+# <global>.Esther					# manually written
+# Esther.colleague				# manually written
 	# <global>.Argo				# evaluated
 # Argo.loop						# manually written			<---┐
 	# <global>.Rubin			# evaluated						|
 	# Rubin.spouse				# evaluated						|
-	# Echo.colleague			# evaluated						|
+	# Esther.colleague			# evaluated						|
 	# Argo.loop					# evaluated; loop found! 	<---┘
 								# issue warning now!
 	# loop.unreachable			# evaluated; never reached
 # loop.unreachable				# manually written; never reached
 ```
 
-> \[Echo.colleague.loop.unreachable\] `InfiniteObjectReferenceWarning: 'Echo.colleague.loop' -> 'Rubin.spouse.colleague.loop' -> ... is a reference loop`
+> \[Esther.colleague.loop.unreachable\] `InfiniteObjectReferenceWarning: 'Esther.colleague.loop' -> 'Rubin.spouse.colleague.loop' -> ... is a reference loop`
 
 ###### Example 3
 
@@ -109,15 +109,15 @@ Just as a demonstration, this block will NOT issue this warning.
 
 # <global>.Rubin				# manually written
 # Rubin.spouse					# manually written
-	# <global>.Echo				# evaluated
-# Echo.spouse					# manually written
+	# <global>.Esther				# evaluated
+# Esther.spouse					# manually written
 	# <global>.Rubin			# evaluated
 # Rubin.spouse					# manually written
-	# <global>.Echo				# evaluated
+	# <global>.Esther				# evaluated
 ```
-> Rubin's wife's husband's wife is Echo.
+> Rubin's wife's husband's wife is Esther.
 
-Although there is explicitly written repetition (which *is* redundant), an evaluated reference never matches its host caller, i.e. to issue this warning the reference evaluation would need to find either `Rubin.spouse` or `Echo.spouse` and that never happens.
+Although there is explicitly written repetition (which *is* redundant), an evaluated reference never matches its host caller, i.e. to issue this warning the reference evaluation would need to find either `Rubin.spouse` or `Esther.spouse` and that never happens.
 
 ### `NullEvaluationWarning`
 
