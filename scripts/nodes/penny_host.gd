@@ -58,22 +58,29 @@ func _init() -> void:
 	insts.push_back(self)
 
 
-
-
 func _ready() -> void:
+	PennyImporter.inst.on_reloaded.connect(reload)
+
 	for meta_name in self.get_meta_list():
 		var meta : Variant = self.get_meta(meta_name)
 		if meta is PennyDecoRegistry:
 			var registry : PennyDecoRegistry = meta
 			registry.register_scripts()
 
-	ready_deferred.call_deferred()
+	if autostart:
+		PennyImporter.inst.on_reloaded.connect(start_at_label, ConnectFlags.CONNECT_ONE_SHOT)
 
 
-func ready_deferred() -> void:
-	reload()
-	if autostart and self.valid:
-		invoke_at_cursor()
+func start_after_reload(bookmark: Stmt) -> void:
+	# self.start_at_stmt(bookmark) # This doesn't work, it just repeats the same statement without updating changes. Obviously.
+	# for i in records.size():
+	# 	var record_stmt := records[records.size() - (i + 1)].stmt
+	# 	var match := Penny.find_stmt_by_hash_id(record_stmt)
+	# 	if match:
+	# 		self.start_at_stmt(match)
+	# 		return
+	self.start_at_label()
+
 
 
 func _input(event: InputEvent) -> void:
@@ -88,7 +95,20 @@ func _physics_process(delta: float) -> void:
 		skip_process()
 
 
+func start_at_stmt(stmt: Stmt) -> void:
+	self.cursor = stmt
+	if not self.valid: return
+	self.invoke_at_cursor()
+
+
+func start_at_label(label: StringName = self.start_label) -> void:
+	self.start_at_stmt(Penny.get_stmt_from_label(label))
+
+
 func reload() -> void:
+	var cursor_bookmark := cursor
+	cursor = null
+
 	state = State.UNLOADED
 	if not Penny.valid: return
 
@@ -96,13 +116,11 @@ func reload() -> void:
 	for init in Penny.inits:
 		cursor = init
 		invoke_at_cursor()
-
-	cursor = Penny.get_stmt_from_label(start_label)
-	if not cursor:
-		state = State.UNLOADED
-		return
+	cursor = null
 
 	state = State.READY
+	if cursor_bookmark:
+		start_after_reload(cursor_bookmark)
 
 
 func _exit_tree() -> void:

@@ -11,7 +11,7 @@ static var REGEX : RegEx = RegEx.new()
 const PENNY_FILE_EXT = ".pny"
 const PNY_FILE_EXPR = "(?i).+\\.pny"
 const PNY_FILE_ROOT = "res://"
-const PNY_FILE_OMIT = [
+const PENNY_FILE_OMIT = [
 	".godot",
 	".vscode",
 	"addons",
@@ -21,10 +21,17 @@ const PNY_FILE_OMIT = [
 	"ignore",
 ]
 
+static var reload_cache_mode : ResourceLoader.CacheMode :
+	get:
+		if OS.has_feature("template"):
+			return ResourceLoader.CacheMode.CACHE_MODE_REUSE
+		else:
+			return ResourceLoader.CacheMode.CACHE_MODE_REPLACE
+
 signal on_reloaded
 
 var paths_dates : Dictionary
-var paths_dates2 : Dictionary
+
 
 func _enter_tree() -> void:
 	register_formats()
@@ -49,34 +56,31 @@ func _ready() -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_IN:
-		# if OS.is_debug_build():
 		if Engine.is_editor_hint():
 			register_formats()
-		# pass
-		# reload.call_deferred()
+		else:
+			reload.call_deferred()
 
 static func register_formats() -> void:
 	ResourceLoader.add_resource_format_loader(SCRIPT_RESOURCE_LOADER)
 
 
 func reload(hard: bool = false) -> void:
-	print("Deco master registry: ", Deco.MASTER_REGISTRY.keys())
+	# print("Reload (engine %s)" % Engine.is_editor_hint())
+	# print("Deco master registry: ", Deco.MASTER_REGISTRY.keys())
 
 	var scripts : Array[PennyScript]
-	var files : Array[FileAccess]
 	if hard:
 		scripts = load_all_script_resources()
-		files = open_all()
 	else:
 		scripts = load_modified_script_resources()
-		files = open_modified()
 
-	if files.size() > 0:
+	if scripts.size() > 0:
 		Penny.log_clear()
 		Penny.valid = true
 
 		Penny.import_scripts(scripts)
-		var exceptions = Penny.validate()
+		var exceptions = Penny.refresh()
 
 		if exceptions:
 			Penny.log_timed("Failed to load one or more scripts:", Penny.ERROR_COLOR)
@@ -93,75 +97,34 @@ func reload(hard: bool = false) -> void:
 
 		# print("***	RELOADING COMPLETE\n")
 
-func open_modified() -> Array[FileAccess]:
-	var result : Array[FileAccess] = []
-
-	var new_paths = get_all_paths()
-
-	var del_paths : Array[StringName] = []
-	for i in paths_dates.keys():
-		del_paths.append(i)
-
-	for i in new_paths:
-		if paths_dates.has(i):
-			del_paths.erase(i)
-			if FileAccess.get_modified_time(i) != paths_dates[i]:
-				result.append(FileAccess.open(i, FileAccess.READ))
-				# print("* " + i)
-		else:
-			result.append(FileAccess.open(i, FileAccess.READ))
-			# print("+ " + i)
-	for i in del_paths:
-		paths_dates.erase(i)
-		# print("- " + i)
-
-	for i in new_paths:
-		paths_dates[i] = FileAccess.get_modified_time(i)
-
-	return result
-
-func open_all() -> Array[FileAccess]:
-	var result : Array[FileAccess] = []
-
-	paths_dates.clear()
-	for i in get_all_paths():
-		paths_dates[i] = FileAccess.get_modified_time(i)
-		result.append(FileAccess.open(i, FileAccess.READ))
-
-
-	return result
 
 func load_modified_script_resources() -> Array[PennyScript]:
 	var result : Array[PennyScript] = []
 	var new_paths := get_all_paths()
 	var del_paths : Array[String] = []
-	for k in paths_dates2.keys():
+	for k in paths_dates.keys():
 		del_paths.push_back(k)
 	for path in new_paths:
-		if paths_dates2.has(path):
+		if paths_dates.has(path):
 			del_paths.erase(path)
-			if FileAccess.get_modified_time(path) != paths_dates2[path]:
-				print("Loading: ", path)
-				result.push_back(load(path))
-				print("Loaded: ", path)
+			if FileAccess.get_modified_time(path) != paths_dates[path]:
+				result.push_back(ResourceLoader.load(path, "", reload_cache_mode))
 		else:
 			result.push_back(load(path))
-		paths_dates2[path] = FileAccess.get_modified_time(path)
+		paths_dates[path] = FileAccess.get_modified_time(path)
 	for path in del_paths:
-		paths_dates2.erase(path)
+		paths_dates.erase(path)
 	return result
 
 func load_all_script_resources() -> Array[PennyScript]:
 	var result : Array[PennyScript] = []
 
-	paths_dates2.clear()
+	paths_dates.clear()
 	for path in get_all_paths():
-		paths_dates2[path] = FileAccess.get_modified_time(path)
-		print("Loading: ", path)
-		result.push_back(load(path))
-		print("Loaded: ", path)
+		paths_dates[path] = FileAccess.get_modified_time(path)
+		result.push_back(ResourceLoader.load(path, "", reload_cache_mode))
 	return result
 
 
 static func get_all_paths(path: String = PNY_FILE_ROOT) -> Array[String]:
-	return Utils.get_paths_in_project(PENNY_FILE_EXT, PNY_FILE_OMIT)
+	return Utils.get_paths_in_project(PENNY_FILE_EXT, PENNY_FILE_OMIT)

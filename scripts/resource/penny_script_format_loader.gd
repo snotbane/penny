@@ -1,8 +1,7 @@
 
 @tool
-extends ResourceFormatLoader
+class_name PennyScriptFormatLoader extends ResourceFormatLoader
 
-const RECOGNIZED_TYPE := StringName('PennyScript')
 const RECOGNIZED_EXTENSIONS : PackedStringArray = ["pny"]
 
 func _handles_type(type: StringName) -> bool:
@@ -20,9 +19,17 @@ func _get_resource_type(path: String) -> String:
 func _load(path: String, original_path: String, use_sub_threads: bool, cache_mode: int) -> Variant:
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file:
-		var result := PennyScript.new()
+		var result : PennyScript
+		if Engine.is_editor_hint():
+			result = null
+		else:
+			result = Penny.find_script_from_path(path)
+		if result == null:
+			result = PennyScript.new()
 		result.update_from_file(file)
+
+		Penny.refresh()
 		return result
 	else:
-		printerr("Failed to load file at path: ", path)
+		printerr("Failed to load resource at path: ", path)
 		return null

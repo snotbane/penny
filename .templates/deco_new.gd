@@ -1,5 +1,5 @@
 
-class_name DecoNew extends DecoBase
+class_name DecoNew extends Deco
 
 
 # func _get_is_span() -> bool:

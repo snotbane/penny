@@ -3,7 +3,6 @@
 @tool
 class_name Penny extends Object
 
-
 const DEFAULT_COLOR = Color.LIGHT_GRAY
 const IDENTIFIER_COLOR = Color.PERU
 const FUTURE_COLOR = Color.DODGER_BLUE
@@ -25,7 +24,6 @@ static var active_dock : PennyDock:
 
 
 func _init() -> void:
-
 	pass
 
 
@@ -35,25 +33,47 @@ static func clear_all() -> void:
 	labels.clear()
 
 
+static func find_script_from_path(path: String) -> PennyScript:
+	for i in scripts:
+		if i.resource_path == path:
+			return i
+
+	return null
+
+
 static func import_scripts(_scripts: Array[PennyScript]) -> void:
 	scripts = _scripts
 
 
-static func validate() -> Array[PennyException]:
+static func refresh() -> Array[PennyException]:
 	var result : Array[PennyException] = []
 
 	labels.clear()
 
 	for script in scripts:
 		for stmt in script.stmts:
-			var e := stmt.validate_cross()
-			if e:
-				result.push_back(e)
+			if stmt is StmtLabel:
+				var e := Penny.register_label(stmt)
+				if e: result.push_back(e)
 	return result
+
+
+static func register_label(stmt: StmtLabel) -> PennyException:
+	if labels.has(stmt.id):
+		return stmt.create_exception("Label '%s' already exists in the current Penny environment." % stmt.id)
+	labels[stmt.id] = stmt
+	return null
 
 
 static func load() -> void:
 	inits.sort_custom(stmt_init_sort)
+
+
+static func find_stmt_by_hash_id(query: Stmt) -> Stmt:
+	var compare_stmt := query.owning_script.stmts[query.index_in_script]
+	if query.hash_id == compare_stmt.hash_id:
+		return compare_stmt
+	return null
 
 
 static func get_stmt_from_label(label: StringName) -> Stmt:

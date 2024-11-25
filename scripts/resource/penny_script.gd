@@ -5,7 +5,9 @@ class_name PennyScript extends Resource
 static var LINE_FEED_REGEX := RegEx.create_from_string("\\n")
 
 @export_storage var id : int
-@export_storage var stmts : Array[Stmt]
+@export_storage var stmts : Array[Stmt] = []
+
+var diff : Array[Dictionary]
 
 func _init() -> void:
 	pass
@@ -13,7 +15,12 @@ func _init() -> void:
 
 func update_from_file(file: FileAccess) -> void:
 	var tokens := parse_tokens_from_raw(file.get_as_text(true), file)
+	var old_stmts = stmts.duplicate()
 	parse_and_register_stmts(tokens, file)
+
+	if not Engine.is_editor_hint():
+		diff = create_diff(old_stmts, stmts)
+		print(Utils.array_to_string(diff))
 
 	for stmt in stmts:
 		var exception := stmt.validate_self()
@@ -25,6 +32,49 @@ func update_from_file(file: FileAccess) -> void:
 		var exception := stmt.validate_cross()
 		if exception:
 			exception.push()
+
+
+
+static func create_diff(old: Array[Stmt], new: Array[Stmt]) -> Array[Dictionary]:
+
+	var old_size := old.size()
+	var new_size := new.size()
+
+	var lcs_table = []
+	lcs_table.resize(old_size + 1)
+	for i in old_size + 1:
+		var row = []
+		row.resize(new_size + 1)
+		row.fill(0)
+		lcs_table[i] = row
+
+	for i in old_size:
+		for j in new_size:
+			if old[i].hash_id == new[j].hash_id:
+				lcs_table[i + 1][j + 1] = lcs_table[i][j] + 1
+			else:
+				lcs_table[i + 1][j + 1] = max(lcs_table[i + 1][j], lcs_table[i][j + 1])
+
+	print(Utils.array_2d_to_string(lcs_table))
+
+	var result : Array[Dictionary] = []
+	var i = old_size
+	var j = new_size
+
+	while i > 0 or j > 0:
+		if i > 0 and j > 0 and old[i - 1].hash_id == new[j - 1].hash_id:
+			result.push_front({"type": "equal", "value": old[i - 1]})
+			i -= 1
+			j -= 1
+		elif j > 0 and (i == 0 or lcs_table[i][j-1] >= lcs_table[i - 1][j]):
+			result.push_front({"type": "insert", "value": new[j - 1]})
+			j -= 1
+		else:
+			result.push_front({"type": "delete", "value": old[i - 1]})
+			i -= 1
+
+	return result
+
 
 
 func parse_and_register_stmts(tokens: Array[Token], context_file: FileAccess) -> void:

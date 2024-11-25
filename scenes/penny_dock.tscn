@@ -25,6 +25,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="hbox_header" type="HBoxContainer" parent="vbox"]
+visible = false
 layout_mode = 2
 
 [node name="toggle_auto_reload" type="CheckButton" parent="vbox/hbox_header"]
@@ -55,6 +56,7 @@ bbcode_enabled = true
 scroll_following = true
 
 [node name="hbox_footer" type="HBoxContainer" parent="vbox"]
+visible = false
 layout_mode = 2
 
 [node name="button_import" type="Button" parent="vbox/hbox_footer"]

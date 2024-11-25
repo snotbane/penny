@@ -59,6 +59,26 @@ static func script_extends_from(script: Script, type: String) -> bool:
 	else:
 		return script_extends_from(base, type)
 
+
 static func is_valid_path(path: String) -> bool:
 	if Engine.is_editor_hint(): valid_file_paths = get_paths_in_project("")
 	return OS.has_feature("template") or valid_file_paths.has(path)
+
+
+static func array_to_string(arr: Array) -> String:
+	var result := ""
+	for i in arr.size():
+		result += str(arr[i]) + ",\n"
+	result = result.substr(0, result.length() - 2)
+	return result
+
+
+static func array_2d_to_string(arr: Array) -> String:
+	var result := ""
+	for y in arr.size():
+		result += "["
+		for x in arr[y].size():
+			result += str(arr[y][x]) + ", "
+		result = result.substr(0, result.length() - 2) + "],\n"
+	result = result.substr(0, result.length() - 2)
+	return result

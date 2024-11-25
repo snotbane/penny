@@ -22,6 +22,7 @@ const VERBOSITY_NAMES : PackedStringArray = [
 	"Ignored:32"
 ]
 
+var hash_id : int
 var owning_script : PennyScript
 var index_in_script : int
 var file_address : FileAddress
@@ -230,6 +231,7 @@ func populate(_owning_script: PennyScript, _index_in_script: int, _index_in_file
 	self.index_in_file = _index_in_file
 	self.nest_depth = _depth
 	self.tokens = _tokens
+	self.hash_id = hash(self.reconstructed_string)
 
 
 func populate_from_other(other: Stmt) -> void:
