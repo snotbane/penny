@@ -70,7 +70,7 @@ func _ready() -> void:
 			registry.register_scripts()
 
 	if autostart:
-		PennyImporter.inst.on_reload_finish.connect(start_at_label.unbind(1), ConnectFlags.CONNECT_ONE_SHOT)
+		start_at_label.call_deferred()
 
 
 func _input(event: InputEvent) -> void:

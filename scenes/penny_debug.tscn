@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://cfkhtume00g5e"]
+[gd_scene load_steps=34 format=3 uid="uid://cfkhtume00g5e"]
 
 [ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_hv265"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_debug.gd" id="2_4v1jc"]
@@ -37,13 +37,11 @@ modulate_color = Color(0.5, 0.46875, 0.125, 0.784314)
 font_size = 40
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1mrjq"]
-bg_color = Color(0, 0, 0, 0.501961)
-corner_radius_top_left = 16
-corner_radius_top_right = 16
-corner_radius_bottom_right = 16
-corner_radius_bottom_left = 16
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_37abw"]
+bg_color = Color(0, 0, 0, 0.752941)
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
 
 [sub_resource type="Animation" id="Animation_law1q"]
 length = 0.001
@@ -69,7 +67,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [false]
+"values": [true]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -86,14 +84,14 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("panel_container/h_box_container/center_container/rich_text_label:text")
+tracks/3/path = NodePath("panel_container/h_box_container/rich_text_label:text")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": ["[center]RELOADING..."]
+"values": ["[center]PENNY RELOADING..."]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -131,10 +129,22 @@ tracks/6/keys = {
 "update": 1,
 "values": [false]
 }
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("panel_container:scale")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
 
 [sub_resource type="Animation" id="Animation_khfxd"]
 resource_name = "failure"
-length = 2.0
+length = 3.0
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -142,10 +152,10 @@ tracks/0/path = NodePath("panel_container:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [true]
+"values": [true, false]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -154,22 +164,22 @@ tracks/1/path = NodePath("panel_container:modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 1.5, 2),
+"times": PackedFloat32Array(0, 2.5, 3),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0.501961)]
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("panel_container/h_box_container/center_container/rich_text_label:text")
+tracks/2/path = NodePath("panel_container/h_box_container/rich_text_label:text")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 2),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": ["[center][shake rate=12 level=12 connected=0][color=#ff4040]RELOAD FAILURE", "[center][color=#ff4040]RELOAD FAILURE"]
+"values": ["[center][shake rate=12 level=12 connected=0][color=#ff4040]PENNY PARSER FAILURE"]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -207,6 +217,18 @@ tracks/5/keys = {
 "update": 1,
 "values": [true]
 }
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("panel_container:scale")
+tracks/6/interp = 2
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.0333333, 0.1, 0.166667, 0.2, 0.233333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(1e-05, 1e-05), Vector2(1.5, 0.25), Vector2(0.667, 1.333), Vector2(1.125, 0.875), Vector2(0.95, 1.05), Vector2(1, 1)]
+}
 
 [sub_resource type="Animation" id="Animation_m0eva"]
 resource_name = "spin"
@@ -237,27 +259,27 @@ tracks/1/keys = {
 }
 tracks/2/type = "value"
 tracks/2/imported = false
-tracks/2/enabled = false
+tracks/2/enabled = true
 tracks/2/path = NodePath("panel_container:modulate")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 1.5, 2),
-"transitions": PackedFloat32Array(1, 1, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+"values": [Color(1, 1, 1, 1)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("panel_container/h_box_container/center_container/rich_text_label:text")
+tracks/3/path = NodePath("panel_container/h_box_container/rich_text_label:text")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": ["[center][tornado freq=-8 radius=4 connected=0]RELOADING..."]
+"values": ["[center][color=#ffe14d][tornado freq=-8 radius=4 connected=0]PENNY RELOADING..."]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -326,14 +348,14 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("panel_container/h_box_container/center_container/rich_text_label:text")
+tracks/2/path = NodePath("panel_container/h_box_container/rich_text_label:text")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": ["[center][color=#39e673][wave amp=50]RELOAD SUCCESS"]
+"values": ["[center][color=#39e673][wave amp=50]PENNY SCRIPTS OK"]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -370,6 +392,18 @@ tracks/5/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [false]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("panel_container:scale")
+tracks/6/interp = 2
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.0333333, 0.1, 0.166667, 0.2, 0.233333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(1e-05, 1e-05), Vector2(1.5, 0.25), Vector2(0.667, 1.333), Vector2(1.125, 0.875), Vector2(0.95, 1.05), Vector2(1, 1)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_aybwd"]
@@ -685,20 +719,20 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="reload_notify" type="Control" parent="."]
-custom_minimum_size = Vector2(440, 80)
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 mouse_filter = 2
 
 [node name="panel_container" type="PanelContainer" parent="reload_notify"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset = Vector2(260, 40)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1mrjq")
 
@@ -722,6 +756,7 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="start_image" type="TextureRect" parent="reload_notify/panel_container/h_box_container/control/control"]
+self_modulate = Color(1, 0.883333, 0.3, 1)
 layout_mode = 0
 offset_right = 80.0
 offset_bottom = 80.0
@@ -753,21 +788,16 @@ texture = ExtResource("22_o11uj")
 expand_mode = 2
 stretch_mode = 3
 
-[node name="center_container" type="PanelContainer" parent="reload_notify/panel_container/h_box_container"]
+[node name="rich_text_label" type="RichTextLabel" parent="reload_notify/panel_container/h_box_container"]
+custom_minimum_size = Vector2(420, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 2
 size_flags_vertical = 4
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_37abw")
-
-[node name="rich_text_label" type="RichTextLabel" parent="reload_notify/panel_container/h_box_container/center_container"]
-layout_mode = 2
-size_flags_horizontal = 3
 mouse_filter = 2
 theme_override_fonts/normal_font = ExtResource("21_nb1sm")
 theme_override_font_sizes/normal_font_size = 32
 bbcode_enabled = true
-text = "[center]RELOADING..."
+text = "[center]PENNY RELOADING..."
 fit_content = true
 
 [node name="animation_player" type="AnimationPlayer" parent="reload_notify"]
