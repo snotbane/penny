@@ -4,6 +4,8 @@ class_name PennyDebug extends Control
 static var inst : PennyDebug
 
 signal on_host_changed(host: PennyHost)
+signal on_reload_start
+signal on_reload_finish(success: bool)
 
 var _host: PennyHost
 var host : PennyHost :
@@ -19,10 +21,7 @@ func _ready() -> void:
 	if PennyHost.insts:
 		host = PennyHost.insts[0]
 
-	if OS.is_debug_build():
-		$overlay.visible = false
-	else:
-		queue_free()
+	$overlay.visible = false
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

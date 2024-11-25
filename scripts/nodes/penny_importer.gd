@@ -3,6 +3,10 @@
 @tool
 class_name PennyImporter extends Node
 
+signal on_reload_start
+signal on_reload_finish(success: bool)
+
+
 static var SCRIPT_RESOURCE_LOADER = preload("res://addons/penny_godot/scripts/resource/penny_script_format_loader.gd").new()
 static var DEBUG_SCENE : PackedScene = preload("res://addons/penny_godot/scenes/penny_debug.tscn")
 
@@ -28,7 +32,6 @@ static var reload_cache_mode : ResourceLoader.CacheMode :
 		else:
 			return ResourceLoader.CacheMode.CACHE_MODE_REPLACE
 
-signal on_reloaded
 
 var paths_dates : Dictionary
 
@@ -48,7 +51,10 @@ func _ready() -> void:
 		var debug_canvas := CanvasLayer.new()
 		debug_canvas.layer = 256
 		self.add_child.call_deferred(debug_canvas)
-		var debug := DEBUG_SCENE.instantiate()
+		var debug : PennyDebug = DEBUG_SCENE.instantiate()
+		on_reload_start.connect(debug.on_reload_start.emit)
+		on_reload_finish.connect(debug.on_reload_finish.emit)
+
 		debug_canvas.add_child.call_deferred(debug)
 
 	reload.call_deferred()
@@ -69,11 +75,13 @@ func reload(hard: bool = false) -> void:
 	# print("Reload (engine %s)" % Engine.is_editor_hint())
 	# print("Deco master registry: ", Deco.MASTER_REGISTRY.keys())
 
+	on_reload_start.emit()
+
 	var scripts : Array[PennyScript]
 	if hard:
-		scripts = load_all_script_resources()
+		scripts = self.load_all_script_resources()
 	else:
-		scripts = load_modified_script_resources()
+		scripts = self.load_modified_script_resources()
 
 	if scripts.size() > 0:
 		Penny.log_clear()
@@ -90,12 +98,10 @@ func reload(hard: bool = false) -> void:
 		else:
 			Penny.load()
 			Penny.log_timed("Successfully loaded all (%s) scripts." % str(scripts.size()), Penny.HAPPY_COLOR)
-
 		Penny.log_info()
-
-		on_reloaded.emit()
-
-		# print("***	RELOADING COMPLETE\n")
+		on_reload_finish.emit(Penny.valid)
+	elif not Penny.valid:
+		on_reload_finish.emit(false)
 
 
 func load_modified_script_resources() -> Array[PennyScript]:

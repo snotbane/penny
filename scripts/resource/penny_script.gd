@@ -107,13 +107,13 @@ class Diff:
 	func remap_stmt_index(cursor: Stmt) -> Stmt:
 		return self.news[self.map[cursor.index_in_script]]
 
-
 static var LINE_FEED_REGEX := RegEx.create_from_string("\\n")
 
 @export_storage var id : int
 @export_storage var stmts : Array[Stmt] = []
 
 var diff : Diff
+var parse_exceptions : Array[PennyException] = []
 
 func _init() -> void:
 	pass
@@ -132,16 +132,17 @@ func update_from_file(file: FileAccess) -> void:
 		diff = Diff.new(old_stmts, stmts)
 		print(diff)
 
+	parse_exceptions.clear()
 	for stmt in stmts:
 		var exception := stmt.validate_self()
 		if exception:
-			exception.push()
+			parse_exceptions.push_back(exception)
 		else:
 			stmt.validate_self_post_setup()
 	for stmt in stmts:
 		var exception := stmt.validate_cross()
 		if exception:
-			exception.push()
+			parse_exceptions.push_back(exception)
 
 
 func parse_and_register_stmts(tokens: Array[Token], context_file: FileAccess) -> void:

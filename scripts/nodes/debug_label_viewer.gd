@@ -5,7 +5,7 @@ extends VBoxContainer
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	PennyImporter.inst.on_reloaded.connect(populate)
+	PennyImporter.inst.on_reload_finish.connect(populate.unbind(1))
 
 func populate() -> void:
 	for child in self.get_children():

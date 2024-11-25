@@ -37,7 +37,9 @@ var data_root := PennyObject.STATIC_ROOT
 var records : Array[Record]
 var call_stack : Array[Stmt]
 
+
 var cursor : Stmt
+var last_valid_cursor : Stmt
 var expecting_conditional : bool
 
 var is_skipping : bool
@@ -59,7 +61,7 @@ func _init() -> void:
 
 
 func _ready() -> void:
-	PennyImporter.inst.on_reloaded.connect(reload)
+	PennyImporter.inst.on_reload_finish.connect(try_reload)
 
 	for meta_name in self.get_meta_list():
 		var meta : Variant = self.get_meta(meta_name)
@@ -68,14 +70,7 @@ func _ready() -> void:
 			registry.register_scripts()
 
 	if autostart:
-		PennyImporter.inst.on_reloaded.connect(start_at_label, ConnectFlags.CONNECT_ONE_SHOT)
-
-
-func start_after_reload(bookmark: Stmt) -> void:
-	self.cursor = bookmark.owning_script.diff.remap_stmt_index(bookmark)
-	# self.cursor = bookmark.owning_script.diff.get_recent_remap(records)
-	if self.cursor.hash_id != bookmark.hash_id:
-		self.invoke_at_cursor()
+		PennyImporter.inst.on_reload_finish.connect(start_at_label.unbind(1), ConnectFlags.CONNECT_ONE_SHOT)
 
 
 func _input(event: InputEvent) -> void:
@@ -100,13 +95,24 @@ func start_at_label(label: StringName = self.start_label) -> void:
 	self.start_at_stmt(Penny.get_stmt_from_label(label))
 
 
-func reload() -> void:
-	var cursor_bookmark := cursor
-	cursor = null
+func try_reload(success: bool) -> void:
+	if self.cursor:
+		self.last_valid_cursor = self.cursor
+	self.cursor = null
 
 	state = State.UNLOADED
-	if not Penny.valid: return
+	if success:
+		reload()
 
+	if self.last_valid_cursor:
+		self.cursor = self.last_valid_cursor.owning_script.diff.remap_stmt_index(self.last_valid_cursor)
+		var reinvoke_at_bookmark := self.cursor.hash_id != self.last_valid_cursor.hash_id
+		self.last_valid_cursor = null
+		if success and reinvoke_at_bookmark:
+			self.invoke_at_cursor()
+
+
+func reload() -> void:
 	state = State.INITING
 	for init in Penny.inits:
 		cursor = init
@@ -114,8 +120,6 @@ func reload() -> void:
 	cursor = null
 
 	state = State.READY
-	if cursor_bookmark:
-		start_after_reload(cursor_bookmark)
 
 
 func _exit_tree() -> void:

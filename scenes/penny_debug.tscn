@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://cfkhtume00g5e"]
+[gd_scene load_steps=35 format=3 uid="uid://cfkhtume00g5e"]
 
 [ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_hv265"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_debug.gd" id="2_4v1jc"]
@@ -19,6 +19,11 @@
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/option_button_advanced.gd" id="12_xgrrm"]
 [ext_resource type="PackedScene" uid="uid://ckwmom7w0dvh1" path="res://addons/penny_godot/scenes/penny_history_box.tscn" id="14_elw5r"]
 [ext_resource type="Texture2D" uid="uid://xpmyo52daraf" path="res://addons/penny_godot/assets/icons/Back.svg" id="15_mpfsm"]
+[ext_resource type="Texture2D" uid="uid://dw74g8fttffmq" path="res://addons/penny_godot/assets/icons/Reload.svg" id="20_3765o"]
+[ext_resource type="FontFile" uid="uid://dwidsc5m3kiw" path="res://addons/penny_godot/assets/fonts/IBMPlexSans-BoldItalic.ttf" id="21_nb1sm"]
+[ext_resource type="Texture2D" uid="uid://cb8qfgw6tykev" path="res://addons/penny_godot/assets/icons/CheckBox.svg" id="21_nfjft"]
+[ext_resource type="Texture2D" uid="uid://cifrouur0xbp" path="res://addons/penny_godot/assets/icons/Close.svg" id="22_o11uj"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/debug/penny_debug_reload_notify_anim.gd" id="22_wyfls"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6r5gf"]
 
@@ -30,6 +35,350 @@ modulate_color = Color(0.5, 0.46875, 0.125, 0.784314)
 
 [sub_resource type="LabelSettings" id="LabelSettings_kjwga"]
 font_size = 40
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1mrjq"]
+bg_color = Color(0, 0, 0, 0.501961)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_37abw"]
+
+[sub_resource type="Animation" id="Animation_law1q"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("panel_container/h_box_container/control/control/start_image:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("panel_container:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("panel_container:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("panel_container/h_box_container/center_container/rich_text_label:text")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": ["[center]RELOADING..."]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("panel_container/h_box_container/control/control/start_image:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("panel_container/h_box_container/control/control/success_image:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("panel_container/h_box_container/control/control/failure_image:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_khfxd"]
+resource_name = "failure"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("panel_container:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("panel_container:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1.5, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0.501961)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("panel_container/h_box_container/center_container/rich_text_label:text")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": ["[center][shake rate=12 level=12 connected=0][color=#ff4040]RELOAD FAILURE", "[center][color=#ff4040]RELOAD FAILURE"]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("panel_container/h_box_container/control/control/start_image:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("panel_container/h_box_container/control/control/success_image:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("panel_container/h_box_container/control/control/failure_image:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_m0eva"]
+resource_name = "spin"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("panel_container/h_box_container/control/control/start_image:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 6.28319]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("panel_container:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = false
+tracks/2/path = NodePath("panel_container:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1.5, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("panel_container/h_box_container/center_container/rich_text_label:text")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": ["[center][tornado freq=-8 radius=4 connected=0]RELOADING..."]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("panel_container/h_box_container/control/control/start_image:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("panel_container/h_box_container/control/control/success_image:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("panel_container/h_box_container/control/control/failure_image:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_vv3o8"]
+resource_name = "success"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("panel_container:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("panel_container:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1.5, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("panel_container/h_box_container/center_container/rich_text_label:text")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": ["[center][color=#39e673][wave amp=50]RELOAD SUCCESS"]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("panel_container/h_box_container/control/control/start_image:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("panel_container/h_box_container/control/control/success_image:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("panel_container/h_box_container/control/control/failure_image:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_aybwd"]
+_data = {
+"RESET": SubResource("Animation_law1q"),
+"failure": SubResource("Animation_khfxd"),
+"loop": SubResource("Animation_m0eva"),
+"success": SubResource("Animation_vv3o8")
+}
 
 [node name="penny_debug" type="PanelContainer"]
 anchors_preset = 15
@@ -335,8 +684,102 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="reload_notify" type="Control" parent="."]
+custom_minimum_size = Vector2(440, 80)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="panel_container" type="PanelContainer" parent="reload_notify"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1mrjq")
+
+[node name="h_box_container" type="HBoxContainer" parent="reload_notify/panel_container"]
+layout_mode = 2
+
+[node name="control" type="Control" parent="reload_notify/panel_container/h_box_container"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="control" type="Control" parent="reload_notify/panel_container/h_box_container/control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_right = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="start_image" type="TextureRect" parent="reload_notify/panel_container/h_box_container/control/control"]
+layout_mode = 0
+offset_right = 80.0
+offset_bottom = 80.0
+pivot_offset = Vector2(36, 40)
+texture = ExtResource("20_3765o")
+expand_mode = 2
+stretch_mode = 3
+
+[node name="success_image" type="TextureRect" parent="reload_notify/panel_container/h_box_container/control/control"]
+visible = false
+modulate = Color(0.225, 0.9, 0.45, 1)
+layout_mode = 0
+offset_top = -2.0
+offset_right = 80.0
+offset_bottom = 78.0
+pivot_offset = Vector2(36, 40)
+texture = ExtResource("21_nfjft")
+expand_mode = 2
+stretch_mode = 3
+
+[node name="failure_image" type="TextureRect" parent="reload_notify/panel_container/h_box_container/control/control"]
+visible = false
+self_modulate = Color(1, 0.25098, 0.25098, 1)
+layout_mode = 0
+offset_right = 80.0
+offset_bottom = 80.0
+pivot_offset = Vector2(36, 40)
+texture = ExtResource("22_o11uj")
+expand_mode = 2
+stretch_mode = 3
+
+[node name="center_container" type="PanelContainer" parent="reload_notify/panel_container/h_box_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_37abw")
+
+[node name="rich_text_label" type="RichTextLabel" parent="reload_notify/panel_container/h_box_container/center_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_fonts/normal_font = ExtResource("21_nb1sm")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "[center]RELOADING..."
+fit_content = true
+
+[node name="animation_player" type="AnimationPlayer" parent="reload_notify"]
+libraries = {
+"": SubResource("AnimationLibrary_aybwd")
+}
+script = ExtResource("22_wyfls")
+
 [connection signal="on_host_changed" from="." to="overlay/margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/penny_history_box" method="_on_penny_debug_on_host_changed"]
 [connection signal="on_host_changed" from="." to="overlay/margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/penny_history_box" method="scroll_to_end" unbinds=1]
+[connection signal="on_reload_finish" from="." to="reload_notify/animation_player" method="finish"]
+[connection signal="on_reload_start" from="." to="reload_notify/animation_player" method="start"]
 [connection signal="visibility_changed" from="." to="overlay/margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/penny_history_box" method="scroll_to_end"]
 [connection signal="item_selected_id" from="overlay/margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/verbosity_selector" to="overlay/margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/penny_history_box" method="_on_verbosity_selector_item_selected_id"]
 [connection signal="pressed" from="overlay/margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom/zoom_reset" to="overlay/margin_container/h_box_container/penny_runtime_dock/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom/zoom_slider" method="set_value" binds= [10.0]]

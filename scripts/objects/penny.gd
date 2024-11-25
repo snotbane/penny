@@ -50,6 +50,7 @@ static func refresh() -> Array[PennyException]:
 	labels.clear()
 
 	for script in scripts:
+		result.append_array(script.parse_exceptions)
 		for stmt in script.stmts:
 			if stmt is StmtLabel:
 				var e := Penny.register_label(stmt)
