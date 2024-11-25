@@ -78,6 +78,7 @@ class Diff:
 				Entry.DELETE:
 					# # Use this to explicitly state that the entry is no longer available, defer logic elsewhere
 					# map[i] = -1
+					# Use this to bake remap logic in here. Every old statement is guaranteed to have a new remap.
 					map[i] = map[i - 1]
 			i += 1
 
@@ -93,8 +94,18 @@ class Diff:
 			return "Diff: no changes."
 		return "Diff: + %s insertions, - %s deletions." % [inserts, deletes]
 
-	func remap_stmt_index(old: Stmt) -> Stmt:
-		return self.news[self.map[old.index_in_script]]
+
+	# func get_recent_remap(records: Array[Record]) -> Stmt:
+	# 	for i in records.size():
+	# 		var cursor : Stmt = records[records.size() - (i + 1)].stmt
+	# 		var index := cursor..map[cursor.index_in_script]
+	# 		if index == -1: continue
+	# 		return self.new[index]
+	# 	return self.new[0]
+
+
+	func remap_stmt_index(cursor: Stmt) -> Stmt:
+		return self.news[self.map[cursor.index_in_script]]
 
 
 static var LINE_FEED_REGEX := RegEx.create_from_string("\\n")
