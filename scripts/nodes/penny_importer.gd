@@ -5,6 +5,7 @@ class_name PennyImporter extends Node
 
 signal on_reload_start
 signal on_reload_finish(success: bool)
+signal on_reload_cancel
 
 
 static var SCRIPT_RESOURCE_LOADER = preload("res://addons/penny_godot/scripts/resource/penny_script_format_loader.gd").new()
@@ -54,6 +55,7 @@ func _ready() -> void:
 		var debug : PennyDebug = DEBUG_SCENE.instantiate()
 		on_reload_start.connect(debug.on_reload_start.emit)
 		on_reload_finish.connect(debug.on_reload_finish.emit)
+		on_reload_cancel.connect(debug.on_reload_cancel.emit)
 
 		debug_canvas.add_child.call_deferred(debug)
 
@@ -99,8 +101,11 @@ func reload(hard: bool = false) -> void:
 			Penny.load()
 			Penny.log_timed("Successfully loaded all (%s) scripts." % str(scripts.size()), Penny.HAPPY_COLOR)
 		Penny.log_info()
+
 		on_reload_finish.emit(Penny.valid)
-	elif not Penny.valid:
+	elif Penny.valid:
+		on_reload_cancel.emit()
+	else:
 		on_reload_finish.emit(false)
 
 

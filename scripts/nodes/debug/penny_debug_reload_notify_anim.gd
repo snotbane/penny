@@ -20,3 +20,7 @@ func finish(success: bool) -> void:
 		self.play("success")
 	else:
 		self.play("failure")
+
+
+func cancel() -> void:
+	self.play("RESET")

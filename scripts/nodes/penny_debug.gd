@@ -6,6 +6,7 @@ static var inst : PennyDebug
 signal on_host_changed(host: PennyHost)
 signal on_reload_start
 signal on_reload_finish(success: bool)
+signal on_reload_cancel
 
 var _host: PennyHost
 var host : PennyHost :
