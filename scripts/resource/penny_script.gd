@@ -8,6 +8,7 @@ static var LINE_FEED_REGEX := RegEx.create_from_string("\\n")
 @export_storage var stmts : Array[Stmt] = []
 
 var diff : Array[Dictionary]
+var diff_remap : Array[int]
 
 func _init() -> void:
 	pass
@@ -15,12 +16,17 @@ func _init() -> void:
 
 func update_from_file(file: FileAccess) -> void:
 	var tokens := parse_tokens_from_raw(file.get_as_text(true), file)
-	var old_stmts = stmts.duplicate()
+
+	var old_stmts : Array[Stmt]
+	if not Engine.is_editor_hint():
+		old_stmts = stmts.duplicate()
+
 	parse_and_register_stmts(tokens, file)
 
 	if not Engine.is_editor_hint():
 		diff = create_diff(old_stmts, stmts)
-		print(Utils.array_to_string(diff))
+		diff_remap = create_diff_remap(old_stmts, stmts, diff)
+		print(diff_remap)
 
 	for stmt in stmts:
 		var exception := stmt.validate_self()
@@ -33,6 +39,49 @@ func update_from_file(file: FileAccess) -> void:
 		if exception:
 			exception.push()
 
+
+func get_diff_remapped_stmt(old_stmt: Stmt) -> Stmt:
+	return stmts[diff_remap[old_stmt.index_in_script]]
+
+
+static func create_diff_remap(olds: Array[Stmt], news: Array[Stmt], _diff: Array[Dictionary]) -> Array[int]:
+
+	var remap_table : Array[int] = []
+	remap_table.resize(olds.size())
+
+	print(Utils.array_to_string(_diff))
+
+	var i := 0
+	var j := 0
+	for change in _diff:
+		match change["type"]:
+			"equal":
+				remap_table[i] = j
+				j += 1
+			"delete":
+				remap_table[i] = remap_table[i - 1]
+				# j -= 1
+				pass
+			"insert":
+				i -= 1
+				j += 1
+		i += 1
+
+
+	# var i_new := 0
+
+	# for i in _diff.size():
+	# 	var change := _diff[i]
+	# 	match change["type"]:
+	# 		"equal":
+	# 			remap_table[i] = i_new
+	# 			i_new += 1
+	# 		"delete":
+	# 			remap_table[i] = -1
+	# 		"insert":
+	# 			i_new += 1
+
+	return remap_table
 
 
 static func create_diff(old: Array[Stmt], new: Array[Stmt]) -> Array[Dictionary]:
@@ -54,8 +103,6 @@ static func create_diff(old: Array[Stmt], new: Array[Stmt]) -> Array[Dictionary]
 				lcs_table[i + 1][j + 1] = lcs_table[i][j] + 1
 			else:
 				lcs_table[i + 1][j + 1] = max(lcs_table[i + 1][j], lcs_table[i][j + 1])
-
-	print(Utils.array_2d_to_string(lcs_table))
 
 	var result : Array[Dictionary] = []
 	var i = old_size

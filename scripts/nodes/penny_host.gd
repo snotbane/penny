@@ -72,15 +72,9 @@ func _ready() -> void:
 
 
 func start_after_reload(bookmark: Stmt) -> void:
-	# self.start_at_stmt(bookmark) # This doesn't work, it just repeats the same statement without updating changes. Obviously.
-	# for i in records.size():
-	# 	var record_stmt := records[records.size() - (i + 1)].stmt
-	# 	var match := Penny.find_stmt_by_hash_id(record_stmt)
-	# 	if match:
-	# 		self.start_at_stmt(match)
-	# 		return
-	self.start_at_label()
-
+	self.cursor = bookmark.owning_script.get_diff_remapped_stmt(bookmark)
+	if self.cursor.hash_id != bookmark.hash_id:
+		self.invoke_at_cursor()
 
 
 func _input(event: InputEvent) -> void:
