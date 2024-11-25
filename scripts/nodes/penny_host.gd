@@ -106,9 +106,9 @@ func try_reload(success: bool) -> void:
 
 	if self.last_valid_cursor:
 		self.cursor = self.last_valid_cursor.owning_script.diff.remap_stmt_index(self.last_valid_cursor)
-		var reinvoke_at_bookmark := self.cursor.hash_id != self.last_valid_cursor.hash_id
 		self.last_valid_cursor = null
-		if success and reinvoke_at_bookmark:
+		if success:
+			## TODO: Go back through the records till you find the new cursor, and undo stmts until that point.
 			self.invoke_at_cursor()
 
 
@@ -118,7 +118,6 @@ func reload() -> void:
 		cursor = init
 		invoke_at_cursor()
 	cursor = null
-
 	state = State.READY
 
 
