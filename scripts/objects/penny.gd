@@ -37,7 +37,6 @@ static func find_script_from_path(path: String) -> PennyScript:
 	for i in scripts:
 		if i.resource_path == path:
 			return i
-
 	return null
 
 

@@ -72,7 +72,7 @@ func _ready() -> void:
 
 
 func start_after_reload(bookmark: Stmt) -> void:
-	self.cursor = bookmark.owning_script.get_diff_remapped_stmt(bookmark)
+	self.cursor = bookmark.owning_script.diff.remap_stmt_index(bookmark)
 	if self.cursor.hash_id != bookmark.hash_id:
 		self.invoke_at_cursor()
 

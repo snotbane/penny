@@ -2,13 +2,107 @@
 @tool
 class_name PennyScript extends Resource
 
+class Diff:
+	class Entry:
+		enum {
+			EQUAL,
+			INSERT,
+			DELETE
+		}
+		var type : int
+		var value : Stmt
+
+		func _init(_type: int, _value: Stmt) -> void:
+			self.type = _type
+			self.value = _value
+
+		func _to_string() -> String:
+			var result : String
+			match self.type:
+				EQUAL: result = "  "
+				INSERT: result = "+ "
+				DELETE: result = "- "
+			result += self.value.to_string()
+			return result
+
+	var olds : Array[Stmt]
+	var news : Array[Stmt]
+	var changes : Array[Entry]
+	var map : Array[int]
+
+	func _init(_old: Array[Stmt], _new: Array[Stmt]) -> void:
+		self.olds = _old.duplicate()
+		self.news = _new.duplicate()
+		var lcs_table = []
+		lcs_table.resize(olds.size() + 1)
+		for i in olds.size() + 1:
+			var row : Array[int] = []
+			row.resize(news.size() + 1)
+			row.fill(0)
+			lcs_table[i] = row
+
+		for i in olds.size():
+			for j in news.size():
+				if olds[i].hash_id == news[j].hash_id:
+					lcs_table[i + 1][j + 1] = lcs_table[i][j] + 1
+				else:
+					lcs_table[i + 1][j + 1] = max(lcs_table[i + 1][j], lcs_table[i][j + 1])
+
+		changes = []
+		var i := olds.size()
+		var j := news.size()
+		while i > 0 or j > 0:
+			if i > 0 and j > 0 and olds[i - 1].hash_id == news[j - 1].hash_id:
+				changes.push_front(Entry.new(Entry.EQUAL, olds[i - 1]))
+				i -= 1
+				j -= 1
+			elif j > 0 and (i == 0 or lcs_table[i][j-1] >= lcs_table[i - 1][j]):
+				changes.push_front(Entry.new(Entry.INSERT, news[j - 1]))
+				j -= 1
+			else:
+				changes.push_front(Entry.new(Entry.DELETE, olds[i - 1]))
+				i -= 1
+
+		map = []
+		map.resize(olds.size())
+		i = 0
+		j = 0
+		for change in changes:
+			match change.type:
+				Entry.EQUAL:
+					map[i] = j
+					j += 1
+				Entry.INSERT:
+					i -= 1
+					j += 1
+				Entry.DELETE:
+					# # Use this to explicitly state that the entry is no longer available, defer logic elsewhere
+					# map[i] = -1
+					map[i] = map[i - 1]
+			i += 1
+
+
+	func _to_string() -> String:
+		var inserts := 0
+		var deletes := 0
+		for change in changes:
+			match change.type:
+				Entry.INSERT: inserts += 1
+				Entry.DELETE: deletes += 1
+		if inserts == 0 and deletes == 0:
+			return "Diff: no changes."
+		return "Diff: + %s insertions, - %s deletions." % [inserts, deletes]
+
+	func remap_stmt_index(old: Stmt) -> Stmt:
+		return self.news[self.map[old.index_in_script]]
+
+
 static var LINE_FEED_REGEX := RegEx.create_from_string("\\n")
 
 @export_storage var id : int
 @export_storage var stmts : Array[Stmt] = []
 
-var diff : Array[Dictionary]
-var diff_remap : Array[int]
+var diff : Diff
 
 func _init() -> void:
 	pass
@@ -21,12 +115,11 @@ func update_from_file(file: FileAccess) -> void:
 	if not Engine.is_editor_hint():
 		old_stmts = stmts.duplicate()
 
-	parse_and_register_stmts(tokens, file)
+	self.parse_and_register_stmts(tokens, file)
 
 	if not Engine.is_editor_hint():
-		diff = create_diff(old_stmts, stmts)
-		diff_remap = create_diff_remap(old_stmts, stmts, diff)
-		print(diff_remap)
+		diff = Diff.new(old_stmts, stmts)
+		print(diff)
 
 	for stmt in stmts:
 		var exception := stmt.validate_self()
@@ -38,90 +131,6 @@ func update_from_file(file: FileAccess) -> void:
 		var exception := stmt.validate_cross()
 		if exception:
 			exception.push()
-
-
-func get_diff_remapped_stmt(old_stmt: Stmt) -> Stmt:
-	return stmts[diff_remap[old_stmt.index_in_script]]
-
-
-static func create_diff_remap(olds: Array[Stmt], news: Array[Stmt], _diff: Array[Dictionary]) -> Array[int]:
-
-	var remap_table : Array[int] = []
-	remap_table.resize(olds.size())
-
-	print(Utils.array_to_string(_diff))
-
-	var i := 0
-	var j := 0
-	for change in _diff:
-		match change["type"]:
-			"equal":
-				remap_table[i] = j
-				j += 1
-			"delete":
-				remap_table[i] = remap_table[i - 1]
-				# j -= 1
-				pass
-			"insert":
-				i -= 1
-				j += 1
-		i += 1
-
-
-	# var i_new := 0
-
-	# for i in _diff.size():
-	# 	var change := _diff[i]
-	# 	match change["type"]:
-	# 		"equal":
-	# 			remap_table[i] = i_new
-	# 			i_new += 1
-	# 		"delete":
-	# 			remap_table[i] = -1
-	# 		"insert":
-	# 			i_new += 1
-
-	return remap_table
-
-
-static func create_diff(old: Array[Stmt], new: Array[Stmt]) -> Array[Dictionary]:
-
-	var old_size := old.size()
-	var new_size := new.size()
-
-	var lcs_table = []
-	lcs_table.resize(old_size + 1)
-	for i in old_size + 1:
-		var row = []
-		row.resize(new_size + 1)
-		row.fill(0)
-		lcs_table[i] = row
-
-	for i in old_size:
-		for j in new_size:
-			if old[i].hash_id == new[j].hash_id:
-				lcs_table[i + 1][j + 1] = lcs_table[i][j] + 1
-			else:
-				lcs_table[i + 1][j + 1] = max(lcs_table[i + 1][j], lcs_table[i][j + 1])
-
-	var result : Array[Dictionary] = []
-	var i = old_size
-	var j = new_size
-
-	while i > 0 or j > 0:
-		if i > 0 and j > 0 and old[i - 1].hash_id == new[j - 1].hash_id:
-			result.push_front({"type": "equal", "value": old[i - 1]})
-			i -= 1
-			j -= 1
-		elif j > 0 and (i == 0 or lcs_table[i][j-1] >= lcs_table[i - 1][j]):
-			result.push_front({"type": "insert", "value": new[j - 1]})
-			j -= 1
-		else:
-			result.push_front({"type": "delete", "value": old[i - 1]})
-			i -= 1
-
-	return result
-
 
 
 func parse_and_register_stmts(tokens: Array[Token], context_file: FileAccess) -> void:
