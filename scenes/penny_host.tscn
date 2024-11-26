@@ -11,7 +11,7 @@
 [node name="penny_host" type="Node" node_paths=PackedStringArray("layers")]
 script = ExtResource("1_jmae0")
 lookup_tables = Array[ExtResource("2_4q0nq")]([ExtResource("3_lw4vb")])
-layers = [NodePath("canvas_layer/ui/v_box_container/message_layer"), NodePath("canvas_layer/ui/other_layer")]
+layers = [NodePath("canvas_layer/ui/v_box_container/message_layer"), NodePath("canvas_layer/ui/v_box_container/history_layer/penny_history_box/panel_container/margin_container/scroll_container/margin_container/scroll_contents"), NodePath("canvas_layer/ui/other_layer")]
 autostart = null
 start_label = null
 metadata/deco_registry_default = ExtResource("4_s55ao")
@@ -50,6 +50,7 @@ theme_override_constants/separation = 0
 alignment = 2
 
 [node name="history_layer" type="MarginContainer" parent="canvas_layer/ui/v_box_container"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

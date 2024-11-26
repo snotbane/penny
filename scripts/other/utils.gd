@@ -82,3 +82,14 @@ static func array_2d_to_string(arr: Array) -> String:
 		result = result.substr(0, result.length() - 2) + "],\n"
 	result = result.substr(0, result.length() - 2)
 	return result
+
+static func node_children_to_string(node: Node, all_descendants := false, include_internal := false) -> String:
+	return _node_children_to_string(node, all_descendants, include_internal, 0)
+static func _node_children_to_string(node: Node, all_descendants := false, include_internal := false, depth := 0) -> String:
+	var result := "\t".repeat(depth) + node.to_string() + "\n"
+	for child in node.get_children():
+		if all_descendants:
+			result += _node_children_to_string(child, true, include_internal, depth + 1)
+		else:
+			result += "\t".repeat(depth + 1) + child.to_string() + "\n"
+	return result

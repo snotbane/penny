@@ -48,7 +48,7 @@ func _ready() -> void:
 	if !REGEX.is_valid():
 		print("RegEx expression is not valid: \"" + PNY_FILE_EXPR + "\"")
 
-	if OS.is_debug_build() and not Engine.is_editor_hint():
+	if not (OS.has_feature("template") or Engine.is_editor_hint()):
 		var debug_canvas := CanvasLayer.new()
 		debug_canvas.layer = 256
 		self.add_child.call_deferred(debug_canvas)
