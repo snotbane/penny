@@ -27,7 +27,7 @@ func _validate_self() -> PennyException:
 # 	return null
 
 
-func _execute(host: PennyHost) -> Record:
+func _execute(host: PennyHost) :
 	var label = tokens[0].value
 	return create_record(host, false, label)
 

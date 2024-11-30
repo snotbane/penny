@@ -132,7 +132,7 @@ func jump_to(label: StringName) -> void:
 
 
 func invoke_at_cursor() -> void:
-	var record := cursor.execute(self)
+	var record : Record = await cursor.execute(self)
 
 	records.push_back(record)
 	on_record_created.emit(record)

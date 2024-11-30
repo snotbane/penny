@@ -61,7 +61,7 @@ func _get_history_listing_scene() -> PackedScene :
 # 	return null
 
 
-func _execute(host: PennyHost) -> Record:
+func _execute(host: PennyHost) :
 	var previous_dialog : PennyObject = host.last_dialog_object
 	var previous_dialog_node : PennyNode
 

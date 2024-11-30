@@ -274,10 +274,10 @@ func _validate_cross() -> PennyException:
 
 
 ## Executes when it is reached as the user encounters it.
-func execute(host: PennyHost) -> Record: return _execute(host)
+func execute(host: PennyHost) : return _execute(host)
 ## Executes when it is reached as the user encounters it.
-func _execute(host: PennyHost) -> Record:
-	return create_record(host)
+func _execute(host: PennyHost) :
+	return self.create_record(host)
 
 
 ## Executes when the user rewinds through history to undo this action.

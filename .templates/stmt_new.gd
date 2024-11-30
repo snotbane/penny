@@ -26,7 +26,7 @@ func _validate_self() -> PennyException:
 # 	return super._validate_cross()
 
 
-func _execute(host: PennyHost) -> Record:
+func _execute(host: PennyHost) :
 	return super._execute(host)
 
 

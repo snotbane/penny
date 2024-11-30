@@ -25,7 +25,7 @@ func _validate_self() -> PennyException:
 # 	return null
 
 
-func _execute(host: PennyHost) -> Record:
+func _execute(host: PennyHost) :
 	var expr := Expr.from_tokens(tokens, self)
 	var value = expr.evaluate(self.get_owning_object(host.data_root))
 	var s := str(value)

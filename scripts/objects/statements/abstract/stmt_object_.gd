@@ -30,7 +30,7 @@ func _validate_self() -> PennyException:
 # 	super._validate_cross()
 
 
-func _execute(host: PennyHost) -> Record:
+func _execute(host: PennyHost) :
 	var prior : Variant = path.evaluate_shallow(host.data_root)
 	if prior: return super._execute(host)
 	var after : Variant = self.get_context_parent(host).add_object(path.ids.back(), PennyObject.DEFAULT_BASE)

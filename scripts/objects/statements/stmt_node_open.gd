@@ -26,7 +26,7 @@ func _validate_self() -> PennyException:
 # 	return super._validate_cross()
 
 
-func _execute(host: PennyHost) -> Record:
+func _execute(host: PennyHost) :
 	var incoming_object : PennyObject = self.subject_path.evaluate(host.data_root)
 	if incoming_object.local_instance:
 		push_exception("Attempted to open instance for '%s', but there is already an existing instance.")

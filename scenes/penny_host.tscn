@@ -12,8 +12,6 @@
 script = ExtResource("1_jmae0")
 lookup_tables = Array[ExtResource("2_4q0nq")]([ExtResource("3_lw4vb")])
 layers = [NodePath("canvas_layer/ui/v_box_container/message_layer"), NodePath("canvas_layer/ui/v_box_container/history_layer/penny_history_box/panel_container/margin_container/scroll_container/margin_container/scroll_contents"), NodePath("canvas_layer/ui/other_layer")]
-autostart = null
-start_label = null
 metadata/deco_registry_default = ExtResource("4_s55ao")
 
 [node name="canvas_layer" type="CanvasLayer" parent="."]

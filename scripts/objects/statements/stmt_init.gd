@@ -33,7 +33,7 @@ func _validate_cross() -> PennyException:
 	return null
 
 
-func _execute(host: PennyHost) -> Record:
+func _execute(host: PennyHost) :
 	return super._execute(host)
 
 # func _next(record: Record) -> Stmt:

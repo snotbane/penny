@@ -25,7 +25,7 @@ func _get_verbosity() -> Verbosity:
 # 	return null
 
 
-func _execute(host: PennyHost) -> Record:
+func _execute(host: PennyHost) :
 	return create_record(host, false, _evaluate_self(host))
 
 

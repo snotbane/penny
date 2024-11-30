@@ -31,7 +31,7 @@ func _validate_self_post_setup() -> void:
 # 	return super._validate_cross()
 
 
-func _execute(host: PennyHost) -> Record:
+func _execute(host: PennyHost) :
 	host.expecting_conditional = true
 
 	var prompt_object : PennyObject = subject_path.evaluate(host.data_root)
