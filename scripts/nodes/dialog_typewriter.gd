@@ -174,6 +174,10 @@ func _process(delta: float) -> void:
 		scrollbar.value = fake_rtl.get_content_height() - scroll_container.size.y
 
 
+func _exit_tree() -> void:
+	self.complete()
+
+
 func reset() -> void:
 	if scroll_container:
 		fake_rtl.text = rtl.text
@@ -194,6 +198,10 @@ func prod() -> void:
 		cursor = next_prod_stop
 
 	prodded.emit()
+
+
+func complete() -> void:
+	visible_characters = -1
 
 
 func _on_message_received(_message: DecoratedText) -> void:
