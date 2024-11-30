@@ -1,9 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://cuu7puh0nnyug"]
+[gd_scene load_steps=3 format=3 uid="uid://cuu7puh0nnyug"]
 
-[ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="1_sh4es"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/prompt_control.gd" id="2_m6ko3"]
 [ext_resource type="PackedScene" uid="uid://cqv2gnjjkdh6c" path="res://addons/penny_godot/scenes/prompt_button_default.tscn" id="3_18yd8"]
-
 
 [node name="prompt_default" type="Control" node_paths=PackedStringArray("button_container")]
 layout_mode = 3
@@ -12,7 +10,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_sh4es")
 script = ExtResource("2_m6ko3")
 button_prefab = ExtResource("3_18yd8")
 button_container = NodePath("v_box_container")
