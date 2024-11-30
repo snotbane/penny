@@ -205,6 +205,7 @@ func complete() -> void:
 
 
 func _on_message_received(_message: DecoratedText) -> void:
+	self.complete()
 	message = _message
 	rtl.text = message.to_string()
 	unencountered_decos = message.decos.duplicate()
