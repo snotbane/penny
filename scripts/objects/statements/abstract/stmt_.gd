@@ -348,6 +348,7 @@ func get_recycle_typed_version() -> Stmt:
 				'pass': 	return StmtPass.new()
 				'print': 	return StmtPrint.new()
 				'return':	return StmtReturn.new()
+				'wait':		return StmtWait.new()
 			PennyException.new("The keyword '%s' was detected, but no method is registered for it in Stmt.recycle()." % key).push()
 			return self
 
