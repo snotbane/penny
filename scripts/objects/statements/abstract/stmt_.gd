@@ -274,7 +274,7 @@ func _validate_cross() -> PennyException:
 
 
 ## Executes when it is reached as the user encounters it.
-func execute(host: PennyHost) : return _execute(host)
+func execute(host: PennyHost) : return await self._execute(host)
 ## Executes when it is reached as the user encounters it.
 func _execute(host: PennyHost) :
 	return self.create_record(host)

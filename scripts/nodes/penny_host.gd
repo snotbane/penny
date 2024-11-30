@@ -137,8 +137,7 @@ func invoke_at_cursor() -> void:
 	records.push_back(record)
 	on_record_created.emit(record)
 
-	if not record.halt or state == State.INITING:
-		advance()
+	self.advance()
 
 
 func try_advance() -> void:

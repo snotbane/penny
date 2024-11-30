@@ -1,10 +1,9 @@
 
-class_name MessageHandler extends PennyNode
+class_name DialogHandler extends PennyNode
 
 const PREVENT_SKIP_DELAY_SECONDS := 0.125
 
 signal received(message: DecoratedText)
-signal advanced
 
 static var focus_left : bool = false
 
@@ -13,13 +12,19 @@ static var focus_left : bool = false
 @export var typewriter : Typewriter
 
 
+var is_mouse_inside : bool
 var is_preventing_skip : bool
 var message : DecoratedText
 
 
+func _enter_tree() -> void:
+	if self.has_signal("mouse_entered") and self.has_signal("mouse_exited"):
+		self.mouse_entered.connect(self.set.bind("is_mouse_inside", true))
+		self.mouse_exited.connect(self.set.bind("is_mouse_inside", false))
+
+
 func _populate(_host: PennyHost, _object: PennyObject) -> void:
 	_host.on_try_advance.connect(try_advance)
-	advanced.connect(_host.advance)
 
 
 func _notification(what: int) -> void:
@@ -29,10 +34,13 @@ func _notification(what: int) -> void:
 		NOTIFICATION_WM_WINDOW_FOCUS_IN:
 			self.set_deferred("focus_left", false)
 
-
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed('penny_advance'):
-		try_advance()
+		self.try_advance()
+
+func _gui_input(event: InputEvent) -> void:
+	if self.is_mouse_inside and event is InputEventMouseButton and event.is_released() and event.button_index == MOUSE_BUTTON_LEFT:
+		self.try_advance()
 
 
 func receive(record: Record, subject: PennyObject) -> void:
@@ -48,10 +56,9 @@ func prevent_skip() -> void:
 
 func try_advance() -> void:
 	if focus_left: return
-
 	if appear_state != AppearState.PRESENT: return
 	if typewriter.is_working:
 		typewriter.prod()
 		return
 	if is_preventing_skip: return
-	advanced.emit()
+	self.advanced.emit()

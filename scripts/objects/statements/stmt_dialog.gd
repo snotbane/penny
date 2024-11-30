@@ -96,5 +96,8 @@ func _execute(host: PennyHost) :
 
 	var result := create_record(host, incoming_dialog_node.halt_on_instantiate, attach)
 	incoming_dialog_node.receive(result, subject)
+
+	await incoming_dialog_node.advanced
+
 	return result
 

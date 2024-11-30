@@ -156,6 +156,7 @@ func _ready() -> void:
 		fake_rtl.name = "%s (fake)" % rtl.name
 		fake_rtl.visible_characters_behavior = TextServer.VC_CHARS_BEFORE_SHAPING
 		fake_rtl.self_modulate = Color(0,0,0,0)
+		fake_rtl.focus_mode = Control.FOCUS_NONE
 
 		rtl.add_sibling.call_deferred(fake_rtl)
 

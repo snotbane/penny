@@ -4,7 +4,6 @@ class_name PennyNode extends Node
 
 enum AppearState {
 	INITED,
-	# POPULATED,
 	READY,
 	OPENING,
 	PRESENT,
@@ -16,6 +15,7 @@ enum AppearState {
 signal on_open
 signal on_close
 signal on_present
+signal advanced
 
 ## If enabled, this node will stop Penny execution when it is opened.
 @export var halt_on_instantiate : bool = false
@@ -68,7 +68,6 @@ var appear_state : AppearState :
 
 ## Called immediately after instantiation. Use to "populate" the node with specific, one-time information it may need.
 func populate(_host: PennyHost, _object: PennyObject = null) -> void:
-	# appear_state = AppearState.POPULATED
 	host = _host
 	object = _object
 	_populate(_host, _object)
@@ -83,7 +82,7 @@ func _exit_tree() -> void:
 	if object and object.local_instance == self:
 		object.clear_instance_upstream()
 	if advance_on_free:
-		host.advance()
+		self.advanced.emit()
 
 
 func open() -> void:
