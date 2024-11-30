@@ -9,7 +9,7 @@ func _ready() -> void:
 	refresh_size()
 
 
-func receive(option: String) -> void:
+func receive(option: DecoratedText) -> void:
 	label.text = "[center]%s" % option
 
 

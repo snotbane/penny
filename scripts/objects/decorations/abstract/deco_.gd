@@ -52,4 +52,9 @@ static func get_resource_by_id(_id: StringName) -> Deco:
 static func convert_variant_to_bbcode(value: Variant) -> String:
 	if value is Color:
 		return "#" + value.to_html()
+	if value is Array:
+		var result := ""
+		for e in value:
+			result += str(e) + ","
+		return result.substr(0, result.length() - 1)
 	return str(value)

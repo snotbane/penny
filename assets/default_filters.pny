@@ -1,0 +1,12 @@
+
+init -1000
+
+NULL_TO_EXPLICIT = new filter
+	.pattern = `<null>`
+	.replace = `<b; i; color=#ff0000; shake>NULL</>`
+
+PARAGRAPH_DEFAULT = new filter
+	.pattern = `^(?!=<.*?p[ ;])`
+	.replace = `<p>`
+
+filters = [NULL_TO_EXPLICIT, PARAGRAPH_DEFAULT]

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="PennyDecoRegistry" load_steps=34 format=3 uid="uid://bsrrbmeopuowc"]
+[gd_resource type="Resource" script_class="PennyDecoRegistry" load_steps=35 format=3 uid="uid://bsrrbmeopuowc"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/abstract/deco_.gd" id="1_xj7ad"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/abstract/deco_span.gd" id="2_cmtfw"]
@@ -85,6 +85,14 @@ id = &"i"
 script = ExtResource("6_hullg")
 argument_defaults = {}
 id = &"lock"
+
+[sub_resource type="Resource" id="Resource_53gkt"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {
+"align": &"fill",
+"jst": [&"w", &"k", &"sl"]
+}
+id = &"p"
 
 [sub_resource type="Resource" id="Resource_giran"]
 script = ExtResource("2_cmtfw")
@@ -181,4 +189,4 @@ id = &"whisper"
 
 [resource]
 script = ExtResource("4_pdc3q")
-deco_resources = Array[ExtResource("1_xj7ad")]([SubResource("Resource_3baju"), SubResource("Resource_a1v7j"), SubResource("Resource_og12b"), SubResource("Resource_8h33d"), SubResource("Resource_pemsi"), SubResource("Resource_uscem"), SubResource("Resource_sinjm"), SubResource("Resource_albvk"), SubResource("Resource_doduq"), SubResource("Resource_giran"), SubResource("Resource_wum1r"), SubResource("Resource_o5ffy"), SubResource("Resource_ivmri"), SubResource("Resource_qqgtp"), SubResource("Resource_g3fhu"), SubResource("Resource_fiuc5"), SubResource("Resource_8vwtp"), SubResource("Resource_8puu3"), SubResource("Resource_62yjm")])
+deco_resources = Array[ExtResource("1_xj7ad")]([SubResource("Resource_3baju"), SubResource("Resource_a1v7j"), SubResource("Resource_og12b"), SubResource("Resource_8h33d"), SubResource("Resource_pemsi"), SubResource("Resource_uscem"), SubResource("Resource_sinjm"), SubResource("Resource_albvk"), SubResource("Resource_doduq"), SubResource("Resource_53gkt"), SubResource("Resource_giran"), SubResource("Resource_wum1r"), SubResource("Resource_o5ffy"), SubResource("Resource_ivmri"), SubResource("Resource_qqgtp"), SubResource("Resource_g3fhu"), SubResource("Resource_fiuc5"), SubResource("Resource_8vwtp"), SubResource("Resource_8puu3"), SubResource("Resource_62yjm")])

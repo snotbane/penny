@@ -19,7 +19,7 @@ const PNY_FILE_ROOT = "res://"
 const PENNY_FILE_OMIT = [
 	".godot",
 	".vscode",
-	"addons",
+	# "addons",
 
 	## Temporary
 	# "assets",

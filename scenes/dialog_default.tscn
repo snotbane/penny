@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://b8sp6ey8fsgt7"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/message_handler.gd" id="2_44j7f"]
+[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/dialog_handler.gd" id="2_44j7f"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/typewriter.gd" id="3_q7721"]
 
 [sub_resource type="Animation" id="Animation_th5j2"]
