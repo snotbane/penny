@@ -53,7 +53,11 @@ func _execute(host: PennyHost) :
 func _evaluate_self(host: PennyHost) -> Variant:
 	if not host.expecting_conditional:
 		return null
-	return menu_stmt.get_response(host).evaluate(host.data_root) == expected_path.evaluate(host.data_root)
+	var response : Variant = menu_stmt.get_response(host)
+	if response is Evaluable:
+		return response.evaluate(host.data_root) == expected_path.evaluate(host.data_root)
+	else:
+		return false
 
 
 func _should_skip(record: Record) -> bool:

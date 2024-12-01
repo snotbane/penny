@@ -6,6 +6,10 @@ class_name StmtNode extends Stmt
 var subject_path : Path
 
 
+func get_subject_node(host: PennyHost) -> Node :
+	return subject_path.evaluate(host.data_root).local_instance
+
+
 # func _init() -> void:
 # 	pass
 
