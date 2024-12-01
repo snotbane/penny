@@ -140,6 +140,7 @@ script = ExtResource("3_q7721")
 rtl = NodePath("../panel/margin_container/scroll_container/margin_container/text_label")
 scroll_container = NodePath("../panel/margin_container/scroll_container")
 audio_player = NodePath("nondirectional_audio_stream_player")
+minimum_audio_delay = 0.01
 
 [node name="nondirectional_audio_stream_player" type="AudioStreamPlayer" parent="typewriter"]
 

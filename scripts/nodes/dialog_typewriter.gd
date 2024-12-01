@@ -21,16 +21,9 @@ signal prodded
 		speed_stack[0] = value
 var speed_stack : Array[float] = [ 50.0 ]
 
-## Number of characters that must be printed in order to play a sound.
-@export var characters_per_audio := 2
-
-## Default audio stream to play while printing non-whitespace characters. Leave blank if using voice acting, probably.
-@export var audio_sample : AudioStream
-
-## Dictionary of RegEx patterns that determines how much to advance the audio cursor. I.E. values higher than [member characters_per_audio] will definitely play a sound. Each key should only be one character long. If a pattern is not matched, default value is 1.
-@export var character_audio_weights := {
-	"[\\s]": 0,
-	"[.,:;?!]": 10
+## Dictionary of RegEx patterns with an assigned value. Must match one single character. By default, this is used to determine if a character should or should not make a sound.
+@export var character_values := {
+	"[\\S]": true
 }
 
 ## If enabled, delays will be treated like wait tags in that when we try to prod the typewriter to continue, we will stop at both delays and waits. (This mimics Ren'Py behavior.)
@@ -44,6 +37,16 @@ var speed_stack : Array[float] = [ 50.0 ]
 
 
 @export var audio_player : AudioStreamPlayer
+
+var audio_timer := Timer.new()
+## Length of time (seconds) that must pass before a new typewriter sound can be played.
+@export_range(0.01, 0.1, 0.001, "or_greater") var minimum_audio_delay : float = 0.033 :
+	get: return audio_timer.wait_time
+	set(value):
+		audio_timer.wait_time = value
+
+## Default audio stream to play while printing non-whitespace characters. Leave blank if using voice acting, probably.
+@export var audio_sample : AudioStream
 
 
 ## Fake label used to calculate appropriate scroll amount.
@@ -73,8 +76,7 @@ var message : DecoratedText
 var unencountered_decos : Array[DecoInst]
 var unclosed_decos : Array[DecoInst]
 
-var audio_cursor := 0
-var audio_weight_regex := RegEx.new()
+var character_value_regex := RegEx.new()
 
 var _cursor : float
 var cursor : float :
@@ -89,11 +91,6 @@ var visible_characters : int :
 	get: return rtl.visible_characters
 	set (value):
 		if rtl.visible_characters == value: return
-
-		var difference : int = max(0, value - rtl.visible_characters)
-		for i in difference:
-			audio_cursor += get_audio_weight(rtl.text[rtl.visible_characters + i - 1])
-
 		rtl.visible_characters = value
 
 		if is_playing:
@@ -105,6 +102,7 @@ var visible_characters : int :
 						unclosed_decos.push_back(deco)
 					if not unencountered_decos:
 						break
+
 			if unclosed_decos:
 				for deco in unclosed_decos:
 					if rtl.visible_characters >= deco.end_remapped:
@@ -123,9 +121,9 @@ var visible_characters : int :
 				scroll_container.mouse_filter = Control.MOUSE_FILTER_PASS
 				scrollbar.mouse_filter = Control.MOUSE_FILTER_PASS
 			completed.emit()
-		elif audio_cursor >= characters_per_audio and rtl.text[rtl.visible_characters - 1] != " ":
-			audio_cursor = 0
-			audio_player.play()
+		elif rtl.visible_characters > 0:
+			self.character_encountered(rtl.text[rtl.visible_characters - 1])
+
 		fake_rtl.visible_characters = rtl.visible_characters
 
 
@@ -160,6 +158,10 @@ func _ready() -> void:
 
 		rtl.add_sibling.call_deferred(fake_rtl)
 
+	audio_timer.wait_time = minimum_audio_delay
+	audio_timer.autostart = false
+	audio_timer.one_shot = true
+	self.add_child(audio_timer)
 	audio_player.stream = audio_sample
 	reset()
 	is_ready = true
@@ -205,6 +207,14 @@ func complete() -> void:
 	visible_characters = -1
 
 
+func character_encountered(c: String) -> void: _character_encountered(c, get_character_value(c))
+func _character_encountered(c: String, value: Variant) -> void:
+	if not value: return
+	if audio_timer.is_stopped():
+		audio_timer.start()
+		audio_player.play()
+
+
 func _on_message_received(_message: DecoratedText) -> void:
 	self.complete()
 	message = _message
@@ -224,12 +234,12 @@ func deco_is_prod_stop(deco: DecoInst) -> bool:
 	return deco.template is DecoWait or deco.template is DecoLock or (treat_delay_as_wait and deco.template is DecoDelay)
 
 
-func get_audio_weight(c: String) -> int:
-	for k in character_audio_weights.keys():
-		audio_weight_regex.compile(k)
-		if audio_weight_regex.search(c):
-			return character_audio_weights[k]
-	return 1
+func get_character_value(c: String) -> Variant:
+	for k in character_values.keys():
+		character_value_regex.compile(k)
+		if character_value_regex.search(c):
+			return character_values[k]
+	return null
 
 
 func delay(seconds: float):
