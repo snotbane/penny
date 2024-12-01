@@ -62,42 +62,41 @@ func _get_history_listing_scene() -> PackedScene :
 
 
 func _execute(host: PennyHost) :
-	var previous_dialog : PennyObject = host.last_dialog_object
-	var previous_dialog_node : PennyNode
-
 	var incoming_dialog : PennyObject = self.subject_dialog_path.evaluate(host.data_root)
 	if not incoming_dialog:
 		push_exception("Attempted to create dialog box for '%s', but no such object exists" % self.subject_dialog_path)
 		return create_record(host)
-
 	var incoming_dialog_node : PennyNode
+	var previous_dialog : PennyObject = host.last_dialog_object
+	var previous_dialog_node : PennyNode
+	var incoming_needs_creation : bool
 
-	var incoming_needs_creation : bool = true
-	if previous_dialog:
+	if previous_dialog != null:
 		previous_dialog_node = previous_dialog.local_instance
-		incoming_needs_creation = previous_dialog_node == null or previous_dialog_node.appear_state >= PennyNode.AppearState.CLOSING or previous_dialog != incoming_dialog
+		incoming_needs_creation = previous_dialog_node == null or previous_dialog != incoming_dialog
+	else:
+		previous_dialog_node = null
+		incoming_needs_creation = true
 
 	if incoming_needs_creation:
+		if previous_dialog_node != null:
+			previous_dialog_node.close()
+			await previous_dialog_node.closed
 		incoming_dialog_node = self.instantiate_node(host, subject_dialog_path)
 		incoming_dialog_node.populate(host, incoming_dialog)
-		incoming_dialog_node.open_on_ready = previous_dialog_node == null
-		if previous_dialog_node != null:
-			previous_dialog_node.advance_on_free = false
-			previous_dialog_node.tree_exited.connect(incoming_dialog_node.open)
-			previous_dialog_node.close()
 	else:
 		incoming_dialog_node = previous_dialog_node
 
 	var subject : PennyObject = subject_path.evaluate(host.data_root)
-
 	var who := DecoratedText.from_filtered(subject.rich_name, host.data_root)
 	var what := DecoratedText.from_raw(raw_text, host.data_root)
 	var attach := DialogRecord.new(who, what)
-
-	var result := create_record(host, incoming_dialog_node.halt_on_instantiate, attach)
+	var result := create_record(host, attach)
 	incoming_dialog_node.receive(result, subject)
 
 	await incoming_dialog_node.advanced
 
 	return result
+
+
 

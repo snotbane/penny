@@ -305,8 +305,8 @@ func _create_history_listing(record: Record) -> HistoryListing:
 	return result
 
 
-func create_record(host: PennyHost, halt: bool = false, attachment: Variant = null) -> Record:
-	return Record.new(host, self, halt, attachment)
+func create_record(host: PennyHost, attachment: Variant = null) -> Record:
+	return Record.new(host, self, attachment)
 
 
 func create_exception(s: String = "Uncaught exception.") -> PennyException:

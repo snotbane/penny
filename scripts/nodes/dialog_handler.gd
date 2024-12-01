@@ -56,7 +56,7 @@ func prevent_skip() -> void:
 
 func try_advance() -> void:
 	if focus_left: return
-	if appear_state != AppearState.PRESENT: return
+	if appear_state != AppearState.OPENED: return
 	if typewriter.is_working:
 		typewriter.prod()
 		return

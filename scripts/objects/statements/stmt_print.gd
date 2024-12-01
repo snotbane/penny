@@ -30,7 +30,7 @@ func _execute(host: PennyHost) :
 	var value = expr.evaluate(self.get_owning_object(host.data_root))
 	var s := str(value)
 	print(s)
-	return create_record(host, false, s)
+	return create_record(host, s)
 
 
 # func _undo(record: Record) -> void:

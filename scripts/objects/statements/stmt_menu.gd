@@ -55,7 +55,7 @@ func _execute(host: PennyHost) :
 		host.data_root.set_value(key, option)
 		prompt_options.push_back(Path.from_single(key))
 
-	return super._execute(host)
+	return await super._execute(host)
 
 
 # func _undo(record: Record) -> void:

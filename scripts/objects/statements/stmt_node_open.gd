@@ -36,9 +36,9 @@ func _execute(host: PennyHost) :
 	incoming_node = self.instantiate_node(host, subject_path)
 	if incoming_node is PennyNode:
 		incoming_node.populate(host, incoming_object)
-		return create_record(host, incoming_node.halt_on_instantiate)
-	else:
-		return create_record(host)
+		if incoming_node.advance_event > PennyNode.AdvanceEvent.IMMEDIATE:
+			await incoming_node.advanced
+	return self.create_record(host)
 
 
 # func _undo(record: Record) -> void:

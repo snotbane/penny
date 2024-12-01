@@ -13,7 +13,7 @@ func receive_options(_options: Array) -> void:
 		_receive_options(options)
 	else:
 		PennyException.new("Prompt was not supplied with any options.").push()
-		advance_on_free = true
+		self.advance_event = AdvanceEvent.ON_EXITING
 		queue_free()
 func _receive_options(_options: Array) -> void:
 	pass

@@ -13,9 +13,7 @@ grow_vertical = 2
 script = ExtResource("2_m6ko3")
 button_prefab = ExtResource("3_18yd8")
 button_container = NodePath("v_box_container")
-halt_on_instantiate = true
-free_on_close = true
-advance_on_free = true
+advance_event = 6
 
 [node name="v_box_container" type="VBoxContainer" parent="."]
 layout_mode = 1

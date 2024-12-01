@@ -220,10 +220,6 @@ func _on_message_received(_message: DecoratedText) -> void:
 	present()
 
 
-func _on_dialog_present() -> void:
-	present()
-
-
 func deco_is_prod_stop(deco: DecoInst) -> bool:
 	return deco.template is DecoWait or deco.template is DecoLock or (treat_delay_as_wait and deco.template is DecoDelay)
 

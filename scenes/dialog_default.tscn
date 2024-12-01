@@ -52,10 +52,10 @@ tracks/1/path = NodePath(".:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.3),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [false]
+"values": [true, false]
 }
 tracks/2/type = "method"
 tracks/2/imported = false
@@ -68,13 +68,13 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
-"method": &"queue_free"
+"method": &"finish_close"
 }]
 }
 
 [sub_resource type="Animation" id="Animation_kij65"]
 resource_name = "fade_in"
-length = 0.66667
+length = 0.3
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -106,7 +106,7 @@ tracks/2/path = NodePath(".")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0.666667),
+"times": PackedFloat32Array(0.3),
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
@@ -133,7 +133,8 @@ script = ExtResource("2_44j7f")
 name_label = NodePath("name_label")
 text_label = NodePath("panel/margin_container/scroll_container/margin_container/text_label")
 typewriter = NodePath("typewriter")
-halt_on_instantiate = true
+advance_event = 6
+free_on_closed = true
 
 [node name="typewriter" type="Node" parent="." node_paths=PackedStringArray("rtl", "scroll_container", "audio_player")]
 script = ExtResource("3_q7721")
@@ -221,8 +222,8 @@ libraries = {
 "": SubResource("AnimationLibrary_ywfyv")
 }
 
-[connection signal="on_close" from="." to="animation_player" method="play" binds= [&"dialog_close"]]
-[connection signal="on_open" from="." to="animation_player" method="play" binds= [&"dialog_open"]]
-[connection signal="on_present" from="." to="typewriter" method="_on_dialog_present"]
+[connection signal="closing" from="." to="animation_player" method="play" binds= [&"dialog_close"]]
+[connection signal="opened" from="." to="typewriter" method="present"]
+[connection signal="opening" from="." to="animation_player" method="play" binds= [&"dialog_open"]]
 [connection signal="received" from="." to="typewriter" method="_on_message_received"]
 [connection signal="completed" from="typewriter" to="." method="prevent_skip"]

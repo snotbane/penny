@@ -72,6 +72,6 @@ func get_context_parent(host: PennyHost) -> PennyObject:
 
 
 func create_assignment_record(host: PennyHost, before: Variant, after: Variant) -> Record:
-	var result := create_record(host, false, AssignmentRecord.new(before, after))
+	var result := create_record(host, AssignmentRecord.new(before, after))
 	host.on_data_modified.emit()
 	return result
