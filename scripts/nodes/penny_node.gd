@@ -17,9 +17,9 @@ enum AdvanceEvent {
 	## Triggers after [member _ready]
 	ON_READY,
 	## Triggers when [member open] starts.
-	ON_OPEN,
+	ON_OPENING,
 	## Triggers after [member opened]
-	ON_PRESENT,
+	ON_OPENED,
 	## Triggers when [member close] starts.
 	ON_CLOSING,
 	## Triggers after [member close] finishes.
@@ -30,7 +30,7 @@ enum AdvanceEvent {
 	CUSTOM,
 }
 
-## Emitted when this node is given the clear to transition from [member _ready] to [member _present]
+## Emitted when this node is given the clear to transition from [member _ready] to [member _finish_open]
 signal opening
 signal opened
 signal closing
@@ -62,32 +62,34 @@ var appear_state : AppearState :
 
 		match _appear_state:
 			AppearState.READY:
-				if open_on_ready:
-					open()
 				if advance_event == AdvanceEvent.ON_READY:
 					advanced.emit()
+				if open_on_ready:
+					open()
 			AppearState.OPENING:
 				_open()
+				if advance_event == AdvanceEvent.ON_OPENING:
+					advanced.emit()
 				opening.emit()
-				if advance_event == AdvanceEvent.ON_OPEN:
-					advanced.emit()
 			AppearState.OPENED:
-				_present()
-				opened.emit()
-				if advance_event == AdvanceEvent.ON_PRESENT:
+				_finish_open()
+				if advance_event == AdvanceEvent.ON_OPENED:
 					advanced.emit()
+				opened.emit()
 			AppearState.CLOSING:
 				_close()
-				closing.emit()
 				if advance_event == AdvanceEvent.ON_CLOSING:
 					advanced.emit()
+				closing.emit()
 			AppearState.CLOSED:
 				_finish_close()
 				if free_on_closed:
 					queue_free()
+				else:
+					_appear_state = AppearState.READY
+					if advance_event == AdvanceEvent.ON_READY:
+						advanced.emit()
 				closed.emit()
-				if advance_event == AdvanceEvent.ON_READY:
-					advanced.emit()
 
 
 ## Called immediately after instantiation. Use to "populate" the node with specific, one-time information it may need.
@@ -107,9 +109,9 @@ func open() -> void:
 func _open() -> void: pass
 
 
-func present() -> void:
+func finish_open() -> void:
 	appear_state = AppearState.OPENED
-func _present() -> void: pass
+func _finish_open() -> void: pass
 
 
 func close() -> void:

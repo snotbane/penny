@@ -36,6 +36,7 @@ func _execute(host: PennyHost) :
 	incoming_node = self.instantiate_node(host, subject_path)
 	if incoming_node is PennyNode:
 		incoming_node.populate(host, incoming_object)
+		incoming_node.ready.connect(print.bind("hello???"))
 		await incoming_node.opened
 	return self.create_record(host)
 

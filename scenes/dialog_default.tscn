@@ -110,7 +110,7 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
-"method": &"present"
+"method": &"finish_open"
 }]
 }
 

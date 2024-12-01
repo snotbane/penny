@@ -5,6 +5,7 @@ var options : Array
 
 func _ready() -> void:
 	receive_options(object.get_value(PennyObject.OPTIONS_KEY))
+	super._ready()
 
 
 func receive_options(_options: Array) -> void:
