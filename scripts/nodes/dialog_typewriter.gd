@@ -40,9 +40,11 @@ var speed_stack : Array[float] = [ 50.0 ]
 
 var audio_timer := Timer.new()
 ## Length of time (seconds) that must pass before a new typewriter sound can be played.
+var _minimum_audio_delay : float = 0.033
 @export_range(0.01, 0.1, 0.001, "or_greater") var minimum_audio_delay : float = 0.033 :
-	get: return audio_timer.wait_time
+	get: return _minimum_audio_delay
 	set(value):
+		_minimum_audio_delay = value
 		audio_timer.wait_time = value
 
 ## Default audio stream to play while printing non-whitespace characters. Leave blank if using voice acting, probably.
@@ -158,7 +160,7 @@ func _ready() -> void:
 
 		rtl.add_sibling.call_deferred(fake_rtl)
 
-	audio_timer.wait_time = minimum_audio_delay
+	minimum_audio_delay = minimum_audio_delay
 	audio_timer.autostart = false
 	audio_timer.one_shot = true
 	self.add_child(audio_timer)
