@@ -19,7 +19,7 @@ func evaluate(context: PennyObject) -> Variant:
 	var result : Variant = self
 	while result is Evaluable:
 		if evals_seen.has(result):
-			PennyException.new("Cyclical evaluation '%s' for object '%s'" % [result, context]).push()
+			PennyException.new("Cyclical evaluation '%s' for object '%s'" % [result, context]).push_error()
 			return null
 		evals_seen.push_back(result)
 		result = result.evaluate_shallow(context)

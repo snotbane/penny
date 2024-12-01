@@ -80,7 +80,7 @@ static func get_stmt_from_label(label: StringName) -> Stmt:
 	if labels.has(label):
 		return labels[label]
 	else:
-		PennyException.new("Label '%s' does not exist in the current Penny environment." % label).push()
+		PennyException.new("Label '%s' does not exist in the current Penny environment." % label).push_error()
 		return null
 
 

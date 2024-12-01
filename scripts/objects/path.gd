@@ -66,7 +66,7 @@ func get_deep_value_for(context: PennyObject) -> Variant:
 	var result : Variant = self
 	while result is Path:
 		if paths_used.has(result):
-			PennyException.new("Cyclical path '%s' for object '%s'" % [result, context]).push()
+			PennyException.new("Cyclical path '%s' for object '%s'" % [result, context]).push_error()
 			return null
 		paths_used.push_back(result)
 		result = result.get_value_for(context)

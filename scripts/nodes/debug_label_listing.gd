@@ -24,7 +24,7 @@ func _process(delta: float) -> void:
 
 
 func _on_undo_button_pressed() -> void:
-	PennyException.new("This button doesn't work yet.").push()
+	PennyException.new("This button doesn't work yet.").push_error()
 
 
 func _on_jump_button_pressed() -> void:

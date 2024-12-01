@@ -187,7 +187,7 @@ static func from_tokens(tokens: Array[Token], _stmt: Stmt = null) -> Expr:
 				if _stmt:
 					_stmt.push_exception("Expression not evaluated: unexpected token '%s'" % token)
 				else:
-					PennyException.new("Expression not evaluated: unexpected token '%s'" % token).push()
+					PennyException.new("Expression not evaluated: unexpected token '%s'" % token).push_error()
 				return null
 
 	while ops:
@@ -224,11 +224,11 @@ func _evaluate_shallow(context: PennyObject) -> Variant:
 		ops.pop_back().apply(stack, context)
 
 	if stack.size() != 1:
-		PennyException.new("Expression not evaluated: stack size is not 1. Symbols: %s | Stack: %s" % [str(symbols), str(stack)]).push()
+		PennyException.new("Expression not evaluated: stack size is not 1. Symbols: %s | Stack: %s" % [str(symbols), str(stack)]).push_error()
 		return null
 	var result = stack.pop_back()
 	if result == null:
-		PennyException.new("Expression evaluated to null.").push()
+		PennyException.new("Expression evaluated to null.").push_error()
 		return null
 
 	return result

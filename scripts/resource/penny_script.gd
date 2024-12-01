@@ -213,7 +213,7 @@ static func parse_tokens_from_raw(raw: String, context_file: FileAccess = null) 
 				exception = PennyExceptionRef.new(FileAddress.new(context_file.get_path(), address_numbers[0], address_numbers[1]), "Unrecognized token '%s'." % raw[cursor])
 			else:
 				exception = PennyException.new("Unrecognized token '%s' at (ln %s, cl %s)." % [raw[cursor], address_numbers[0], address_numbers[1]])
-			exception.push()
+			exception.push_error()
 			break
 	return result
 

@@ -39,7 +39,7 @@ func _init(string: String, context: PennyObject) -> void:
 		if bind != null:
 			args[StringName(arg_match.get_string(1))] = bind
 		else:
-			PennyException.new("deco argument '%s' evaluated to null." % arg_match.get_string(1)).push()
+			PennyException.new("deco argument '%s' evaluated to null." % arg_match.get_string(1)).push_error()
 
 	var id_match := ID_PATTERN.search(string)
 	if id_match:
@@ -82,10 +82,10 @@ func get_argument(key: StringName) -> Variant:
 	elif self.template.argument_defaults.has(key):
 		result = self.template.argument_defaults[key]
 	else:
-		PennyException.new("The argument '%s' was not found in either the inst's args or the default args." % key).push()
+		PennyException.new("The argument '%s' was not found in either the inst's args or the default args." % key).push_error()
 		return null
 	if result == null:
-		PennyException.new("The argument '%s' evaluated to null - this may mean that an argument is required but was never passed." % key).push()
+		PennyException.new("The argument '%s' evaluated to null - this may mean that an argument is required but was never passed." % key).push_error()
 	return result
 
 

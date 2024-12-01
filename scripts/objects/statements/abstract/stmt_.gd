@@ -315,7 +315,13 @@ func create_exception(s: String = "Uncaught exception.") -> PennyException:
 
 func push_exception(s: String = "Uncaught exception.") -> PennyException:
 	var result := PennyExceptionRef.new(file_address, s)
-	result.push()
+	result.push_error()
+	return result
+
+
+func push_warn(s:String = "Uncaught exception.") -> PennyException:
+	var result := PennyExceptionRef.new(file_address, s)
+	result.push_warn()
 	return result
 
 
@@ -349,7 +355,7 @@ func get_recycle_typed_version() -> Stmt:
 				'print': 	return StmtPrint.new()
 				'return':	return StmtReturn.new()
 				'await':	return StmtAwait.new()
-			PennyException.new("The keyword '%s' was detected, but no method is registered for it in Stmt.recycle()." % key).push()
+			PennyException.new("The keyword '%s' was detected, but no method is registered for it in Stmt.recycle()." % key).push_error()
 			return self
 
 	var block_header := self.prev_in_lower_depth
