@@ -129,6 +129,7 @@ id = &"shake"
 
 [sub_resource type="Resource" id="Resource_4q7ug"]
 script = ExtResource("6_7ikrb")
+argument_defaults = {}
 id = &"skip"
 
 [sub_resource type="Resource" id="Resource_qqgtp"]
