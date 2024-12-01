@@ -1,6 +1,6 @@
 
 ## No description
-class_name StmtWait extends Stmt
+class_name StmtAwait extends Stmt
 
 var delay_seconds : float
 
@@ -9,7 +9,7 @@ var delay_seconds : float
 
 
 func _get_keyword() -> StringName:
-	return 'wait'
+	return 'await'
 
 
 func _get_verbosity() -> Verbosity:
