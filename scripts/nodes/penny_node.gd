@@ -125,7 +125,6 @@ func _finish_close() -> void: pass
 
 
 func _exit_tree() -> void:
-	print ("Exit tree")
 	if object and object.local_instance == self:
 		object.clear_instance_upstream()
 	if advance_event == AdvanceEvent.ON_EXITING:
