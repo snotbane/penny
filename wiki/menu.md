@@ -1,83 +1,124 @@
 
 # Menus
 
+The simplest and most common way to create a menu is to create a `menu` block.
+
 ```pny
-prompt
+menu
 	`Option 1`
 		`You have chosen option 1`
 	`Option 2`
 		`You have chosen option 2`
-
-### ...is a shorthand for...
-
-option
-	.able = .used				## Whether or not the option is enabled
-	.show = true				## Whether or not the option is shown at all
-	.used = false				## Whether or not the option has been selected.
-								## Updates when chosen.
-prompt
-	.link = $prompt_default
-	.response = null			## The most recently chosen option (path). Updates when chosen.
-_
-	.base = prompt
-	.options = [
-		_0
-			.base = option
-			.name = `Option 1`
-			`You have chosen option 1`
-		_1
-			.base = option
-			.name = `Option 2`
-			`You have chosen option 2`
-	]
-open prompt
-match choice
-	_0
-		`You have chosen option 1`
-	_1
-		`You have chosen option 2`
-
-
-### A good mix of both is the following:
-
-
-_ = prompt
-	_0
-		.name = `Option 1`
-		`You have chosen option 1`
-	_1
-		.name = `Option 2`
-		`You have chosen option 2`
-
-
 ```
 
-Options can have custom attributes, and some do certain things on their own.
-`show` is a bool that will evaluate the expression when the prompt is created. If false, the option will be hidden and inaccessible.
-`able` is a bool that will evaluate on creation. If false, the option will be disabled, but still visible.
-`chosen` is an internal value stored by the option object. It starts as `false` and sets to `true` when this option is chosen. This can be reset by saying `option.chosen = false`
-`icon` sets the icon on a button. Uses a Lookup.
+This is virtually identical to how Ren'Py menus work, however:
+- Option text can use Penny tags (except ones that require a typewriter)
+- Using raw text is not sufficient to create a conditionally appearing branch (there is no `"Option 1" if condition == true`)
+- The previously shown dialog is not cleared and cannot be set; the menu currently has no connection to the dialog system.
+
+At the end of the day, a `menu` is a simplification of multiple other commands. The above example will produce the exact same result as this:
 
 ```pny
-choice = prompt
-	too_hot
-		name = `Too hot`
-		able = not chosen
-		show = temperature > 100
-		icon = $fire
+## Initialize the prompt and options
 
-		chosen = false
+option_1 = new option
+	.name = `Option 1`
+option_2 = new option
+	.name = `Option 2`
 
-		branch
-			`It's too hot!`
+prompt.options = [option_1, option_2]
 
-	label farts			## Validate that only valid prompt items are stored in a prompt
-	`Too cold` if temperature < 0
-		`Too cold.`
+## Actually display the prompt and wait to receive response
 
-match choice
-	too_hot
-		`It's STILL too hot!`
-	_
-		`Still too cold.`
+open prompt
+await prompt
+
+## Alter narrative flow based on the response
+
+match prompt.response
+	option_1
+		`You have chosen option 1`
+	option_2
+		`You have chosen option 2`
+```
+
+This is the typical workflow for creating a custom menu. Here are some examples of various things you can do:
+
+###### Customize option qualifiers
+
+Because `option`s are objects, they can have custom data associated with them:
+
+```pny
+player_has_key = false
+player_strength = 10
+player_intelligence = 15
+
+option_1 = new option
+	.name = `Take the path to the right`
+	.used = false
+	.visible = true
+	.enabled = true
+option_2 = new option
+	.name = `Unlock the door`
+	.used = false
+	.visible = true
+	.enabled = player_has_key or .used
+option_3 = new option
+	.name = `Break down the door`
+	.used = false
+	.visible = true
+	.enabled = true
+option_4 = new option
+	.name = `(superior intellect) Examine hidden button`
+	.used = false
+	.visible = player_intelligence > 20
+	.enabled = .visible or .used
+
+label dungeon
+menu
+	option_1
+		`Without any other options, you continue down your path to the right...`
+	option_2
+		player_has_key = false
+		`Using the key you found, you carefully turn the lock in the door and step inside...`
+	option_3
+		if player_strength > 20
+			`Using your superior body strength, you knock down the door with brute force.`
+		else
+			`Try as you might, the door won't budge...`
+			jump dungeon
+	option_4
+		`Using your superior observational skills, you notice an unusual brick that seems out of place... and a new path is opened.
+```
+
+- The `used` attribute is automatically set to `true` when the user selects this option. It can be manually overridden at any time. These buttons will be greyed out (but still selectable) by default.
+- The `visible` attribute will cause the option to not appear in the menu. In Ren'Py this is the equivalent of saying `"Option 2" if player_has_key:`. Generally this should be toggled off if the player is ***not yet aware of*** this option.
+- The `enabled` attribute will cause the option to be enabled or disabled. If disabled, the option cannot be chosen, but will still appear in the list. Generally this should be toggled off if the player is aware of the the option, but is ***physically incapable of carrying it out***.
+
+###### Display dialogs in between each step
+
+```pny
+`I have a question to ask you...`
+
+option_1 = new option
+	.name = `Option 1`
+option_2 = new option
+	.name = `Option 2`
+
+prompt.options = [option_1, option_2]
+
+close dialog
+open prompt
+
+`Hey! Are you listening to me?!`
+
+await prompt
+
+`Now that you've made your choice... let's see what happens!`
+
+match prompt.response
+	option_1
+		`You have chosen option 1`
+	option_2
+		`You have chosen option 2`
 ```
