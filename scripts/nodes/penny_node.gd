@@ -42,11 +42,8 @@ signal advanced
 ## If enabled, this node will immediately open (visually) on ready.
 @export var open_on_ready  : bool = true
 
-## If enabled, this node will immediately [member close] when its owning object instantiates a new instance of any link.
-@export var close_on_unlinked : bool = false
-
-## If enabled, this node will immediately [member queue_free] when it is [member close]d.
-@export var free_on_closed : bool = false
+## If enabled, this node will immediately [member queue_free] when it is [member closed].
+@export var free_on_closed : bool = true
 
 
 var host : PennyHost
@@ -85,18 +82,16 @@ var appear_state : AppearState :
 				if advance_event == AdvanceEvent.ON_CLOSING:
 					advanced.emit()
 			AppearState.CLOSED:
-				_appear_state = AppearState.READY
 				_finish_close()
+				if free_on_closed:
+					queue_free()
 				closed.emit()
 				if advance_event == AdvanceEvent.ON_READY:
 					advanced.emit()
-				if free_on_closed:
-					queue_free()
 
 
 ## Called immediately after instantiation. Use to "populate" the node with specific, one-time information it may need.
 func populate(_host: PennyHost, _object: PennyObject = null) -> void:
-	advanced.connect(print.bind("Advanced Penny Node"))
 	host = _host
 	object = _object
 	_populate(_host, _object)
@@ -128,6 +123,7 @@ func _finish_close() -> void: pass
 
 
 func _exit_tree() -> void:
+	print ("Exit tree")
 	if object and object.local_instance == self:
 		object.clear_instance_upstream()
 	if advance_event == AdvanceEvent.ON_EXITING:

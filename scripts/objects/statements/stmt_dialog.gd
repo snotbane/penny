@@ -68,18 +68,22 @@ func _execute(host: PennyHost) :
 		return create_record(host)
 	var incoming_dialog_node : PennyNode
 	var previous_dialog : PennyObject = host.last_dialog_object
+
 	var previous_dialog_node : PennyNode
 	var incoming_needs_creation : bool
+	var previous_needs_closure : bool
 
 	if previous_dialog != null:
 		previous_dialog_node = previous_dialog.local_instance
-		incoming_needs_creation = previous_dialog_node == null or previous_dialog != incoming_dialog
+		incoming_needs_creation = previous_dialog_node == null or previous_dialog != incoming_dialog or previous_dialog_node.appear_state >= PennyNode.AppearState.CLOSING
+		previous_needs_closure = previous_dialog_node != null and previous_dialog_node.appear_state <= PennyNode.AppearState.CLOSING
 	else:
 		previous_dialog_node = null
 		incoming_needs_creation = true
+		previous_needs_closure = false
 
 	if incoming_needs_creation:
-		if previous_dialog_node != null:
+		if previous_needs_closure:
 			previous_dialog_node.close()
 			await previous_dialog_node.closed
 		incoming_dialog_node = self.instantiate_node(host, subject_dialog_path)

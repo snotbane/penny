@@ -133,8 +133,7 @@ script = ExtResource("2_44j7f")
 name_label = NodePath("name_label")
 text_label = NodePath("panel/margin_container/scroll_container/margin_container/text_label")
 typewriter = NodePath("typewriter")
-advance_event = 6
-free_on_closed = true
+advance_event = 7
 
 [node name="typewriter" type="Node" parent="." node_paths=PackedStringArray("rtl", "scroll_container", "audio_player")]
 script = ExtResource("3_q7721")

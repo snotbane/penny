@@ -31,6 +31,7 @@ func _execute(host: PennyHost) :
 	if node:
 		if node is PennyNode:
 			node.close()
+			await node.closed
 		else:
 			node.queue_free()
 	else:
