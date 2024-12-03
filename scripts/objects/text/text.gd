@@ -2,8 +2,10 @@
 @tool
 class_name Text extends RefCounted
 
-static var INTERJECTION_PATTERN := RegEx.create_from_string("(\\{.*?\\})")
-static var INTERPOLATION_PATTERN := RegEx.create_from_string("@((?:\\.?[A-Za-z_]\\w*)*)|\\[(.*?)\\]")
+static var INTERJECTION_PATTERN := RegEx.create_from_string("(?<!\\\\)\\{(.*?)(?<!\\\\)\\}")
+static var INTERPOLATION_PATTERN := RegEx.create_from_string("(?<!\\\\)@((?:\\.?[A-Za-z_]\\w*)*)|(?<!\\\\)\\[(.*?)(?<!\\\\)\\]")
+static var DECO_TAG_PATTERN := RegEx.create_from_string("(?<!\\\\)<(.*?)(?<!\\\\)>")
+# static var DECO_SPAN_PATTERN := RegEx.create_from_string("(?s)<(.*?)>(.*)(?:<\\/>)")
 static var ESCAPE_PATTERN := RegEx.create_from_string("\\\\(.)")
 static var ESCAPE_SUBSITUTIONS := {
 	"n": "\n",
@@ -11,8 +13,6 @@ static var ESCAPE_SUBSITUTIONS := {
 	"[": "[lb]",
 	"]": "[rb]"
 }
-static var DECO_TAG_PATTERN := RegEx.create_from_string("<(.*?)>")
-static var DECO_SPAN_PATTERN := RegEx.create_from_string("(?s)<(.*?)>(.*)(?:<\\/>)")
 
 var text : String
 

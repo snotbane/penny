@@ -228,7 +228,7 @@ func _evaluate_shallow(context: PennyObject) -> Variant:
 		return null
 	var result = stack.pop_back()
 	if result == null:
-		PennyException.new("Expression evaluated to null.").push_error()
+		PennyException.new("Expression evaluated to null.").push_warn()
 		return null
 
 	return result

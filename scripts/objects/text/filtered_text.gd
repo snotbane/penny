@@ -4,6 +4,9 @@ class_name FilteredText extends Text
 
 
 static func from_raw(raw: String, context: PennyObject) -> FilteredText:
+
+	print("Raw: '%s' Context: %s" % [raw, context.self_key])
+
 	## INTERPOLATION
 	while true:
 		var pattern_match := INTERPOLATION_PATTERN.search(raw)
@@ -13,7 +16,9 @@ static func from_raw(raw: String, context: PennyObject) -> FilteredText:
 		var inter_expr := Expr.from_tokens(PennyScript.parse_tokens_from_raw(interp_expr_string))
 		var result = inter_expr.evaluate(context)
 		var result_string : String
-		if result is PennyObject:
+		if result == null:
+			result_string = "NULL"
+		elif result is PennyObject:
 			result_string = result.rich_name.text
 		elif result is Color:
 			result_string = "#" + result.to_html()
@@ -47,16 +52,6 @@ static func from_raw(raw: String, context: PennyObject) -> FilteredText:
 
 			raw = pattern.sub(raw, replace, false, start)
 			start = pattern_match.get_start() + replace.length()
-
-	## ESCAPES
-	while true:
-		var pattern_match := ESCAPE_PATTERN.search(raw)
-		if not pattern_match: break
-
-		if ESCAPE_SUBSITUTIONS.has(pattern_match.get_string(1)):
-			raw = sub_match(pattern_match, ESCAPE_SUBSITUTIONS[pattern_match.get_string(1)])
-		else:
-			raw = sub_match(pattern_match, pattern_match.get_string(1))
 
 	return FilteredText.new(raw)
 

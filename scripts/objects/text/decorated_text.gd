@@ -2,8 +2,8 @@
 ## Displayable text capable of producing decorations.
 class_name DecoratedText extends Text
 
-static var DECO_START_TAG_PATTERN := RegEx.create_from_string("<>|<([^/].*?)>")
-static var DECO_END_TAG_PATTERN := RegEx.create_from_string("$|<\\/>")
+# static var DECO_START_TAG_PATTERN := RegEx.create_from_string("(?<!\\\\)<>|[^\\\\]?<([^/].*[^\\\\])>")
+# static var DECO_END_TAG_PATTERN := RegEx.create_from_string("<\\/>|(?<!<\\/>)$")
 const DECO_DELIMITER = ";"
 
 var decos : Array[DecoInst]
@@ -17,6 +17,8 @@ static func from_filtered(filtered: FilteredText, context: PennyObject) -> Decor
 	var deco_stack : Array[DecoInst]
 	while true:
 		var tag_match := DECO_TAG_PATTERN.search(result_text)
+		if tag_match:
+			print(tag_match.get_string())
 		if not tag_match: break
 		if tag_match.get_string() == "</>":
 			if not tags_needing_end_stack:
@@ -48,6 +50,16 @@ static func from_filtered(filtered: FilteredText, context: PennyObject) -> Decor
 	while deco_stack:
 		var deco : DecoInst = deco_stack.pop_back()
 		deco.register_end(result, result_text.length() - 1)
+
+	## ESCAPES
+	while true:
+		var pattern_match := Text.ESCAPE_PATTERN.search(result_text)
+		if not pattern_match: break
+		if ESCAPE_SUBSITUTIONS.has(pattern_match.get_string(1)):
+			result_text = sub_match(pattern_match, ESCAPE_SUBSITUTIONS[pattern_match.get_string(1)])
+		else:
+			result_text = sub_match(pattern_match, pattern_match.get_string(1))
+
 	result.text = result_text
 	return result
 
