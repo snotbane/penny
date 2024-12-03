@@ -5,9 +5,9 @@ class_name StmtNode extends Stmt
 ## Path to the object.
 var subject_path : Path
 
-
-func get_subject_node(host: PennyHost) -> Node :
-	return subject_path.evaluate().local_instance
+var subject_node : Node :
+	get:
+		return self.subject_path.evaluate().local_instance
 
 
 # func _init() -> void:
@@ -57,14 +57,6 @@ func _get_default_subject() -> Path:
 func instantiate_node(host: PennyHost, path := subject_path) -> Node:
 	var obj : PennyObject = path.evaluate()
 	if obj:
-		var node = obj.instantiate_from_lookup(host)
-		return node
-	return null
-
-
-func get_existing_node(host: PennyHost, path := subject_path) -> Node:
-	var obj : PennyObject = path.evaluate()
-	if obj:
-		var node : Node = obj.local_instance
+		var node = obj.instantiate_from_lookup(host.get_layer(obj.preferred_layer))
 		return node
 	return null

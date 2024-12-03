@@ -198,22 +198,22 @@ func clear_local_from_key(key: StringName) -> void:
 	set_value(key, null)
 
 
-func get_or_create_node(host: PennyHost, owner := self) -> Node:
+func get_or_create_node(_parent: Node, owner := self) -> Node:
 	var result : Node = owner.local_instance
 	if result: return result
 
 	var lookup : Lookup = get_value(LINK_KEY)
-	result = lookup.instantiate(host, preferred_layer)
+	result = lookup.instantiate(_parent)
 	result.name = owner.node_name
 	owner.set_value(INST_KEY, result)
 
 	return result
 
 
-func instantiate_from_lookup(host: PennyHost, lookup: Lookup = get_value(LINK_KEY)) -> Node:
+func instantiate_from_lookup(_parent: Node) -> Node:
 	var result : Node = self.local_instance
 	# if result and result is PennyNode and result.close_on_unlinked: self.local_instance.close()
-	result = lookup.instantiate(host, self.preferred_layer)
+	result = get_value(LINK_KEY).instantiate(_parent)
 	result.name = self.node_name
 	self.local_instance = result
 	return result

@@ -20,8 +20,8 @@ func fetch() -> Variant:
 	return LookupTable.get_data(key)
 
 
-func instantiate(host: PennyHost, layer := -1) -> Node:
+func instantiate(_parent: Node) -> Node:
 	var scene : PackedScene = fetch()
 	var result : Node = scene.instantiate()
-	host.get_layer(layer).add_child.call_deferred(result)
+	_parent.add_child.call_deferred(result)
 	return result

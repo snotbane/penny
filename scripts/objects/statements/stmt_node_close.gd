@@ -27,7 +27,7 @@ func _validate_self() -> PennyException:
 
 
 func _execute(host: PennyHost) :
-	var node := self.get_existing_node(host)
+	var node := self.subject_node
 	if node:
 		if node is PennyNode:
 			node.close()

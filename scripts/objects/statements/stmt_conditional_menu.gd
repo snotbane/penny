@@ -53,9 +53,8 @@ func _execute(host: PennyHost) :
 func _evaluate_self(host: PennyHost) -> Variant:
 	if not host.expecting_conditional:
 		return null
-	var response : Variant = menu_stmt.get_response(host)
-	if response is Evaluable:
-		return response.evaluate() == expected_path.evaluate()
+	if menu_stmt.response is Evaluable:
+		return menu_stmt.response.evaluate() == expected_path.evaluate()
 	else:
 		return false
 

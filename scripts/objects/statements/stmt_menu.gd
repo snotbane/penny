@@ -4,6 +4,12 @@ class_name StmtMenu extends StmtOpen
 
 var nested_option_stmts : Array[StmtConditionalMenu]
 
+
+var response : Variant :
+	get:
+		return subject_path.evaluate().get_value(PennyObject.RESPONSE_KEY)
+
+
 # func _init() -> void:
 # 	pass
 
@@ -56,7 +62,7 @@ func _execute(host: PennyHost) :
 		prompt_options.push_back(Path.from_single(key))
 
 	await super._execute(host)
-	await get_subject_node(host).advanced
+	await subject_node.advanced
 
 	return create_record(host)
 
@@ -71,7 +77,3 @@ func _execute(host: PennyHost) :
 
 func _get_default_subject() -> Path:
 	return Path.from_single(PennyObject.BILTIN_PROMPT_NAME)
-
-
-func get_response(host: PennyHost) -> Variant:
-	return subject_path.evaluate().get_value(PennyObject.RESPONSE_KEY)

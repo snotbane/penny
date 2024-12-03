@@ -70,7 +70,7 @@ func _on_verbosity_selector_item_selected_id(id:int) -> void:
 
 
 
-func _on_penny_debug_on_host_changed(host:PennyHost) -> void:
+func _on_penny_debug_on_host_changed(host: PennyHost) -> void:
 	linked_host = host
 
 

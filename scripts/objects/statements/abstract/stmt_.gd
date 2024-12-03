@@ -47,6 +47,13 @@ var depth_string : String :
 	get: return "dp %s" % nest_depth
 
 
+var owning_object : PennyObject :
+	get:
+		var result : PennyObject = owning_object_path.evaluate()
+		if result : return result
+		else : return PennyObject.STATIC_ROOT
+
+
 var next_in_order : Stmt :
 	get:
 		var i := self.index_in_script + 1
@@ -215,10 +222,6 @@ func get_path_relative_to_here(path: Path) -> Path:
 			result.prepend(root)
 		result.relative = false
 	return result
-
-
-func get_owning_object(context := PennyObject.STATIC_ROOT) -> PennyObject:
-	return owning_object_path.evaluate(context)
 
 
 func get_value_from_path_relative_to_here(context: PennyObject, path: Path) -> Variant:
