@@ -14,12 +14,13 @@ signal completed
 signal prodded
 
 
+var speed_stack : Array[float] = [ 40.0 ]
 ## How many characters per second to print out. For specific speeds mid-printout, use the <speed=x> decoration.
-@export var print_speed : float = 50.0 :
+@export var print_speed : float = 40.0 :
 	get: return speed_stack[0]
 	set(value):
 		speed_stack[0] = value
-var speed_stack : Array[float] = [ 50.0 ]
+
 
 ## Dictionary of RegEx patterns with an assigned value. Must match one single character. By default, this is used to determine if a character should or should not make a sound.
 @export var character_values := {
