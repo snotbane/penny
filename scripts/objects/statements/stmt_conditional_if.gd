@@ -17,7 +17,7 @@ func _get_keyword() -> StringName:
 
 func _evaluate_self(host: PennyHost) -> Variant:
 	## Always returns TRUE or FALSE
-	return self.expr.evaluate(host.data_root)
+	return self.expr.evaluate()
 
 
 func _should_skip(record: Record) -> bool:

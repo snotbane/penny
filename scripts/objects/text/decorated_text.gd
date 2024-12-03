@@ -9,7 +9,7 @@ const DECO_DELIMITER = ";"
 var decos : Array[DecoInst]
 
 
-static func from_filtered(filtered: FilteredText, context: PennyObject) -> DecoratedText:
+static func from_filtered(filtered: FilteredText, context := PennyObject.STATIC_ROOT) -> DecoratedText:
 	var result := DecoratedText.new()
 	var result_text := filtered.text
 
@@ -64,6 +64,6 @@ static func from_filtered(filtered: FilteredText, context: PennyObject) -> Decor
 	return result
 
 
-static func from_raw(raw: String, context: PennyObject) -> DecoratedText:
+static func from_raw(raw: String, context := PennyObject.STATIC_ROOT) -> DecoratedText:
 	var filtered := FilteredText.from_raw(raw, context)
 	return DecoratedText.from_filtered(filtered, context)

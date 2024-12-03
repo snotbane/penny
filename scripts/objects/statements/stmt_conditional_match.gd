@@ -44,7 +44,7 @@ func _validate_self_post_setup() -> void:
 func _evaluate_self(host: PennyHost) -> Variant:
 	## May return TRUE, FALSE, or NULL
 	if host.expecting_conditional:
-		return Expr.type_safe_equals(match_header_stmt.expr.evaluate(host.data_root), self.expr.evaluate(host.data_root))
+		return Expr.type_safe_equals(match_header_stmt.expr.evaluate(), self.expr.evaluate())
 	return null
 
 

@@ -32,7 +32,6 @@ signal on_close
 static var insts : Array[PennyHost] = []
 
 var state := State.UNLOADED
-var data_root := PennyObject.STATIC_ROOT
 
 var records : Array[Record]
 var call_stack : Array[Stmt]
@@ -50,7 +49,7 @@ var last_dialog_object : PennyObject :
 		for i in records.size():
 			var record := records[-i-1]
 			if record.stmt is StmtDialog:
-				return record.stmt.subject_dialog_path.evaluate(self.data_root)
+				return record.stmt.subject_dialog_path.evaluate()
 		return null
 
 var valid : bool :
@@ -123,7 +122,7 @@ func reload() -> void:
 
 func _exit_tree() -> void:
 	insts.erase(self)
-	data_root.destroy_instance_downstream(self, true)
+	PennyObject.STATIC_ROOT.destroy_instance_downstream(true)
 
 
 func jump_to(label: StringName) -> void:

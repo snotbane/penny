@@ -28,7 +28,7 @@ func _validate_cross() -> PennyException:
 func _evaluate_self(host: PennyHost) -> Variant:
 	## May return TRUE, FALSE, or NULL
 	if host.expecting_conditional:
-		return self.expr.evaluate(host.data_root)
+		return self.expr.evaluate()
 	return null
 
 

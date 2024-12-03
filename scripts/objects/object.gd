@@ -224,13 +224,13 @@ var local_instance : Node :
 	set(value): self.set_value(INST_KEY, value)
 
 
-func destroy_instance_downstream(host: PennyHost, recursive: bool = false) -> void:
+func destroy_instance_downstream(recursive: bool = false) -> void:
 	if recursive:
 		for k in data.keys():
 			var v = data[k]
 			if v and v is PennyObject:
-				v.destroy_instance_downstream(host, recursive)
-	var node : PennyNode = get_value(INST_KEY)
+				v.destroy_instance_downstream(recursive)
+	var node : Node = get_value(INST_KEY)
 	if node:
 		node.queue_free()
 	# clear_local_from_key(INST_KEY)

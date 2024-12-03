@@ -31,7 +31,7 @@ func _validate_self() -> PennyException:
 
 
 func _execute(host: PennyHost) :
-	var prior : Variant = path.evaluate_shallow(host.data_root)
+	var prior : Variant = path.evaluate_shallow()
 	if prior: return super._execute(host)
 	var after : Variant = self.get_context_parent(host).add_object(path.ids.back(), PennyObject.DEFAULT_BASE)
 	if after is PennyObject:
@@ -59,16 +59,16 @@ func _create_history_listing(record: Record) -> HistoryListing:
 
 ## Returns the object that this statement is working with.
 func get_context_object(host: PennyHost) -> PennyObject:
-	return self.get_value_from_path_relative_to_here(host.data_root, path)
+	return self.get_value_from_path_relative_to_here(PennyObject.STATIC_ROOT, path)
 
 
 ## Returns the parent of the object that this statement (primarily for setting values to it).
 func get_context_parent(host: PennyHost) -> PennyObject:
 	var parent_path := path.duplicate()
 	parent_path.ids.pop_back()
-	var result : PennyObject = self.get_owning_object(host.data_root)
+	var result : PennyObject = self.get_owning_object()
 	if result: return result
-	return host.data_root
+	return PennyObject.STATIC_ROOT
 
 
 func create_assignment_record(host: PennyHost, before: Variant, after: Variant) -> Record:

@@ -217,7 +217,7 @@ func get_path_relative_to_here(path: Path) -> Path:
 	return result
 
 
-func get_owning_object(context: PennyObject) -> PennyObject:
+func get_owning_object(context := PennyObject.STATIC_ROOT) -> PennyObject:
 	return owning_object_path.evaluate(context)
 
 

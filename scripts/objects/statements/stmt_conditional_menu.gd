@@ -55,7 +55,7 @@ func _evaluate_self(host: PennyHost) -> Variant:
 		return null
 	var response : Variant = menu_stmt.get_response(host)
 	if response is Evaluable:
-		return response.evaluate(host.data_root) == expected_path.evaluate(host.data_root)
+		return response.evaluate() == expected_path.evaluate()
 	else:
 		return false
 

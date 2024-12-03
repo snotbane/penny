@@ -57,7 +57,7 @@ func refresh() -> void:
 	self.clear()
 
 	if debug.host:
-		root = debug.host.data_root.create_tree_item(self, sort_method)
+		root = PennyObject.STATIC_ROOT.create_tree_item(self, sort_method)
 		root.set_text(0, "root")
 		refresh_search()
 

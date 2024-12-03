@@ -10,11 +10,11 @@ class_name PennyPromptControl extends PennyPrompt
 
 func _receive_options(_options: Array) -> void:
 	for path in _options:
-		var option : PennyObject = path.evaluate(host.data_root)
+		var option : PennyObject = path.evaluate()
 
 		var button : PromptButton = button_prefab.instantiate()
 		button.pressed.connect(receive_response.bind(path))
 
-		button.receive(DecoratedText.from_filtered(option.rich_name, host.data_root))
+		button.receive(DecoratedText.from_filtered(option.rich_name))
 
 		button_container.add_child(button)

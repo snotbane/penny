@@ -40,7 +40,7 @@ func _execute(host: PennyHost) :
 	if is_simple_timer_delay:
 		await host.get_tree().create_timer(await_value, false, false, false).timeout
 	else:
-		var object : PennyObject = (await_value as Path).evaluate(host.data_root)
+		var object : PennyObject = (await_value as Path).evaluate()
 		var node : PennyNode = object.local_instance
 		if node == null:
 			self.push_exception("Attempted to await the node of %s, but the node is null." % object)

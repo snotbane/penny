@@ -7,7 +7,7 @@ var subject_path : Path
 
 
 func get_subject_node(host: PennyHost) -> Node :
-	return subject_path.evaluate(host.data_root).local_instance
+	return subject_path.evaluate().local_instance
 
 
 # func _init() -> void:
@@ -55,7 +55,7 @@ func _get_default_subject() -> Path:
 
 
 func instantiate_node(host: PennyHost, path := subject_path) -> Node:
-	var obj : PennyObject = path.evaluate(host.data_root)
+	var obj : PennyObject = path.evaluate()
 	if obj:
 		var node = obj.instantiate_from_lookup(host)
 		return node
@@ -63,7 +63,7 @@ func instantiate_node(host: PennyHost, path := subject_path) -> Node:
 
 
 func get_existing_node(host: PennyHost, path := subject_path) -> Node:
-	var obj : PennyObject = path.evaluate(host.data_root)
+	var obj : PennyObject = path.evaluate()
 	if obj:
 		var node : Node = obj.local_instance
 		return node

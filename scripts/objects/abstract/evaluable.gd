@@ -3,8 +3,8 @@
 class_name Evaluable extends RefCounted
 
 ## Evaluate one layer. Non-recursive.
-func evaluate_shallow(context: PennyObject) -> Variant: return _evaluate_shallow(context)
-func _evaluate_shallow(context: PennyObject) -> Variant:
+func evaluate_shallow(context := PennyObject.STATIC_ROOT) -> Variant: return _evaluate_shallow(context)
+func _evaluate_shallow(context : PennyObject) -> Variant:
 	return null
 
 # func evaluate(context: PennyObject, fallback: PennyObject = null) -> Variant:
@@ -14,7 +14,7 @@ func _evaluate_shallow(context: PennyObject) -> Variant:
 # 	return result
 # func _evaluate(context: PennyObject) -> Variant:
 ## Evaluate until no further evaluations can be made.
-func evaluate(context: PennyObject) -> Variant:
+func evaluate(context := PennyObject.STATIC_ROOT) -> Variant:
 	var evals_seen : Array[Evaluable]
 	var result : Variant = self
 	while result is Evaluable:

@@ -34,7 +34,7 @@ func _validate_self_post_setup() -> void:
 func _execute(host: PennyHost) :
 	host.expecting_conditional = true
 
-	var prompt_object : PennyObject = subject_path.evaluate(host.data_root)
+	var prompt_object : PennyObject = subject_path.evaluate()
 	var prompt_options : Array = prompt_object.get_value(PennyObject.OPTIONS_KEY)
 	prompt_options.clear()
 
@@ -45,14 +45,14 @@ func _execute(host: PennyHost) :
 		var option : PennyObject
 		if stmt.is_raw_text_option:
 			key = "_" + str(i)
-			option = PennyObject.new(key, host.data_root, {
+			option = PennyObject.new(key, PennyObject.STATIC_ROOT, {
 				PennyObject.BASE_KEY: Path.from_single(PennyObject.BILTIN_OPTION_NAME),
-				PennyObject.NAME_KEY: stmt.expr.evaluate(host.data_root)
+				PennyObject.NAME_KEY: stmt.expr.evaluate()
 			})
 		else:
-			option = stmt.expr.evaluate(host.data_root)
+			option = stmt.expr.evaluate()
 			key = option.self_key
-		host.data_root.set_value(key, option)
+		PennyObject.STATIC_ROOT.set_value(key, option)
 		prompt_options.push_back(Path.from_single(key))
 
 	await super._execute(host)
@@ -74,4 +74,4 @@ func _get_default_subject() -> Path:
 
 
 func get_response(host: PennyHost) -> Variant:
-	return subject_path.evaluate(host.data_root).get_value(PennyObject.RESPONSE_KEY)
+	return subject_path.evaluate().get_value(PennyObject.RESPONSE_KEY)

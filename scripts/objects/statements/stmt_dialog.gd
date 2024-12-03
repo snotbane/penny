@@ -62,7 +62,7 @@ func _get_history_listing_scene() -> PackedScene :
 
 
 func _execute(host: PennyHost) :
-	var incoming_dialog : PennyObject = self.subject_dialog_path.evaluate(host.data_root)
+	var incoming_dialog : PennyObject = self.subject_dialog_path.evaluate()
 	if not incoming_dialog:
 		push_exception("Attempted to create dialog box for '%s', but no such object exists" % self.subject_dialog_path)
 		return create_record(host)
@@ -91,9 +91,9 @@ func _execute(host: PennyHost) :
 	else:
 		incoming_dialog_node = previous_dialog_node
 
-	var subject : PennyObject = subject_path.evaluate(host.data_root)
-	var who := DecoratedText.from_filtered(subject.rich_name, host.data_root)
-	var what := DecoratedText.from_raw(raw_text, host.data_root)
+	var subject : PennyObject = subject_path.evaluate()
+	var who := DecoratedText.from_filtered(subject.rich_name)
+	var what := DecoratedText.from_raw(raw_text)
 	var attach := DialogRecord.new(who, what)
 	var result := create_record(host, attach)
 	incoming_dialog_node.receive(result, subject)
