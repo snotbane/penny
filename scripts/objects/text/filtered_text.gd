@@ -5,8 +5,6 @@ class_name FilteredText extends Text
 
 static func from_raw(raw: String, context: PennyObject) -> FilteredText:
 
-	print("Raw: '%s' Context: %s" % [raw, context.self_key])
-
 	## INTERPOLATION
 	while true:
 		var pattern_match := INTERPOLATION_PATTERN.search(raw)
