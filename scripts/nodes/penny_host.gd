@@ -55,6 +55,7 @@ var last_dialog_object : PennyObject :
 var valid : bool :
 	get: return Penny.valid and cursor != null
 
+
 func _init() -> void:
 	insts.push_back(self)
 
@@ -66,7 +67,7 @@ func _ready() -> void:
 		var meta : Variant = self.get_meta(meta_name)
 		if meta is PennyDecoRegistry:
 			var registry : PennyDecoRegistry = meta
-			registry.register_scripts()
+			registry.register_decos()
 
 	if autostart:
 		start_at_label.call_deferred()
@@ -113,11 +114,18 @@ func try_reload(success: bool) -> void:
 
 func reload() -> void:
 	state = State.INITING
+	# for init in Penny.inits:
+	# 	cursor = init
+	# 	invoke_at_cursor()
+	# cursor = null
+	state = State.READY
+
+
+func perform_inits() -> void:
 	for init in Penny.inits:
 		cursor = init
 		invoke_at_cursor()
 	cursor = null
-	state = State.READY
 
 
 func _exit_tree() -> void:

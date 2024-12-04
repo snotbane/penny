@@ -36,6 +36,8 @@ static var reload_cache_mode : ResourceLoader.CacheMode :
 
 var paths_dates : Dictionary
 
+var init_host : PennyHost
+
 
 func _enter_tree() -> void:
 	register_formats()
@@ -47,6 +49,10 @@ func _ready() -> void:
 	REGEX.compile(PNY_FILE_EXPR)
 	if !REGEX.is_valid():
 		print("RegEx expression is not valid: \"" + PNY_FILE_EXPR + "\"")
+
+	init_host = PennyHost.new()
+	init_host.name = "importer_init_host"
+	self.add_child.call_deferred(init_host)
 
 	if not (OS.has_feature("template") or Engine.is_editor_hint()):
 		var debug_canvas := CanvasLayer.new()
@@ -100,6 +106,7 @@ func reload(hard: bool = false) -> void:
 		else:
 			Penny.load()
 			Penny.log_timed("Successfully loaded all (%s) scripts." % str(scripts.size()), Penny.HAPPY_COLOR)
+			init_host.perform_inits()
 		Penny.log_info()
 
 		on_reload_finish.emit(Penny.valid)

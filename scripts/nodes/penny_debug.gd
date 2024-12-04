@@ -20,7 +20,7 @@ var host : PennyHost :
 func _ready() -> void:
 	inst = self
 	if PennyHost.insts:
-		host = PennyHost.insts[0]
+		host = PennyHost.insts.front()
 
 	$overlay.visible = false
 

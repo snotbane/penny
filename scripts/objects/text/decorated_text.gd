@@ -17,8 +17,6 @@ static func from_filtered(filtered: FilteredText, context := PennyObject.STATIC_
 	var deco_stack : Array[DecoInst]
 	while true:
 		var tag_match := DECO_TAG_PATTERN.search(result_text)
-		if tag_match:
-			print(tag_match.get_string())
 		if not tag_match: break
 		if tag_match.get_string() == "</>":
 			if not tags_needing_end_stack:

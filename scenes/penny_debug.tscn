@@ -5,8 +5,8 @@
 [ext_resource type="Texture2D" uid="uid://5dmiewmbmtxq" path="res://addons/penny_godot/assets/textures/overlay.png" id="2_7s783"]
 [ext_resource type="PackedScene" uid="uid://ehssrfkq0q6c" path="res://addons/penny_godot/scenes/penny_dock.tscn" id="2_if5x3"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/data_viewer_tree.gd" id="5_2yu6x"]
-[ext_resource type="Texture2D" uid="uid://chhgxydddxkmb" path="res://addons/penny_godot/assets/icons/Key.svg" id="5_jbrid"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/debug_host_selector.gd" id="5_roq4y"]
+[ext_resource type="Texture2D" uid="uid://cqkyoh7pijbha" path="res://addons/penny_godot/assets/icons/Code.svg" id="5_ufwun"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/other/tabs_with_icons.gd" id="5_uv7g7"]
 [ext_resource type="Texture2D" uid="uid://c5nb4l2ge7dlq" path="res://addons/penny_godot/assets/icons/Clear.svg" id="5_uw3ek"]
 [ext_resource type="Texture2D" uid="uid://c3g6mc5ihxqvj" path="res://addons/penny_godot/assets/icons/Label.svg" id="6_6v586"]
@@ -446,7 +446,7 @@ size_flags_horizontal = 3
 tab_alignment = 1
 current_tab = 0
 script = ExtResource("5_uv7g7")
-tab_icons = Array[Texture2D]([ExtResource("5_jbrid"), ExtResource("7_44hdu")])
+tab_icons = Array[Texture2D]([ExtResource("5_ufwun"), ExtResource("7_44hdu")])
 
 [node name="Console" parent="overlay/margin_container/h_box_container/static_tabs" instance=ExtResource("2_if5x3")]
 layout_mode = 2
@@ -544,10 +544,11 @@ flat = true
 [node name="host_tabs" type="TabContainer" parent="overlay/margin_container/h_box_container"]
 layout_mode = 2
 size_flags_horizontal = 3
-current_tab = 0
+current_tab = 1
 tabs_visible = false
 
 [node name="host_menu" type="Control" parent="overlay/margin_container/h_box_container/host_tabs"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -700,7 +701,6 @@ icon = ExtResource("15_mpfsm")
 flat = true
 
 [node name="host_selector" type="PanelContainer" parent="overlay/margin_container/h_box_container/host_tabs" node_paths=PackedStringArray("vbox", "none_available_node")]
-visible = false
 layout_mode = 2
 script = ExtResource("5_roq4y")
 vbox = NodePath("v_box_container/host_list")
@@ -724,8 +724,11 @@ text = "Select a PennyHost to view it."
 horizontal_alignment = 1
 
 [node name="host_list" type="VBoxContainer" parent="overlay/margin_container/h_box_container/host_tabs/host_selector/v_box_container"]
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
+size_flags_horizontal = 4
 size_flags_vertical = 3
+alignment = 1
 
 [node name="reload_notify" type="Control" parent="."]
 custom_minimum_size = Vector2(0, 80)
@@ -821,7 +824,8 @@ script = ExtResource("22_wyfls")
 [connection signal="on_reload_cancel" from="." to="reload_notify/animation_player" method="cancel"]
 [connection signal="on_reload_finish" from="." to="reload_notify/animation_player" method="finish"]
 [connection signal="on_reload_start" from="." to="reload_notify/animation_player" method="start"]
-[connection signal="visibility_changed" from="." to="overlay/margin_container/h_box_container/host_tabs/host_menu/tab_container/History/v_box_container/penny_history_box" method="scroll_to_end"]
+[connection signal="visibility_changed" from="overlay" to="overlay/margin_container/h_box_container/host_tabs/host_menu/tab_container/History/v_box_container/penny_history_box" method="scroll_to_end"]
+[connection signal="visibility_changed" from="overlay" to="overlay/margin_container/h_box_container/host_tabs/host_selector" method="refresh"]
 [connection signal="visibility_changed" from="overlay/margin_container/h_box_container/static_tabs/Data/vbox/data_tree" to="overlay/margin_container/h_box_container/static_tabs/Data/vbox/data_tree" method="refresh"]
 [connection signal="toggled" from="overlay/margin_container/h_box_container/static_tabs/Data/vbox/hbox_search/search_values_toggle" to="overlay/margin_container/h_box_container/static_tabs/Data/vbox/data_tree" method="_on_search_values_toggle_toggled"]
 [connection signal="item_selected" from="overlay/margin_container/h_box_container/static_tabs/Data/vbox/hbox_search/sort_selector" to="overlay/margin_container/h_box_container/static_tabs/Data/vbox/data_tree" method="_on_sort_selector_item_selected"]

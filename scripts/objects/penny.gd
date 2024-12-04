@@ -150,4 +150,4 @@ static func get_debug_string(value: Variant) -> String:
 
 
 static func stmt_init_sort(a: StmtInit, b: StmtInit) -> bool:
-	return a.order >= b.order
+	return a.order < b.order

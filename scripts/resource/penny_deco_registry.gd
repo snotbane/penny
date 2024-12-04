@@ -4,6 +4,6 @@ class_name PennyDecoRegistry extends Resource
 
 @export var deco_resources : Array[Deco]
 
-func register_scripts() -> void:
+func register_decos() -> void:
 	for deco in deco_resources:
 		Deco.register_instance(deco)
