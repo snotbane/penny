@@ -79,15 +79,19 @@ static var PRIMITIVE_PATTERNS = [
 
 enum Operator {
 	INVALID,
-	DEREF,		# @
-	LOOKUP,		# $
-	NOT,		# !  , not
-	AND,		# && , and
-	OR,			# || , or
-	IS_EQUAL,	# ==
-	NOT_EQUAL,	# !=
-	DOT,		# .
-	QUESTION,	# ?
+	DEREF,			# @
+	LOOKUP,			# $
+	NOT,			# !  , not
+	AND,			# && , and
+	OR,				# || , or
+	IS_EQUAL,		# ==
+	NOT_EQUAL,		# !=
+	MORE_THAN,		# >
+	MORE_EQUAL,		# >=
+	LESS_THAN,		# <
+	LESS_EQUAL,		# <=
+	DOT,			# .
+	QUESTION,		# ?
 
 }
 
@@ -114,6 +118,10 @@ func get_operator_type() -> Operator:
 			'||', 'or': return Operator.OR
 			'==': return Operator.IS_EQUAL
 			'!=': return Operator.NOT_EQUAL
+			'>': return Operator.MORE_THAN
+			'>=': return Operator.MORE_EQUAL
+			'<': return Operator.LESS_THAN
+			'<=': return Operator.MORE_EQUAL
 			'.': return Operator.DOT
 			'@': return Operator.DEREF
 			'?': return Operator.QUESTION

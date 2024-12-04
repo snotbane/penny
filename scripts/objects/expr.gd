@@ -27,6 +27,10 @@ class Op extends RefCounted:
 		NEW,					# new
 		IS_EQUAL,			# ==
 		NOT_EQUAL,			# !=
+		MORE_THAN,			# >
+		MORE_EQUAL,			# >=
+		LESS_THAN,			# <
+		LESS_EQUAL,			# <=
 		DOT,				# .
 		QUESTION,			# ?
 	}
@@ -52,6 +56,10 @@ class Op extends RefCounted:
 			'new':		 	type = NEW
 			'==': 			type = IS_EQUAL
 			'!=': 			type = NOT_EQUAL
+			'>': 			type = MORE_THAN
+			'>=': 			type = MORE_EQUAL
+			'<': 			type = LESS_THAN
+			'<=': 			type = LESS_EQUAL
 			'.': 			type = DOT
 			'@': 			type = EVALUATE
 			'?': 			type = QUESTION
@@ -69,6 +77,10 @@ class Op extends RefCounted:
 			NEW: return 'new'
 			IS_EQUAL: return '=='
 			NOT_EQUAL: return '!='
+			MORE_THAN: return '>'
+			MORE_EQUAL: return '>='
+			LESS_THAN: return '<'
+			LESS_EQUAL: return '<='
 			DOT: return '.'
 			EVALUATE: return '@'
 			QUESTION: return '?'
@@ -103,6 +115,10 @@ class Op extends RefCounted:
 			OR:				stack.push_back(abc[0] or abc[1])
 			IS_EQUAL:		stack.push_back(abc[0] == abc[1])
 			NOT_EQUAL:		stack.push_back(abc[0] != abc[1])
+			MORE_THAN:		stack.push_back(abc[0] >  abc[1])
+			MORE_EQUAL:		stack.push_back(abc[0] >= abc[1])
+			LESS_THAN:		stack.push_back(abc[0] <  abc[1])
+			LESS_EQUAL:		stack.push_back(abc[0] <= abc[1])
 
 	func apply_static(stack: Array[Variant]) -> void:
 		match type:

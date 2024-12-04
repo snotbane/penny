@@ -55,24 +55,24 @@ player_intelligence = 15
 
 option_1 = new option
 	.name = `Take the path to the right`
-	.used = false
+	.consumed = false
 	.visible = true
 	.enabled = true
 option_2 = new option
 	.name = `Unlock the door`
-	.used = false
+	.consumed = false
 	.visible = true
-	.enabled = player_has_key or .used
+	.enabled = player_has_key or .consumed
 option_3 = new option
 	.name = `Break down the door`
-	.used = false
+	.consumed = true
 	.visible = true
 	.enabled = true
 option_4 = new option
 	.name = `(superior intellect) Examine hidden button`
-	.used = false
+	.consumed = false
 	.visible = player_intelligence > 20
-	.enabled = .visible or .used
+	.enabled = .visible or .consumed
 
 label dungeon
 menu
@@ -91,7 +91,7 @@ menu
 		`Using your superior observational skills, you notice an unusual brick that seems out of place... and a new path is opened.
 ```
 
-- The `used` attribute is automatically set to `true` when the user selects this option. It can be manually overridden at any time. These buttons will be greyed out (but still selectable) by default.
+- The `consumed` attribute is automatically set to `true` when the user selects this option. It can be manually overridden at any time. These buttons will be greyed out (but still selectable) by default.
 - The `visible` attribute will cause the option to not appear in the menu. In Ren'Py this is the equivalent of saying `"Option 2" if player_has_key:`. Generally this should be toggled off if the player is ***not yet aware of*** this option.
 - The `enabled` attribute will cause the option to be enabled or disabled. If disabled, the option cannot be chosen, but will still appear in the list. Generally this should be toggled off if the player is aware of the the option, but is ***physically incapable of carrying it out***.
 

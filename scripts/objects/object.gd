@@ -28,10 +28,10 @@ static var BILTIN_OBJECT := PennyObject.new(BILTIN_OBJECT_NAME, STATIC_ROOT, {
 
 static var BILTIN_OPTION := PennyObject.new(BILTIN_OPTION_NAME, STATIC_ROOT, {
 	BASE_KEY: Path.new([BILTIN_OBJECT_NAME]),
-	ABLE_KEY: Path.new([USED_KEY], true),
-	SHOW_KEY: true,
+	ABLE_KEY: Path.new([CONSUMED_KEY], true),
+	VISIBLE_KEY: true,
 	# ICON_KEY: null,
-	USED_KEY: false,
+	CONSUMED_KEY: false,
 })
 
 static var BILTIN_PROMPT := PennyObject.new(BILTIN_PROMPT_NAME, STATIC_ROOT, {
@@ -75,8 +75,9 @@ const ICON_KEY := StringName('icon')
 const INST_KEY := StringName('inst')
 const OPTIONS_KEY := StringName('options')
 const RESPONSE_KEY := StringName('response')
-const SHOW_KEY := StringName('show')
-const USED_KEY := StringName('used')
+const VISIBLE_KEY := StringName('visible')
+const ENABLED_KEY := StringName('enabled')
+const CONSUMED_KEY := StringName('consumed')
 
 var parent : PennyObject
 var self_key : StringName
