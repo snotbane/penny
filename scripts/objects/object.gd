@@ -211,10 +211,24 @@ func get_or_create_node(_parent: Node, owner := self) -> Node:
 	return result
 
 
-func instantiate_from_lookup(_parent: Node) -> Node:
+func instantiate(_parent: Node) -> Node:
 	var result : Node = self.local_instance
-	# if result and result is PennyNode and result.close_on_unlinked: self.local_instance.close()
-	result = get_value(LINK_KEY).instantiate(_parent)
+	if result is PennyNode:
+		result.close()
+	elif result:
+		result.queue_free()
+	result = null
+
+	var link : Variant = get_value(LINK_KEY)
+	if link is Lookup:
+		result = link.instantiate(_parent)
+	elif link is String:
+		var resource := load(link)
+		if resource is PackedScene:
+			result = resource.instantiate()
+			_parent.add_child(result)
+			print(result)
+
 	result.name = self.node_name
 	self.local_instance = result
 	return result

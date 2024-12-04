@@ -26,9 +26,9 @@ func _ready() -> void:
 func receive(_option: PennyObject) -> void:
 	option = _option
 
-	self.visible = option.get_value(PennyObject.VISIBLE_KEY)
-	self.disabled = not option.get_value(PennyObject.ENABLED_KEY)
-	self.consumed = option.get_value(PennyObject.CONSUMED_KEY)
+	self.visible = option.get_value_or_default(PennyObject.VISIBLE_KEY, true)
+	self.disabled = not option.get_value_or_default(PennyObject.ENABLED_KEY, true)
+	self.consumed = option.get_value_or_default(PennyObject.CONSUMED_KEY, false)
 
 	label.text = "[center]%s" % DecoratedText.from_filtered(option.rich_name)
 

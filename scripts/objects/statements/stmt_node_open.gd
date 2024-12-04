@@ -28,10 +28,6 @@ func _validate_self() -> PennyException:
 
 func _execute(host: PennyHost) :
 	var incoming_object : PennyObject = self.subject_path.evaluate()
-	if incoming_object.local_instance:
-		push_exception("Attempted to open instance for '%s', but there is already an existing instance.")
-		return super._execute(host)
-
 	var incoming_node : Node
 	incoming_node = self.instantiate_node(host, subject_path)
 	if incoming_node is PennyNode:

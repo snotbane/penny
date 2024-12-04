@@ -57,6 +57,6 @@ func _get_default_subject() -> Path:
 func instantiate_node(host: PennyHost, path := subject_path) -> Node:
 	var obj : PennyObject = path.evaluate()
 	if obj:
-		var node = obj.instantiate_from_lookup(host.get_layer(obj.preferred_layer))
+		var node = obj.instantiate(host.get_layer(obj.preferred_layer))
 		return node
 	return null
