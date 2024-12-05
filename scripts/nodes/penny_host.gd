@@ -74,6 +74,7 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if Engine.is_editor_hint() : return
 	if event.is_action_pressed("penny_skip"):
 		is_skipping = true
 	elif event.is_action_released("penny_skip"):
