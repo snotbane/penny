@@ -68,19 +68,24 @@ var appear_state : AppearState :
 					open()
 			AppearState.OPENING:
 				_open()
-				opening.emit()
 				if advance_event == AdvanceEvent.ON_OPENING:
 					advanced.emit()
+				opening.emit()
+				if opening.get_connections().size() == 0:
+					finish_open.call_deferred()
 			AppearState.OPENED:
 				_finish_open()
-				opened.emit()
 				if advance_event == AdvanceEvent.ON_OPENED:
 					advanced.emit()
+				opened.emit()
 			AppearState.CLOSING:
 				_close()
-				closing.emit()
 				if advance_event == AdvanceEvent.ON_CLOSING:
 					advanced.emit()
+				if closing.get_connections().size() == 0:
+					finish_close.call_deferred()
+				else:
+					closing.emit()
 			AppearState.CLOSED:
 				_finish_close()
 				closed.emit()

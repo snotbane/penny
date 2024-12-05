@@ -1,11 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://6k8awu3o3u4k"]
+[gd_scene load_steps=2 format=3 uid="uid://6k8awu3o3u4k"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_node.gd" id="1_8dry6"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/sprite_mesh_3d.gd" id="1_n6v73"]
 
 [node name="sprite_actor_3d" type="Node3D"]
-script = ExtResource("1_8dry6")
 
 [node name="sprite_quad_mesh" type="Node3D" parent="."]
 script = ExtResource("1_n6v73")
-opacity = 1.0
