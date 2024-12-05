@@ -2,47 +2,14 @@
 @tool
 class_name SpriteFramesConverter extends Node
 
-@export var create_reset : bool :
+@export var refresh : bool :
 	set(value):
-		var anim_name := "RESET"
-		var anim := get_or_create_anim(anim_name)
-		anim.length = 0.0
-
-		var sprite_track := get_and_clear_track(anim, ^".:sprite_frames")
-		anim.track_insert_key(sprite_track, 0.0, sprite.sprite_frames)
-
-		var name_track := get_and_clear_track(anim, ^".:animation")
-		anim.track_insert_key(name_track, 0.0, sprite.animation)
-
-		var frame_track := get_and_clear_track(anim, ^".:frame")
-		anim.track_insert_key(frame_track, 0.0, 0)
-
-@export var create_anims : bool :
-	set(value):
-		for anim_name in sprite.sprite_frames.get_animation_names():
-			var anim := get_or_create_anim(anim_name)
-
-			var name_track := get_and_clear_track(anim, ^".:animation")
-			anim.track_insert_key(name_track, 0.0, anim_name)
-
-			var frame_track := get_and_clear_track(anim, ^".:frame")
-			var speed := 1.0 / sprite.sprite_frames.get_animation_speed(anim_name)
-			var cursor := 0.0
-			for i in sprite.sprite_frames.get_frame_count(anim_name):
-				anim.track_insert_key(frame_track, cursor, i)
-				cursor += sprite.sprite_frames.get_frame_duration(anim_name, i) * speed
-
-			anim.length = cursor
-			if sprite.sprite_frames.get_animation_loop(anim_name):
-				anim.loop_mode = Animation.LOOP_LINEAR
-			else:
-				anim.loop_mode = Animation.LOOP_NONE
-
+		refresh_reset_anim()
+		refresh_anims()
 
 @onready var sprite : AnimatedSprite2D = self.get_parent().get_parent()
 @onready var player : AnimationPlayer = self.get_parent()
 @onready var library_default : AnimationLibrary = player.get_animation_library("")
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -53,6 +20,42 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
+
+
+func refresh_reset_anim() -> void:
+	var anim_name := "RESET"
+	var anim := get_or_create_anim(anim_name)
+	anim.length = 0.0
+
+	var sprite_track := get_and_clear_track(anim, ^".:sprite_frames")
+	anim.track_insert_key(sprite_track, 0.0, sprite.sprite_frames)
+
+	var name_track := get_and_clear_track(anim, ^".:animation")
+	anim.track_insert_key(name_track, 0.0, sprite.animation)
+
+	var frame_track := get_and_clear_track(anim, ^".:frame")
+	anim.track_insert_key(frame_track, 0.0, 0)
+
+
+func refresh_anims():
+	for anim_name in sprite.sprite_frames.get_animation_names():
+		var anim := get_or_create_anim(anim_name)
+
+		var name_track := get_and_clear_track(anim, ^".:animation")
+		anim.track_insert_key(name_track, 0.0, anim_name)
+
+		var frame_track := get_and_clear_track(anim, ^".:frame")
+		var speed := 1.0 / sprite.sprite_frames.get_animation_speed(anim_name)
+		var cursor := 0.0
+		for i in sprite.sprite_frames.get_frame_count(anim_name):
+			anim.track_insert_key(frame_track, cursor, i)
+			cursor += sprite.sprite_frames.get_frame_duration(anim_name, i) * speed
+
+		anim.length = cursor
+		if sprite.sprite_frames.get_animation_loop(anim_name):
+			anim.loop_mode = Animation.LOOP_LINEAR
+		else:
+			anim.loop_mode = Animation.LOOP_NONE
 
 
 func get_or_create_anim(anim_name : StringName) -> Animation:
