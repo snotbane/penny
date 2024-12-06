@@ -17,11 +17,14 @@ var _template : SpriteComponentTemplate
 	set(value):
 		if _template == value: return
 		_template = value
-		if _template == null: return
 
 		for child in self.get_children():
 			child.queue_free()
 		dict.clear()
+
+		if _template == null: return
+
+		position = _template.position
 
 		for child in _template.get_children():
 			if child is AnimatedSprite2D:
@@ -96,47 +99,98 @@ func create_sprite_from_animated_sprite_2d(sprite: AnimatedSprite2D) -> MeshInst
 
 
 func set_mesh_texture(mesh: MeshInstance2D, texture: Texture2D) -> void:
-	var path : String = get_altered_path(texture.resource_path)
-
-	var resource : Resource = null
-	if OS.has_feature("template") or Utils.is_valid_path(path):
-		resource = load(path)
-
-	if resource:
-		mesh.texture = resource
-		# mesh.visible = true
-	# else:
-		# mesh.visible = false
+	if texture == null: return
+	mesh.texture = get_modified_version(texture)
+	mesh.visible = mesh.texture != null
 
 
-func get_altered_path(path : String) -> String:
-	var result := path
+class ResourceFallback:
+	var folder : String
+	var name : String
+	var ext : String
+	var index : int
+	var mirror : bool
+	var component : TextureComponent
 
-	var extension_regex := RegEx.create_from_string("\\.(\\w+)$")
-	var extension_match := extension_regex.search(path)
-	var extension := extension_match.get_string(1)
-	var mirror_regex := RegEx.create_from_string("_([lr])(?=[_.])")
-	var mirror_match := mirror_regex.search(path)
-	if mirror_match:
-		if mirror_match.get_start() < result.length():
-			result = result.substr(0, mirror_match.get_start())
-	var component_regex := RegEx.create_from_string("_([aemno])(?=[_.])")
-	var component_match := component_regex.search(path)
-	if component_match.get_start() < result.length():
-		result = result.substr(0, component_match.get_start())
+	var build_path : String :
+		get:
+			var result := name
 
-	match mirror:
-		true:	result += "_l"
-		false:	result += "_r"
-	match component:
-		TextureComponent.ALBEDO: 		result += "_a"
-		TextureComponent.NORMAL: 		result += "_n"
-		TextureComponent.OCCLUSION: 	result += "_o"
-		TextureComponent.EMISSIVE: 		result += "_e"
-		TextureComponent.RSM: 			result += "_m"
+			if index >= 0:
+				result += "_" + str(index).lpad(2, "0")
 
-	result += "." + extension
-	return result
+			match mirror:
+				true:	result += "_l"
+				_:		result += "_r"
+
+			match component:
+				TextureComponent.ALBEDO: 		result += "_a"
+				TextureComponent.NORMAL: 		result += "_n"
+				TextureComponent.OCCLUSION: 	result += "_o"
+				TextureComponent.EMISSIVE: 		result += "_e"
+				TextureComponent.RSM: 			result += "_m"
+
+			return folder + result + ext
+
+	var resource : Resource :
+		get:
+			var result := Utils.safe_load(build_path)
+			if result: return result
+
+			if mirror:
+				mirror = false
+				result = Utils.safe_load(build_path)
+				if result: return result
+
+			if index > 0:
+				index = 0
+				result = Utils.safe_load(build_path)
+				if result: return result
+			if index == 0:
+				index = -1
+				result = Utils.safe_load(build_path)
+				if result: return result
+
+			return null
+
+
+	func _init(_resource : Resource, _mirror : bool, _component : TextureComponent) -> void:
+		var path := _resource.resource_path
+		folder = path.substr(0, path.rfind("/") + 1)
+		path = path.substr(folder.length())
+
+		var ext_regex := RegEx.create_from_string("\\.\\w+$")
+		var ext_match := ext_regex.search(path)
+		ext = ext_match.get_string()
+
+		var name_length := ext_match.get_start()
+
+		var index_regex := RegEx.create_from_string("_(\\d{2})(?=[_.])")
+		var index_match := index_regex.search(path)
+		if index_match:
+			index = int(index_match.get_string(1))
+			name_length = min(name_length, index_match.get_start())
+		else:
+			index = -1
+
+		mirror = _mirror
+		var mirror_regex := RegEx.create_from_string("_([lr])(?=[_.])")
+		var mirror_match := mirror_regex.search(path)
+		if mirror_match:
+			name_length = min(name_length, mirror_match.get_start())
+
+		component = _component
+		var component_regex := RegEx.create_from_string("_([aemno])(?=[_.])")
+		var component_match := component_regex.search(path)
+		if component_match:
+			name_length = min(name_length, component_match.get_start())
+
+		name = path.substr(0, name_length)
+
+
+func get_modified_version(resource: Resource) -> Resource:
+	var fallback := ResourceFallback.new(resource, mirror, component)
+	return fallback.resource
 
 
 func refresh_mesh_from_sprite_2d(mesh: MeshInstance2D) -> void:

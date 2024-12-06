@@ -65,6 +65,13 @@ static func is_valid_path(path: String) -> bool:
 	return OS.has_feature("template") or valid_file_paths.has(path)
 
 
+## Loads a resource, but first checks to see if it exists. Returns null if not. Doesn't throw any errors in editor.
+static func safe_load(path: String) -> Resource:
+	if OS.has_feature("template") or Utils.is_valid_path(path):
+		return ResourceLoader.load(path, "", ResourceLoader.CacheMode.CACHE_MODE_REUSE)
+	return null
+
+
 static func array_to_string(arr: Array) -> String:
 	var result := ""
 	for i in arr.size():

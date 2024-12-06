@@ -44,6 +44,8 @@ var preview : SpriteComponent
 			preview.name = "preview"
 			preview_location = preview_location
 			self.add_child(preview, false, INTERNAL_MODE_BACK)
+			preview.mirror = _preview_mirror
+			preview.component = _preview_component
 			preview.template = self
 
 
@@ -62,8 +64,8 @@ var _preview_component : SpriteComponent.TextureComponent
 @export var preview_component : SpriteComponent.TextureComponent :
 	get: return _preview_component
 	set(value):
-		if _preview_component == value: return
 		_preview_component = value
+		if preview == null: return
 		preview.component = _preview_component
 
 
