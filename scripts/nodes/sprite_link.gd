@@ -118,13 +118,12 @@ func refresh_attributes_from_resource() -> void:
 	var _path : String = resource.resource_path
 
 	var extension_regex := RegEx.create_from_string("\\.(\\w+)$")
-	var mirror_regex := RegEx.create_from_string("_([lr])(?=[_.])")
-	var component_regex := RegEx.create_from_string("_([aemno])(?=[_.])")
 
 	var extension_match := extension_regex.search(_path)
 	extension = extension_match.get_string(1)
 	name = _path.substr(0, extension_match.get_start())
 
+	var mirror_regex := RegEx.create_from_string("_([lr])(?=[_.])")
 	var mirror_match := mirror_regex.search(_path)
 	if mirror_match:
 		mirror = mirror_match.get_string(1) == "l"
@@ -133,6 +132,7 @@ func refresh_attributes_from_resource() -> void:
 	else:
 		mirror = false
 
+	var component_regex := RegEx.create_from_string("_([aemno])(?=[_.])")
 	var component_match := component_regex.search(_path)
 	if component_match:
 		match component_match.get_string(1):
