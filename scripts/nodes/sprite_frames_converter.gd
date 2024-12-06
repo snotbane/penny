@@ -20,6 +20,11 @@ func _ready() -> void:
 	if not Engine.is_editor_hint():
 		queue_free()
 		return
+
+	sprite = self.get_parent().get_parent()
+	player = self.get_parent()
+	library_default = player.get_animation_library("")
+
 	player.play.call_deferred("RESET")
 
 
