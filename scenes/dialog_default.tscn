@@ -171,7 +171,7 @@ visible_characters_behavior = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="panel" type="PanelContainer" parent="."]
-self_modulate = Color(1, 1, 1, 0.627451)
+self_modulate = Color(1, 1, 1, 0.878431)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

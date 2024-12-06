@@ -10,6 +10,9 @@ var decos : Array[DecoInst]
 
 
 static func from_filtered(filtered: FilteredText, context := PennyObject.STATIC_ROOT) -> DecoratedText:
+
+	print("DecoratedText -> Filtered: '%s'" % filtered.text)
+
 	var result := DecoratedText.new()
 	var result_text := filtered.text
 
@@ -59,6 +62,9 @@ static func from_filtered(filtered: FilteredText, context := PennyObject.STATIC_
 			result_text = sub_match(pattern_match, pattern_match.get_string(1))
 
 	result.text = result_text
+
+	print("DecoratedText -> Decorated: '%s'" % result_text)
+
 	return result
 
 

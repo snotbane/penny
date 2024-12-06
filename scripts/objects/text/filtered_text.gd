@@ -5,6 +5,8 @@ class_name FilteredText extends Text
 
 static func from_raw(raw: String, context: PennyObject) -> FilteredText:
 
+	print("FilteredText -> Raw: '%s', context: %s" % [raw, context.self_key])
+
 	## INTERPOLATION
 	while true:
 		var pattern_match := INTERPOLATION_PATTERN.search(raw)
@@ -41,7 +43,7 @@ static func from_raw(raw: String, context: PennyObject) -> FilteredText:
 			var tag_match_found := false
 			var tag_matches := DECO_TAG_PATTERN.search_all(raw, start)
 			for tag_match in tag_matches:
-				if pattern_match.get_start() >= tag_match.get_start() and pattern_match.get_start() < tag_match.get_end():
+				if pattern_match.get_start() > tag_match.get_start() and pattern_match.get_start() <= tag_match.get_end():
 					start = tag_match.get_end()
 					tag_match_found = true
 					break
@@ -50,6 +52,8 @@ static func from_raw(raw: String, context: PennyObject) -> FilteredText:
 
 			raw = pattern.sub(raw, replace, false, start)
 			start = pattern_match.get_start() + replace.length()
+
+	print("FilteredText -> Filtered: '%s'" % raw)
 
 	return FilteredText.new(raw)
 
