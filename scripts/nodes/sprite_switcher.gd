@@ -45,8 +45,8 @@ var _component : SpriteLink.TextureComponent
 @export_storage var sprites : Dictionary = {}
 
 
-func _init() -> void:
-	init_deferred.call_deferred()
+# func _init() -> void:
+# 	init_deferred.call_deferred()
 
 
 func init_deferred() -> void:

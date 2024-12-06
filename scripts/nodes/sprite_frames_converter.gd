@@ -4,12 +4,16 @@ class_name SpriteFramesConverter extends Node
 
 @export var refresh : bool :
 	set(value):
+		sprite = self.get_parent().get_parent()
+		player = self.get_parent()
+		library_default = player.get_animation_library("")
+
 		refresh_reset_anim()
 		refresh_anims()
 
-@onready var sprite : AnimatedSprite2D = self.get_parent().get_parent()
-@onready var player : AnimationPlayer = self.get_parent()
-@onready var library_default : AnimationLibrary = player.get_animation_library("")
+var sprite : AnimatedSprite2D
+var player : AnimationPlayer
+var library_default : AnimationLibrary
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
