@@ -44,8 +44,8 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func receive(record: Record, subject: PennyObject) -> void:
-	name_label.text = str(record.attachment.who)
-	received.emit(record.attachment.what)
+	name_label.text = str(record.attachment.who.rich_name.to_decorated())
+	received.emit(record.attachment)
 
 
 func prevent_skip() -> void:

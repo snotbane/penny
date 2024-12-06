@@ -17,9 +17,9 @@ func _ready() -> void:
 	player.play.call_deferred("RESET")
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+var current_texture : Texture2D :
+	get:
+		return sprite.sprite_frames.get_frame_texture(sprite.animation, sprite.frame)
 
 
 func refresh_reset_anim() -> void:

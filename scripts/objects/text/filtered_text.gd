@@ -54,6 +54,10 @@ static func from_raw(raw: String, context: PennyObject) -> FilteredText:
 	return FilteredText.new(raw)
 
 
+func to_decorated() -> DecoratedText:
+	return DecoratedText.from_filtered(self)
+
+
 static func from_many(many: Array[FilteredText]) -> FilteredText:
 	var result := FilteredText.new()
 	for i in many:

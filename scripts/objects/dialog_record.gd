@@ -1,9 +1,9 @@
 
 class_name DialogRecord extends Object
 
-var who : DecoratedText
+var who : PennyObject
 var what : DecoratedText
 
-func _init(_who: DecoratedText, _what: DecoratedText) -> void:
+func _init(_who: PennyObject, _what: DecoratedText) -> void:
 	who = _who
 	what = _what

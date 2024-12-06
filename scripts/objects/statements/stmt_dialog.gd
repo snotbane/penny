@@ -92,9 +92,8 @@ func _execute(host: PennyHost) :
 		incoming_dialog_node = previous_dialog_node
 
 	var subject : PennyObject = subject_path.evaluate()
-	var who := DecoratedText.from_filtered(subject.rich_name)
 	var what := DecoratedText.from_raw(raw_text)
-	var attach := DialogRecord.new(who, what)
+	var attach := DialogRecord.new(subject, what)
 	var result := create_record(host, attach)
 	incoming_dialog_node.receive(result, subject)
 

@@ -74,6 +74,7 @@ var play_state : PlayState :
 			PlayState.READY, PlayState.COMPLETED:
 				is_locked = false
 
+var subject : PennyObject
 var message : DecoratedText
 
 var unencountered_decos : Array[DecoInst]
@@ -100,7 +101,9 @@ var visible_characters : int :
 			if unencountered_decos:
 				while rtl.visible_characters >= unencountered_decos.front().start_remapped:
 					var deco : DecoInst = unencountered_decos.pop_front()
+					is_talking = false
 					await deco.encounter_start(self)
+					is_talking = true
 					if deco.template.is_span:
 						unclosed_decos.push_back(deco)
 					if not unencountered_decos:
@@ -109,7 +112,9 @@ var visible_characters : int :
 			if unclosed_decos:
 				for deco in unclosed_decos:
 					if rtl.visible_characters >= deco.end_remapped:
+						is_talking = false
 						await deco.encounter_end(self)
+						is_talking = true
 						unclosed_decos.erase(deco)
 
 		if rtl.visible_characters >= expected_characters:
@@ -117,6 +122,7 @@ var visible_characters : int :
 
 		if rtl.visible_characters == -1:
 			play_state = PlayState.COMPLETED
+			is_talking = false
 			for deco in unclosed_decos:
 				deco.encounter_end(self)
 			unclosed_decos.clear()
@@ -125,6 +131,7 @@ var visible_characters : int :
 				scrollbar.mouse_filter = Control.MOUSE_FILTER_PASS
 			completed.emit()
 		elif rtl.visible_characters > 0:
+			is_talking = true
 			self.character_encountered(rtl.text[rtl.visible_characters - 1])
 
 		fake_rtl.visible_characters = rtl.visible_characters
@@ -136,6 +143,20 @@ var speed : float :
 
 var is_working : bool :
 	get: return visible_characters != -1
+
+
+var _is_talking : bool
+##
+var is_talking : bool :
+	get: return _is_talking
+	set(value):
+		if _is_talking == value: return
+		_is_talking = value
+
+		if subject == null: return
+		if subject.local_instance == null: return
+		if subject.local_instance.has_signal("talking_changed"):
+			subject.local_instance.talking_changed.emit(_is_talking)
 
 
 var next_prod_stop : int :
@@ -218,9 +239,10 @@ func _character_encountered(c: String, value: Variant) -> void:
 		audio_player.play()
 
 
-func _on_message_received(_message: DecoratedText) -> void:
+func _on_message_received(_dialog: DialogRecord) -> void:
 	self.complete()
-	message = _message
+	subject = _dialog.who
+	message = _dialog.what
 	rtl.text = message.to_string()
 	unencountered_decos = message.decos.duplicate()
 	unclosed_decos.clear()
