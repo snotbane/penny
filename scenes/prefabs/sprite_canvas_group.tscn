@@ -4,4 +4,3 @@
 
 [node name="sprite_canvas_group" type="CanvasGroup"]
 script = ExtResource("1_cwx0v")
-preview_location = 1

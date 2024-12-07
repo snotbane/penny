@@ -42,8 +42,8 @@ var preview : SpriteComponent
 		if _show_preview:
 			preview = SpriteComponent.new()
 			preview.name = "preview"
-			preview_location = preview_location
 			self.add_child(preview, false, INTERNAL_MODE_BACK)
+			self.set_deferred("preview_location", preview_location)
 			preview.mirror = _preview_mirror
 			preview.component = _preview_component
 			preview.template = self
