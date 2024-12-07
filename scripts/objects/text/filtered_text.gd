@@ -5,7 +5,7 @@ class_name FilteredText extends Text
 
 static func from_raw(raw: String, context: PennyObject) -> FilteredText:
 
-	print("FilteredText -> Raw: '%s', context: %s" % [raw, context.self_key])
+	# print("FilteredText -> Raw: '%s', context: %s" % [raw, context.self_key])
 
 	## INTERPOLATION
 	while true:
@@ -53,7 +53,7 @@ static func from_raw(raw: String, context: PennyObject) -> FilteredText:
 			raw = pattern.sub(raw, replace, false, start)
 			start = pattern_match.get_start() + replace.length()
 
-	print("FilteredText -> Filtered: '%s'" % raw)
+	# print("FilteredText -> Filtered: '%s'" % raw)
 
 	return FilteredText.new(raw)
 
