@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dd4vme6miy24a"
-path="res://.godot/imported/Lookup.svg-2f5ebf4e703f6bf228bcfdf116197c6a.ctex"
+path="res://.godot/imported/Lookup.svg-318ff30ba440cf4bd8cbb12fa0975a30.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/icons/Lookup.svg"
-dest_files=["res://.godot/imported/Lookup.svg-2f5ebf4e703f6bf228bcfdf116197c6a.ctex"]
+source_file="res://addons/penny_godot/assets/textures/icons/Lookup.svg"
+dest_files=["res://.godot/imported/Lookup.svg-318ff30ba440cf4bd8cbb12fa0975a30.ctex"]
 
 [params]
 

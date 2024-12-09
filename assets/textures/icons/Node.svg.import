@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dfir03166e6r2"
-path="res://.godot/imported/Object.svg-0971ed78430d7c937ee94c084029543c.ctex"
+uid="uid://bovb503mwm2jf"
+path="res://.godot/imported/Node.svg-8e61e0b641decfa20261510dca1549f3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/icons/Object.svg"
-dest_files=["res://.godot/imported/Object.svg-0971ed78430d7c937ee94c084029543c.ctex"]
+source_file="res://addons/penny_godot/assets/textures/icons/Node.svg"
+dest_files=["res://.godot/imported/Node.svg-8e61e0b641decfa20261510dca1549f3.ctex"]
 
 [params]
 

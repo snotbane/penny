@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://brecacl0mws63"
-path="res://.godot/imported/Array.svg-1e0d8a70bf4dce7c5d47e3f27162d160.ctex"
+uid="uid://6aql6dm78swg"
+path="res://.godot/imported/NodePath.svg-b42e9fc1936f8f1dcf78ae53019d83a5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/icons/Array.svg"
-dest_files=["res://.godot/imported/Array.svg-1e0d8a70bf4dce7c5d47e3f27162d160.ctex"]
+source_file="res://addons/penny_godot/assets/textures/icons/NodePath.svg"
+dest_files=["res://.godot/imported/NodePath.svg-b42e9fc1936f8f1dcf78ae53019d83a5.ctex"]
 
 [params]
 

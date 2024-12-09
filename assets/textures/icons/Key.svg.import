@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cb8qfgw6tykev"
-path="res://.godot/imported/CheckBox.svg-9846762145e371bdfb14e03df0be5eca.ctex"
+uid="uid://chhgxydddxkmb"
+path="res://.godot/imported/Key.svg-306a3e0381f265acd68170f19c511f64.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/icons/CheckBox.svg"
-dest_files=["res://.godot/imported/CheckBox.svg-9846762145e371bdfb14e03df0be5eca.ctex"]
+source_file="res://addons/penny_godot/assets/textures/icons/Key.svg"
+dest_files=["res://.godot/imported/Key.svg-306a3e0381f265acd68170f19c511f64.ctex"]
 
 [params]
 

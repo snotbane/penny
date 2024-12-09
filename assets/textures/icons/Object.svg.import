@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c3g6mc5ihxqvj"
-path="res://.godot/imported/Label.svg-ae3f53391ac1920b313a78a5aedf4e13.ctex"
+uid="uid://dfir03166e6r2"
+path="res://.godot/imported/Object.svg-8d150ace9a49867a8d448035d1b3352c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/icons/Label.svg"
-dest_files=["res://.godot/imported/Label.svg-ae3f53391ac1920b313a78a5aedf4e13.ctex"]
+source_file="res://addons/penny_godot/assets/textures/icons/Object.svg"
+dest_files=["res://.godot/imported/Object.svg-8d150ace9a49867a8d448035d1b3352c.ctex"]
 
 [params]
 

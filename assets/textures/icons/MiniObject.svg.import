@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://33m7mpfo5fbu"
-path="res://.godot/imported/Remove.svg-236400d0ce8510099efa683df7eefde8.ctex"
+uid="uid://cquy1oeijuovh"
+path="res://.godot/imported/MiniObject.svg-2ad4cef15602d7f73bca5318ea5c5ee7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/icons/Remove.svg"
-dest_files=["res://.godot/imported/Remove.svg-236400d0ce8510099efa683df7eefde8.ctex"]
+source_file="res://addons/penny_godot/assets/textures/icons/MiniObject.svg"
+dest_files=["res://.godot/imported/MiniObject.svg-2ad4cef15602d7f73bca5318ea5c5ee7.ctex"]
 
 [params]
 

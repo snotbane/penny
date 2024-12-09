@@ -307,7 +307,7 @@ func _next(record: Record) -> Stmt:
 
 
 func _get_history_listing_scene() -> PackedScene :
-	return load("res://addons/penny_godot/scenes/history_listings/history_listing_default.tscn")
+	return load("res://addons/penny_godot/assets/scenes/history_listings/history_listing_default.tscn")
 
 
 func create_history_listing(record: Record) -> HistoryListing: return _create_history_listing(record)
