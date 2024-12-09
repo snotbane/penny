@@ -6,9 +6,6 @@ Penny is a coding language used to write interactive narrative content for video
 # Quickstart
 
 1. Import the addon to `res://addons/penny_godot/`
-2. Create an autoload Node for `res://addons/penny_godot/scripts/nodes/penny_importer.gd`
-3. Modify all / create build presets in `Project > Export...`
-   - Add `*.pny` to the list of exported file types in `(build preset) > Resources > Filters to export non-resource files/folders`
 
 # Why?
 
