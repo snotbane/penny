@@ -57,7 +57,7 @@ func _create_history_listing(record: Record) -> HistoryListing:
 	return result
 
 
-func create_assignment_record(host: PennyHost, before: Variant, after: Variant) -> Record:
-	var result := create_record(host, AssignmentRecord.new(before, after))
+func create_assignment_record(host: PennyHost, before: Variant, after: Variant, __skip : bool = false) -> Record:
+	var result := create_record(host, AssignmentRecord.new(before, after), __skip)
 	host.on_data_modified.emit()
 	return result

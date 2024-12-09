@@ -20,6 +20,6 @@ func _evaluate_self(host: PennyHost) -> Variant:
 	return self.expr.evaluate()
 
 
-func _should_skip(record: Record) -> bool:
+func _should_passover(record: Record) -> bool:
 	return not record.attachment
 

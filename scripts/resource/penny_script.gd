@@ -130,7 +130,7 @@ func update_from_file(file: FileAccess) -> void:
 
 	if not Engine.is_editor_hint():
 		diff = Diff.new(old_stmts, stmts)
-		print(diff)
+		# print(diff)
 
 	parse_exceptions.clear()
 	for stmt in stmts:

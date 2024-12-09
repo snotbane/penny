@@ -130,8 +130,8 @@ func _init(_self_key: StringName, _parent: PennyObject = null, _data: Dictionary
 	data = _data
 
 
-# func _to_string() -> String:
-# 	return self_key
+func _to_string() -> String:
+	return "PennyObject:" + self_key
 
 
 func duplicate(_new_parent: PennyObject = null, deep := false) -> PennyObject:
@@ -195,10 +195,6 @@ func has_local(key: StringName) -> bool:
 	return data.has(key)
 
 
-func clear_local_from_key(key: StringName) -> void:
-	set_value(key, null)
-
-
 func get_or_create_node(_parent: Node, owner := self) -> Node:
 	var result : Node = owner.local_instance
 	if result: return result
@@ -230,6 +226,7 @@ func instantiate(_parent: Node) -> Node:
 			print(result)
 
 	result.name = self.node_name
+	result.tree_exiting.connect(self.clear_instance)
 	self.local_instance = result
 	return result
 
@@ -239,20 +236,19 @@ var local_instance : Node :
 	set(value): self.set_value(INST_KEY, value)
 
 
-func destroy_instance_downstream(recursive: bool = false) -> void:
+func clear_instances_downstream(recursive: bool = false) -> void:
 	if recursive:
 		for k in data.keys():
 			var v = data[k]
 			if v and v is PennyObject:
-				v.destroy_instance_downstream(recursive)
+				v.clear_instances_downstream(recursive)
 	var node : Node = get_value(INST_KEY)
 	if node:
 		node.queue_free()
-	# clear_local_from_key(INST_KEY)
 
 
-func clear_instance_upstream() -> void:
-	clear_local_from_key(INST_KEY)
+func clear_instance() -> void:
+	set_value(INST_KEY, null)
 
 
 func create_tree_item(tree: DataViewerTree, sort: Sort, _parent: TreeItem = null, path := Path.new()) -> TreeItem:

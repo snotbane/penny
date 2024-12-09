@@ -64,7 +64,7 @@ func _execute(host: PennyHost) :
 	await super._execute(host)
 	await subject_node.advanced
 
-	return create_record(host)
+	return self.create_record(host)
 
 
 # func _undo(record: Record) -> void:

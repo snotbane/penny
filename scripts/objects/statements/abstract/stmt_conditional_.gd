@@ -26,7 +26,7 @@ func _get_verbosity() -> Verbosity:
 
 
 func _execute(host: PennyHost) :
-	return create_record(host, _evaluate_self(host))
+	return self.create_record(host, _evaluate_self(host))
 
 
 # func _undo(record: Record) -> void:
@@ -38,14 +38,14 @@ func _next(record: Record) -> Stmt:
 		record.host.expecting_conditional = false
 		return next_in_same_or_lower_depth
 
-	var skip := _should_skip(record)
+	var passover := _should_passover(record)
 
 	var result : Stmt
-	if skip: 	result = next_in_same_depth
+	if passover: 	result = next_in_same_depth
 	else:		result = next_in_order
 
 	if result:
-		record.host.expecting_conditional = skip and result is StmtConditional
+		record.host.expecting_conditional = passover and result is StmtConditional
 		return result
 	else:
 		record.host.expecting_conditional = false
@@ -67,4 +67,4 @@ func _create_history_listing(record: Record) -> HistoryListing:
 func _evaluate_self(host: PennyHost) -> Variant: return null
 
 
-func _should_skip(record: Record) -> bool: return true
+func _should_passover(record: Record) -> bool: return true

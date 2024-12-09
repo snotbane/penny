@@ -18,7 +18,7 @@ var _material : Material
 
 
 var _pixel_size : float = 0.001
-@export_range(0.0001, 128, 0.0001, "m") var pixel_size : float = 0.001 :
+@export_range(0.0001, 1.0, 0.0001, "or_greater") var pixel_size : float = 0.001 :
 	get: return _pixel_size
 	set(value):
 		_pixel_size = value
@@ -69,3 +69,7 @@ func _init() -> void:
 func ready_deferred() -> void:
 	pixel_size = pixel_size
 	opacity = opacity
+
+
+func set_emissive_color(color: Color) -> void:
+	(material as ShaderMaterial).set_shader_parameter("emission_color", color)

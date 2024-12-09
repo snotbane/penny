@@ -22,6 +22,8 @@ const VERBOSITY_NAMES : PackedStringArray = [
 	"Ignored:32"
 ]
 
+signal aborted(record: Record)
+
 var hash_id : int
 var owning_script : PennyScript
 var index_in_script : int
@@ -277,10 +279,17 @@ func _validate_cross() -> PennyException:
 
 
 ## Executes when it is reached as the user encounters it.
-func execute(host: PennyHost) : return await self._execute(host)
+func execute(host: PennyHost) :
+	return await Async.any([self._execute.bind(host), self.aborted])
 ## Executes when it is reached as the user encounters it.
 func _execute(host: PennyHost) :
 	return self.create_record(host)
+
+
+func abort(host : PennyHost) -> void:
+	self.aborted.emit(self._abort(host))
+func _abort(host : PennyHost) -> Record :
+	return self.create_record(host, null, true)
 
 
 ## Executes when the user rewinds through history to undo this action.
@@ -308,8 +317,8 @@ func _create_history_listing(record: Record) -> HistoryListing:
 	return result
 
 
-func create_record(host: PennyHost, attachment: Variant = null) -> Record:
-	return Record.new(host, self, attachment)
+func create_record(host: PennyHost, attachment: Variant = null, __skip : bool = false) -> Record:
+	return Record.new(host, self, __skip, attachment)
 
 
 func create_exception(s: String = "Uncaught exception.") -> PennyException:

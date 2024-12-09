@@ -28,9 +28,9 @@ func _validate_self() -> PennyException:
 func _execute(host: PennyHost) :
 	var expr := Expr.from_tokens(tokens, self)
 	var value = expr.evaluate(self.owning_object)
-	var s := str(value)
-	print(s)
-	return create_record(host, s)
+	var message := str(value)
+	print(message)
+	return self.create_record(host, message)
 
 
 # func _undo(record: Record) -> void:

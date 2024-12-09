@@ -29,7 +29,7 @@ func _validate_self() -> PennyException:
 
 func _execute(host: PennyHost) :
 	var label = tokens[0].value
-	return create_record(host, label)
+	return self.create_record(host, label)
 
 
 # func _undo(record: Record) -> void:
