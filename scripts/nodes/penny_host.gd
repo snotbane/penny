@@ -2,12 +2,6 @@
 ## Node that actualizes Penny statements. This stores local data_root and records based on what the player chooses to do. Most applications will simply use an autoloaded, global host. For more advanced uses, you can instantiate multiple of these simultaneously for concurrent or even network-replicated instances. The records/state can be saved.
 class_name PennyHost extends Node
 
-enum State {
-	UNLOADED,
-	INITING,
-	READY
-}
-
 signal on_try_advance
 signal on_data_modified
 signal on_record_created(record: Record)
@@ -31,8 +25,6 @@ signal finished_execution
 @export var start_label := StringName('start')
 
 static var insts : Array[PennyHost] = []
-
-var state := State.UNLOADED
 
 var records : Array[Record]
 var call_stack : Array[Stmt]
@@ -93,11 +85,6 @@ func try_reload(success: bool) -> void:
 		self.cursor.abort(self)
 		self.last_valid_cursor = self.cursor
 	self.cursor = null
-
-	if success:
-		state = State.READY
-	else:
-		state = State.UNLOADED
 
 	if self.last_valid_cursor:
 		var start : Stmt = self.last_valid_cursor.owning_script.diff.remap_stmt_index(self.last_valid_cursor)
@@ -175,14 +162,11 @@ func try_advance() -> void:
 
 
 func on_reach_end() -> void:
-	match state:
-		State.READY:
-			close()
+	close()
 
 
 func close() -> void:
 	on_close.emit()
-	queue_free()
 	return
 
 
