@@ -1,4 +1,4 @@
 
-class_name SpriteActor3D extends Node3D
+class_name SpriteActor3D extends PennyNode
 
 signal talking_changed(value : bool)

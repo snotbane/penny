@@ -28,11 +28,11 @@ func _validate_self() -> PennyException:
 
 func _execute(host: PennyHost) :
 	var incoming_object : PennyObject = self.subject_path.evaluate()
-	var incoming_node : Node
-	incoming_node = self.instantiate_node(host, subject_path)
-	if incoming_node is PennyNode:
-		incoming_node.populate(host, incoming_object)
-		await incoming_node.opened
+	var node : Node
+	node = self.instantiate_node(host, subject_path)
+	if node is PennyNode:
+		node.populate(host, incoming_object)
+		await node.open(true)
 	return self.create_record(host)
 
 

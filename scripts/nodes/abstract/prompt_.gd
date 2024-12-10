@@ -5,7 +5,7 @@ var options : Array
 
 func _ready() -> void:
 	receive_options(object.get_value(PennyObject.OPTIONS_KEY))
-	super._ready()
+	# super._ready()
 
 
 func receive_options(_options: Array) -> void:
@@ -14,7 +14,7 @@ func receive_options(_options: Array) -> void:
 		_receive_options(options)
 	else:
 		PennyException.new("Prompt was not supplied with any options.").push_error()
-		self.advance_event = AdvanceEvent.ON_EXITING
+		# self.advance_event = AdvanceEvent.ON_EXITING
 		queue_free()
 func _receive_options(_options: Array) -> void:	pass
 
@@ -23,4 +23,5 @@ func receive_response(option: Path) -> void:
 	object.set_value(PennyObject.RESPONSE_KEY, option)
 	_receive_response(option)
 func _receive_response(option: Path) -> void:
-	self.close()
+	# self.close()
+	queue_free()

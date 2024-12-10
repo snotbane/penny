@@ -227,10 +227,7 @@ func instantiate(_parent: Node) -> Node:
 	if result == null:
 		return null
 
-	result.tree_exiting.connect(self.clear_instance)
-	if result is PennyNode:
-		result.closing.connect(self.clear_instance)
-		result.closing.connect(result.tree_exiting.disconnect.bind(self.clear_instance))
+	result.tree_exiting.connect(self.clear_instance.bind(result))
 
 	result.name = self.node_name
 	self.local_instance = result
@@ -253,8 +250,9 @@ func clear_instances_downstream(recursive: bool = false) -> void:
 		node.queue_free()
 
 
-func clear_instance() -> void:
-	set_value(INST_KEY, null)
+func clear_instance(match : Node = null) -> void:
+	if match == null or self.local_instance == match:
+		set_value(INST_KEY, null)
 
 
 func create_tree_item(tree: DataViewerTree, sort: Sort, _parent: TreeItem = null, path := Path.new()) -> TreeItem:

@@ -66,15 +66,15 @@ func _execute(host: PennyHost) :
 	if not incoming_dialog:
 		push_exception("Attempted to create dialog box for '%s', but no such object exists" % self.subject_dialog_path)
 		return create_record(host)
-	var incoming_dialog_node : PennyNode
+	var incoming_dialog_node : DialogNode
 	var previous_dialog : PennyObject = host.last_dialog_object
 
-	var previous_dialog_node : PennyNode
+	var previous_dialog_node : DialogNode
 	var incoming_needs_creation : bool
 
 	if previous_dialog != null:
 		previous_dialog_node = previous_dialog.local_instance
-		incoming_needs_creation = previous_dialog_node == null or previous_dialog != incoming_dialog or previous_dialog_node.appear_state >= PennyNode.AppearState.CLOSING
+		incoming_needs_creation = previous_dialog_node == null or previous_dialog != incoming_dialog
 	else:
 		previous_dialog_node = null
 		incoming_needs_creation = true
@@ -84,12 +84,11 @@ func _execute(host: PennyHost) :
 	print("Incoming needs creation: ", incoming_needs_creation)
 
 	if incoming_needs_creation:
-		var previous_needs_closure : bool = previous_dialog_node != null and previous_dialog_node.appear_state <= PennyNode.AppearState.CLOSING
-		if previous_needs_closure:
-			previous_dialog_node.close()
-			await previous_dialog_node.closed
+		if previous_dialog_node != null:
+			await previous_dialog_node.close()
 		incoming_dialog_node = self.instantiate_node(host, subject_dialog_path)
 		incoming_dialog_node.populate(host, incoming_dialog)
+		await incoming_dialog_node.open()
 	else:
 		incoming_dialog_node = previous_dialog_node
 

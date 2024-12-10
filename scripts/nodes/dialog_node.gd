@@ -1,9 +1,10 @@
 
-class_name DialogHandler extends PennyNode
+class_name DialogNode extends PennyNode
 
 const PREVENT_SKIP_DELAY_SECONDS := 0.125
 
 signal received(message: DecoratedText)
+signal advanced
 
 static var focus_left : bool = false
 
@@ -56,7 +57,7 @@ func prevent_skip() -> void:
 
 func try_advance() -> void:
 	if focus_left: return
-	if appear_state != AppearState.OPENED: return
+	if not is_open: return
 	if typewriter.is_working:
 		typewriter.prod()
 		return
