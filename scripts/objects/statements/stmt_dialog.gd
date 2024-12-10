@@ -79,9 +79,9 @@ func _execute(host: PennyHost) :
 		previous_dialog_node = null
 		incoming_needs_creation = true
 
-	print("Previous: ", previous_dialog, ", Incoming: ", incoming_dialog)
-	print("Previous node: ", previous_dialog_node)
-	print("Incoming needs creation: ", incoming_needs_creation)
+	# print("Previous: ", previous_dialog, ", Incoming: ", incoming_dialog)
+	# print("Previous node: ", previous_dialog_node)
+	# print("Incoming needs creation: ", incoming_needs_creation)
 
 	if incoming_needs_creation:
 		if previous_dialog_node != null:
@@ -103,17 +103,8 @@ func _execute(host: PennyHost) :
 
 
 func _abort(host: PennyHost) -> Record:
-	# var incoming_dialog : PennyObject = self.subject_dialog_path.evaluate()
-	# if not incoming_dialog:
-	# 	push_exception("Attempted to create dialog box for '%s', but no such object exists" % self.subject_dialog_path)
-	# 	return super._skip(host)
-
 	var subject : PennyObject = subject_path.evaluate()
 	var what := DecoratedText.from_raw(raw_text)
 	var attach := DialogRecord.new(subject, what)
 	var result := create_record(host, attach, true)
-
 	return result
-
-
-
