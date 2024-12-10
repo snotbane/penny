@@ -21,7 +21,6 @@ func _receive_options(_options: Array) -> void:	pass
 
 func receive_response(option: Path) -> void:
 	object.set_value(PennyObject.RESPONSE_KEY, option)
+	self.advanced.emit()
 	_receive_response(option)
-func _receive_response(option: Path) -> void:
-	# self.close()
-	queue_free()
+func _receive_response(option: Path) -> void: pass

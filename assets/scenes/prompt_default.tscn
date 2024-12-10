@@ -13,7 +13,6 @@ grow_vertical = 2
 script = ExtResource("2_m6ko3")
 button_prefab = ExtResource("3_18yd8")
 button_container = NodePath("v_box_container")
-advance_event = 4
 
 [node name="v_box_container" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -25,3 +24,5 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
+
+[connection signal="advanced" from="." to="." method="queue_free"]

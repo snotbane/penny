@@ -2,10 +2,11 @@
 ## A representation of a Penny Object.
 class_name PennyNode extends Node
 
-signal opening
-signal opened
-signal closing
+signal advanced
 signal closed
+signal closing
+signal opened
+signal opening
 
 @export var immediate_open : bool = true
 @export var immediate_close : bool = true

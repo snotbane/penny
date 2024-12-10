@@ -4,7 +4,6 @@ class_name DialogNode extends PennyNode
 const PREVENT_SKIP_DELAY_SECONDS := 0.125
 
 signal received(message: DecoratedText)
-signal advanced
 
 static var focus_left : bool = false
 
