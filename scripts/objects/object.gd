@@ -223,10 +223,16 @@ func instantiate(_parent: Node) -> Node:
 		if resource is PackedScene:
 			result = resource.instantiate()
 			_parent.add_child(result)
-			print(result)
+
+	if result == null:
+		return null
+
+	result.tree_exiting.connect(self.clear_instance)
+	if result is PennyNode:
+		result.closing.connect(self.clear_instance)
+		result.closing.connect(result.tree_exiting.disconnect.bind(self.clear_instance))
 
 	result.name = self.node_name
-	result.tree_exiting.connect(self.clear_instance)
 	self.local_instance = result
 	return result
 
@@ -256,7 +262,7 @@ func create_tree_item(tree: DataViewerTree, sort: Sort, _parent: TreeItem = null
 
 	result.set_selectable(TreeCell.ICON, false)
 	result.set_cell_mode(TreeCell.ICON, TreeItem.CELL_MODE_ICON)
-	result.set_icon(TreeCell.ICON, load("res://addons/penny_godot/assets/icons/Object.svg"))
+	result.set_icon(TreeCell.ICON, load("res://addons/penny_godot/assets/textures/icons/Object.svg"))
 
 	result.set_selectable(TreeCell.NAME, false)
 
@@ -320,17 +326,17 @@ static func sort_baseline(a, b) -> int:
 ## REALLY SLOW??? PROBABLY??? Try caching
 static func get_icon(value: Variant) -> Texture2D:
 	if value is	Array:
-		return load("res://addons/penny_godot/assets/icons/Array.svg")
+		return load("res://addons/penny_godot/assets/textures/icons/Array.svg")
 	if value is	Color:
-		return load("res://addons/penny_godot/assets/icons/Color.svg")
+		return load("res://addons/penny_godot/assets/textures/icons/Color.svg")
 	if value is Path:
-		return load("res://addons/penny_godot/assets/icons/Path.svg")
+		return load("res://addons/penny_godot/assets/textures/icons/Path.svg")
 	if value is Lookup:
-		return load("res://addons/penny_godot/assets/icons/Lookup.svg")
+		return load("res://addons/penny_godot/assets/textures/icons/Lookup.svg")
 	if value is Expr:
-		return load("res://addons/penny_godot/assets/icons/PrismMesh.svg")
+		return load("res://addons/penny_godot/assets/textures/icons/PrismMesh.svg")
 	if value is Node:
-		return load("res://addons/penny_godot/assets/icons/Node.svg")
+		return load("res://addons/penny_godot/assets/textures/icons/Node.svg")
 	return null
 
 

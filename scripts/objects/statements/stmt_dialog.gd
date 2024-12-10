@@ -54,7 +54,7 @@ func _validate_self_post_setup() -> void:
 
 
 func _get_history_listing_scene() -> PackedScene :
-	return load("res://addons/penny_godot/scenes/history_listings/history_listing_dialog.tscn")
+	return load("res://addons/penny_godot/assets/scenes/history_listings/history_listing_dialog.tscn")
 
 
 # func _validate_cross() -> PennyException:
@@ -71,22 +71,20 @@ func _execute(host: PennyHost) :
 
 	var previous_dialog_node : PennyNode
 	var incoming_needs_creation : bool
-	var previous_needs_closure : bool
 
 	if previous_dialog != null:
 		previous_dialog_node = previous_dialog.local_instance
 		incoming_needs_creation = previous_dialog_node == null or previous_dialog != incoming_dialog or previous_dialog_node.appear_state >= PennyNode.AppearState.CLOSING
-		previous_needs_closure = previous_dialog_node != null and previous_dialog_node.appear_state <= PennyNode.AppearState.CLOSING
 	else:
 		previous_dialog_node = null
 		incoming_needs_creation = true
-		previous_needs_closure = false
 
 	print("Previous: ", previous_dialog, ", Incoming: ", incoming_dialog)
 	print("Previous node: ", previous_dialog_node)
-	print("Previous needs closure: ", previous_needs_closure, ", Incoming needs creation: ", incoming_needs_creation)
+	print("Incoming needs creation: ", incoming_needs_creation)
 
 	if incoming_needs_creation:
+		var previous_needs_closure : bool = previous_dialog_node != null and previous_dialog_node.appear_state <= PennyNode.AppearState.CLOSING
 		if previous_needs_closure:
 			previous_dialog_node.close()
 			await previous_dialog_node.closed
