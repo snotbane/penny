@@ -39,7 +39,6 @@ func open_finish() -> void:
 
 func close(wait : bool = false) :
 	is_open = false
-	# self.tree_exiting.disconnect(object.clear_instance)
 	closing.emit()
 	if immediate_close: close_finish()
 	elif wait: await closed

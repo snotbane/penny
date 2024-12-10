@@ -54,9 +54,9 @@ func _get_default_subject() -> Path:
 	return Path.from_single(PennyObject.BILTIN_OBJECT_NAME)
 
 
-func instantiate_node(host: PennyHost, path := subject_path) -> Node:
-	var obj : PennyObject = path.evaluate()
-	if obj:
-		var node = obj.instantiate(host.get_layer(obj.preferred_layer))
-		return node
-	return null
+func instantiate_node_from_object(host: PennyHost, obj : PennyObject) -> Node:
+	return obj.instantiate(host)
+
+
+func instantiate_node_from_path(host: PennyHost, path := subject_path) -> Node:
+	return instantiate_node_from_object(host, path.evaluate())

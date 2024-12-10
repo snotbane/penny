@@ -207,7 +207,8 @@ func get_or_create_node(_parent: Node, owner := self) -> Node:
 	return result
 
 
-func instantiate(_parent: Node) -> Node:
+func instantiate(host: PennyHost) -> Node:
+	var _parent = host.get_layer(self.preferred_layer)
 	var result : Node = self.local_instance
 	if result is PennyNode:
 		result.close()
@@ -219,13 +220,12 @@ func instantiate(_parent: Node) -> Node:
 	if link is Lookup:
 		result = link.instantiate(_parent)
 	elif link is String:
-		var resource := load(link)
-		if resource is PackedScene:
-			result = resource.instantiate()
-			_parent.add_child(result)
+		var resource : PackedScene = load(link)
+		result = resource.instantiate()
+		_parent.add_child(result)
 
-	if result == null:
-		return null
+	if result is PennyNode:
+		result.populate(host, self)
 
 	result.tree_exiting.connect(self.clear_instance.bind(result))
 
