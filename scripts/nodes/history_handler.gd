@@ -36,7 +36,7 @@ var _verbosity : int
 func refresh() -> void:
 	for listing in vbox.get_children():
 		listing.queue_free()
-	for record in host.records:
+	for record in host.history.records:
 		receive_record(record)
 	refresh_visibility()
 	scroll_to_end.call_deferred()

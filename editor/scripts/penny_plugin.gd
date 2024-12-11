@@ -6,7 +6,7 @@ class_name PennyPlugin extends EditorPlugin
 const RECOGNIZED_EXTENSIONS : PackedStringArray = ["pny"]
 
 static var inst : PennyPlugin
-static var prefab_dock: PackedScene = load("res://addons/penny_godot/scenes/penny_dock.tscn")
+static var prefab_dock: PackedScene = load("res://addons/penny_godot/assets/scenes/penny_dock.tscn")
 
 # Replace this value with a PascalCase autoload name, as per the GDScript style guide.
 const AUTOLOAD_NAME = "PennyImporterAutoload"

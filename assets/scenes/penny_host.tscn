@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://gtm2kenc70u7"]
+[gd_scene load_steps=10 format=3 uid="uid://gtm2kenc70u7"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_host.gd" id="1_jmae0"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/lookup_table.gd" id="2_4q0nq"]
@@ -7,6 +7,8 @@
 [ext_resource type="Resource" uid="uid://bsrrbmeopuowc" path="res://addons/penny_godot/assets/themes/penny_decos_default.tres" id="4_s55ao"]
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="5_3br4k"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/mouse_input_catcher.gd" id="5_bg7b0"]
+[ext_resource type="Texture2D" uid="uid://bqiynomjlbcme" path="res://addons/penny_godot/assets/textures/icons/UndoRedo.svg" id="7_ns3dh"]
+[ext_resource type="Texture2D" uid="uid://cclh3lyq0mgnm" path="res://addons/penny_godot/assets/textures/icons/UndoRedoFade.svg" id="9_y2csr"]
 
 [node name="penny_host" type="Node" node_paths=PackedStringArray("layers")]
 script = ExtResource("1_jmae0")
@@ -79,6 +81,39 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="grid_container" type="GridContainer" parent="canvas_layer/ui"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -224.0
+offset_top = -96.0
+offset_right = -64.0
+offset_bottom = -32.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_constants/h_separation = 32
+columns = 2
+
+[node name="button_roll_back" type="TextureButton" parent="canvas_layer/ui/grid_container"]
+layout_mode = 2
+texture_normal = ExtResource("7_ns3dh")
+texture_pressed = ExtResource("9_y2csr")
+texture_disabled = ExtResource("9_y2csr")
+
+[node name="button_roll_ahead" type="TextureButton" parent="canvas_layer/ui/grid_container"]
+layout_mode = 2
+texture_normal = ExtResource("7_ns3dh")
+texture_pressed = ExtResource("9_y2csr")
+texture_disabled = ExtResource("9_y2csr")
+flip_h = true
+
+[connection signal="on_roll_ahead_disabled" from="." to="canvas_layer/ui/grid_container/button_roll_ahead" method="set_disabled"]
+[connection signal="on_roll_back_disabled" from="." to="canvas_layer/ui/grid_container/button_roll_back" method="set_disabled"]
 [connection signal="on_click" from="canvas_layer/ui/input_catcher" to="." method="try_advance"]
+[connection signal="pressed" from="canvas_layer/ui/grid_container/button_roll_back" to="." method="roll_back"]
+[connection signal="pressed" from="canvas_layer/ui/grid_container/button_roll_ahead" to="." method="roll_ahead"]
 
 [editable path="canvas_layer/ui/v_box_container/history_layer/penny_history_box"]

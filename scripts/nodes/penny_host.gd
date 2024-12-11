@@ -2,11 +2,60 @@
 ## Node that actualizes Penny statements. This stores local data_root and records based on what the player chooses to do. Most applications will simply use an autoloaded, global host. For more advanced uses, you can instantiate multiple of these simultaneously for concurrent or even network-replicated instances. The records/state can be saved.
 class_name PennyHost extends Node
 
+class History:
+
+	signal records_changed
+
+	var records : Array[Record]
+	var max_size : int = -1
+
+	var last : Record :
+		get: return records.back()
+
+
+	var last_dialog : Record :
+		get:
+			for i in records.size():
+				var record := records[-i-1]
+				if record.stmt is StmtDialog:
+					return record
+			return null
+
+
+	func _init(_max_size : int = -1) -> void:
+		max_size = _max_size
+
+
+	func get_reverse(i : int) -> Record:
+		return records[-i-1]
+
+
+	func add(record: Record) -> void:
+		records.push_back(record)
+
+		if max_size >= 0:
+			while records.size() > max_size:
+				records.pop_front()
+
+		records_changed.emit()
+
+
+	func reset_at(index : int) -> void:
+		for i in index:
+			records.pop_back()
+		if index > 0:
+			records_changed.emit()
+
+
+
 signal on_try_advance
 signal on_data_modified
 signal on_record_created(record: Record)
 signal on_close
 signal finished_execution
+
+signal on_roll_back_disabled(value : bool)
+signal on_roll_ahead_disabled(value : bool)
 
 @export_subgroup("Instantiation")
 
@@ -24,9 +73,10 @@ signal finished_execution
 ## The label in Penny scripts to start at. Make sure this is populated with a valid label.
 @export var start_label := StringName('start')
 
+@export var allow_rolling := true
+
 static var insts : Array[PennyHost] = []
 
-var records : Array[Record]
 var call_stack : Array[Stmt]
 
 var cursor : Stmt
@@ -40,15 +90,46 @@ var is_skipping : bool
 ## Returns the object in data that has most recently sent a message.
 var last_dialog_object : PennyObject :
 	get:
-		for i in records.size():
-			var record := records[-i-1]
-			if record.stmt is StmtDialog:
-				return record.stmt.subject_dialog_path.evaluate()
+		var last_dialog := history.last_dialog
+		if last_dialog: return last_dialog.stmt.subject_dialog_path.evaluate()
 		return null
+
+
+var history : History
+
+var _history_cursor_index : int = 0
+@export var history_cursor_index : int = 0 :
+	get: return _history_cursor_index
+	set(value):
+		value = clamp(value, 0, history.records.size() - 1)
+		if _history_cursor_index == value: return
+
+		self.abort()
+
+		_history_cursor_index = value
+
+		emit_roll_events()
+
+		self.execute(history_cursor, false)
+
+var history_cursor : Stmt :
+	get:
+		# if _history_cursor_index == -1: return next(history.last)
+		return history.get_reverse(_history_cursor_index).stmt
+
+
+var can_roll_back : bool :
+	get: return history_cursor_index < history.records.size() - 1
+
+
+var can_roll_ahead : bool :
+	get: return history_cursor_index > 0
 
 
 func _init() -> void:
 	insts.push_back(self)
+
+	history = History.new()
 
 
 func _ready() -> void:
@@ -63,6 +144,9 @@ func _ready() -> void:
 	if autostart:
 		jump_to.call_deferred(start_label)
 
+	history.records_changed.connect(self.emit_roll_events)
+	emit_roll_events()
+
 
 func _input(event: InputEvent) -> void:
 	if Engine.is_editor_hint() : return
@@ -72,6 +156,10 @@ func _input(event: InputEvent) -> void:
 	# 	is_skipping = true
 	# elif event.is_action_released("penny_skip"):
 	# 	is_skipping = false
+	elif event.is_action_pressed("penny_roll_back"):
+		roll_back()
+	elif event.is_action_pressed("penny_roll_ahead"):
+		roll_ahead()
 
 
 # func _physics_process(delta: float) -> void:
@@ -91,12 +179,12 @@ func try_reload(success: bool) -> void:
 		self.last_valid_cursor = null
 		if success:
 			## TODO: Go back through the records till you find the new cursor, and undo stmts until that point.
-			self.start_execution(start)
+			execute(start)
 
 
 func perform_inits() -> void:
 	for init in Penny.inits:
-		await start_execution(init)
+		await execute(init)
 
 
 func _exit_tree() -> void:
@@ -107,32 +195,26 @@ func _exit_tree() -> void:
 func jump_to(label: StringName) -> void:
 	self.abort()
 	assert(cursor == null)
-	start_execution(Penny.get_stmt_from_label(label))
+	execute(Penny.get_stmt_from_label(label))
 
 
-func start_execution(at: Stmt) :
-	assert(Penny.valid, "Penny.valid == false")
-	cursor = at
-	while cursor != null:
-		var record : Record = await self.execute(cursor)
-		if record.aborted:
-			cursor = null
-			break
-		else:
-			cursor = self.next(record)
-	finished_execution.emit()
+func execute(stmt : Stmt, create_record: bool = true) :
+	if stmt == null: return
 
-
-func execute(stmt : Stmt) :
 	self.is_executing = true
-	var result : Record = await stmt.execute(self)
+	var record : Record = await stmt.execute(self)
 	self.is_executing = false
 
-	records.push_back(result)
-	on_record_created.emit(result)
+	if create_record:
+		history.reset_at(history_cursor_index)
+		history.add(record)
+		on_record_created.emit(record)
 
-	return result
-
+	if record.aborted:
+		cursor = null
+	else:
+		cursor = self.next(record)
+		self.execute(cursor, true)
 
 func abort() -> void:
 	if cursor == null: return
@@ -140,11 +222,30 @@ func abort() -> void:
 
 
 func skip_to_next() -> void:
+	if history_cursor_index > 0:
+		roll_ahead()
+		return
+
 	if cursor == null: return
 	self.abort()
-	assert(cursor == null)
-	start_execution(next(records.back()))
+	execute(next(history.last))
 
+
+func roll_ahead() -> void:
+	if not allow_rolling or not can_roll_ahead: return
+	history_cursor_index -= 1
+	print("roll_ahead (%s)" % history_cursor_index)
+
+
+func roll_back() -> void:
+	if not allow_rolling or not can_roll_back: return
+	history_cursor_index += 1
+	print("roll_back (%s)" % history_cursor_index)
+
+
+func reset_history(at : int = history_cursor_index) -> void:
+	_history_cursor_index = 0
+	history.reset_at(at)
 
 
 func next(record : Record) -> Stmt:
@@ -181,3 +282,8 @@ func close() -> void:
 func get_layer(i: int = -1) -> Node:
 	if i < 0 or i >= layers.size(): return layers.back()
 	return layers[i]
+
+
+func emit_roll_events() -> void:
+	on_roll_ahead_disabled.emit(not can_roll_ahead)
+	on_roll_back_disabled.emit(not can_roll_back)

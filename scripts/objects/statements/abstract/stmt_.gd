@@ -257,6 +257,10 @@ func _get_verbosity() -> Verbosity:
 	return Verbosity.USER_FACING
 
 
+func _get_is_roll_point() -> bool:
+	return false
+
+
 ## Called once to check this statement has all its pieces in the proper places. Penny can't run unless EVERY STATEMENT IN ALL SCRIPTS are successfully validated. Return null to indicate success.
 func validate_self() -> PennyException: return _validate_self()
 ## Called once to check this statement has all its pieces in the proper places. Penny can't run unless EVERY STATEMENT IN ALL SCRIPTS are successfully validated. Return null to indicate success.

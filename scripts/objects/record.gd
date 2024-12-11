@@ -15,12 +15,12 @@ var verbosity : int :
 var prev : Record :
 	get:
 		if stamp == 0 : return null
-		return host.records[stamp - 1]
+		return host.history.records[stamp - 1]
 
 
 func _init(_host: PennyHost, _stmt: Stmt, _aborted : bool = false, _attachment: Variant = null) -> void:
 	host = _host
-	stamp = host.records.size()
+	stamp = host.history.records.size()
 	stmt = _stmt
 	aborted = _aborted
 	attachment = _attachment

@@ -52,6 +52,7 @@ func _ready() -> void:
 
 	init_host = PennyHost.new()
 	init_host.name = "importer_init_host"
+	init_host.allow_rolling = false
 	self.add_child.call_deferred(init_host)
 
 	if not (OS.has_feature("template") or Engine.is_editor_hint()):
