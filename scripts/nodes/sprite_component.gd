@@ -25,12 +25,17 @@ var _template : SpriteComponentTemplate
 		if _template == null: return
 
 		position = _template.position
+		create_sprites_from_node(_template)
 
-		for child in _template.get_children():
-			if child is AnimatedSprite2D:
-				create_sprite_from_animated_sprite_2d(child)
-			elif child is Sprite2D:
-				create_sprite_from_sprite_2d(child)
+
+func create_sprites_from_node(node: Node2D) -> void:
+	for child in node.get_children():
+		if child is AnimatedSprite2D:
+			create_sprite_from_animated_sprite_2d(child)
+		elif child is Sprite2D:
+			create_sprite_from_sprite_2d(child)
+		elif child is Node2D:
+			create_sprites_from_node(child)
 
 
 var _mirror : bool
@@ -69,13 +74,15 @@ func get_animated_sprite_current_texture(sprite: AnimatedSprite2D) -> Texture2D:
 	return sprite.sprite_frames.get_frame_texture(sprite.animation, sprite.frame)
 
 
-func create_mesh(sprite: Node2D, texture: Texture2D) -> MeshInstance2D:
-	var quad := QuadMesh.new()
-	quad.size = texture.get_size() * Vector2(1, -1)
+func create_mesh(sprite: Node2D, texture: Texture2D) -> Sprite2D:
+	# var quad := QuadMesh.new()
+	# quad.size = texture.get_size() * Vector2(1, -1)
 
-	var result := MeshInstance2D.new()
+	var result := Sprite2D.new()
 
-	result.mesh = quad
+	result.texture = texture
+	result.centered = sprite.centered
+	# result.mesh = quad
 	result.name = sprite.name
 	set_mesh_texture(result, texture)
 
@@ -85,20 +92,20 @@ func create_mesh(sprite: Node2D, texture: Texture2D) -> MeshInstance2D:
 	return result
 
 
-func create_sprite_from_sprite_2d(sprite: Sprite2D) -> MeshInstance2D:
+func create_sprite_from_sprite_2d(sprite: Sprite2D) -> Sprite2D:
 	var result := create_mesh(sprite, sprite.texture)
 	sprite.texture_changed.connect(refresh_mesh_from_sprite_2d.bind(result))
 	return result
 
 
-func create_sprite_from_animated_sprite_2d(sprite: AnimatedSprite2D) -> MeshInstance2D:
+func create_sprite_from_animated_sprite_2d(sprite: AnimatedSprite2D) -> Sprite2D:
 	var result := create_mesh(sprite, get_animated_sprite_current_texture(sprite))
 	sprite.animation_changed.connect(refresh_mesh_from_animated_sprite_2d.bind(result))
 	sprite.frame_changed.connect(refresh_mesh_from_animated_sprite_2d.bind(result))
 	return result
 
 
-func set_mesh_texture(mesh: MeshInstance2D, texture: Texture2D) -> void:
+func set_mesh_texture(mesh: Sprite2D, texture: Texture2D) -> void:
 	if texture == null: return
 	mesh.texture = get_modified_version(texture)
 	mesh.visible = mesh.texture != null
@@ -193,9 +200,9 @@ func get_modified_version(resource: Resource) -> Resource:
 	return fallback.resource
 
 
-func refresh_mesh_from_sprite_2d(mesh: MeshInstance2D) -> void:
+func refresh_mesh_from_sprite_2d(mesh: Sprite2D) -> void:
 	set_mesh_texture(mesh, dict[mesh].texture)
 
 
-func refresh_mesh_from_animated_sprite_2d(mesh: MeshInstance2D) -> void:
+func refresh_mesh_from_animated_sprite_2d(mesh: Sprite2D) -> void:
 	set_mesh_texture(mesh, get_animated_sprite_current_texture(dict[mesh]))
