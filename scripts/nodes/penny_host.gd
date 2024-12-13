@@ -241,10 +241,13 @@ func jump_to(label: StringName) -> void:
 
 func execute(stmt : Stmt) :
 	if stmt == null: return
+	cursor = stmt
 
 	self.is_executing = true
-	var record : Record = await stmt.execute(self)
+	var record : Record = await cursor.execute(self)
 	self.is_executing = false
+
+	print("Truly aborted? ", record == null)
 
 	if record != null:
 		# history.reset_at(record_cursor_index)
