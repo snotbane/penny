@@ -22,6 +22,10 @@ func _get_keyword() -> StringName:
 # 	return super._get_verbosity()
 
 
+func _get_is_roll_point() -> bool:
+	return true
+
+
 # func _validate_self() -> PennyException:
 # 	return create_exception("Statement was registered/recognized, but _validate_self() was not overridden!")
 

@@ -31,7 +31,7 @@ func undo() -> void:
 
 
 func _to_string() -> String:
-	return "Record : stamp %s, address %s" % [stamp, stmt.address]
+	return "Record : stamp %s" % [stamp]
 
 
 func equals(other: Record) -> bool:

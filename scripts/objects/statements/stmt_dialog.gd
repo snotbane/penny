@@ -37,6 +37,10 @@ func _get_verbosity() -> Verbosity:
 	return Verbosity.MAX
 
 
+func _get_is_roll_point() -> bool:
+	return true
+
+
 func _validate_self() -> PennyException:
 	if tokens.back().type != Token.VALUE_STRING:
 		return create_exception("The last token must be a String.")

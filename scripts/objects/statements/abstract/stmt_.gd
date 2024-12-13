@@ -41,6 +41,10 @@ var keyword : StringName :
 	get: return _get_keyword()
 
 
+var is_roll_point : bool :
+	get: return _get_is_roll_point()
+
+
 var line_string : String :
 	get: return "ln %s" % index_in_file
 
@@ -290,8 +294,13 @@ func _execute(host: PennyHost) :
 	return self.create_record(host)
 
 
-func abort(host : PennyHost) -> void:
-	self.aborted.emit(self._abort(host))
+func abort(host : PennyHost, recorded : bool = true) -> void:
+	var record := self._abort(host)
+	if recorded:
+		self.aborted.emit(record)
+	else:
+		self.aborted.emit(null)
+
 func _abort(host : PennyHost) -> Record :
 	return self.create_record(host, null, true)
 
