@@ -110,7 +110,30 @@ var last_dialog_object : PennyObject :
 
 
 var history : History
-var history_cursor_index : int = -1
+var _history_cursor_index : int = -1
+var history_cursor_index : int = -1 :
+	get: return _history_cursor_index
+	set(value):
+		value = clamp(value, -1, history.records.size() - 1)
+		if _history_cursor_index == value: return
+
+		var increment := signi(value - _history_cursor_index)
+		while _history_cursor_index != value:
+			self.abort(false)
+			# if history_cursor != null:
+			# 	if increment > 0:
+			# 		history_cursor.undo()
+
+			_history_cursor_index += increment
+
+			if history_cursor != null:
+				self.execute(history_cursor.stmt)
+			else:
+				self.execute(self.next(history.last))
+
+		self.emit_roll_events()
+
+
 var history_cursor : Record :
 	get:
 		if history_cursor_index == -1: return null
@@ -242,35 +265,17 @@ func roll_ahead() -> void:
 	if not allow_rolling or not can_roll_ahead: return
 
 	history_cursor_index = history.get_roll_ahead_point(history_cursor_index)
-	self.emit_roll_events()
-
-	self.abort(false)
-	if history_cursor == null:
-		self.execute(self.next(history.last))
-		# print("roll_ahead to present")
-	else:
-		self.execute(history_cursor.stmt)
-		# print("roll_ahead to %s, %s" % [history_cursor_index, history_cursor.stmt])
 
 
 func roll_back() -> void:
 	if not allow_rolling or not can_roll_back: return
 
 	history_cursor_index = history.get_roll_back_point(history_cursor_index)
-	self.emit_roll_events()
-
-	self.abort(false)
-	self.execute(history_cursor.stmt)
 
 	# print("roll_back to %s, %s" % [history_cursor_index, history_cursor.stmt])
 
-
 func roll_end() -> void:
 	history_cursor_index = -1
-	self.emit_roll_events()
-
-	self.abort(false)
-	self.execute(self.next(history.last))
 
 
 func reset_history() -> void:
