@@ -41,7 +41,7 @@ class History:
 
 
 	func reset_at(index : int) -> void:
-		for i in index:
+		for i in index + 1:
 			records.pop_back()
 		if index > 0:
 			records_changed.emit()
@@ -115,41 +115,6 @@ var history_cursor : Record :
 	get:
 		if history_cursor_index == -1: return null
 		return history.get_reverse(history_cursor_index)
-
-# var record_cursor_index_back : int = -1
-# var record_cursor_index_ahead : int = -1
-# var record_cursor_index_min : int = -1
-# var record_cursor_index_max : int :
-# 	get: return history.records.size() - 1
-# var _record_cursor_index : int = -1
-# @export var record_cursor_index : int = -1 :
-# 	get: return _record_cursor_index
-# 	set(value):
-# 		value = clamp(value, record_cursor_index_min, record_cursor_index_max)
-# 		if _record_cursor_index == value: return
-# 		var moving_back := value > _record_cursor_index
-# 		if moving_back:
-# 			record_cursor_index_ahead = _record_cursor_index
-# 		else:
-# 			record_cursor_index_back = _record_cursor_index
-
-# 		_record_cursor_index = value
-
-# 		if moving_back:
-# 			var i := value + 1
-# 			var s := record_cursor.stmt
-# 			while i:
-# 				var s := history.get_reverse(i)
-# 			record_cursor_index_back = 0
-# 		else:
-# 			record_cursor_index_ahead = 0
-
-
-
-# var record_cursor : Record :
-# 	get:
-# 		if _record_cursor_index == -1: return null
-# 		return history.get_reverse(record_cursor_index)
 
 
 var can_roll_back : bool :
@@ -247,10 +212,8 @@ func execute(stmt : Stmt) :
 	var record : Record = await cursor.execute(self)
 	self.is_executing = false
 
-	print("Truly aborted? ", record == null)
-
 	if record != null:
-		# history.reset_at(record_cursor_index)
+		reset_history()
 		history.add(record)
 		on_record_created.emit(record)
 
@@ -276,8 +239,7 @@ func skip_to_next() -> void:
 
 
 func roll_ahead() -> void:
-	if not allow_rolling: return
-	if not can_roll_ahead: print("No further roll_ahead to make."); return
+	if not allow_rolling or not can_roll_ahead: return
 
 	history_cursor_index = history.get_roll_ahead_point(history_cursor_index)
 	self.emit_roll_events()
@@ -285,15 +247,14 @@ func roll_ahead() -> void:
 	self.abort(false)
 	if history_cursor == null:
 		self.execute(self.next(history.last))
-		print("roll_ahead to present")
+		# print("roll_ahead to present")
 	else:
 		self.execute(history_cursor.stmt)
-		print("roll_ahead to %s, %s" % [history_cursor_index, history_cursor.stmt])
+		# print("roll_ahead to %s, %s" % [history_cursor_index, history_cursor.stmt])
 
 
 func roll_back() -> void:
-	if not allow_rolling: return
-	if not can_roll_back: print("No further roll_back to make."); return
+	if not allow_rolling or not can_roll_back: return
 
 	history_cursor_index = history.get_roll_back_point(history_cursor_index)
 	self.emit_roll_events()
@@ -301,16 +262,20 @@ func roll_back() -> void:
 	self.abort(false)
 	self.execute(history_cursor.stmt)
 
-	print("roll_back to %s, %s" % [history_cursor_index, history_cursor.stmt])
+	# print("roll_back to %s, %s" % [history_cursor_index, history_cursor.stmt])
 
 
-func roll_to_end() -> void:
-	pass
+func roll_end() -> void:
+	history_cursor_index = -1
+	self.emit_roll_events()
+
+	self.abort(false)
+	self.execute(self.next(history.last))
 
 
-# func reset_history(at : int = record_cursor_index) -> void:
-# 	record_cursor_index = 0
-# 	history.reset_at(at)
+func reset_history() -> void:
+	history.reset_at(history_cursor_index)
+	history_cursor_index = -1
 
 
 func next(record : Record) -> Stmt:
