@@ -238,7 +238,7 @@ func execute(stmt : Stmt) :
 	var record : Record = await cursor.execute(self)
 	self.is_executing = false
 
-	if record != null:
+	if record.response == Record.Response.RECORD_AND_ADVANCE:
 		reset_history()
 		history.add(record)
 		on_record_created.emit(record)
