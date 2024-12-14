@@ -198,7 +198,8 @@ func _input(event: InputEvent) -> void:
 func try_reload(success: bool) -> void:
 	print("try_reload : ", self.name)
 	if self.cursor:
-		self.abort(Record.Response.RECORD_ONLY)
+		self.abort(Record.Response.IGNORE)
+		reset_history()
 
 	if self.last_valid_cursor:
 		var start : Stmt = self.last_valid_cursor.owning_script.diff.remap_stmt_index(self.last_valid_cursor)

@@ -41,11 +41,11 @@ func _execute(host: PennyHost) :
 
 
 func _undo(record: Record) -> void:
-	path.set_data_for(owning_object, record.data["before"])
+	path.set_value_for(owning_object, record.data["before"])
 
 
 func _redo(record: Record) -> void:
-	path.set_data_for(owning_object, record.data["after"])
+	path.set_value_for(owning_object, record.data["after"])
 
 
 # func _next(record: Record) -> Stmt:
