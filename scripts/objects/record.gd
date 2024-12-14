@@ -24,6 +24,13 @@ var prev : Record :
 		return host.history.records[stamp - 1]
 
 
+var is_recorded : bool :
+	get: return response >= Response.RECORD_ONLY
+
+var is_advanced : bool :
+	get: return response == Response.RECORD_AND_ADVANCE
+
+
 func _init(_host: PennyHost, _stmt: Stmt, _data: Variant = null, _response := Response.RECORD_AND_ADVANCE) -> void:
 	host = _host
 	stamp = host.history.records.size()

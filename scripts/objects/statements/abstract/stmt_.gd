@@ -294,12 +294,9 @@ func _execute(host: PennyHost) :
 	return self.create_record(host)
 
 
-func abort(host : PennyHost, recorded : bool = true) -> void:
+func abort(host : PennyHost, response : Record.Response) -> void:
 	var record := self._abort(host)
-	if recorded:
-		record.response = Record.Response.RECORD_AND_ADVANCE
-	else:
-		record.response = Record.Response.IGNORE
+	record.response = response
 	self.aborted.emit(record)
 func _abort(host : PennyHost) -> Record :
 	return self.create_record(host, null)

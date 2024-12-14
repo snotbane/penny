@@ -117,7 +117,7 @@ var history_cursor_index : int = -1 :
 		value = clamp(value, -1, history.records.size() - 1)
 		if _history_cursor_index == value: return
 
-		self.abort(false)
+		self.abort(Record.Response.IGNORE)
 
 		var increment := signi(value - _history_cursor_index)
 		while _history_cursor_index != value:
@@ -202,7 +202,7 @@ func _input(event: InputEvent) -> void:
 func try_reload(success: bool) -> void:
 	print("try_reload : ", self.name)
 	if self.cursor:
-		self.cursor.abort(self)
+		self.cursor.abort(self, Record.Response.RECORD_AND_ADVANCE)
 		self.last_valid_cursor = self.cursor
 	self.cursor = null
 
@@ -225,33 +225,35 @@ func _exit_tree() -> void:
 
 
 func jump_to(label: StringName) -> void:
-	self.abort(true)
+	self.abort(Record.Response.RECORD_ONLY)
 	assert(cursor == null)
 	self.execute(Penny.get_stmt_from_label(label))
 
 
 func execute(stmt : Stmt) :
 	if stmt == null: return
-	cursor = stmt
 
 	self.is_executing = true
-	var record : Record = await cursor.execute(self)
+	var record : Record = await stmt.execute(self)
 	self.is_executing = false
 
-	if record.response == Record.Response.RECORD_AND_ADVANCE:
+	if record.is_recorded:
 		reset_history()
 		history.add(record)
 		on_record_created.emit(record)
 
-		cursor = self.next(record)
-		self.execute(cursor)
+		if record.is_advanced:
+			cursor = self.next(record)
+			self.execute(cursor)
+		else:
+			cursor = null
 	else:
 		cursor = null
 
 
-func abort(recorded : bool) -> void:
+func abort(response : Record.Response) -> void:
 	if cursor == null: return
-	cursor.abort(self, recorded)
+	cursor.abort(self, response)
 
 
 func skip_to_next() -> void:
@@ -259,8 +261,7 @@ func skip_to_next() -> void:
 		self.roll_ahead()
 	else:
 		if cursor == null: return
-		self.abort(true)
-		self.execute_at_end()
+		self.abort(Record.Response.RECORD_AND_ADVANCE)
 
 
 func roll_ahead() -> void:
