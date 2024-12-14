@@ -17,6 +17,14 @@ func _get_verbosity() -> Verbosity:
 	return Verbosity.FLOW_ACTIVITY
 
 
+func _get_is_rollable() -> bool:
+	return not is_simple_timer_delay
+
+
+func _get_is_skippable() -> bool:
+	return not is_simple_timer_delay
+
+
 func _validate_self() -> PennyException:
 	if tokens.size() == 0:
 		return create_exception("Await statement should have at least one parameter.")

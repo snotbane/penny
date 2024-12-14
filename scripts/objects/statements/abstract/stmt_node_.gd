@@ -5,9 +5,12 @@ class_name StmtNode extends Stmt
 ## Path to the object.
 var subject_path : Path
 
+var subject : PennyObject :
+	get: return self.subject_path.evaluate()
+
 var subject_node : Node :
 	get:
-		return self.subject_path.evaluate().local_instance
+		return subject.local_instance
 
 
 # func _init() -> void:

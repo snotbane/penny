@@ -36,13 +36,16 @@ func _execute(host: PennyHost) :
 	var after : Variant = self.owning_object.add_object(path.ids.back(), PennyObject.DEFAULT_BASE)
 	if after is PennyObject:
 		after.self_key = path.ids.back()
-	print(after.rich_name)
+	print("StmtObject: ", after.rich_name)
 	return create_assignment_record(host, prior, after)
 
 
 func _undo(record: Record) -> void:
-	if record.data:
-		path.set_data(record.host, record.data.before)
+	path.set_data_for(owning_object, record.data["before"])
+
+
+func _redo(record: Record) -> void:
+	path.set_data_for(owning_object, record.data["after"])
 
 
 # func _next(record: Record) -> Stmt:

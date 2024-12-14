@@ -36,8 +36,10 @@ func _validate_cross() -> PennyException:
 func _execute(host: PennyHost) :
 	return super._execute(host)
 
+
 # func _next(record: Record) -> Stmt:
 # 	return next_in_order
 
-# func _undo(record: Record) -> void:
-# 	pass
+
+func _undo(record: Record) -> void:
+	assert(false, "Shouldn't be able to undo init statements.")

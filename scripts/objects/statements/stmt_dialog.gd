@@ -95,7 +95,6 @@ func _execute(host: PennyHost) :
 	else:
 		incoming_dialog_node = previous_dialog_node
 
-	var subject : PennyObject = subject_path.evaluate()
 	var what := DecoratedText.from_raw(raw_text)
 	var result := create_record(host, { "who": subject, "what": what })
 	incoming_dialog_node.receive(result)
@@ -106,7 +105,6 @@ func _execute(host: PennyHost) :
 
 
 func _abort(host: PennyHost) -> Record:
-	var subject : PennyObject = subject_path.evaluate()
 	var what := DecoratedText.from_raw(raw_text)
 	var result := create_record(host, { "who": subject, "what": what })
 	return result

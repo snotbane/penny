@@ -7,7 +7,7 @@ var nested_option_stmts : Array[StmtConditionalMenu]
 
 var response : Variant :
 	get:
-		return subject_path.evaluate().get_value(PennyObject.RESPONSE_KEY)
+		return subject.get_value(PennyObject.RESPONSE_KEY)
 
 
 # func _init() -> void:
@@ -24,6 +24,10 @@ func _get_keyword() -> StringName:
 
 func _get_is_rollable() -> bool:
 	return true
+
+
+func _get_is_skippable() -> bool:
+	return false
 
 
 # func _validate_self() -> PennyException:
@@ -44,8 +48,7 @@ func _validate_self_post_setup() -> void:
 func _execute(host: PennyHost) :
 	host.expecting_conditional = true
 
-	var prompt_object : PennyObject = subject_path.evaluate()
-	var prompt_options : Array = prompt_object.get_value(PennyObject.OPTIONS_KEY)
+	var prompt_options : Array = subject.get_value(PennyObject.OPTIONS_KEY)
 	prompt_options.clear()
 
 	var i := -1
@@ -65,14 +68,24 @@ func _execute(host: PennyHost) :
 		PennyObject.STATIC_ROOT.set_value(key, option)
 		prompt_options.push_back(Path.from_single(key))
 
+	var data := { "before": subject.get_value(PennyObject.RESPONSE_KEY) }
+
 	await super._execute(host)
 	await subject_node.advanced
 
-	return self.create_record(host)
+	data["after"] = subject.get_value(PennyObject.RESPONSE_KEY)
+
+	return self.create_record(host, data)
 
 
-# func _undo(record: Record) -> void:
-# 	super._undo(record)
+func _undo(record: Record) -> void:
+	super._undo(record)
+	subject.set_value(PennyObject.RESPONSE_KEY, record.data["before"])
+
+
+func _redo(record: Record) -> void:
+	super._redo(record)
+	subject.set_value(PennyObject.RESPONSE_KEY, record.data["after"])
 
 
 # func _next(record: Record) -> Stmt:

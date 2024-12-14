@@ -227,12 +227,11 @@ var index_in_same_depth_chain : int:
 		return result
 
 
-var reconstructed_string : String :
+var debug_string : String :
 	get:
-		var result := ""
+		var result := self.keyword
 		for i in tokens:
-			result += str(i.value) + " "
-		result = result.substr(0, result.length() - 1)
+			result += " " + str(i.value)
 		return result
 
 
@@ -256,7 +255,7 @@ func populate(_owning_script: PennyScript, _index_in_script: int, _index_in_file
 	self.index_in_file = _index_in_file
 	self.nest_depth = _depth
 	self.tokens = _tokens
-	self.hash_id = hash(self.reconstructed_string)
+	self.hash_id = hash(self.debug_string)
 
 
 func populate_from_other(other: Stmt) -> void:
@@ -264,7 +263,7 @@ func populate_from_other(other: Stmt) -> void:
 
 
 func _to_string() -> String:
-	return "%s %s : %s %s" % [line_string, depth_string, _get_keyword(), reconstructed_string]
+	return "%s %s : %s %s" % [line_string, depth_string, _get_keyword(), debug_string]
 
 
 ## Called once to check this statement has all its pieces in the proper places. Penny can't run unless EVERY STATEMENT IN ALL SCRIPTS are successfully validated. Return null to indicate success.
@@ -331,6 +330,14 @@ func create_history_listing(record: Record) -> HistoryListing: return _create_hi
 func _create_history_listing(record: Record) -> HistoryListing:
 	var result : HistoryListing = _get_history_listing_scene().instantiate()
 	result.populate(record)
+	return result
+
+
+func get_record_message(record: Record) -> String: return _get_record_message(record)
+func _get_record_message(record: Record) -> String:
+	var result := "[code][color=#a030a0ff]%s[/color] [/code]" % self.keyword
+	for i in tokens:
+		result += " " + str(i.value)
 	return result
 
 

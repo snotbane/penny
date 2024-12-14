@@ -37,7 +37,6 @@ func _undo(record: Record) -> void:
 
 func _redo(record: Record) -> void:
 	self.open_subject(record.host, false)
-	record.data = self.subject_node
 
 
 # func _next(record: Record) -> Stmt:

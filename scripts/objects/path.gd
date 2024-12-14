@@ -8,6 +8,7 @@ func _init(_ids: Array[StringName] = [], _nested : bool = false) -> void:
 	ids = _ids
 	relative = _nested
 
+
 static func from_tokens(tokens: Array[Token]) -> Path:
 	var _nested = tokens[0].value == '.'
 	if _nested: tokens.pop_front()
@@ -17,6 +18,7 @@ static func from_tokens(tokens: Array[Token]) -> Path:
 	for i in l:
 		_ids.push_back(tokens[i * 2].value)
 	return Path.new(_ids, _nested)
+
 
 static func from_string(s: String) -> Path:
 	var _nested = s[0] == '.'
@@ -28,8 +30,10 @@ static func from_string(s: String) -> Path:
 		_ids.push_back(StringName(i))
 	return Path.new(_ids, _nested)
 
+
 static func from_single(s: StringName, _nested: bool = false) -> Path:
 	return Path.new([s], _nested)
+
 
 func _to_string() -> String:
 	var result = "/"

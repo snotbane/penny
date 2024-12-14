@@ -35,5 +35,9 @@ func _undo(record: Record) -> void:
 	record.host.call_stack.pop_back()
 
 
+func _redo(record: Record) -> void:
+	record.host.call_stack.push_back(next_in_order)
+
+
 # func _next(record: Record) -> Stmt:
 # 	return next_in_order

@@ -13,7 +13,7 @@ func populate(_record: Record) -> void:
 		message_label.add_theme_color_override('default_color', c)
 	_populate(_record)
 func _populate(_record: Record) -> void:
-	message_label.text = record.stmt.reconstructed_string
+	message_label.text = record.stmt.get_record_message(_record)
 
 func refresh_visibility(history: HistoryHandler) -> void:
 	self.visible = history.verbosity & record.stmt.verbosity
