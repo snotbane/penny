@@ -8,6 +8,7 @@ class_name HistoryHandler extends Control
 var scrollbar : VScrollBar :
 	get: return scroll_container.get_v_scroll_bar()
 
+
 var _host : PennyHost
 @export var host : PennyHost :
 	get: return _host
@@ -15,13 +16,16 @@ var _host : PennyHost
 		if _host == value: return
 
 		if _host:
-			_host.on_record_created.disconnect(self.receive_record)
+			_host.history.record_added.disconnect(self.on_record_added)
+			_host.history.record_removed.disconnect(self.on_record_removed)
 
 		_host = value
 
 		if _host:
-			_host.on_record_created.connect(self.receive_record)
+			_host.history.record_added.connect(self.on_record_added)
+			_host.history.record_removed.connect(self.on_record_removed)
 			refresh()
+
 
 var _verbosity : int
 @export_flags(Stmt.VERBOSITY_NAMES[0], Stmt.VERBOSITY_NAMES[1], Stmt.VERBOSITY_NAMES[2], Stmt.VERBOSITY_NAMES[3], Stmt.VERBOSITY_NAMES[4], Stmt.VERBOSITY_NAMES[5]) var verbosity : int :
@@ -37,7 +41,7 @@ func refresh() -> void:
 	for listing in vbox.get_children():
 		listing.queue_free()
 	for record in host.history.records:
-		receive_record(record)
+		on_record_added(record)
 	refresh_visibility()
 	scroll_to_end.call_deferred()
 
@@ -52,22 +56,22 @@ func scroll_to_end() -> void:
 	scrollbar.value = scrollbar.max_value
 
 
-func receive_record(rec: Record) -> void:
-	var listing := rec.create_history_listing()
+func on_record_added(record : Record) -> void:
+	var listing := record.create_history_listing()
 	listing.refresh_visibility(self)
 	vbox.add_child(listing)
 
 
-func rewind_to(rec: Record) -> void:
-	# while controls.size() > rec.stamp:
-	# 	var control = controls.pop_back()
-		# vbox.remove_child(control)
-		# control.queue_free()
-	pass
+func on_record_removed(record : Record) -> void:
+	for i in vbox.get_child_count():
+		var listing : HistoryListing = vbox.get_child(-i-1)
+		if listing.record == record:
+			listing.queue_free()
+			return
 
 
-func _on_record_created(record:Record) -> void:
-	receive_record(record)
+func _on_record_created(record : Record) -> void:
+	on_record_added(record)
 
 
 func _on_verbosity_selector_item_selected_id(id:int) -> void:

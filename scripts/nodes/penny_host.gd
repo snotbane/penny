@@ -4,7 +4,8 @@ class_name PennyHost extends Node
 
 class History:
 
-	signal records_changed
+	signal record_added(record : Record)
+	signal record_removed(record : Record)
 
 	var records : Array[Record]
 	var max_size : int = -1
@@ -37,14 +38,13 @@ class History:
 			while records.size() > max_size:
 				records.pop_front()
 
-		records_changed.emit()
+		record_added.emit(record)
 
 
 	func reset_at(index : int) -> void:
-		for i in index + 1:
-			records.pop_back()
-		if index > 0:
-			records_changed.emit()
+		index += 1
+		for i in index:
+			record_removed.emit(records.pop_back())
 
 
 	func get_roll_back_point(from: int) -> int:
@@ -94,7 +94,6 @@ static var insts : Array[PennyHost] = []
 var call_stack : Array[Stmt]
 
 var cursor : Stmt
-var is_executing : bool = false
 
 var last_valid_cursor : Stmt
 var expecting_conditional : bool
@@ -176,7 +175,9 @@ func _ready() -> void:
 	if autostart:
 		jump_to.call_deferred(start_label)
 
-	history.records_changed.connect(self.emit_roll_events)
+	history.record_added.connect(self.emit_roll_events.unbind(1))
+	history.record_added.connect(print)
+	history.record_removed.connect(print)
 	emit_roll_events()
 
 
@@ -202,9 +203,7 @@ func _input(event: InputEvent) -> void:
 func try_reload(success: bool) -> void:
 	print("try_reload : ", self.name)
 	if self.cursor:
-		self.cursor.abort(self, Record.Response.RECORD_AND_ADVANCE)
-		self.last_valid_cursor = self.cursor
-	self.cursor = null
+		self.abort(Record.Response.RECORD_ONLY)
 
 	if self.last_valid_cursor:
 		var start : Stmt = self.last_valid_cursor.owning_script.diff.remap_stmt_index(self.last_valid_cursor)
@@ -231,12 +230,10 @@ func jump_to(label: StringName) -> void:
 
 
 func execute(stmt : Stmt) :
-	if stmt == null: return
+	cursor = stmt
+	if cursor == null: return
 
-	self.is_executing = true
-	var record : Record = await stmt.execute(self)
-	self.is_executing = false
-
+	var record : Record = await cursor.execute(self)
 	if record.is_recorded:
 		reset_history()
 		history.add(record)
@@ -244,6 +241,7 @@ func execute(stmt : Stmt) :
 
 		if record.is_advanced:
 			cursor = self.next(record)
+			last_valid_cursor = cursor
 			self.execute(cursor)
 		else:
 			cursor = null

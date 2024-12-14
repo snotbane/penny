@@ -26,7 +26,6 @@
 [ext_resource type="Texture2D" uid="uid://cifrouur0xbp" path="res://addons/penny_godot/assets/textures/icons/Close.svg" id="22_o11uj"]
 [ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/debug/penny_debug_reload_notify_anim.gd" id="22_wyfls"]
 
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6r5gf"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_337gi"]
@@ -581,7 +580,7 @@ grow_vertical = 2
 [node name="penny_history_box" parent="overlay/margin_container/h_box_container/host_tabs/host_menu/tab_container/History/v_box_container" instance=ExtResource("14_elw5r")]
 layout_mode = 2
 size_flags_vertical = 3
-verbosity = 31
+verbosity = 63
 
 [node name="panel_container" type="PanelContainer" parent="overlay/margin_container/h_box_container/host_tabs/host_menu/tab_container/History/v_box_container"]
 layout_mode = 2
