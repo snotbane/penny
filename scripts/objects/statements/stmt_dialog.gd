@@ -37,7 +37,7 @@ func _get_verbosity() -> Verbosity:
 	return Verbosity.MAX
 
 
-func _get_is_roll_point() -> bool:
+func _get_is_rollable() -> bool:
 	return true
 
 

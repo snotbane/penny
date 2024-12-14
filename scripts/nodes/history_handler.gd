@@ -70,10 +70,6 @@ func on_record_removed(record : Record) -> void:
 			return
 
 
-func _on_record_created(record : Record) -> void:
-	on_record_added(record)
-
-
 func _on_verbosity_selector_item_selected_id(id:int) -> void:
 	self.verbosity = id
 

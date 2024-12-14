@@ -16,8 +16,7 @@ class History:
 
 	var last_dialog : Record :
 		get:
-			for i in records.size():
-				var record := records[-i-1]
+			for record in records:
 				if record.stmt is StmtDialog:
 					return record
 			return null
@@ -28,15 +27,15 @@ class History:
 
 
 	func get_reverse(i : int) -> Record:
-		return records[-i-1]
+		return records[i]
 
 
 	func add(record: Record) -> void:
-		records.push_back(record)
+		records.push_front(record)
 
 		if max_size >= 0:
 			while records.size() > max_size:
-				records.pop_front()
+				records.pop_back()
 
 		record_added.emit(record)
 
@@ -44,27 +43,25 @@ class History:
 	func reset_at(index : int) -> void:
 		index += 1
 		for i in index:
-			record_removed.emit(records.pop_back())
+			record_removed.emit(records.pop_front())
 
 
 	func get_roll_back_point(from: int) -> int:
 		while from < records.size() - 1:
 			from += 1
-			if self.get_reverse(from).stmt.is_roll_point: return from
+			if self.get_reverse(from).stmt.is_rollable: return from
 		return -1
 
 
 	func get_roll_ahead_point(from: int) -> int:
 		while from > 0:
 			from -= 1
-			if self.get_reverse(from).stmt.is_roll_point: return from
+			if self.get_reverse(from).stmt.is_rollable: return from
 		return -1
-
 
 
 signal on_try_advance
 signal on_data_modified
-signal on_record_created(record: Record)
 signal on_close
 signal finished_execution
 
@@ -232,12 +229,12 @@ func jump_to(label: StringName) -> void:
 func execute(stmt : Stmt) :
 	cursor = stmt
 	if cursor == null: return
+	last_valid_cursor = cursor
 
 	var record : Record = await cursor.execute(self)
 	if record.is_recorded:
 		reset_history()
 		history.add(record)
-		on_record_created.emit(record)
 
 		if record.is_advanced:
 			cursor = self.next(record)

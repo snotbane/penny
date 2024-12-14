@@ -112,12 +112,14 @@ columns = 2
 
 [node name="button_roll_back" type="TextureButton" parent="canvas_layer/ui/panel_container/margin_container/grid_container"]
 layout_mode = 2
+tooltip_text = "Roll Back"
 texture_normal = ExtResource("7_ns3dh")
 texture_pressed = ExtResource("9_y2csr")
 texture_disabled = ExtResource("9_y2csr")
 
 [node name="button_roll_ahead" type="TextureButton" parent="canvas_layer/ui/panel_container/margin_container/grid_container"]
 layout_mode = 2
+tooltip_text = "Roll Ahead"
 texture_normal = ExtResource("7_ns3dh")
 texture_pressed = ExtResource("9_y2csr")
 texture_disabled = ExtResource("9_y2csr")
@@ -128,6 +130,7 @@ layout_mode = 2
 
 [node name="button_roll_end" type="TextureButton" parent="canvas_layer/ui/panel_container/margin_container/grid_container"]
 layout_mode = 2
+tooltip_text = "Roll Ahead to Latest"
 texture_normal = ExtResource("10_ryojg")
 texture_pressed = ExtResource("11_rcx57")
 texture_disabled = ExtResource("11_rcx57")

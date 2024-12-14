@@ -33,16 +33,32 @@ var nest_depth : int
 var tokens : Array[Token]
 
 
-var verbosity : int :
-	get: return _get_verbosity()
-
-
 var keyword : StringName :
 	get: return _get_keyword()
+## Helper keyword to define what this statement does.
+func _get_keyword() -> StringName:
+	return 'INVALID'
 
 
-var is_roll_point : bool :
-	get: return _get_is_roll_point()
+var verbosity : int :
+	get: return _get_verbosity()
+## Defines whether or not this statement should show up in history. -1 = always show, even to end user. Values greater than 0 are used for debugging purposes.
+func _get_verbosity() -> Verbosity:
+	return Verbosity.USER_FACING
+
+
+var is_rollable : bool :
+	get: return _get_is_rollable()
+## Defines whether or not this statement can be used as a stop point when rolling back or forward. Usually true for any statement that pauses execution until user manually inputs.
+func _get_is_rollable() -> bool:
+	return false
+
+
+var is_skippable : bool :
+	get: return _get_is_skippable()
+## Defines whether or not this statement can be automatically skipped. This should be false for any stmt that both (1) relies on user input AND (2) alters the stmt flow. E.g. menus/prompts. True for all others.
+func _get_is_skippable() -> bool:
+	return true
 
 
 var line_string : String :
@@ -249,20 +265,6 @@ func populate_from_other(other: Stmt) -> void:
 
 func _to_string() -> String:
 	return "%s %s : %s %s" % [line_string, depth_string, _get_keyword(), reconstructed_string]
-
-
-## Helper keyword to define what this statement does.
-func _get_keyword() -> StringName:
-	return 'INVALID'
-
-
-## Defines whether or not this statement should show up in history. -1 = always show, even to end user. Values greater than 0 are used for debugging purposes.
-func _get_verbosity() -> Verbosity:
-	return Verbosity.USER_FACING
-
-
-func _get_is_roll_point() -> bool:
-	return false
 
 
 ## Called once to check this statement has all its pieces in the proper places. Penny can't run unless EVERY STATEMENT IN ALL SCRIPTS are successfully validated. Return null to indicate success.

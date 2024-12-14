@@ -22,7 +22,7 @@ func _get_keyword() -> StringName:
 # 	return super._get_verbosity()
 
 
-func _get_is_roll_point() -> bool:
+func _get_is_rollable() -> bool:
 	return true
 
 
