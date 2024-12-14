@@ -60,3 +60,20 @@ func instantiate_node_from_object(host: PennyHost, obj : PennyObject) -> Node:
 
 func instantiate_node_from_path(host: PennyHost, path := subject_path) -> Node:
 	return instantiate_node_from_object(host, path.evaluate())
+
+
+func open_subject(host: PennyHost, wait : bool = true) :
+	var node : Node = self.instantiate_node_from_path(host, subject_path)
+	if node is PennyNode:
+		await node.open(wait)
+	return node
+
+
+func close_subject(host : PennyHost, wait : bool = true) :
+	var node := self.subject_node
+	if node == null: return
+
+	if node is PennyNode:
+		await node.close(wait)
+	else:
+		node.queue_free()

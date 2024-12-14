@@ -132,7 +132,7 @@ var history_cursor_index : int = -1 :
 		if history_cursor:
 			self.execute(history_cursor.stmt)
 		else:
-			self.execute(self.next(history.last))
+			self.execute_at_end()
 
 		self.emit_roll_events()
 
@@ -255,13 +255,12 @@ func abort(recorded : bool) -> void:
 
 
 func skip_to_next() -> void:
-	# if record_cursor_index > 0:
-	# 	roll_ahead()
-	# 	return
-
-	if cursor == null: return
-	self.abort(true)
-	execute(next(history.last))
+	if history_cursor != null:
+		self.roll_ahead()
+	else:
+		if cursor == null: return
+		self.abort(true)
+		self.execute_at_end()
 
 
 func roll_ahead() -> void:
@@ -276,6 +275,7 @@ func roll_back() -> void:
 	history_cursor_index = history.get_roll_back_point(history_cursor_index)
 
 	# print("roll_back to %s, %s" % [history_cursor_index, history_cursor.stmt])
+
 
 func roll_end() -> void:
 	history_cursor_index = -1
@@ -296,6 +296,10 @@ func next(record : Record) -> Stmt:
 	return result
 
 
+func execute_at_end() :
+	await self.execute(self.next(history.last))
+
+
 func try_advance() -> void:
 	on_try_advance.emit()
 
@@ -307,14 +311,6 @@ func on_reach_end() -> void:
 func close() -> void:
 	on_close.emit()
 	return
-
-
-# func rewind_to(record: Record) -> void:
-# 	expecting_conditional = false
-# 	cursor = record.stmt
-# 	while records.size() > record.stamp:
-# 		records.pop_back().undo()
-# 	execute()
 
 
 func get_layer(i: int = -1) -> Node:

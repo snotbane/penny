@@ -27,9 +27,7 @@ func _validate_self() -> PennyException:
 
 
 func _execute(host: PennyHost) :
-	var node : Node = self.instantiate_node_from_path(host, subject_path)
-	if node is PennyNode:
-		await node.open(true)
+	await self.open_subject(host)
 	return self.create_record(host)
 
 
@@ -38,10 +36,8 @@ func _undo(record: Record) -> void:
 
 
 func _redo(record: Record) -> void:
-	var node : Node = self.instantiate_node_from_path(record.host, subject_path)
-	if node is PennyNode:
-		node.open()
-	record.data = node
+	self.open_subject(record.host, false)
+	record.data = self.subject_node
 
 
 # func _next(record: Record) -> Stmt:

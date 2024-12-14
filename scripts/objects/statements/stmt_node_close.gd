@@ -27,21 +27,12 @@ func _validate_self() -> PennyException:
 
 
 func _execute(host: PennyHost) :
-	var node := self.subject_node
-	if node:
-		if node is PennyNode:
-			await node.close(true)
-		else:
-			node.queue_free()
-	else:
-		self.push_exception("Attempted to close object at path '%s' but no node instance exists." % subject_path)
+	await self.close_subject(host)
 	return super._execute(host)
 
 
 func _undo(record: Record) -> void:
-	var node : Node = self.instantiate_node_from_path(record.host, subject_path)
-	if node is PennyNode:
-		node.open()
+	self.open_subject(record.host, false)
 
 
 func _redo(record: Record) -> void:
