@@ -120,16 +120,19 @@ var history_cursor_index : int = -1 :
 		var increment := signi(value - _history_cursor_index)
 		while _history_cursor_index != value:
 			self.abort(false)
-			# if history_cursor != null:
-			# 	if increment > 0:
-			# 		history_cursor.undo()
+
+			if increment > 0 and history_cursor:
+				history_cursor.undo()
 
 			_history_cursor_index += increment
 
-			if history_cursor != null:
-				self.execute(history_cursor.stmt)
-			else:
-				self.execute(self.next(history.last))
+			if increment < 0 and history_cursor:
+				history_cursor.redo()
+
+		if history_cursor:
+			self.execute(history_cursor.stmt)
+		else:
+			self.execute(self.next(history.last))
 
 		self.emit_roll_events()
 

@@ -308,8 +308,13 @@ func _abort(host : PennyHost) -> Record :
 ## Executes when the user rewinds through history to undo this action.
 func undo(record: Record) -> void: _undo(record)
 ## Executes when the user rewinds through history to undo this action.
-func _undo(record: Record) -> void:
-	pass
+func _undo(record: Record) -> void:	pass
+
+
+## Executes when the user fast-forwards through history to redo this action.
+func redo(record: Record) -> void: _redo(record)
+## Executes when the user fast-forwards through history to redo this action.
+func _redo(record: Record) -> void: _execute(record.host)
 
 
 ## Returns the address of the next statement to go to, based on what happened.

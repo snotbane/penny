@@ -30,6 +30,10 @@ func undo() -> void:
 	stmt.undo(self)
 
 
+func redo() -> void:
+	stmt.redo(self)
+
+
 func _to_string() -> String:
 	return "Record : stamp %s" % [stamp]
 
