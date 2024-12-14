@@ -11,7 +11,7 @@ class History:
 	var max_size : int = -1
 
 	var last : Record :
-		get: return records.back()
+		get: return records.front()
 
 
 	var last_dialog : Record :
@@ -26,17 +26,12 @@ class History:
 		max_size = _max_size
 
 
-	func get_reverse(i : int) -> Record:
-		return records[i]
-
-
 	func add(record: Record) -> void:
-		records.push_front(record)
-
 		if max_size >= 0:
-			while records.size() > max_size:
-				records.pop_back()
+			while records.size() >= max_size:
+				record_removed.emit(records.pop_back())
 
+		records.push_front(record)
 		record_added.emit(record)
 
 
@@ -49,14 +44,14 @@ class History:
 	func get_roll_back_point(from: int) -> int:
 		while from < records.size() - 1:
 			from += 1
-			if self.get_reverse(from).stmt.is_rollable: return from
+			if records[from].stmt.is_rollable: return from
 		return -1
 
 
 	func get_roll_ahead_point(from: int) -> int:
 		while from > 0:
 			from -= 1
-			if self.get_reverse(from).stmt.is_rollable: return from
+			if records[from].stmt.is_rollable: return from
 		return -1
 
 
@@ -136,7 +131,7 @@ var history_cursor_index : int = -1 :
 var history_cursor : Record :
 	get:
 		if history_cursor_index == -1: return null
-		return history.get_reverse(history_cursor_index)
+		return history.records[history_cursor_index]
 
 
 var can_roll_back : bool :
@@ -160,6 +155,11 @@ func _init() -> void:
 	history = History.new()
 
 
+func _exit_tree() -> void:
+	insts.erase(self)
+	PennyObject.STATIC_ROOT.clear_instances_downstream(true)
+
+
 func _ready() -> void:
 	PennyImporter.inst.on_reload_finish.connect(try_reload)
 
@@ -173,8 +173,6 @@ func _ready() -> void:
 		jump_to.call_deferred(start_label)
 
 	history.record_added.connect(self.emit_roll_events.unbind(1))
-	history.record_added.connect(print)
-	history.record_removed.connect(print)
 	emit_roll_events()
 
 
@@ -215,14 +213,8 @@ func perform_inits() -> void:
 		await execute(init)
 
 
-func _exit_tree() -> void:
-	insts.erase(self)
-	PennyObject.STATIC_ROOT.clear_instances_downstream(true)
-
-
 func jump_to(label: StringName) -> void:
 	self.abort(Record.Response.RECORD_ONLY)
-	assert(cursor == null)
 	self.execute(Penny.get_stmt_from_label(label))
 
 
