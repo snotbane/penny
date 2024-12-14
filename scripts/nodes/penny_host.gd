@@ -260,7 +260,6 @@ func skip_to_next() -> void:
 	if history_cursor != null:
 		self.roll_ahead()
 	else:
-		if cursor == null: return
 		self.abort(Record.Response.RECORD_AND_ADVANCE)
 
 
