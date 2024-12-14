@@ -7,7 +7,7 @@ class_name StmtOpen extends StmtNode
 
 
 func _get_keyword() -> StringName:
-	return "open"
+	return 'open'
 
 
 # func _get_verbosity() -> Verbosity:
@@ -33,8 +33,15 @@ func _execute(host: PennyHost) :
 	return self.create_record(host)
 
 
-# func _undo(record: Record) -> void:
-# 	super._undo(record)
+func _undo(record: Record) -> void:
+	self.subject_node.queue_free()
+
+
+func _redo(record: Record) -> void:
+	var node : Node = self.instantiate_node_from_path(record.host, subject_path)
+	if node is PennyNode:
+		node.open()
+	record.data = node
 
 
 # func _next(record: Record) -> Stmt:

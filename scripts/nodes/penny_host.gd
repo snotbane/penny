@@ -117,10 +117,10 @@ var history_cursor_index : int = -1 :
 		value = clamp(value, -1, history.records.size() - 1)
 		if _history_cursor_index == value: return
 
+		self.abort(false)
+
 		var increment := signi(value - _history_cursor_index)
 		while _history_cursor_index != value:
-			self.abort(false)
-
 			if increment > 0 and history_cursor:
 				history_cursor.undo()
 
@@ -283,7 +283,7 @@ func roll_end() -> void:
 
 func reset_history() -> void:
 	history.reset_at(history_cursor_index)
-	history_cursor_index = -1
+	_history_cursor_index = -1
 
 
 func next(record : Record) -> Stmt:
