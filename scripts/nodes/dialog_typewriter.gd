@@ -239,10 +239,11 @@ func _character_encountered(c: String, value: Variant) -> void:
 		audio_player.play()
 
 
-func _on_message_received(_dialog: DialogRecord) -> void:
+func receive(record: Record) -> void: _receive(record)
+func _receive(record: Record) -> void:
 	self.complete()
-	subject = _dialog.who
-	message = _dialog.what
+	subject = record.data["who"]
+	message = record.data["what"]
 	rtl.text = message.to_string()
 	unencountered_decos = message.decos.duplicate()
 	unclosed_decos.clear()

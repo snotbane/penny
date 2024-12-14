@@ -41,8 +41,8 @@ func _execute(host: PennyHost) :
 
 
 func _undo(record: Record) -> void:
-	if record.attachment:
-		path.set_data(record.host, record.attachment.before)
+	if record.data:
+		path.set_data(record.host, record.data.before)
 
 
 # func _next(record: Record) -> Stmt:
@@ -52,12 +52,17 @@ func _undo(record: Record) -> void:
 func _create_history_listing(record: Record) -> HistoryListing:
 	var result := super._create_history_listing(record)
 	result.message_label.text = "[color=#%s][code]%s[/code][/color]" % [Penny.IDENTIFIER_COLOR.to_html(), path]
-	if record.attachment:
-		result.message_label.text += " = %s" % record.attachment
+	if record.data:
+		result.message_label.text += " = %s" % record.data
 	return result
 
 
-func create_assignment_record(host: PennyHost, before: Variant, after: Variant, __skip : bool = false) -> Record:
-	var result := create_record(host, AssignmentRecord.new(before, after), __skip)
+func create_assignment_record(host: PennyHost, before: Variant, after: Variant) -> Record:
+	var result := create_record(host, { "before": before, "after": after })
 	host.on_data_modified.emit()
 	return result
+
+
+
+static func assignment_to_string(record: Record) -> String:
+	return " [color=#%s][code]%s[/code][/color]  \u2b60  [code]%s[/code]" % [Penny.FUTURE_COLOR.to_html(), Penny.get_debug_string(record.data["after"]), Penny.get_debug_string(record.data["before"])]

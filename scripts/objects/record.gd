@@ -5,8 +5,7 @@ class_name Record extends Object
 var host : PennyHost
 var stamp : int
 var stmt : Stmt
-var aborted : bool
-var attachment : Variant
+var data : Variant
 
 var verbosity : int :
 	get: return stmt.verbosity
@@ -18,12 +17,11 @@ var prev : Record :
 		return host.history.records[stamp - 1]
 
 
-func _init(_host: PennyHost, _stmt: Stmt, _aborted : bool = false, _attachment: Variant = null) -> void:
+func _init(_host: PennyHost, _stmt: Stmt, _data: Variant = null) -> void:
 	host = _host
 	stamp = host.history.records.size()
 	stmt = _stmt
-	aborted = _aborted
-	attachment = _attachment
+	data = _data
 
 
 func undo() -> void:

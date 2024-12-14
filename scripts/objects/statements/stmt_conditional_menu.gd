@@ -60,4 +60,4 @@ func _evaluate_self(host: PennyHost) -> Variant:
 
 
 func _should_passover(record: Record) -> bool:
-	return not (record.host.expecting_conditional and record.attachment)
+	return not (record.host.expecting_conditional and record.data)

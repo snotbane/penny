@@ -301,8 +301,9 @@ func abort(host : PennyHost, recorded : bool = true) -> void:
 	else:
 		self.aborted.emit(null)
 
+
 func _abort(host : PennyHost) -> Record :
-	return self.create_record(host, null, true)
+	return self.create_record(host, null)
 
 
 ## Executes when the user rewinds through history to undo this action.
@@ -335,8 +336,8 @@ func _create_history_listing(record: Record) -> HistoryListing:
 	return result
 
 
-func create_record(host: PennyHost, attachment: Variant = null, __skip : bool = false) -> Record:
-	return Record.new(host, self, __skip, attachment)
+func create_record(host: PennyHost, data: Variant = null) -> Record:
+	return Record.new(host, self, data)
 
 
 func create_exception(s: String = "Uncaught exception.") -> PennyException:

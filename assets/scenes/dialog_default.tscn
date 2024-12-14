@@ -222,5 +222,4 @@ libraries = {
 [connection signal="closing" from="." to="animation_player" method="play" binds= [&"close"]]
 [connection signal="opened" from="." to="typewriter" method="present"]
 [connection signal="opening" from="." to="animation_player" method="play" binds= [&"open"]]
-[connection signal="received" from="." to="typewriter" method="_on_message_received"]
 [connection signal="completed" from="typewriter" to="." method="prevent_skip"]

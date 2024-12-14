@@ -21,5 +21,5 @@ func _evaluate_self(host: PennyHost) -> Variant:
 
 
 func _should_passover(record: Record) -> bool:
-	return not record.attachment
+	return not record.data
 

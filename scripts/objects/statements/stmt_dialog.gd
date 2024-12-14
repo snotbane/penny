@@ -97,9 +97,8 @@ func _execute(host: PennyHost) :
 
 	var subject : PennyObject = subject_path.evaluate()
 	var what := DecoratedText.from_raw(raw_text)
-	var attach := DialogRecord.new(subject, what)
-	var result := create_record(host, attach)
-	incoming_dialog_node.receive(result, subject)
+	var result := create_record(host, { "who": subject, "what": what })
+	incoming_dialog_node.receive(result)
 
 	await incoming_dialog_node.advanced
 
@@ -109,6 +108,5 @@ func _execute(host: PennyHost) :
 func _abort(host: PennyHost) -> Record:
 	var subject : PennyObject = subject_path.evaluate()
 	var what := DecoratedText.from_raw(raw_text)
-	var attach := DialogRecord.new(subject, what)
-	var result := create_record(host, attach, true)
+	var result := create_record(host, { "who": subject, "what": what })
 	return result

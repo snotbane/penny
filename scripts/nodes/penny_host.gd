@@ -200,7 +200,7 @@ func _input(event: InputEvent) -> void:
 
 
 func try_reload(success: bool) -> void:
-	print("Try reload")
+	print("try_reload : ", self.name)
 	if self.cursor:
 		self.cursor.abort(self)
 		self.last_valid_cursor = self.cursor

@@ -37,5 +37,5 @@ func _execute(host: PennyHost) :
 
 
 func _next(record: Record) -> Stmt:
-	print("Jumping to ", record.attachment)
-	return Penny.get_stmt_from_label(record.attachment)
+	print("Jumping to ", record.data)
+	return Penny.get_stmt_from_label(record.data)

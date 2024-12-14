@@ -30,7 +30,7 @@ func _execute(host: PennyHost) :
 	var value = expr.evaluate(self.owning_object)
 	var message := str(value)
 	print(message)
-	return self.create_record(host, message)
+	return self.create_record(host, { "message": message })
 
 
 # func _undo(record: Record) -> void:
@@ -43,5 +43,5 @@ func _execute(host: PennyHost) :
 
 func _create_history_listing(record: Record) -> HistoryListing:
 	var result := super._create_history_listing(record)
-	result.message_label.text = record.attachment
+	result.message_label.text = record.data["message"]
 	return result

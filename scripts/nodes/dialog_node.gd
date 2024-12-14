@@ -3,8 +3,6 @@ class_name DialogNode extends PennyNode
 
 const PREVENT_SKIP_DELAY_SECONDS := 0.125
 
-signal received(message: DecoratedText)
-
 static var focus_left : bool = false
 
 @export var name_label : RichTextLabel
@@ -43,9 +41,9 @@ func _gui_input(event: InputEvent) -> void:
 		self.try_advance()
 
 
-func receive(record: Record, subject: PennyObject) -> void:
-	name_label.text = str(record.attachment.who.rich_name.to_decorated())
-	received.emit(record.attachment)
+func receive(record: Record) -> void:
+	name_label.text = str(record.data["who"].rich_name.to_decorated())
+	typewriter.receive(record)
 
 
 func prevent_skip() -> void:

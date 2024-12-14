@@ -34,7 +34,7 @@ func _execute(host: PennyHost) :
 
 
 func _next(record: Record) -> Stmt:
-	if record.attachment == null:
+	if record.data == null:
 		record.host.expecting_conditional = false
 		return next_in_same_or_lower_depth
 
@@ -54,7 +54,7 @@ func _next(record: Record) -> Stmt:
 
 func _create_history_listing(record: Record) -> HistoryListing:
 	var result := super._create_history_listing(record)
-	match record.attachment:
+	match record.data:
 		true:
 			result.message_label.text = "%s [code][color=#%s]PASSED[/color][/code]" % [reconstructed_string, Penny.HAPPY_COLOR.to_html()]
 		false:
