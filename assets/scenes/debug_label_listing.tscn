@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://drv4a57pwbptd"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/debug_label_listing.gd" id="1_nu7gm"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/debug_label_listing.gd" id="1_nu7gm"]
 
 
 [node name="debug_label_listing" type="HBoxContainer" node_paths=PackedStringArray("label_node")]

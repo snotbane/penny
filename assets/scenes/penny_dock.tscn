@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://ehssrfkq0q6c"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/penny_dock.gd" id="1_2yk42"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/penny_dock.gd" id="1_2yk42"]
 [ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_wbnl2"]
 
 [node name="Penny" type="Control" node_paths=PackedStringArray("message_log")]

@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="LookupTable" load_steps=4 format=3 uid="uid://cxfy5qyeucf76"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/lookup_table.gd" id="1_b288m"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/lookup_table.gd" id="1_b288m"]
 [ext_resource type="PackedScene" uid="uid://cdfkg5kws5ph4" path="res://assets/scenes/ui/dialog_charybdis.tscn" id="1_hr5qi"]
 [ext_resource type="PackedScene" uid="uid://cuu7puh0nnyug" path="res://addons/penny_godot/assets/scenes/prompt_default.tscn" id="2_704lb"]
 

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://ckwmom7w0dvh1"]
 
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="1_lr0qd"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/history_handler.gd" id="1_vh1ak"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/history_handler.gd" id="1_vh1ak"]
 
 [node name="penny_history_box" type="Control" node_paths=PackedStringArray("scroll_container", "vbox")]
 layout_mode = 3

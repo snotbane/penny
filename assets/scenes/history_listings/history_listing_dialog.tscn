@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://7br0ixjsw2t"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/nodes/history_listing_dialog.gd" id="1_t6h63"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/history_listing_dialog.gd" id="1_t6h63"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_up5ly"]
 

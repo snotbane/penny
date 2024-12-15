@@ -1,14 +1,14 @@
 [gd_resource type="Resource" script_class="PennyDecoRegistry" load_steps=38 format=3 uid="uid://bsrrbmeopuowc"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/abstract/deco_.gd" id="1_xj7ad"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/abstract/deco_span.gd" id="2_cmtfw"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_delay.gd" id="2_pyahk"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/resource/penny_deco_registry.gd" id="4_pdc3q"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_skip.gd" id="6_7ikrb"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_lock.gd" id="6_hullg"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/abstract/deco_combo.gd" id="7_v0yi6"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_speed.gd" id="9_3e4wr"]
-[ext_resource type="Script" path="res://addons/penny_godot/scripts/objects/decorations/deco_wait.gd" id="9_7b5ka"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_.gd" id="1_xj7ad"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_span.gd" id="2_cmtfw"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_delay.gd" id="2_pyahk"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/resources/penny_deco_registry.gd" id="4_pdc3q"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_skip.gd" id="6_7ikrb"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_lock.gd" id="6_hullg"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_combo.gd" id="7_v0yi6"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_speed.gd" id="9_3e4wr"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_wait.gd" id="9_7b5ka"]
 
 [sub_resource type="Resource" id="Resource_tx41o"]
 script = ExtResource("1_xj7ad")
