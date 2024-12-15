@@ -306,6 +306,44 @@ func get_layer(i: int = -1) -> Node:
 	return layers[i]
 
 
+func save() -> void:
+	var path = await prompt_file_path(FileDialog.FILE_MODE_SAVE_FILE)
+	if path == null: return
+
+	var save_file := FileAccess.open(path, FileAccess.WRITE)
+	var save_data := create_save_dict()
+	var save_json := JSON.stringify(save_data, "")
+	save_file.store_line(save_json)
+
+	print("Saved data to ", save_file.get_path_absolute())
+
+
+func load() -> void:
+	var path = await prompt_file_path(FileDialog.FILE_MODE_OPEN_FILE)
+	if path == null : return
+
+	var load_file := FileAccess.open(path, FileAccess.READ)
+	var load_data = JSON.parse_string(load_file.get_as_text())
+	assert(load_data != null, "JSON parser error; data couldn't be loaded.")
+
+
+	print("Loaded data: ", load_data)
+
+
+func prompt_file_path(mode : FileDialog.FileMode ) :
+	var file_dialog := FileDialog.new()
+	file_dialog.access = FileDialog.ACCESS_USERDATA
+	file_dialog.file_mode = mode
+	file_dialog.filters = [ "*.json" ]
+	self.add_child(file_dialog)
+	file_dialog.popup_centered_ratio(0.5)
+	return await Async.any([file_dialog.file_selected, file_dialog.canceled])
+
+
+func create_save_dict() -> Dictionary:
+	return { "name": "Hello", "time": Time.get_datetime_dict_from_system(true) }
+
+
 func emit_roll_events() -> void:
 	on_roll_ahead_disabled.emit(not can_roll_ahead)
 	on_roll_back_disabled.emit(not can_roll_back)
