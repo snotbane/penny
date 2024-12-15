@@ -59,14 +59,14 @@ func _execute(host: PennyHost) :
 		if stmt.is_raw_text_option:
 			key = "_" + str(i)
 			option = PennyObject.new(key, PennyObject.STATIC_ROOT, {
-				PennyObject.BASE_KEY: Path.from_single(PennyObject.BILTIN_OPTION_NAME),
+				PennyObject.BASE_KEY: Path.new_from_single(PennyObject.BILTIN_OPTION_NAME),
 				PennyObject.NAME_KEY: stmt.expr.evaluate()
 			})
 		else:
 			option = stmt.expr.evaluate()
 			key = option.self_key
 		PennyObject.STATIC_ROOT.set_value(key, option)
-		prompt_options.push_back(Path.from_single(key))
+		prompt_options.push_back(Path.new_from_single(key))
 
 	var data := { "before": subject.get_value(PennyObject.RESPONSE_KEY) }
 
@@ -93,4 +93,4 @@ func _redo(record: Record) -> void:
 
 
 func _get_default_subject() -> Path:
-	return Path.from_single(PennyObject.BILTIN_PROMPT_NAME)
+	return Path.new_from_single(PennyObject.BILTIN_PROMPT_NAME)

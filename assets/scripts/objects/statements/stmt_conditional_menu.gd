@@ -29,7 +29,7 @@ func _validate_self_post_setup() -> void:
 	menu_stmt = self.prev_in_lower_depth
 
 	if is_raw_text_option:
-		expected_path = Path.from_single("_" + str(self.index_in_same_depth_chain))
+		expected_path = Path.new_from_single("_" + str(self.index_in_same_depth_chain))
 	else:
 		expected_path = expr.evaluate_shallow(null)
 

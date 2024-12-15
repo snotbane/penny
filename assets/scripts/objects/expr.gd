@@ -130,7 +130,7 @@ class Op extends RefCounted:
 				while stack:
 					var pop = stack.pop_back()
 					if pop is StringName:
-						pop = Path.from_single(pop)
+						pop = Path.new_from_single(pop)
 					arr.push_front(pop)
 				stack.push_back(arr)
 				return
@@ -157,17 +157,6 @@ class Op extends RefCounted:
 var stmt : Stmt
 var symbols : Array[Variant]
 
-var returns_self_softly : bool :
-	get:
-		if symbols.size() == 1: return false
-		var eval_count := 0
-		var dval_count := 0
-		for symbol in symbols:
-			if symbol is Evaluable:
-				eval_count += 1
-			elif symbol is Op and symbol.type == Op.EVALUATE:
-				dval_count += 1
-		return dval_count < eval_count
 
 func _init(_stmt: Stmt, _symbols: Array) -> void:
 	stmt = _stmt

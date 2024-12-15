@@ -31,7 +31,7 @@ func _get_verbosity() -> Verbosity:
 
 func _validate_self_post_setup() -> void:
 	if tokens:
-		subject_path = Path.from_tokens(tokens)
+		subject_path = Path.new_from_tokens(tokens)
 	else:
 		subject_path = _get_default_subject()
 
@@ -54,7 +54,7 @@ func _validate_self_post_setup() -> void:
 
 
 func _get_default_subject() -> Path:
-	return Path.from_single(PennyObject.BILTIN_OBJECT_NAME)
+	return Path.new_from_single(PennyObject.BILTIN_OBJECT_NAME)
 
 
 func instantiate_node_from_object(host: PennyHost, obj : PennyObject) -> Node:

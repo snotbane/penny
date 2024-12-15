@@ -22,7 +22,7 @@ func _validate_self() -> PennyException:
 	if exception:
 		return exception
 
-	path = Path.from_tokens(tokens)
+	path = Path.new_from_tokens(tokens)
 	return null
 
 

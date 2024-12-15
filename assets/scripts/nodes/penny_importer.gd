@@ -8,7 +8,7 @@ signal on_reload_finish(success: bool)
 signal on_reload_cancel
 
 
-static var SCRIPT_RESOURCE_LOADER = preload("res://addons/penny_godot/assets/scripts/resource/penny_script_format_loader.gd").new()
+static var SCRIPT_RESOURCE_LOADER = preload("res://addons/penny_godot/assets/scripts/resources/penny_script_format_loader.gd").new()
 static var DEBUG_SCENE : PackedScene = preload("res://addons/penny_godot/assets/scenes/penny_debug.tscn")
 
 static var inst : PennyImporter

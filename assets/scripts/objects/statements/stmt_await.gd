@@ -36,7 +36,7 @@ func _validate_self_post_setup() -> void:
 	if is_simple_timer_delay:
 		await_value = float(tokens[0].value)
 	else:
-		await_value = Path.from_tokens(tokens)
+		await_value = Path.new_from_tokens(tokens)
 
 
 

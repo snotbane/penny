@@ -9,7 +9,7 @@ func _init(_ids: Array[StringName] = [], _nested : bool = false) -> void:
 	relative = _nested
 
 
-static func from_tokens(tokens: Array[Token]) -> Path:
+static func new_from_tokens(tokens: Array[Token]) -> Path:
 	var _nested = tokens[0].value == '.'
 	if _nested: tokens.pop_front()
 
@@ -20,9 +20,12 @@ static func from_tokens(tokens: Array[Token]) -> Path:
 	return Path.new(_ids, _nested)
 
 
-static func from_string(s: String) -> Path:
-	var _nested = s[0] == '.'
-	if _nested: s = s.substr(1)
+static func new_from_string(s: String) -> Path:
+	assert(s[0] == '/')
+	var _nested = s[1] == '.'
+	if _nested: s = s.substr(2)
+	else:
+		s = s.substr(1)
 
 	var _ids : Array[StringName]
 	var split := s.split(".", false)
@@ -31,7 +34,7 @@ static func from_string(s: String) -> Path:
 	return Path.new(_ids, _nested)
 
 
-static func from_single(s: StringName, _nested: bool = false) -> Path:
+static func new_from_single(s: StringName, _nested: bool = false) -> Path:
 	return Path.new([s], _nested)
 
 
@@ -109,3 +112,7 @@ func append(other: Path) -> Path:
 	while other_ids:
 		self.ids.push_back(other_ids.pop_front())
 	return self
+
+
+func save_data() -> Variant:
+	return self.to_string()

@@ -55,6 +55,10 @@ class History:
 		return -1
 
 
+	func save_data() -> Variant:
+		return {}
+
+
 signal on_try_advance
 signal on_data_modified
 signal on_close
@@ -137,16 +141,9 @@ var history_cursor : Record :
 var can_roll_back : bool :
 	get: return history.get_roll_back_point(history_cursor_index) != -1
 
+
 var can_roll_ahead : bool :
 	get: return history_cursor_index != -1
-
-
-# var can_roll_back : bool :
-# 	get: return record_cursor_index < record_cursor_index_max
-
-
-# var can_roll_ahead : bool :
-# 	get: return record_cursor_index > record_cursor_index_min
 
 
 func _init() -> void:
@@ -316,8 +313,8 @@ func save() -> void:
 	if path == null: return
 
 	var save_file := FileAccess.open(path, FileAccess.WRITE)
-	var save_data := create_save_data()
-	var save_json := JSON.stringify(save_data, "")
+	var save_data : Dictionary = save_data()
+	var save_json := JSON.stringify(save_data, "\t")
 	save_file.store_line(save_json)
 
 	print("Saved data to ", save_file.get_path_absolute())
@@ -337,6 +334,8 @@ func load() -> void:
 	print("Loaded data: ", load_data)
 	print("Loaded cursor: ", cursor)
 
+	_history_cursor_index = load_data["history_cursor_index"]
+
 	self.execute(Penny.get_stmt_from_raw_address(load_data["cursor"]["script"], load_data["cursor"]["index"]))
 
 
@@ -350,21 +349,17 @@ func prompt_file_path(mode : FileDialog.FileMode) :
 	return await Async.any([file_dialog.file_selected, file_dialog.canceled])
 
 
-func create_save_data() -> Dictionary:
+func save_data() -> Variant:
 	return {
 		"meta": {
 			"time_saved_utc": Time.get_datetime_dict_from_system(true),
 			"screenshot": null,
 		},
-		"cursor": create_save_data_for(cursor),
-		"data": null,
-		"history": null,
+		"cursor": Save.object(cursor),
+		"data": Save.object(PennyObject.STATIC_ROOT),
+		"history": Save.object(history),
+		"history_cursor_index": history_cursor_index,
 	}
-
-
-static func create_save_data_for(value: Variant) -> Variant:
-	if value == null: return null
-	return value.create_save_data()
 
 
 func emit_roll_events() -> void:

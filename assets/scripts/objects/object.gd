@@ -13,7 +13,7 @@ enum TreeCell {
 	VALUE
 }
 
-static var DEFAULT_BASE := Path.from_single(BILTIN_OBJECT_NAME, false)
+static var DEFAULT_BASE := Path.new_from_single(BILTIN_OBJECT_NAME, false)
 
 static var STATIC_ROOT := PennyObject.new(BILTIN_STATIC_NAME, null)
 
@@ -253,6 +253,32 @@ func clear_instances_downstream(recursive: bool = false) -> void:
 func clear_instance(match : Node = null) -> void:
 	if match == null or self.local_instance == match:
 		set_value(INST_KEY, null)
+
+
+func save_data() -> Variant:
+	return Save.dict(data)
+
+
+func load_data(json: Dictionary) -> void:
+	var result := {}
+	for k in json.keys():
+		result[k] = Load.any(json[k])
+
+	# Assuming all is valid. We don't want to set any data if the load fails.
+	data = result
+
+
+func reparse_data(host: PennyHost) -> void:
+	for k in data.keys():
+		if k == INST_KEY:
+			if data[k]["spawn_used"]:
+				var inst_data : Dictionary = data[k]
+				var node := self.instantiate(host)
+				if node is PennyNode:
+					node.load_data(inst_data)
+		if data[k] is Dictionary:
+			data[k] = PennyObject.new(k, self, data[k])
+
 
 
 func create_tree_item(tree: DataViewerTree, sort: Sort, _parent: TreeItem = null, path := Path.new()) -> TreeItem:
