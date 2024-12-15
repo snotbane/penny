@@ -148,13 +148,11 @@ audio_player = NodePath("nondirectional_audio_stream_player")
 clip_contents = false
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 1
-anchors_preset = -1
-anchor_left = -0.147396
-anchor_top = 0.476852
-anchor_right = -0.025
-anchor_bottom = 0.523148
-grow_horizontal = 0
-grow_vertical = 2
+offset_left = 32.0
+offset_top = -52.0
+offset_right = 192.0
+offset_bottom = -2.0
+pivot_offset = Vector2(0, 50)
 size_flags_horizontal = 2
 focus_mode = 2
 mouse_filter = 2
@@ -168,7 +166,6 @@ scroll_active = false
 shortcut_keys_enabled = false
 selection_enabled = true
 visible_characters_behavior = 1
-metadata/_edit_use_anchors_ = true
 
 [node name="panel" type="PanelContainer" parent="."]
 self_modulate = Color(1, 1, 1, 0.878431)

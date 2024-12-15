@@ -345,6 +345,10 @@ func create_record(host: PennyHost, data: Variant = null) -> Record:
 	return Record.new(host, self, data)
 
 
+func create_save_data() -> Dictionary:
+	return { "script": owning_script.resource_path, "index": index_in_script }
+
+
 func create_exception(s: String = "Uncaught exception.") -> PennyException:
 	return PennyExceptionRef.new(file_address, s)
 

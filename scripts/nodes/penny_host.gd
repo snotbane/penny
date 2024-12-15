@@ -199,7 +199,7 @@ func try_reload(success: bool) -> void:
 	print("try_reload : ", self.name)
 	if self.cursor:
 		self.abort(Record.Response.IGNORE)
-		reset_history()
+		reset_history_in_place()
 
 	if self.last_valid_cursor:
 		var start : Stmt = self.last_valid_cursor.owning_script.diff.remap_stmt_index(self.last_valid_cursor)
@@ -226,7 +226,7 @@ func execute(stmt : Stmt) :
 
 	var record : Record = await cursor.execute(self)
 	if record.is_recorded:
-		reset_history()
+		reset_history_in_place()
 		history.add(record)
 
 		if record.is_advanced:
@@ -269,8 +269,13 @@ func roll_end() -> void:
 	history_cursor_index = -1
 
 
-func reset_history() -> void:
+func reset_history_in_place() -> void:
 	history.reset_at(history_cursor_index)
+	_history_cursor_index = -1
+
+
+func clear_history() -> void:
+	history.records.clear()
 	_history_cursor_index = -1
 
 
@@ -311,7 +316,7 @@ func save() -> void:
 	if path == null: return
 
 	var save_file := FileAccess.open(path, FileAccess.WRITE)
-	var save_data := create_save_dict()
+	var save_data := create_save_data()
 	var save_json := JSON.stringify(save_data, "")
 	save_file.store_line(save_json)
 
@@ -326,11 +331,16 @@ func load() -> void:
 	var load_data = JSON.parse_string(load_file.get_as_text())
 	assert(load_data != null, "JSON parser error; data couldn't be loaded.")
 
+	self.abort(Record.Response.IGNORE)
+	clear_history()
 
 	print("Loaded data: ", load_data)
+	print("Loaded cursor: ", cursor)
+
+	self.execute(Penny.get_stmt_from_raw_address(load_data["cursor"]["script"], load_data["cursor"]["index"]))
 
 
-func prompt_file_path(mode : FileDialog.FileMode ) :
+func prompt_file_path(mode : FileDialog.FileMode) :
 	var file_dialog := FileDialog.new()
 	file_dialog.access = FileDialog.ACCESS_USERDATA
 	file_dialog.file_mode = mode
@@ -340,8 +350,21 @@ func prompt_file_path(mode : FileDialog.FileMode ) :
 	return await Async.any([file_dialog.file_selected, file_dialog.canceled])
 
 
-func create_save_dict() -> Dictionary:
-	return { "name": "Hello", "time": Time.get_datetime_dict_from_system(true) }
+func create_save_data() -> Dictionary:
+	return {
+		"meta": {
+			"time_saved_utc": Time.get_datetime_dict_from_system(true),
+			"screenshot": null,
+		},
+		"cursor": create_save_data_for(cursor),
+		"data": null,
+		"history": null,
+	}
+
+
+static func create_save_data_for(value: Variant) -> Variant:
+	if value == null: return null
+	return value.create_save_data()
 
 
 func emit_roll_events() -> void:

@@ -84,6 +84,13 @@ static func get_stmt_from_label(label: StringName) -> Stmt:
 		return null
 
 
+static func get_stmt_from_raw_address(script_path: String, index: int) -> Stmt:
+	for script in scripts:
+		if script.resource_path != script_path: continue
+		return script.stmts[index]
+	return null
+
+
 static func log(s: String, c: Color = DEFAULT_COLOR) -> void:
 	if active_dock:
 		active_dock.log(s, c)
