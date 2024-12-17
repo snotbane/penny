@@ -61,3 +61,10 @@ func next() -> Stmt:
 
 func create_history_listing() -> HistoryListing:
 	return stmt.create_history_listing(self)
+
+
+func save_data() -> Variant:
+	return {
+		"stmt": Save.any(stmt),
+		# "data": Save.any(data)
+	}

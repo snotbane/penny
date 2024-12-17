@@ -97,12 +97,15 @@ var rich_name : FilteredText :
 
 
 var node_name : String :
-	get: return "%s (penny)" % name
+	get:
+		var n := name.to_string()
+		if n.is_empty():
+			return self.to_string()
+		return name.to_string()
 
 
 var preferred_layer : int :
-	get:
-		return get_value_or_default(LINK_LAYER_KEY, -1)
+	get: return get_value_or_default(LINK_LAYER_KEY, -1)
 
 
 ## Returns the ultimate ancestor of this object.
@@ -256,10 +259,10 @@ func clear_instance(match : Node = null) -> void:
 
 
 func save_data() -> Variant:
-	return Save.dict(data)
+	return Save.any(data)
 
 
-func load_data(json: Dictionary) -> void:
+func load_data(host: PennyHost, json: Dictionary) -> void:
 	var result := {}
 	for k in json.keys():
 		result[k] = Load.any(json[k])
@@ -267,17 +270,17 @@ func load_data(json: Dictionary) -> void:
 	# Assuming all is valid. We don't want to set any data if the load fails.
 	data = result
 
-
-func reparse_data(host: PennyHost) -> void:
 	for k in data.keys():
-		if k == INST_KEY:
-			if data[k]["spawn_used"]:
-				var inst_data : Dictionary = data[k]
-				var node := self.instantiate(host)
-				if node is PennyNode:
-					node.load_data(inst_data)
-		if data[k] is Dictionary:
-			data[k] = PennyObject.new(k, self, data[k])
+		var v : Variant = data[k]
+		if v is Dictionary:
+			if k == INST_KEY:
+				if not v.has("spawn_used"): continue
+				if v["spawn_used"]:
+					var node := self.instantiate(host)
+					if node is PennyNode:
+						node.load_data(v)
+			else:
+				v = PennyObject.new(k, self, v)
 
 
 

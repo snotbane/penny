@@ -346,7 +346,11 @@ func create_record(host: PennyHost, data: Variant = null) -> Record:
 
 
 func save_data() -> Variant:
-	return { "script": owning_script.resource_path, "index": index_in_script }
+	return {
+		"index": index_in_script,
+		"script": owning_script.resource_path,
+		"string": debug_string
+	}
 
 
 func create_exception(s: String = "Uncaught exception.") -> PennyException:

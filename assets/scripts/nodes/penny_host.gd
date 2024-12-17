@@ -10,7 +10,7 @@ class History:
 	var records : Array[Record]
 	var max_size : int = -1
 
-	var last : Record :
+	var most_recent : Record :
 		get: return records.front()
 
 
@@ -55,8 +55,22 @@ class History:
 		return -1
 
 
+	func get_reverse_index(i: int) -> int:
+		return records.size() - i - 1
+
+
 	func save_data() -> Variant:
-		return {}
+		var copy := records.duplicate()
+		copy.reverse()
+		return {
+			"records": Save.any(copy)
+		}
+
+
+	func load_data(host: PennyHost, json: Dictionary) -> void:
+		records.clear()
+		for record in json["records"]:
+			records.push_front(Record.new(host, Penny.get_stmt_from_raw_address(record["stmt"]["script"], record["stmt"]["index"]), null, Record.Response.IGNORE))
 
 
 signal on_try_advance
@@ -124,11 +138,7 @@ var history_cursor_index : int = -1 :
 			if increment < 0 and history_cursor:
 				history_cursor.redo()
 
-		if history_cursor:
-			self.execute(history_cursor.stmt)
-		else:
-			self.execute_at_end()
-
+		self.execute_at_history_cursor()
 		self.emit_roll_events()
 
 
@@ -170,7 +180,7 @@ func _ready() -> void:
 		jump_to.call_deferred(start_label)
 
 	history.record_added.connect(self.emit_roll_events.unbind(1))
-	emit_roll_events()
+	self.emit_roll_events()
 
 
 func _input(event: InputEvent) -> void:
@@ -203,12 +213,12 @@ func try_reload(success: bool) -> void:
 		self.last_valid_cursor = null
 		if success:
 			## TODO: Go back through the records till you find the new cursor, and undo stmts until that point.
-			execute(start)
+			self.execute(start)
 
 
 func perform_inits() -> void:
 	for init in Penny.inits:
-		await execute(init)
+		await self.execute(init)
 
 
 func jump_to(label: StringName) -> void:
@@ -259,8 +269,6 @@ func roll_back() -> void:
 
 	history_cursor_index = history.get_roll_back_point(history_cursor_index)
 
-	# print("roll_back to %s, %s" % [history_cursor_index, history_cursor.stmt])
-
 
 func roll_end() -> void:
 	history_cursor_index = -1
@@ -287,7 +295,14 @@ func next(record : Record) -> Stmt:
 
 
 func execute_at_end() :
-	await self.execute(self.next(history.last))
+	await self.execute(self.next(history.most_recent))
+
+
+func execute_at_history_cursor() :
+	if history_cursor:
+		self.execute(history_cursor.stmt)
+	else:
+		self.execute_at_end()
 
 
 func try_advance() -> void:
@@ -313,8 +328,8 @@ func save() -> void:
 	if path == null: return
 
 	var save_file := FileAccess.open(path, FileAccess.WRITE)
-	var save_data : Dictionary = save_data()
-	var save_json := JSON.stringify(save_data, "\t")
+	var save_dict : Dictionary = save_data()
+	var save_json := JSON.stringify(save_dict, "\t")
 	save_file.store_line(save_json)
 
 	print("Saved data to ", save_file.get_path_absolute())
@@ -329,14 +344,13 @@ func load() -> void:
 	assert(load_data != null, "JSON parser error; data couldn't be loaded.")
 
 	self.abort(Record.Response.IGNORE)
-	clear_history()
 
-	print("Loaded data: ", load_data)
-	print("Loaded cursor: ", cursor)
+	PennyObject.STATIC_ROOT.load_data(self, load_data["data"])
 
-	_history_cursor_index = load_data["history_cursor_index"]
-
-	self.execute(Penny.get_stmt_from_raw_address(load_data["cursor"]["script"], load_data["cursor"]["index"]))
+	history.load_data(self, load_data["history"])
+	_history_cursor_index = history.get_reverse_index(load_data["history_cursor_index"])
+	self.execute_at_history_cursor()
+	self.emit_roll_events()
 
 
 func prompt_file_path(mode : FileDialog.FileMode) :
@@ -355,10 +369,9 @@ func save_data() -> Variant:
 			"time_saved_utc": Time.get_datetime_dict_from_system(true),
 			"screenshot": null,
 		},
-		"cursor": Save.object(cursor),
-		"data": Save.object(PennyObject.STATIC_ROOT),
-		"history": Save.object(history),
-		"history_cursor_index": history_cursor_index,
+		"data": Save.any(PennyObject.STATIC_ROOT),
+		"history": Save.any(history),
+		"history_cursor_index": history.get_reverse_index(history_cursor_index),
 	}
 
 

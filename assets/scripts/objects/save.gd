@@ -12,8 +12,17 @@ static func any(value: Variant) -> Variant:
 static func object(value: Object) -> Variant:
 	if value.has_method("save_data"):
 		return value.save_data()
+	elif value is Node:
+		return node(value)
 	else:
 		return null
+
+
+static func node(value: Node) -> Dictionary:
+	return {
+		"name": value.name,
+		"parent": value.get_parent().name
+	}
 
 
 static func dict(value: Dictionary) -> Dictionary:

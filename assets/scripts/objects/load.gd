@@ -9,4 +9,3 @@ static func any(json: Variant) -> Variant:
 			"$": return Lookup.new_from_string(json)
 			"#": return Color.html(json)
 	return json
-

@@ -135,6 +135,8 @@ text_label = NodePath("panel/margin_container/scroll_container/margin_container/
 typewriter = NodePath("typewriter")
 immediate_open = false
 immediate_close = false
+save_spawn = false
+save_transform = false
 
 [node name="typewriter" type="Node" parent="." node_paths=PackedStringArray("rtl", "scroll_container", "audio_player")]
 script = ExtResource("3_q7721")
