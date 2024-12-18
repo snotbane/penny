@@ -24,11 +24,12 @@ func _load(path: String, original_path: String, use_sub_threads: bool, cache_mod
 			result = null
 		else:
 			result = Penny.find_script_from_path(path)
+
 		if result == null:
 			result = PennyScript.new()
-		result.update_from_file(file)
 
-		Penny.refresh()
+		result.update_from_file(file)
+		PennyImporter.inst.reload_single(result)
 		return result
 	else:
 		printerr("Failed to load resource at path: ", path)

@@ -49,8 +49,6 @@ func open() -> void:
 			push_error("Unsupported editor '%s'." % editor)
 			return
 
-	print(args)
-
 	var os_name = OS.get_name()
 	match os_name:
 		"Windows":

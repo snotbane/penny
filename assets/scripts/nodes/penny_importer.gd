@@ -35,8 +35,8 @@ static var reload_cache_mode : ResourceLoader.CacheMode :
 
 
 var paths_dates : Dictionary
-
 var init_host : PennyHost
+var is_reloading : bool = false
 
 
 func _enter_tree() -> void:
@@ -50,23 +50,24 @@ func _ready() -> void:
 	if !REGEX.is_valid():
 		print("RegEx expression is not valid: \"" + PNY_FILE_EXPR + "\"")
 
-	init_host = PennyHost.new()
-	init_host.name = "importer_init_host"
-	init_host.allow_rolling = false
-	self.add_child.call_deferred(init_host)
+	if not Engine.is_editor_hint():
+		init_host = PennyHost.new()
+		init_host.name = "importer_init_host"
+		init_host.allow_rolling = false
+		self.add_child.call_deferred(init_host)
 
-	if not (OS.has_feature("template") or Engine.is_editor_hint()):
-		var debug_canvas := CanvasLayer.new()
-		debug_canvas.layer = 256
-		self.add_child.call_deferred(debug_canvas)
-		var debug : PennyDebug = DEBUG_SCENE.instantiate()
-		on_reload_start.connect(debug.on_reload_start.emit)
-		on_reload_finish.connect(debug.on_reload_finish.emit)
-		on_reload_cancel.connect(debug.on_reload_cancel.emit)
+		if not OS.has_feature("template"):
+			var debug_canvas := CanvasLayer.new()
+			debug_canvas.layer = 256
+			self.add_child.call_deferred(debug_canvas)
+			var debug : PennyDebug = DEBUG_SCENE.instantiate()
+			on_reload_start.connect(debug.on_reload_start.emit)
+			on_reload_finish.connect(debug.on_reload_finish.emit)
+			on_reload_cancel.connect(debug.on_reload_cancel.emit)
 
-		debug_canvas.add_child.call_deferred(debug)
+			debug_canvas.add_child.call_deferred(debug)
 
-	reload.call_deferred()
+	reload.call_deferred(true)
 
 
 func _notification(what: int) -> void:
@@ -80,11 +81,11 @@ static func register_formats() -> void:
 	ResourceLoader.add_resource_format_loader(SCRIPT_RESOURCE_LOADER)
 
 
-func reload(hard: bool = false) -> void:
+func reload(hard: bool = false) :
+	is_reloading = true
+
 	# print("Reload (engine %s)" % Engine.is_editor_hint())
 	# print("Deco master registry: ", Deco.MASTER_REGISTRY.keys())
-
-	on_reload_start.emit()
 
 	var scripts : Array[PennyScript]
 	if hard:
@@ -92,10 +93,20 @@ func reload(hard: bool = false) -> void:
 	else:
 		scripts = self.load_modified_script_resources()
 
-	if scripts.size() > 0:
-		Penny.log_clear()
-		Penny.valid = true
+	self.reload_scripts(scripts)
 
+	is_reloading = false
+
+
+func reload_single(script : PennyScript) :
+	if is_reloading: return
+	reload_scripts([script])
+
+
+func reload_scripts(scripts : Array[PennyScript]) -> void:
+	on_reload_start.emit()
+
+	if scripts.size() > 0:
 		Penny.import_scripts(scripts)
 		var exceptions = Penny.refresh()
 
@@ -106,15 +117,18 @@ func reload(hard: bool = false) -> void:
 			Penny.valid = false
 		else:
 			Penny.load()
+			Penny.log_clear()
 			Penny.log_timed("Successfully loaded all (%s) scripts." % str(scripts.size()), Penny.HAPPY_COLOR)
-			init_host.perform_inits()
-		Penny.log_info()
+			if not Engine.is_editor_hint():
+				init_host.perform_inits()
+			Penny.log_info()
 
 		on_reload_finish.emit(Penny.valid)
 	elif Penny.valid:
 		on_reload_cancel.emit()
 	else:
 		on_reload_finish.emit(false)
+
 
 
 func load_modified_script_resources() -> Array[PennyScript]:

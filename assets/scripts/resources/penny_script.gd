@@ -115,12 +115,11 @@ static var LINE_FEED_REGEX := RegEx.create_from_string("\\n")
 var diff : Diff
 var parse_exceptions : Array[PennyException] = []
 
-func _init() -> void:
-	pass
-
 
 func update_from_file(file: FileAccess) -> void:
 	var tokens := parse_tokens_from_raw(file.get_as_text(true), file)
+
+	id = hash(file.get_path())
 
 	var old_stmts : Array[Stmt]
 	if not Engine.is_editor_hint():

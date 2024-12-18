@@ -18,9 +18,9 @@ static var valid : bool = true
 
 static var active_dock : PennyDock:
 	get:
-		# if PennyPlugin.inst:
-		# 	return PennyPlugin.inst.dock
-		return PennyDock.inst
+		if PennyPlugin.inst:
+			return PennyPlugin.inst.dock
+		return null
 
 
 func _init() -> void:
@@ -41,7 +41,16 @@ static func find_script_from_path(path: String) -> PennyScript:
 
 
 static func import_scripts(_scripts: Array[PennyScript]) -> void:
-	scripts = _scripts
+	for e in _scripts:
+		var i := already_has_script(e)
+		if i == -1: scripts.push_back(e)
+		else: scripts[i] = e
+
+
+static func already_has_script(_script : PennyScript) -> int:
+	for i in scripts.size():
+		if scripts[i].id == _script.id: return i
+	return -1
 
 
 static func refresh() -> Array[PennyException]:
@@ -55,6 +64,8 @@ static func refresh() -> Array[PennyException]:
 			if stmt is StmtLabel:
 				var e := Penny.register_label(stmt)
 				if e: result.push_back(e)
+
+	Penny.valid = result.is_empty()
 	return result
 
 
@@ -98,19 +109,18 @@ static func log(s: String, c: Color = DEFAULT_COLOR) -> void:
 
 static func log_error(s: String, c: Color = ERROR_COLOR) -> void:
 	Penny.log(s, c)
-	# push_error(s)
-	printerr(s)
+	print_rich("[color=%s]%s[/color]" % ["red", s])
 	if PennyDebug.inst:
 		PennyDebug.inst.visible = true
 
 
 static func log_warn(s: String, c: Color = WARNING_COLOR) -> void:
 	Penny.log(s, c)
-	push_warning(s)
+	print_rich("[color=%s]%s[/color]" % ["yellow", s])
 
 
 static func log_clear() -> void:
-	if active_dock:
+	if active_dock != null:
 		active_dock.log_clear()
 
 
@@ -121,7 +131,7 @@ static func log_timed(s: String, c: Color = DEFAULT_COLOR) -> void:
 
 
 static func log_info() -> void:
-	Penny.log("%s files / %s blocks / %s words / %s chars" % get_script_info())
+	Penny.log("Total: %s files / %s blocks / %s words / %s chars" % get_script_info())
 
 
 static func get_formatted_time() -> String:
