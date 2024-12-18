@@ -166,7 +166,7 @@ func parse_and_register_stmts(tokens: Array[Token], context_file: FileAccess) ->
 				if token.type == Token.INDENTATION:
 					depth = token.value.length()
 				stmt = Stmt.new()
-				stmt.populate(self, stmts.size(), 0, depth, [])
+				stmt.populate(self, stmts.size(), token.file_address.line, depth, [])
 			if not token.type == Token.INDENTATION:
 				stmt.tokens.push_back(token)
 	if stmt:
@@ -201,7 +201,13 @@ static func parse_tokens_from_raw(raw: String, context_file: FileAccess = null) 
 					pass
 				_:
 					cursor = match.get_start()
-					var token = Token.new(i, match.get_string())
+					var file_address : FileAddress
+					if context_file != null:
+						var line_col := get_line_and_column_numbers(cursor, raw)
+						file_address = FileAddress.new(context_file.get_path(), line_col[0], line_col[1])
+					else:
+						file_address = null
+					var token = Token.new(i, match.get_string(), file_address)
 					result.push_back(token)
 			cursor = match.get_end()
 			break

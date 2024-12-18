@@ -98,7 +98,8 @@ static func log(s: String, c: Color = DEFAULT_COLOR) -> void:
 
 static func log_error(s: String, c: Color = ERROR_COLOR) -> void:
 	Penny.log(s, c)
-	push_error(s)
+	# push_error(s)
+	printerr(s)
 	if PennyDebug.inst:
 		PennyDebug.inst.visible = true
 

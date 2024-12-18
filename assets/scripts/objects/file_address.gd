@@ -2,26 +2,31 @@
 class_name FileAddress extends RefCounted
 
 var path : String
-var path_absolute : String
 var line : int
 var col : int
 
+var path_absolute : String :
+	get: return ProjectSettings.globalize_path(path)
+
+
 func _init(_path: String, _line: int = -1, _col: int = -1) -> void:
 	path = _path
-	path_absolute = "null"
-	# path_absolute = FileAccess.open(_path, FileAccess.READ).get_path_absolute()
 	line = _line
 	col = _col
 
+
 func _to_string() -> String:
 	return "%s,%s,%s" % [path, line, col]
+
 
 static func from_string(s: String) -> FileAddress:
 	var args = s.split(',')
 	return FileAddress.new(args[0], int(args[1]), int(args[2]))
 
+
 var pretty_string : String:
 	get: return "[url=%s]@%s, ln %s[/url]" % [self.to_string(), path, line]
+
 
 func open() -> void:
 	var args = []
@@ -43,6 +48,8 @@ func open() -> void:
 		_:
 			push_error("Unsupported editor '%s'." % editor)
 			return
+
+	print(args)
 
 	var os_name = OS.get_name()
 	match os_name:

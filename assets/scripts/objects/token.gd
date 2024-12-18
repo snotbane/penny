@@ -97,10 +97,12 @@ enum Operator {
 
 var type : int
 var value : Variant
+var file_address : FileAddress
 
-func _init(_type: int, _raw: String) -> void:
+func _init(_type: int, _raw: String, _file_address: FileAddress) -> void:
 	type = _type
 	value = interpret(_raw)
+	file_address = _file_address
 
 func _to_string() -> String:
 	match type:

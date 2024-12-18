@@ -71,3 +71,4 @@ text = "Export..."
 
 [connection signal="toggled" from="vbox/hbox_header/toggle_auto_reload" to="vbox/hbox_header/button_reload" method="set_disabled"]
 [connection signal="pressed" from="vbox/hbox_header/button_reload" to="." method="_on_button_reload_pressed"]
+[connection signal="meta_clicked" from="vbox/panel/margin/message_log" to="." method="_on_link_clicked"]
