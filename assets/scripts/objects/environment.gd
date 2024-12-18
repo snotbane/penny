@@ -42,12 +42,12 @@ static func find_script_from_path(path: String) -> PennyScript:
 
 static func import_scripts(_scripts: Array[PennyScript]) -> void:
 	for e in _scripts:
-		var i := already_has_script(e)
+		var i := get_existing_script_index(e)
 		if i == -1: scripts.push_back(e)
 		else: scripts[i] = e
 
 
-static func already_has_script(_script : PennyScript) -> int:
+static func get_existing_script_index(_script : PennyScript) -> int:
 	for i in scripts.size():
 		if scripts[i].id == _script.id: return i
 	return -1
