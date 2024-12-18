@@ -17,6 +17,10 @@ static func new_from_string(s: String) -> Lookup:
 	return Lookup.new(s.substr(1))
 
 
+static func new_from_load_data(json: String) -> Lookup:
+	return Lookup.new_from_string(json.substr(("lookup::").length()))
+
+
 func _to_string() -> String:
 	return "$" + key
 
@@ -33,4 +37,4 @@ func instantiate(_parent: Node) -> Node:
 
 
 func save_data() -> Variant:
-	return self.to_string()
+	return "lookup::" + self.to_string()

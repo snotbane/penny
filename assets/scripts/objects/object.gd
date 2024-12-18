@@ -79,9 +79,11 @@ const VISIBLE_KEY := StringName('visible')
 const ENABLED_KEY := StringName('enabled')
 const CONSUMED_KEY := StringName('consumed')
 
-var parent : PennyObject
+
 var self_key : StringName
+var parent : PennyObject
 var data : Dictionary
+
 
 var name : FilteredText :
 	get: return FilteredText.from_raw(self.get_value_or_default(NAME_KEY, self_key), self)
@@ -198,27 +200,10 @@ func has_local(key: StringName) -> bool:
 	return data.has(key)
 
 
-func get_or_create_node(_parent: Node, owner := self) -> Node:
-	var result : Node = owner.local_instance
-	if result: return result
-
-	var lookup : Lookup = get_value(LINK_KEY)
-	result = lookup.instantiate(_parent)
-	result.name = owner.node_name
-	owner.set_value(INST_KEY, result)
-
-	return result
-
-
 func instantiate(host: PennyHost) -> Node:
+	self.close_instance()
+	var result : Node = null
 	var _parent = host.get_layer(self.preferred_layer)
-	var result : Node = self.local_instance
-	if result is PennyNode:
-		result.close()
-	elif result:
-		result.queue_free()
-	result = null
-
 	var link : Variant = get_value(LINK_KEY)
 	if link is Lookup:
 		result = link.instantiate(_parent)
@@ -226,6 +211,9 @@ func instantiate(host: PennyHost) -> Node:
 		var resource : PackedScene = load(link)
 		result = resource.instantiate()
 		_parent.add_child(result)
+	else:
+		printerr("Couldn't instantiate '%s' because its link is invalid." % self.to_string())
+		return null
 
 	if result is PennyNode:
 		result.populate(host, self)
@@ -239,7 +227,7 @@ func instantiate(host: PennyHost) -> Node:
 
 var local_instance : Node :
 	get: return self.get_local_value(INST_KEY)
-	set(value): self.set_value(INST_KEY, value)
+	set(value):	self.set_value(INST_KEY, value)
 
 
 func clear_instances_downstream(recursive: bool = false) -> void:
@@ -253,9 +241,19 @@ func clear_instances_downstream(recursive: bool = false) -> void:
 		node.queue_free()
 
 
+func close_instance() -> void:
+	var inst = self.local_instance
+	if inst == null: return
+	if inst is PennyNode:
+		inst.close()
+	elif inst is Node:
+		inst.queue_free()
+	self.clear_instance()
+
+
 func clear_instance(match : Node = null) -> void:
 	if match == null or self.local_instance == match:
-		set_value(INST_KEY, null)
+		self.local_instance = null
 
 
 func save_data() -> Variant:
@@ -263,25 +261,35 @@ func save_data() -> Variant:
 
 
 func load_data(host: PennyHost, json: Dictionary) -> void:
-	var result := {}
+	self.close_instance()
+
+	var result_data := {}
+	var inst_data : Dictionary
 	for k in json.keys():
-		result[k] = Load.any(json[k])
+		match k:
+			INST_KEY:
+				inst_data = json[k]
+			_:
+				if json[k] is Dictionary:
+					var object : PennyObject
+					if data.has(k):
+						object = data[k]
+					else:
+						object = PennyObject.new(k, self)
+					object.load_data(host, json[k])
+					result_data[k] = object
+				else:
+					result_data[k] = Load.any(json[k])
 
 	# Assuming all is valid. We don't want to set any data if the load fails.
-	data = result
+	data = result_data
 
-	for k in data.keys():
-		var v : Variant = data[k]
-		if v is Dictionary:
-			if k == INST_KEY:
-				if not v.has("spawn_used"): continue
-				if v["spawn_used"]:
-					var node := self.instantiate(host)
-					if node is PennyNode:
-						node.load_data(v)
-			else:
-				v = PennyObject.new(k, self, v)
-
+	if inst_data:
+		prints(self, self.local_instance)
+		if inst_data.has("spawn_used") and inst_data["spawn_used"]:
+			var node := self.instantiate(host)
+			if node is PennyNode:
+				node.load_data(inst_data)
 
 
 func create_tree_item(tree: DataViewerTree, sort: Sort, _parent: TreeItem = null, path := Path.new()) -> TreeItem:

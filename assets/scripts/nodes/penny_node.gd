@@ -83,6 +83,6 @@ func get_save_transform_data() -> Variant:
 
 func set_transform_data(json: Variant) -> void:
 	if json == null: return
-	var t = JSON.parse_string(json)
-	if t is Transform3D or t is Transform2D:
-		self.transform = t
+	# var t = JSON.parse_string(json)
+	# if t is Transform3D or t is Transform2D:
+	# 	self.transform = t

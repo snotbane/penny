@@ -70,7 +70,7 @@ class History:
 	func load_data(host: PennyHost, json: Dictionary) -> void:
 		records.clear()
 		for record in json["records"]:
-			records.push_front(Record.new(host, Penny.get_stmt_from_raw_address(record["stmt"]["script"], record["stmt"]["index"]), null, Record.Response.IGNORE))
+			records.push_front(Record.new(host, Penny.get_stmt_from_raw_address(record["stmt"]["script"], record["stmt"]["index"]), Load.any(record["data"]), Record.Response.IGNORE))
 
 
 signal on_try_advance
@@ -329,7 +329,7 @@ func save() -> void:
 
 	var save_file := FileAccess.open(path, FileAccess.WRITE)
 	var save_dict : Dictionary = save_data()
-	var save_json := JSON.stringify(save_dict, "\t")
+	var save_json := JSON.stringify(save_dict, "")
 	save_file.store_line(save_json)
 
 	print("Saved data to ", save_file.get_path_absolute())
@@ -343,12 +343,12 @@ func load() -> void:
 	var load_data = JSON.parse_string(load_file.get_as_text())
 	assert(load_data != null, "JSON parser error; data couldn't be loaded.")
 
-	self.abort(Record.Response.IGNORE)
-
 	PennyObject.STATIC_ROOT.load_data(self, load_data["data"])
 
 	history.load_data(self, load_data["history"])
 	_history_cursor_index = history.get_reverse_index(load_data["history_cursor_index"])
+
+	self.abort(Record.Response.IGNORE)
 	self.execute_at_history_cursor()
 	self.emit_roll_events()
 
@@ -360,14 +360,18 @@ func prompt_file_path(mode : FileDialog.FileMode) :
 	file_dialog.filters = [ "*.json" ]
 	self.add_child(file_dialog)
 	file_dialog.popup_centered_ratio(0.5)
-	return await Async.any([file_dialog.file_selected, file_dialog.canceled])
+	var result = await Async.any([file_dialog.file_selected, file_dialog.canceled])
+	file_dialog.queue_free()
+	return result
 
 
 func save_data() -> Variant:
 	return {
 		"meta": {
-			"time_saved_utc": Time.get_datetime_dict_from_system(true),
+			"git_rev_penny": Utils.get_git_commit_id("res://addons/penny_godot/"),
+			"git_rev_project": Utils.get_git_commit_id(),
 			"screenshot": null,
+			"time_saved_utc": Time.get_datetime_dict_from_system(true),
 		},
 		"data": Save.any(PennyObject.STATIC_ROOT),
 		"history": Save.any(history),

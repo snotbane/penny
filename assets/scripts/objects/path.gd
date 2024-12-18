@@ -38,6 +38,10 @@ static func new_from_single(s: StringName, _nested: bool = false) -> Path:
 	return Path.new([s], _nested)
 
 
+static func new_from_load_data(json: String) -> Path:
+	return Path.new_from_string(json.substr(("path::").length()))
+
+
 func _to_string() -> String:
 	var result = "/"
 	if self.relative: result += "."
@@ -115,4 +119,4 @@ func append(other: Path) -> Path:
 
 
 func save_data() -> Variant:
-	return self.to_string()
+	return "path::" + self.to_string()

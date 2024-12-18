@@ -150,7 +150,7 @@ static func get_debug_string(value: Variant) -> String:
 	if value is PennyObject:
 		return value.self_key
 	elif value is String:
-		return "\"%s\"" % value
+		return "`%s`" % value
 	elif value is Color:
 		return "#" + value.to_html()
 	return str(value)

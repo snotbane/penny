@@ -41,4 +41,4 @@ static func array(value: Array) -> Array:
 
 
 static func color(value: Color) -> String:
-	return "#" + value.to_html(true)
+	return "color::#" + value.to_html(true)
