@@ -2,12 +2,16 @@
 @tool
 class_name PennyDock extends Control
 
+static var inst : PennyDock
+
 @export var message_log : RichTextLabel
 @export var verbosity_selector : OptionButton
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	if not Engine.is_editor_hint():
+		PennyDock.inst = self
 	log_clear()
 
 

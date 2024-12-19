@@ -16,12 +16,15 @@ var dock : Control
 
 func _enter_tree() -> void:
 	inst = self
-	dock = PENNY_DOCK_SCENE.instantiate()
-	self.add_control_to_bottom_panel(dock, "Penny")
+	# dock = PENNY_DOCK_SCENE.instantiate()
+	# self.add_control_to_bottom_panel(dock, "Penny")
+	# PennyDock.inst = dock
 
 
-func _exit_tree() -> void:
-	self.remove_control_from_bottom_panel(dock)
+
+# func _exit_tree() -> void:
+	# self.remove_control_from_bottom_panel(dock)
+
 
 
 func _enable_plugin():

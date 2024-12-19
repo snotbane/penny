@@ -18,10 +18,8 @@ static var valid : bool = true
 
 static var active_dock : PennyDock:
 	get:
-		if PennyPlugin.inst:
-			return PennyPlugin.inst.dock
-		return null
-
+		if PennyDock.inst == null: return null
+		return PennyDock.inst
 
 func _init() -> void:
 	pass
@@ -107,16 +105,21 @@ static func log(s: String, c: Color = DEFAULT_COLOR) -> void:
 		active_dock.log(s, c)
 
 
-static func log_error(s: String, c: Color = ERROR_COLOR) -> void:
+static func log_happy(s: String, c: Color = HAPPY_COLOR) -> void:
 	Penny.log(s, c)
-	print_rich("[color=%s]%s[/color]" % ["red", s])
+	print_rich("[color=green]%s[/color]" % s)
+
+
+static func log_error(s: String, c: Color = ERROR_COLOR, print_alt := s) -> void:
+	Penny.log(s, c)
+	print_rich("[color=red]%s[/color]" % print_alt)
 	if PennyDebug.inst:
 		PennyDebug.inst.visible = true
 
 
 static func log_warn(s: String, c: Color = WARNING_COLOR) -> void:
 	Penny.log(s, c)
-	print_rich("[color=%s]%s[/color]" % ["yellow", s])
+	print_rich("[color=yellow]%s[/color]" % s)
 
 
 static func log_clear() -> void:

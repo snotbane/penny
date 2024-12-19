@@ -24,8 +24,13 @@ static func from_string(s: String) -> FileAddress:
 	return FileAddress.new(args[0], int(args[1]), int(args[2]))
 
 
+var output_log_string : String :
+	get: return "[url=%s]%s, ln %s[/url]" % [path_absolute, path, line]
+
+
 var pretty_string : String:
-	get: return "[url=%s]@%s, ln %s[/url]" % [self.to_string(), path, line]
+	# get: return "[url=%s]@%s, ln %s[/url]" % [self.to_string(), path, line]
+	get: return "[url=%s]%s, ln %s[/url]" % [self.to_string(), path, line]
 
 
 func open() -> void:
