@@ -56,7 +56,7 @@ func _ready() -> void:
 		init_host.allow_rolling = false
 		self.add_child.call_deferred(init_host)
 
-		if not OS.has_feature("template"):
+		if OS.is_debug_build():
 			var debug_canvas := CanvasLayer.new()
 			debug_canvas.layer = 256
 			self.add_child.call_deferred(debug_canvas)
@@ -71,11 +71,12 @@ func _ready() -> void:
 
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_APPLICATION_FOCUS_IN:
-		if Engine.is_editor_hint():
-			register_formats()
-		else:
-			reload.call_deferred()
+	if not OS.has_feature("template"):
+		if what == NOTIFICATION_APPLICATION_FOCUS_IN:
+			if Engine.is_editor_hint():
+				register_formats()
+			else:
+				reload.call_deferred()
 
 static func register_formats() -> void:
 	ResourceLoader.add_resource_format_loader(SCRIPT_RESOURCE_LOADER)

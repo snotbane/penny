@@ -116,10 +116,15 @@ var diff : Diff
 var parse_exceptions : Array[PennyException] = []
 
 
+func _init(path : String) -> void:
+	id = hash(path)
+
+
 func update_from_file(file: FileAccess) -> void:
 	var tokens := parse_tokens_from_raw(file.get_as_text(true), file)
 
-	id = hash(file.get_path())
+	# print(self.resource_path)
+	# id = hash(self.resource_path)
 
 	var old_stmts : Array[Stmt]
 	if not Engine.is_editor_hint():

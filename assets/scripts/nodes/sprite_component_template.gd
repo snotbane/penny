@@ -19,9 +19,6 @@ var _size : Vector2i
 
 		preview_location = preview_location
 
-## Load all textures in this folder on ready, so they're ready for use (rather than needing to load them on demand).
-@export var cache_folder : String
-
 
 @export_subgroup("Preview")
 
@@ -44,9 +41,9 @@ var preview : SpriteComponent
 			preview.name = "preview"
 			self.add_child(preview, false, INTERNAL_MODE_BACK)
 			self.set_deferred("preview_location", preview_location)
-			preview.mirror = _preview_mirror
-			preview.component = _preview_component
 			preview.template = self
+			preview.mirrored = _preview_mirror
+			preview.component = _preview_component
 
 
 var _preview_mirror : bool
@@ -56,7 +53,7 @@ var _preview_mirror : bool
 	set(value):
 		_preview_mirror = value
 		if preview == null: return
-		preview.mirror = _preview_mirror
+		preview.mirrored = _preview_mirror
 
 
 var _preview_component : SpriteComponent.TextureComponent

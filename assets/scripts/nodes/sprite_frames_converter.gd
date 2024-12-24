@@ -8,7 +8,6 @@ class_name SpriteFramesConverter extends Node
 		player = self.get_parent()
 		library_default = player.get_animation_library("")
 
-		refresh_reset_anim()
 		refresh_anims()
 
 var sprite : AnimatedSprite2D
@@ -42,14 +41,20 @@ func refresh_reset_anim() -> void:
 	anim.track_insert_key(sprite_track, 0.0, sprite.sprite_frames)
 
 	var name_track := get_and_clear_track(anim, ^".:animation")
-	anim.track_insert_key(name_track, 0.0, sprite.animation)
+	anim.track_insert_key(name_track, 0.0, anim_name)
 
 	var frame_track := get_and_clear_track(anim, ^".:frame")
 	anim.track_insert_key(frame_track, 0.0, 0)
 
+	anim.loop_mode = Animation.LOOP_NONE
+
 
 func refresh_anims():
 	for anim_name in sprite.sprite_frames.get_animation_names():
+		if anim_name == StringName("RESET"):
+			refresh_reset_anim()
+			continue
+
 		var anim := get_or_create_anim(anim_name)
 
 		var name_track := get_and_clear_track(anim, ^".:animation")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://gtm2kenc70u7"]
+[gd_scene load_steps=20 format=3 uid="uid://gtm2kenc70u7"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/penny_host.gd" id="1_jmae0"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/lookup_table.gd" id="2_4q0nq"]
@@ -12,7 +12,9 @@
 [ext_resource type="Texture2D" uid="uid://bkes8nbos8gam" path="res://addons/penny_godot/assets/textures/icons/PlayTravel.svg" id="10_ryojg"]
 [ext_resource type="Texture2D" uid="uid://cltfleqkuxf36" path="res://addons/penny_godot/assets/textures/icons/PlayTravelFade.svg" id="11_rcx57"]
 [ext_resource type="Texture2D" uid="uid://cnva3qm2uhcom" path="res://addons/penny_godot/assets/textures/icons/Load.svg" id="12_ldkej"]
+[ext_resource type="Texture2D" uid="uid://cifrouur0xbp" path="res://addons/penny_godot/assets/textures/icons/Close.svg" id="12_t4skl"]
 [ext_resource type="Texture2D" uid="uid://yevin05lnguh" path="res://addons/penny_godot/assets/textures/icons/LoadFade.svg" id="13_8blsv"]
+[ext_resource type="Texture2D" uid="uid://oanyf2vrytst" path="res://addons/penny_godot/assets/textures/icons/CloseFade.svg" id="13_64g81"]
 [ext_resource type="Texture2D" uid="uid://cefiymcs8q7i7" path="res://addons/penny_godot/assets/textures/icons/Save.svg" id="13_c1ugg"]
 [ext_resource type="Texture2D" uid="uid://chx1fwltwhmn5" path="res://addons/penny_godot/assets/textures/icons/SaveFade.svg" id="15_175m8"]
 
@@ -95,6 +97,55 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="panel_container_2" type="PanelContainer" parent="canvas_layer/ui"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 48.0
+offset_top = -237.0
+offset_right = 160.0
+offset_bottom = -37.0
+grow_vertical = 0
+
+[node name="margin_container" type="MarginContainer" parent="canvas_layer/ui/panel_container_2"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 16
+
+[node name="grid_container" type="GridContainer" parent="canvas_layer/ui/panel_container_2/margin_container"]
+layout_mode = 2
+theme_override_constants/h_separation = 32
+theme_override_constants/v_separation = 32
+columns = 2
+
+[node name="button_load" type="TextureButton" parent="canvas_layer/ui/panel_container_2/margin_container/grid_container"]
+layout_mode = 2
+tooltip_text = "Load"
+shortcut = SubResource("Shortcut_1eg1u")
+texture_normal = ExtResource("12_ldkej")
+texture_pressed = ExtResource("13_8blsv")
+texture_disabled = ExtResource("13_8blsv")
+
+[node name="button_save" type="TextureButton" parent="canvas_layer/ui/panel_container_2/margin_container/grid_container"]
+layout_mode = 2
+tooltip_text = "Save"
+texture_normal = ExtResource("13_c1ugg")
+texture_pressed = ExtResource("15_175m8")
+texture_disabled = ExtResource("15_175m8")
+
+[node name="button_quit" type="TextureButton" parent="canvas_layer/ui/panel_container_2/margin_container/grid_container"]
+layout_mode = 2
+tooltip_text = "Exit"
+texture_normal = ExtResource("12_t4skl")
+texture_pressed = ExtResource("13_64g81")
+texture_disabled = ExtResource("13_64g81")
+
+[node name="space_2" type="Control" parent="canvas_layer/ui/panel_container_2/margin_container/grid_container"]
+layout_mode = 2
+
 [node name="panel_container" type="PanelContainer" parent="canvas_layer/ui"]
 layout_mode = 1
 anchors_preset = 3
@@ -138,6 +189,7 @@ texture_disabled = ExtResource("9_y2csr")
 flip_h = true
 
 [node name="space" type="Control" parent="canvas_layer/ui/panel_container/margin_container/grid_container"]
+custom_minimum_size = Vector2(0, 81)
 layout_mode = 2
 
 [node name="button_roll_end" type="TextureButton" parent="canvas_layer/ui/panel_container/margin_container/grid_container"]
@@ -147,52 +199,15 @@ texture_normal = ExtResource("10_ryojg")
 texture_pressed = ExtResource("11_rcx57")
 texture_disabled = ExtResource("11_rcx57")
 
-[node name="panel_container_2" type="PanelContainer" parent="canvas_layer/ui"]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 48.0
-offset_top = -237.0
-offset_right = 160.0
-offset_bottom = -37.0
-grow_vertical = 0
-
-[node name="margin_container" type="MarginContainer" parent="canvas_layer/ui/panel_container_2"]
-layout_mode = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 16
-
-[node name="grid_container" type="GridContainer" parent="canvas_layer/ui/panel_container_2/margin_container"]
-layout_mode = 2
-theme_override_constants/h_separation = 32
-theme_override_constants/v_separation = 32
-
-[node name="button_load" type="TextureButton" parent="canvas_layer/ui/panel_container_2/margin_container/grid_container"]
-layout_mode = 2
-tooltip_text = "Load"
-shortcut = SubResource("Shortcut_1eg1u")
-texture_normal = ExtResource("12_ldkej")
-texture_pressed = ExtResource("13_8blsv")
-texture_disabled = ExtResource("13_8blsv")
-
-[node name="button_save" type="TextureButton" parent="canvas_layer/ui/panel_container_2/margin_container/grid_container"]
-layout_mode = 2
-tooltip_text = "Save"
-texture_normal = ExtResource("13_c1ugg")
-texture_pressed = ExtResource("15_175m8")
-texture_disabled = ExtResource("15_175m8")
-
 [connection signal="on_roll_ahead_disabled" from="." to="canvas_layer/ui/panel_container/margin_container/grid_container/button_roll_ahead" method="set_disabled"]
 [connection signal="on_roll_ahead_disabled" from="." to="canvas_layer/ui/panel_container/margin_container/grid_container/button_roll_end" method="set_disabled"]
 [connection signal="on_roll_back_disabled" from="." to="canvas_layer/ui/panel_container/margin_container/grid_container/button_roll_back" method="set_disabled"]
 [connection signal="on_click" from="canvas_layer/ui/input_catcher" to="." method="try_advance"]
+[connection signal="pressed" from="canvas_layer/ui/panel_container_2/margin_container/grid_container/button_load" to="." method="load"]
+[connection signal="pressed" from="canvas_layer/ui/panel_container_2/margin_container/grid_container/button_save" to="." method="save"]
+[connection signal="pressed" from="canvas_layer/ui/panel_container_2/margin_container/grid_container/button_quit" to="." method="close"]
 [connection signal="pressed" from="canvas_layer/ui/panel_container/margin_container/grid_container/button_roll_back" to="." method="roll_back"]
 [connection signal="pressed" from="canvas_layer/ui/panel_container/margin_container/grid_container/button_roll_ahead" to="." method="roll_ahead"]
 [connection signal="pressed" from="canvas_layer/ui/panel_container/margin_container/grid_container/button_roll_end" to="." method="roll_end"]
-[connection signal="pressed" from="canvas_layer/ui/panel_container_2/margin_container/grid_container/button_load" to="." method="load"]
-[connection signal="pressed" from="canvas_layer/ui/panel_container_2/margin_container/grid_container/button_save" to="." method="save"]
 
 [editable path="canvas_layer/ui/v_box_container/history_layer/penny_history_box"]

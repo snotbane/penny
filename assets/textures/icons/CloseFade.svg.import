@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cifrouur0xbp"
-path="res://.godot/imported/Close.svg-a23d7ac7f0d09b6c80f510cb492cf5ad.ctex"
+uid="uid://oanyf2vrytst"
+path="res://.godot/imported/CloseFade.svg-c826e8b7671258714b709dc6bb257be6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/textures/icons/Close.svg"
-dest_files=["res://.godot/imported/Close.svg-a23d7ac7f0d09b6c80f510cb492cf5ad.ctex"]
+source_file="res://addons/penny_godot/assets/textures/icons/CloseFade.svg"
+dest_files=["res://.godot/imported/CloseFade.svg-c826e8b7671258714b709dc6bb257be6.ctex"]
 
 [params]
 

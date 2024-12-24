@@ -26,7 +26,7 @@ func _load(path: String, original_path: String, use_sub_threads: bool, cache_mod
 			result = Penny.find_script_from_path(path)
 
 		if result == null:
-			result = PennyScript.new()
+			result = PennyScript.new(path)
 
 		result.update_from_file(file)
 		PennyImporter.inst.reload_single(result)
