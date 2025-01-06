@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://gtm2kenc70u7"]
+[gd_scene load_steps=22 format=3 uid="uid://gtm2kenc70u7"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/penny_host.gd" id="1_jmae0"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/lookup_table.gd" id="2_4q0nq"]
@@ -21,15 +21,23 @@
 [sub_resource type="InputEventKey" id="InputEventKey_4bh7u"]
 device = -1
 ctrl_pressed = true
-keycode = 83
+keycode = 79
 
 [sub_resource type="Shortcut" id="Shortcut_1eg1u"]
 events = [SubResource("InputEventKey_4bh7u")]
 
+[sub_resource type="InputEventKey" id="InputEventKey_2j54e"]
+device = -1
+ctrl_pressed = true
+keycode = 83
+
+[sub_resource type="Shortcut" id="Shortcut_o2m0l"]
+events = [SubResource("InputEventKey_2j54e")]
+
 [node name="penny_host" type="Node" node_paths=PackedStringArray("layers")]
 script = ExtResource("1_jmae0")
 lookup_tables = Array[ExtResource("2_4q0nq")]([ExtResource("3_lw4vb")])
-layers = [NodePath("canvas_layer/ui/v_box_container/message_layer"), NodePath("canvas_layer/ui/v_box_container/history_layer/penny_history_box/panel_container/margin_container/scroll_container/margin_container/scroll_contents"), NodePath("canvas_layer/ui/other_layer")]
+layers = [NodePath(""), NodePath("canvas_layer/ui/v_box_container/history_layer/penny_history_box/panel_container/margin_container/scroll_container/margin_container/scroll_contents"), NodePath("canvas_layer/ui/other_layer")]
 metadata/deco_registry_default = ExtResource("4_s55ao")
 
 [node name="canvas_layer" type="CanvasLayer" parent="."]
@@ -45,20 +53,23 @@ mouse_filter = 1
 theme = ExtResource("5_3br4k")
 
 [node name="input_catcher" type="Control" parent="canvas_layer/ui"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+layout_mode = 2
+anchors_preset = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 1904.0
+offset_bottom = 1064.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("5_bg7b0")
 
 [node name="v_box_container" type="VBoxContainer" parent="canvas_layer/ui"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+layout_mode = 2
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 1904.0
+offset_bottom = 1064.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -80,134 +91,159 @@ layout_mode = 2
 [node name="scroll_contents" parent="canvas_layer/ui/v_box_container/history_layer/penny_history_box/panel_container/margin_container/scroll_container/margin_container" index="0"]
 theme_override_constants/separation = 16
 
-[node name="message_layer" type="MarginContainer" parent="canvas_layer/ui/v_box_container"]
-custom_minimum_size = Vector2(0, 240)
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/margin_left = 300
-theme_override_constants/margin_right = 300
-theme_override_constants/margin_bottom = 40
-
 [node name="other_layer" type="Control" parent="canvas_layer/ui"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+layout_mode = 2
+anchors_preset = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 1904.0
+offset_bottom = 1064.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="panel_container_2" type="PanelContainer" parent="canvas_layer/ui"]
+[node name="margin_container" type="MarginContainer" parent="canvas_layer/ui"]
 layout_mode = 1
-anchors_preset = 2
+anchors_preset = 12
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 48.0
-offset_top = -237.0
-offset_right = 160.0
-offset_bottom = -37.0
+offset_top = -240.0
+grow_horizontal = 2
 grow_vertical = 0
+pivot_offset = Vector2(0, 240)
 
-[node name="margin_container" type="MarginContainer" parent="canvas_layer/ui/panel_container_2"]
+[node name="h_box_container" type="HBoxContainer" parent="canvas_layer/ui/margin_container"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="file_panel" type="PanelContainer" parent="canvas_layer/ui/margin_container/h_box_container"]
+custom_minimum_size = Vector2(0, 128)
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="margin_container" type="MarginContainer" parent="canvas_layer/ui/margin_container/h_box_container/file_panel"]
 layout_mode = 2
 theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 24
 theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 16
 
-[node name="grid_container" type="GridContainer" parent="canvas_layer/ui/panel_container_2/margin_container"]
+[node name="grid_container" type="GridContainer" parent="canvas_layer/ui/margin_container/h_box_container/file_panel/margin_container"]
 layout_mode = 2
-theme_override_constants/h_separation = 32
-theme_override_constants/v_separation = 32
+size_flags_vertical = 4
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
 columns = 2
 
-[node name="button_load" type="TextureButton" parent="canvas_layer/ui/panel_container_2/margin_container/grid_container"]
+[node name="button_load" type="TextureButton" parent="canvas_layer/ui/margin_container/h_box_container/file_panel/margin_container/grid_container"]
 layout_mode = 2
 tooltip_text = "Load"
+focus_neighbor_right = NodePath("../button_save")
+focus_neighbor_bottom = NodePath("../button_quit")
+focus_next = NodePath("../button_save")
+focus_previous = NodePath("../../../../roll_panel/margin_container/grid_container/button_roll_end")
+focus_mode = 1
 shortcut = SubResource("Shortcut_1eg1u")
 texture_normal = ExtResource("12_ldkej")
 texture_pressed = ExtResource("13_8blsv")
 texture_disabled = ExtResource("13_8blsv")
 
-[node name="button_save" type="TextureButton" parent="canvas_layer/ui/panel_container_2/margin_container/grid_container"]
+[node name="button_save" type="TextureButton" parent="canvas_layer/ui/margin_container/h_box_container/file_panel/margin_container/grid_container"]
 layout_mode = 2
 tooltip_text = "Save"
+focus_neighbor_left = NodePath("../button_load")
+focus_neighbor_right = NodePath("../../../../roll_panel/margin_container/grid_container/button_roll_back")
+focus_next = NodePath("../button_quit")
+focus_previous = NodePath("../button_load")
+focus_mode = 1
+shortcut = SubResource("Shortcut_o2m0l")
 texture_normal = ExtResource("13_c1ugg")
 texture_pressed = ExtResource("15_175m8")
 texture_disabled = ExtResource("15_175m8")
 
-[node name="button_quit" type="TextureButton" parent="canvas_layer/ui/panel_container_2/margin_container/grid_container"]
+[node name="button_quit" type="TextureButton" parent="canvas_layer/ui/margin_container/h_box_container/file_panel/margin_container/grid_container"]
 layout_mode = 2
 tooltip_text = "Exit"
+focus_neighbor_top = NodePath("../button_load")
+focus_next = NodePath("../../../../roll_panel/margin_container/grid_container/button_roll_back")
+focus_previous = NodePath("../button_save")
+focus_mode = 1
 texture_normal = ExtResource("12_t4skl")
 texture_pressed = ExtResource("13_64g81")
 texture_disabled = ExtResource("13_64g81")
 
-[node name="space_2" type="Control" parent="canvas_layer/ui/panel_container_2/margin_container/grid_container"]
+[node name="space" type="Control" parent="canvas_layer/ui/margin_container/h_box_container/file_panel/margin_container/grid_container"]
 layout_mode = 2
 
-[node name="panel_container" type="PanelContainer" parent="canvas_layer/ui"]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -252.0
-offset_top = -220.0
-offset_right = -44.0
-offset_bottom = -44.0
-grow_horizontal = 0
-grow_vertical = 0
+[node name="message_layer" type="Control" parent="canvas_layer/ui/margin_container/h_box_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
 
-[node name="margin_container" type="MarginContainer" parent="canvas_layer/ui/panel_container"]
+[node name="roll_panel" type="PanelContainer" parent="canvas_layer/ui/margin_container/h_box_container"]
+custom_minimum_size = Vector2(0, 128)
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="margin_container" type="MarginContainer" parent="canvas_layer/ui/margin_container/h_box_container/roll_panel"]
 layout_mode = 2
 theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 24
 theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 16
 
-[node name="grid_container" type="GridContainer" parent="canvas_layer/ui/panel_container/margin_container"]
+[node name="grid_container" type="GridContainer" parent="canvas_layer/ui/margin_container/h_box_container/roll_panel/margin_container"]
 layout_mode = 2
-theme_override_constants/h_separation = 32
-theme_override_constants/v_separation = 8
+size_flags_vertical = 4
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
 columns = 2
 
-[node name="button_roll_back" type="TextureButton" parent="canvas_layer/ui/panel_container/margin_container/grid_container"]
+[node name="button_roll_back" type="TextureButton" parent="canvas_layer/ui/margin_container/h_box_container/roll_panel/margin_container/grid_container"]
 layout_mode = 2
 tooltip_text = "Roll Back"
+focus_neighbor_left = NodePath("../../../../file_panel/margin_container/grid_container/button_save")
+focus_neighbor_right = NodePath("../button_roll_ahead")
+focus_next = NodePath("../button_roll_ahead")
+focus_previous = NodePath("../../../../file_panel/margin_container/grid_container/button_quit")
+focus_mode = 1
 texture_normal = ExtResource("7_ns3dh")
 texture_pressed = ExtResource("9_y2csr")
 texture_disabled = ExtResource("9_y2csr")
 
-[node name="button_roll_ahead" type="TextureButton" parent="canvas_layer/ui/panel_container/margin_container/grid_container"]
+[node name="button_roll_ahead" type="TextureButton" parent="canvas_layer/ui/margin_container/h_box_container/roll_panel/margin_container/grid_container"]
 layout_mode = 2
 tooltip_text = "Roll Ahead"
+focus_neighbor_left = NodePath("../button_roll_back")
+focus_neighbor_bottom = NodePath("../button_roll_end")
+focus_next = NodePath("../button_roll_end")
+focus_previous = NodePath("../button_roll_back")
+focus_mode = 1
 texture_normal = ExtResource("7_ns3dh")
 texture_pressed = ExtResource("9_y2csr")
 texture_disabled = ExtResource("9_y2csr")
 flip_h = true
 
-[node name="space" type="Control" parent="canvas_layer/ui/panel_container/margin_container/grid_container"]
-custom_minimum_size = Vector2(0, 81)
+[node name="space" type="Control" parent="canvas_layer/ui/margin_container/h_box_container/roll_panel/margin_container/grid_container"]
 layout_mode = 2
 
-[node name="button_roll_end" type="TextureButton" parent="canvas_layer/ui/panel_container/margin_container/grid_container"]
+[node name="button_roll_end" type="TextureButton" parent="canvas_layer/ui/margin_container/h_box_container/roll_panel/margin_container/grid_container"]
 layout_mode = 2
 tooltip_text = "Roll Ahead to Latest"
+focus_neighbor_top = NodePath("../button_roll_ahead")
+focus_next = NodePath("../../../../file_panel/margin_container/grid_container/button_load")
+focus_previous = NodePath("../button_roll_ahead")
+focus_mode = 1
 texture_normal = ExtResource("10_ryojg")
 texture_pressed = ExtResource("11_rcx57")
 texture_disabled = ExtResource("11_rcx57")
 
-[connection signal="on_roll_ahead_disabled" from="." to="canvas_layer/ui/panel_container/margin_container/grid_container/button_roll_ahead" method="set_disabled"]
-[connection signal="on_roll_ahead_disabled" from="." to="canvas_layer/ui/panel_container/margin_container/grid_container/button_roll_end" method="set_disabled"]
-[connection signal="on_roll_back_disabled" from="." to="canvas_layer/ui/panel_container/margin_container/grid_container/button_roll_back" method="set_disabled"]
+[connection signal="on_roll_ahead_disabled" from="." to="canvas_layer/ui/margin_container/h_box_container/roll_panel/margin_container/grid_container/button_roll_ahead" method="set_disabled"]
+[connection signal="on_roll_ahead_disabled" from="." to="canvas_layer/ui/margin_container/h_box_container/roll_panel/margin_container/grid_container/button_roll_end" method="set_disabled"]
+[connection signal="on_roll_back_disabled" from="." to="canvas_layer/ui/margin_container/h_box_container/roll_panel/margin_container/grid_container/button_roll_back" method="set_disabled"]
 [connection signal="on_click" from="canvas_layer/ui/input_catcher" to="." method="try_advance"]
-[connection signal="pressed" from="canvas_layer/ui/panel_container_2/margin_container/grid_container/button_load" to="." method="load"]
-[connection signal="pressed" from="canvas_layer/ui/panel_container_2/margin_container/grid_container/button_save" to="." method="save"]
-[connection signal="pressed" from="canvas_layer/ui/panel_container_2/margin_container/grid_container/button_quit" to="." method="close"]
-[connection signal="pressed" from="canvas_layer/ui/panel_container/margin_container/grid_container/button_roll_back" to="." method="roll_back"]
-[connection signal="pressed" from="canvas_layer/ui/panel_container/margin_container/grid_container/button_roll_ahead" to="." method="roll_ahead"]
-[connection signal="pressed" from="canvas_layer/ui/panel_container/margin_container/grid_container/button_roll_end" to="." method="roll_end"]
+[connection signal="pressed" from="canvas_layer/ui/margin_container/h_box_container/file_panel/margin_container/grid_container/button_load" to="." method="load"]
+[connection signal="pressed" from="canvas_layer/ui/margin_container/h_box_container/file_panel/margin_container/grid_container/button_save" to="." method="save"]
+[connection signal="pressed" from="canvas_layer/ui/margin_container/h_box_container/file_panel/margin_container/grid_container/button_quit" to="." method="close"]
+[connection signal="pressed" from="canvas_layer/ui/margin_container/h_box_container/roll_panel/margin_container/grid_container/button_roll_back" to="." method="roll_back"]
+[connection signal="pressed" from="canvas_layer/ui/margin_container/h_box_container/roll_panel/margin_container/grid_container/button_roll_ahead" to="." method="roll_ahead"]
+[connection signal="pressed" from="canvas_layer/ui/margin_container/h_box_container/roll_panel/margin_container/grid_container/button_roll_end" to="." method="roll_end"]
 
 [editable path="canvas_layer/ui/v_box_container/history_layer/penny_history_box"]

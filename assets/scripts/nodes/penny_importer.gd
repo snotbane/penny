@@ -24,6 +24,7 @@ const PENNY_FILE_OMIT = [
 	## Temporary
 	# "assets",
 	"ignore",
+	"old",
 ]
 
 static var reload_cache_mode : ResourceLoader.CacheMode :
