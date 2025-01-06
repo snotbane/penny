@@ -66,5 +66,5 @@ func create_history_listing() -> HistoryListing:
 func save_data() -> Variant:
 	return {
 		"stmt": Save.any(stmt),
-		"data": Save.any(data)
+		"data": Save.any(data, true)
 	}

@@ -221,6 +221,12 @@ func perform_inits() -> void:
 		await self.execute(init)
 
 
+func perform_inits_selective(scripts: Array[PennyScript]) -> void:
+	for init in Penny.inits:
+		if not scripts.has(init.owning_script): continue
+		await self.execute(init)
+
+
 func jump_to(label: StringName) -> void:
 	self.abort(Record.Response.RECORD_ONLY)
 	self.execute(Penny.get_stmt_from_label(label))

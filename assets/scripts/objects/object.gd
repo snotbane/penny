@@ -119,6 +119,16 @@ var root : PennyObject :
 		return result
 
 
+var path : Path :
+	get:
+		var result : Array[StringName] = []
+		var cursor := self
+		while cursor.parent != null:
+			result.push_front(cursor.self_key)			
+			cursor = cursor.parent
+		return Path.new(result, false)
+
+
 static func _static_init() -> void:
 	STATIC_ROOT.data = {
 		BILTIN_OBJECT_NAME: BILTIN_OBJECT,
@@ -258,6 +268,10 @@ func clear_instance(match : Node = null) -> void:
 
 func save_data() -> Variant:
 	return Save.any(data)
+
+
+func save_path() -> Variant:
+	return self.path.save_data()
 
 
 func load_data(host: PennyHost, json: Dictionary) -> void:

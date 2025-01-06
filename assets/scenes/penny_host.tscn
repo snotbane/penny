@@ -37,7 +37,7 @@ events = [SubResource("InputEventKey_2j54e")]
 [node name="penny_host" type="Node" node_paths=PackedStringArray("layers")]
 script = ExtResource("1_jmae0")
 lookup_tables = Array[ExtResource("2_4q0nq")]([ExtResource("3_lw4vb")])
-layers = [NodePath(""), NodePath("canvas_layer/ui/v_box_container/history_layer/penny_history_box/panel_container/margin_container/scroll_container/margin_container/scroll_contents"), NodePath("canvas_layer/ui/other_layer")]
+layers = [null, NodePath("canvas_layer/ui/v_box_container/history_layer/penny_history_box/panel_container/margin_container/scroll_container/margin_container/scroll_contents"), NodePath("canvas_layer/ui/other_layer")]
 metadata/deco_registry_default = ExtResource("4_s55ao")
 
 [node name="canvas_layer" type="CanvasLayer" parent="."]

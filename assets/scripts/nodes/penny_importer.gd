@@ -122,9 +122,10 @@ func reload_scripts(scripts : Array[PennyScript]) -> void:
 			Penny.log_clear()
 			Penny.log_timed("Successfully loaded all (%s) scripts." % str(scripts.size()), Penny.HAPPY_COLOR)
 			if not Engine.is_editor_hint():
-				init_host.perform_inits()
+				init_host.perform_inits_selective(scripts)
 			Penny.log_info()
 
+		Penny.log_timed("Finished reload")
 		on_reload_finish.emit(Penny.valid)
 	elif Penny.valid:
 		on_reload_cancel.emit()

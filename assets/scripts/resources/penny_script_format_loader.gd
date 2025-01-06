@@ -19,6 +19,9 @@ func _get_resource_type(path: String) -> String:
 func _load(path: String, original_path: String, use_sub_threads: bool, cache_mode: int) -> Variant:
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file:
+		if not Engine.is_editor_hint():
+			Penny.log_timed("Started loading: %s" % path)
+
 		var result : PennyScript
 		if Engine.is_editor_hint():
 			result = null
@@ -30,6 +33,10 @@ func _load(path: String, original_path: String, use_sub_threads: bool, cache_mod
 
 		result.update_from_file(file)
 		PennyImporter.inst.reload_single(result)
+	
+		if not Engine.is_editor_hint():
+			Penny.log_timed("Finished loading: %s" % path)
+			
 		return result
 	else:
 		printerr("Failed to load resource at path: ", path)

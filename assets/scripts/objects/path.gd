@@ -40,7 +40,7 @@ static func new_from_single(s: StringName, _nested: bool = false) -> Path:
 
 static func new_from_load_data(json: String) -> Path:
 	return Path.new_from_string(json.substr(("path::").length()))
-
+	
 
 func _to_string() -> String:
 	var result = "/"
