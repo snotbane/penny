@@ -164,9 +164,9 @@ func get_local_value(key: StringName) -> Variant:
 func get_base_value(key: StringName) -> Variant:
 	var base : Path = self.get_local_value(BASE_KEY)
 	if base == null: return null
-	var path : Path = base.duplicate()
-	path.ids.push_back(key)
-	return path.evaluate(root)
+	var base_path : Path = base.duplicate()
+	base_path.ids.push_back(key)
+	return base_path.evaluate(root)
 
 ## Returns the value stored in this object's [member data] using a given [key]. If it doesn't exist, look for it in the base (inherited) object.
 func get_value(key: StringName) -> Variant:
@@ -306,7 +306,7 @@ func load_data(host: PennyHost, json: Dictionary) -> void:
 				node.load_data(inst_data)
 
 
-func create_tree_item(tree: DataViewerTree, sort: Sort, _parent: TreeItem = null, path := Path.new()) -> TreeItem:
+func create_tree_item(tree: DataViewerTree, sort: Sort, _parent: TreeItem = null, tree_path := Path.new()) -> TreeItem:
 	var result := tree.create_item(_parent)
 
 	result.set_selectable(TreeCell.ICON, false)
@@ -317,10 +317,10 @@ func create_tree_item(tree: DataViewerTree, sort: Sort, _parent: TreeItem = null
 
 	result.set_selectable(TreeCell.VALUE, false)
 
-	if path.ids:
-		result.set_text(TreeCell.NAME, path.ids.back())
+	if tree_path.ids:
+		result.set_text(TreeCell.NAME, tree_path.ids.back())
 		# if host:
-		# 	var v : Variant = path.get_value(host)
+			# var v : Variant = tree_path.get_value(host)
 		# 	if v is PennyObject:
 		# 		result.set_text(TreeCell.VALUE, v.name)
 	# result.collapsed = true
@@ -334,7 +334,7 @@ func create_tree_item(tree: DataViewerTree, sort: Sort, _parent: TreeItem = null
 	for k in keys:
 		var v : Variant = data[k]
 		if v is PennyObject:
-			var ipath := path.duplicate()
+			var ipath := tree_path.duplicate()
 			ipath.ids.push_back(k)
 			v.create_tree_item(tree, sort, result, ipath)
 		else:
