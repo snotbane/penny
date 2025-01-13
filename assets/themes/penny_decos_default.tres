@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="PennyDecoRegistry" load_steps=38 format=3 uid="uid://bsrrbmeopuowc"]
+[gd_resource type="Resource" script_class="PennyDecoRegistry" load_steps=44 format=3 uid="uid://bsrrbmeopuowc"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_.gd" id="1_xj7ad"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_span.gd" id="2_cmtfw"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_delay.gd" id="2_pyahk"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/resources/penny_deco_registry.gd" id="4_pdc3q"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_meta_.gd" id="5_17hsb"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_skip.gd" id="6_7ikrb"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_lock.gd" id="6_hullg"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_combo.gd" id="7_v0yi6"]
@@ -86,6 +87,13 @@ script = ExtResource("2_cmtfw")
 argument_defaults = {}
 id = &"i"
 
+[sub_resource type="Resource" id="Resource_2osux"]
+script = ExtResource("5_17hsb")
+argument_defaults = {
+"like": &"object"
+}
+id = &"like"
+
 [sub_resource type="Resource" id="Resource_doduq"]
 script = ExtResource("6_hullg")
 argument_defaults = {}
@@ -143,6 +151,28 @@ argument_defaults = {
 }
 id = &"speed"
 
+[sub_resource type="Resource" id="Resource_yb2w6"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {}
+id = &"u"
+
+[sub_resource type="Resource" id="Resource_bvjtb"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {}
+id = &"i"
+
+[sub_resource type="Resource" id="Resource_bpy0l"]
+script = ExtResource("2_cmtfw")
+argument_defaults = {
+"color": Color(0.455, 0.21, 0.7, 1)
+}
+id = &"color"
+
+[sub_resource type="Resource" id="Resource_wrei1"]
+script = ExtResource("7_v0yi6")
+components = Array[ExtResource("1_xj7ad")]([SubResource("Resource_yb2w6"), SubResource("Resource_bvjtb"), SubResource("Resource_bpy0l")])
+id = &"temp"
+
 [sub_resource type="Resource" id="Resource_g3fhu"]
 script = ExtResource("2_cmtfw")
 argument_defaults = {
@@ -199,4 +229,4 @@ id = &"whisper"
 
 [resource]
 script = ExtResource("4_pdc3q")
-deco_resources = Array[ExtResource("1_xj7ad")]([SubResource("Resource_tx41o"), SubResource("Resource_3baju"), SubResource("Resource_a1v7j"), SubResource("Resource_og12b"), SubResource("Resource_8h33d"), SubResource("Resource_pemsi"), SubResource("Resource_uscem"), SubResource("Resource_sinjm"), SubResource("Resource_albvk"), SubResource("Resource_doduq"), SubResource("Resource_53gkt"), SubResource("Resource_giran"), SubResource("Resource_wum1r"), SubResource("Resource_o5ffy"), SubResource("Resource_ivmri"), SubResource("Resource_4q7ug"), SubResource("Resource_qqgtp"), SubResource("Resource_g3fhu"), SubResource("Resource_fiuc5"), SubResource("Resource_8vwtp"), SubResource("Resource_8puu3"), SubResource("Resource_62yjm")])
+deco_resources = Array[ExtResource("1_xj7ad")]([SubResource("Resource_tx41o"), SubResource("Resource_3baju"), SubResource("Resource_a1v7j"), SubResource("Resource_og12b"), SubResource("Resource_8h33d"), SubResource("Resource_pemsi"), SubResource("Resource_uscem"), SubResource("Resource_sinjm"), SubResource("Resource_albvk"), SubResource("Resource_2osux"), SubResource("Resource_doduq"), SubResource("Resource_53gkt"), SubResource("Resource_giran"), SubResource("Resource_wum1r"), SubResource("Resource_o5ffy"), SubResource("Resource_ivmri"), SubResource("Resource_4q7ug"), SubResource("Resource_qqgtp"), SubResource("Resource_wrei1"), SubResource("Resource_g3fhu"), SubResource("Resource_fiuc5"), SubResource("Resource_8vwtp"), SubResource("Resource_8puu3"), SubResource("Resource_62yjm")])
