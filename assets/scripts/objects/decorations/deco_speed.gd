@@ -19,7 +19,7 @@ func _get_is_span() -> bool:
 
 
 func _on_encounter_start(typewriter: Typewriter, inst: DecoInst):
-	typewriter.push_speed_tag(float(inst.args[StringName('speed')]))
+	typewriter.push_speed_tag(float(inst.args[&"speed"]))
 
 
 func _on_encounter_end(typewriter: Typewriter, inst: DecoInst):

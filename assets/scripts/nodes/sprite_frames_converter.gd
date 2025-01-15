@@ -55,7 +55,7 @@ func refresh_anims():
 	var leftover_anims := get_existing_converted_anim_names()
 
 	for anim_name in sprite.sprite_frames.get_animation_names():
-		if anim_name == StringName("RESET"):
+		if anim_name == &"RESET":
 			refresh_reset_anim()
 			continue
 

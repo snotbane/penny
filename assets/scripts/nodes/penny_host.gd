@@ -95,7 +95,7 @@ signal on_roll_ahead_disabled(value : bool)
 @export var autostart := false
 
 ## The label in Penny scripts to start at. Make sure this is populated with a valid label.
-@export var start_label := StringName('start')
+@export var start_label := &"start"
 
 @export var allow_rolling := true
 

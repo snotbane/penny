@@ -36,14 +36,14 @@ static var BILTIN_OPTION := PennyObject.new(BILTIN_OPTION_NAME, STATIC_ROOT, {
 
 static var BILTIN_PROMPT := PennyObject.new(BILTIN_PROMPT_NAME, STATIC_ROOT, {
 	BASE_KEY: Path.new([BILTIN_OBJECT_NAME]),
-	LINK_KEY: Lookup.new(StringName('prompt_default')),
+	LINK_KEY: Lookup.new(&"prompt_default"),
 	OPTIONS_KEY: [],
 	RESPONSE_KEY: -1,
 })
 
 static var BILTIN_DIALOG := PennyObject.new(BILTIN_DIALOG_NAME, STATIC_ROOT, {
 	BASE_KEY: Path.new([BILTIN_OBJECT_NAME]),
-	LINK_KEY: Lookup.new(StringName('dialog_default')),
+	LINK_KEY: Lookup.new(&"dialog_default"),
 	LINK_LAYER_KEY: 0,								## Prefer the bottom layer.
 })
 
@@ -54,30 +54,30 @@ static var PRIORITY_DATA_ENTRIES := [
 	NAME_KEY,
 ]
 
-const BILTIN_STATIC_NAME := StringName('static')
-const BILTIN_OBJECT_NAME := StringName('object')
-const BILTIN_OPTION_NAME := StringName('option')
-const BILTIN_PROMPT_NAME := StringName('prompt')
-const BILTIN_DIALOG_NAME := StringName('dialog')
-const ABLE_KEY := StringName('able')
-const BASE_KEY := StringName('base')
-const COLOR_KEY := StringName('color')
+const BILTIN_STATIC_NAME := &"static"
+const BILTIN_OBJECT_NAME := &"object"
+const BILTIN_OPTION_NAME := &"option"
+const BILTIN_PROMPT_NAME := &"prompt"
+const BILTIN_DIALOG_NAME := &"dialog"
+const ABLE_KEY := &"able"
+const BASE_KEY := &"base"
+const COLOR_KEY := &"color"
 const DIALOG_KEY := BILTIN_DIALOG_NAME
-const FILTERS_KEY := StringName('filters')
-const FILTER_PATTERN_KEY := StringName('pattern')
-const FILTER_REPLACE_KEY := StringName('replace')
-const LINK_KEY := StringName('link')
-const LINK_LAYER_KEY := StringName('link_layer')
-const NAME_KEY := StringName('name')
-const NAME_PREFIX_KEY := StringName('name_prefix')
-const NAME_SUFFIX_KEY := StringName('name_suffix')
-const ICON_KEY := StringName('icon')
-const INST_KEY := StringName('inst')
-const OPTIONS_KEY := StringName('options')
-const RESPONSE_KEY := StringName('response')
-const VISIBLE_KEY := StringName('visible')
-const ENABLED_KEY := StringName('enabled')
-const CONSUMED_KEY := StringName('consumed')
+const FILTERS_KEY := &"filters"
+const FILTER_PATTERN_KEY := &"pattern"
+const FILTER_REPLACE_KEY := &"replace"
+const LINK_KEY := &"link"
+const LINK_LAYER_KEY := &"link_layer"
+const NAME_KEY := &"name"
+const NAME_PREFIX_KEY := &"name_prefix"
+const NAME_SUFFIX_KEY := &"name_suffix"
+const ICON_KEY := &"icon"
+const INST_KEY := &"inst"
+const OPTIONS_KEY := &"options"
+const RESPONSE_KEY := &"response"
+const VISIBLE_KEY := &"visible"
+const ENABLED_KEY := &"enabled"
+const CONSUMED_KEY := &"consumed"
 
 
 var self_key : StringName

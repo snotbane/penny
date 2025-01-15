@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_span.gd" id="2_cmtfw"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_delay.gd" id="2_pyahk"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/resources/penny_deco_registry.gd" id="4_pdc3q"]
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_meta_.gd" id="5_17hsb"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_like.gd" id="5_f2551"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_skip.gd" id="6_7ikrb"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_lock.gd" id="6_hullg"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/decorations/deco_combo.gd" id="7_v0yi6"]
@@ -87,8 +87,8 @@ script = ExtResource("2_cmtfw")
 argument_defaults = {}
 id = &"i"
 
-[sub_resource type="Resource" id="Resource_2osux"]
-script = ExtResource("5_17hsb")
+[sub_resource type="Resource" id="Resource_lutvy"]
+script = ExtResource("5_f2551")
 argument_defaults = {
 "like": &"object"
 }
@@ -229,4 +229,4 @@ id = &"whisper"
 
 [resource]
 script = ExtResource("4_pdc3q")
-deco_resources = Array[ExtResource("1_xj7ad")]([SubResource("Resource_tx41o"), SubResource("Resource_3baju"), SubResource("Resource_a1v7j"), SubResource("Resource_og12b"), SubResource("Resource_8h33d"), SubResource("Resource_pemsi"), SubResource("Resource_uscem"), SubResource("Resource_sinjm"), SubResource("Resource_albvk"), SubResource("Resource_2osux"), SubResource("Resource_doduq"), SubResource("Resource_53gkt"), SubResource("Resource_giran"), SubResource("Resource_wum1r"), SubResource("Resource_o5ffy"), SubResource("Resource_ivmri"), SubResource("Resource_4q7ug"), SubResource("Resource_qqgtp"), SubResource("Resource_wrei1"), SubResource("Resource_g3fhu"), SubResource("Resource_fiuc5"), SubResource("Resource_8vwtp"), SubResource("Resource_8puu3"), SubResource("Resource_62yjm")])
+deco_resources = Array[ExtResource("1_xj7ad")]([SubResource("Resource_tx41o"), SubResource("Resource_3baju"), SubResource("Resource_a1v7j"), SubResource("Resource_og12b"), SubResource("Resource_8h33d"), SubResource("Resource_pemsi"), SubResource("Resource_uscem"), SubResource("Resource_sinjm"), SubResource("Resource_albvk"), SubResource("Resource_lutvy"), SubResource("Resource_doduq"), SubResource("Resource_53gkt"), SubResource("Resource_giran"), SubResource("Resource_wum1r"), SubResource("Resource_o5ffy"), SubResource("Resource_ivmri"), SubResource("Resource_4q7ug"), SubResource("Resource_qqgtp"), SubResource("Resource_wrei1"), SubResource("Resource_g3fhu"), SubResource("Resource_fiuc5"), SubResource("Resource_8vwtp"), SubResource("Resource_8puu3"), SubResource("Resource_62yjm")])
