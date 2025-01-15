@@ -2,6 +2,8 @@
 @tool
 class_name SpriteFramesConverter extends Node
 
+const CONVERTED_NAME_DELIMITER : String = "_"
+
 @export var refresh : bool :
 	set(value):
 		sprite = self.get_parent().get_parent()
@@ -50,12 +52,15 @@ func refresh_reset_anim() -> void:
 
 
 func refresh_anims():
+	var leftover_anims := get_existing_converted_anim_names()
+
 	for anim_name in sprite.sprite_frames.get_animation_names():
 		if anim_name == StringName("RESET"):
 			refresh_reset_anim()
 			continue
 
 		var anim := get_or_create_anim(anim_name)
+		leftover_anims.erase(anim_name)
 
 		var name_track := get_and_clear_track(anim, ^".:animation")
 		anim.track_insert_key(name_track, 0.0, anim_name)
@@ -72,6 +77,17 @@ func refresh_anims():
 			anim.loop_mode = Animation.LOOP_LINEAR
 		else:
 			anim.loop_mode = Animation.LOOP_NONE
+
+	for anim_name in leftover_anims:
+		library_default.remove_animation(anim_name)
+
+	
+func get_existing_converted_anim_names() -> Array[StringName]:
+	var result : Array[StringName]
+	for anim_name in library_default.get_animation_list():
+		if (anim_name as String)[0] == CONVERTED_NAME_DELIMITER:
+			result.push_back(anim_name)
+	return result
 
 
 func get_or_create_anim(anim_name : StringName) -> Animation:
