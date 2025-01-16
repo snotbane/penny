@@ -2,11 +2,6 @@
 @tool
 class_name Penny extends Node
 
-signal on_reload_start
-signal on_reload_finish(success: bool)
-signal on_reload_cancel
-
-
 const OMIT_SCRIPT_FOLDERS := [
 	".godot",
 	".vscode",
@@ -142,6 +137,11 @@ static func get_script_paths(omit := OMIT_SCRIPT_FOLDERS, start_path := "res://"
 
 static func register_formats() -> void:
 	ResourceLoader.add_resource_format_loader(preload("res://addons/penny_godot/assets/scripts/penny_script_format_loader.gd").new())
+
+
+signal on_reload_start
+signal on_reload_finish(success: bool)
+signal on_reload_cancel
 
 
 func _enter_tree() -> void:
