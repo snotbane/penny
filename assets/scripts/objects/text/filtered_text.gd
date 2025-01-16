@@ -3,9 +3,9 @@
 class_name FilteredText extends Text
 
 
-static func from_raw(raw: String, context: PennyObject) -> FilteredText:
+static func from_raw(raw: String, _context: PennyObject) -> FilteredText:
 
-	# print("FilteredText -> Raw: '%s', context: %s" % [raw, context.self_key])
+	# print("FilteredText -> Raw: '%s', _context: %s" % [raw, _context.self_key])
 
 	## INTERPOLATION
 	while true:
@@ -13,8 +13,8 @@ static func from_raw(raw: String, context: PennyObject) -> FilteredText:
 		if not pattern_match: break
 
 		var interp_expr_string := pattern_match.get_string(1) + pattern_match.get_string(2)	## ~= $1$2
-		var inter_expr := Expr.from_tokens(PennyScript.parse_tokens_from_raw(interp_expr_string))
-		var result = inter_expr.evaluate(context)
+		var interp_expr := Expr.from_tokens(PennyScript.parse_tokens_from_raw(interp_expr_string))
+		var result = interp_expr.evaluate(_context)
 		var result_string : String
 		if result == null:
 			result_string = "NULL"
@@ -28,10 +28,10 @@ static func from_raw(raw: String, context: PennyObject) -> FilteredText:
 		raw = sub_match(pattern_match, result_string)
 
 	## FILTERS
-	var filters : Array = context.get_value_or_default(PennyObject.FILTERS_KEY, [])
+	var filters : Array = _context.get_value_or_default(PennyObject.FILTERS_KEY, [])
 	for filter_path in filters:
 
-		var filter : PennyObject = filter_path.evaluate(context)
+		var filter : PennyObject = filter_path.evaluate(_context)
 		var pattern := RegEx.create_from_string(filter.get_value(PennyObject.FILTER_PATTERN_KEY))
 		var replace : String = filter.get_value(PennyObject.FILTER_REPLACE_KEY)
 
@@ -73,5 +73,5 @@ func append(other: FilteredText) -> void:
 	self.text += other.text
 
 
-func append_raw(raw: String, context: PennyObject) -> void:
-	self.append(FilteredText.from_raw(raw, context))
+func append_raw(raw: String, _context: PennyObject) -> void:
+	self.append(FilteredText.from_raw(raw, _context))

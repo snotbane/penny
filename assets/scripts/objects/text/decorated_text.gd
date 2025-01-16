@@ -9,7 +9,7 @@ const DECO_DELIMITER = ";"
 var decos : Array[DecoInst]
 
 
-static func from_filtered(filtered: FilteredText, context := PennyObject.STATIC_ROOT) -> DecoratedText:
+static func from_filtered(filtered: FilteredText, _context := PennyObject.STATIC_ROOT) -> DecoratedText:
 
 	# print("DecoratedText -> Filtered: '%s'" % filtered.text)
 
@@ -38,7 +38,7 @@ static func from_filtered(filtered: FilteredText, context := PennyObject.STATIC_
 			tags_needing_end_stack.push_back(0)
 			var deco_strings := tag_match.get_string(1).split(DECO_DELIMITER, false)
 			for deco_string in deco_strings:
-				var deco := DecoInst.new(deco_string, context)
+				var deco := DecoInst.new(deco_string, _context)
 				result.decos.push_back(deco)
 				deco.register_start(result, tag_match.get_start())
 				bbcode_start_tags_string += deco.bbcode_tag_start
@@ -68,6 +68,6 @@ static func from_filtered(filtered: FilteredText, context := PennyObject.STATIC_
 	return result
 
 
-static func from_raw(raw: String, context := PennyObject.STATIC_ROOT) -> DecoratedText:
-	var filtered := FilteredText.from_raw(raw, context)
-	return DecoratedText.from_filtered(filtered, context)
+static func from_raw(raw: String, _context := PennyObject.STATIC_ROOT) -> DecoratedText:
+	var filtered := FilteredText.from_raw(raw, _context)
+	return DecoratedText.from_filtered(filtered, _context)

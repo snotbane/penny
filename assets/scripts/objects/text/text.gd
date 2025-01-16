@@ -14,13 +14,14 @@ static var ESCAPE_SUBSITUTIONS := {
 	"]": "[rb]"
 }
 
+var context : PennyObject
 var text : String
 
 func _init(string: String = "") -> void:
 	text = string
 
 func _to_string() -> String:
-	return text
+	return str(context) + ": " + text
 
 
 static func sub_match(match: RegExMatch, sub: String) -> String:

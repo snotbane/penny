@@ -216,8 +216,9 @@ func reset() -> void:
 
 
 func present() -> void:
-	play_state = PlayState.PLAYING
 	cursor = 0
+	await get_tree().create_timer(0.5).timeout
+	play_state = PlayState.PLAYING
 
 
 func prod() -> void:
@@ -244,7 +245,7 @@ func _receive(record: Record) -> void:
 	self.complete()
 	subject = record.data["who"]
 	message = record.data["what"]
-	rtl.text = message.to_string()
+	rtl.text = message.text
 	unencountered_decos = message.decos.duplicate()
 	unclosed_decos.clear()
 	for deco in message.decos:

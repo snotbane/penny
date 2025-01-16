@@ -30,7 +30,7 @@ func receive(_option: PennyObject) -> void:
 	self.disabled = not option.get_value_or_default(PennyObject.ENABLED_KEY, true)
 	self.consumed = option.get_value_or_default(PennyObject.CONSUMED_KEY, false)
 
-	label.text = "[center]%s" % DecoratedText.from_filtered(option.rich_name)
+	label.text = "[center]%s" % DecoratedText.from_filtered(option.rich_name).text
 
 
 func refresh_size() -> void:
