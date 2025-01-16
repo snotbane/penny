@@ -15,8 +15,40 @@ func _init(path : String) -> void:
 func update_from_file(file: FileAccess) -> void:
 	var tokens := parse_code_to_tokens(file.get_as_text(true), file)
 
-	print(tokens)
+	# var old_stmts : Array[Stmt]
+	# if not Engine.is_editor_hint():
+	# 	old_stmts = stmts.duplicate()
+
+	stmts = parse_tokens_to_stmts(tokens, file)
+
 	pass
+
+
+static func parse_tokens_to_stmts(tokens: Array[Token], context_file: FileAccess) -> Array[Stmt]:
+	var token_groups : Array = [[]]
+	var i := 0
+	for token in tokens:
+		if token.type == Token.Type.TERMINATOR:
+			if not token_groups[i].is_empty():
+				token_groups.push_back([])
+				i += 1
+			continue
+		token_groups[i].push_back(token)
+	if token_groups.back().is_empty(): token_groups.pop_back()
+
+	var result : Array[Stmt]
+	for group in token_groups:
+		## Determine the type of stmt to create
+		var stmt : Stmt
+		for token in group:
+			pass
+
+		## Populate the stmt with the tokens
+		for token in group:
+			pass
+
+	return result
+
 
 
 static func parse_code_to_tokens(raw: String, context_file: FileAccess = null) -> Array[Token]:
