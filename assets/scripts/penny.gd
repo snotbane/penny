@@ -28,6 +28,10 @@ static var reload_cache_mode : ResourceLoader.CacheMode :
 	get: return ResourceLoader.CacheMode.CACHE_MODE_REUSE if OS.has_feature("template") else ResourceLoader.CacheMode.CACHE_MODE_REPLACE
 
 
+static func register_formats() -> void:
+	ResourceLoader.add_resource_format_loader(preload("res://addons/penny_godot/assets/scripts/penny_script_format_loader.gd").new())
+
+
 static func find_script_from_path(path: String) -> PennyScript:
 	for i in scripts:
 		if i.resource_path == path:
@@ -133,10 +137,6 @@ static func get_script_paths(omit := OMIT_SCRIPT_FOLDERS, start_path := "res://"
 			result.push_back(next_path)
 		file_name = dir.get_next()
 	return result
-
-
-static func register_formats() -> void:
-	ResourceLoader.add_resource_format_loader(preload("res://addons/penny_godot/assets/scripts/penny_script_format_loader.gd").new())
 
 
 signal on_reload_start

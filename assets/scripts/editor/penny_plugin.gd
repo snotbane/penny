@@ -9,7 +9,6 @@ const AUTOLOAD_NAME = "penny"
 
 
 func _enable_plugin():
-	# The autoload can be a scene or script file.
 	self.add_autoload_singleton(AUTOLOAD_NAME, IMPORTER)
 
 
