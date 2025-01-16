@@ -8,6 +8,7 @@ const OMIT_SCRIPT_FOLDERS := [
 	".templates",
 	"addons"
 ]
+static var SCRIPT_RESOURCE_LOADER := preload("res://addons/penny_godot/assets/scripts/penny_script_format_loader.gd").new()
 
 static var inst : Penny
 static var is_reloading_bulk : bool = false
@@ -29,7 +30,7 @@ static var reload_cache_mode : ResourceLoader.CacheMode :
 
 
 static func register_formats() -> void:
-	ResourceLoader.add_resource_format_loader(preload("res://addons/penny_godot/assets/scripts/penny_script_format_loader.gd").new())
+	ResourceLoader.add_resource_format_loader(SCRIPT_RESOURCE_LOADER)
 
 
 static func find_script_from_path(path: String) -> PennyScript:
@@ -39,7 +40,7 @@ static func find_script_from_path(path: String) -> PennyScript:
 	return null
 
 
-static func load(path: String, type_hint := "") -> Variant:
+static func load_script(path: String, type_hint := "") -> Variant:
 	return ResourceLoader.load(path, type_hint, reload_cache_mode)
 
 
@@ -50,8 +51,8 @@ static func reload_all() -> void:
 	script_reload_timestamps.clear()
 	for path in Penny.get_script_paths():
 		script_reload_timestamps[path] = FileAccess.get_modified_time(path)
-		result.push_back(Penny.load(path))
-	
+		result.push_back(Penny.load_script(path))
+
 	Penny.reload_many(result)
 	is_reloading_bulk = false
 
@@ -68,13 +69,13 @@ static func reload_updated() -> void:
 		if script_reload_timestamps.has(path):
 			del_paths.erase(path)
 			if FileAccess.get_modified_time(path) != script_reload_timestamps[path]:
-				result.push_back(Penny.load(path))
+				result.push_back(Penny.load_script(path))
 		else:
-			result.push_back(Penny.load(path))
+			result.push_back(Penny.load_script(path))
 		script_reload_timestamps[path] = FileAccess.get_modified_time(path)
 	for path in del_paths:
 		script_reload_timestamps.erase(path)
-	
+
 	Penny.reload_many(result)
 	is_reloading_bulk = false
 
@@ -118,7 +119,6 @@ static func reload_many(_scripts: Array[PennyScript] = scripts):
 		inst.on_reload_cancel.emit()
 	else:
 		inst.on_reload_finish.emit(false)
-	is_reloading_bulk = false
 
 
 static func get_script_paths(omit := OMIT_SCRIPT_FOLDERS, start_path := "res://") -> PackedStringArray:

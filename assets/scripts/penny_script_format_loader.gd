@@ -20,7 +20,7 @@ func _load(path: String, original_path: String, use_sub_threads: bool, cache_mod
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file:
 		var result : PennyScript
-		
+
 		if Engine.is_editor_hint():
 			result = null
 		else:
@@ -31,7 +31,7 @@ func _load(path: String, original_path: String, use_sub_threads: bool, cache_mod
 
 		result.update_from_file(file)
 		Penny.reload_single(result)
-				
+
 		return result
 	else:
 		printerr("Failed to load resource at path: ", path)
