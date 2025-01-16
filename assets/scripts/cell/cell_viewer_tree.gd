@@ -100,6 +100,8 @@ func create_tree_item_for_any(parent: TreeItem, key: StringName, value: Variant,
 		result.collapsed = true
 		for i in value.size():
 			create_tree_item_for_any(result, str(i), value[i], Sort.NONE)
+	elif value is Cell.Ref:
+		result.set_custom_color(Column.VALUE, Cell.Ref.COLOR)
 	elif value is Color:
 		result.set_custom_color(Column.VALUE, value)
 
@@ -115,7 +117,7 @@ static func get_icon(value: Variant) -> Texture2D:
 	if value is	Color:
 		return preload("res://addons/penny_godot/assets/textures/icons/Color.svg")
 	if value is Cell.Ref:
-		return preload("res://addons/penny_godot/assets/textures/icons/Path.svg")
+		return preload("res://addons/penny_godot/assets/textures/icons/Ref.svg")
 	# if value is Lookup:
 	# 	return preload("res://addons/penny_godot/assets/textures/icons/Lookup.svg")
 	# if value is Expr:
@@ -175,9 +177,6 @@ func _on_filter_values_toggled(value : bool) -> void:
 
 func _on_filter_query_changed(value : String) -> void:
 	filter_query = value
-
-func _on_filter_query_cleared() -> void:
-	filter_query = ""
 
 func _on_sort_type_changed(value : int) -> void:
 	sort_type = value as Sort

@@ -2,6 +2,8 @@
 class_name Cell extends RefCounted
 
 class Ref:
+	const COLOR := Color8(65, 122, 236)
+
 	var ids : PackedStringArray
 	var rel : bool
 
@@ -25,7 +27,7 @@ class Ref:
 		var result := "." if rel else ""
 		for id in ids:
 			result += id + "."
-		return result.substr(0, result.length() - 1)
+		return "/" + result.substr(0, result.length() - 1)
 
 static var ROOT := Cell.new(&"", null, {})
 
@@ -58,6 +60,7 @@ static var OPTION := Cell.new(&"option", ROOT, {
 var key_name : StringName
 var parent : Cell
 var data : Variant
+
 
 func _init(_key_name : StringName, _parent : Cell, _data : Variant) -> void:
 	key_name = _key_name

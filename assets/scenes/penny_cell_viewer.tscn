@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://c7yh1rwq1ctx"]
+[gd_scene load_steps=5 format=3 uid="uid://c7yh1rwq1ctx"]
 
 [ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_4hgau"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/cell/cell_viewer_tree.gd" id="1_gx8ks"]
+[ext_resource type="Texture2D" uid="uid://c5nb4l2ge7dlq" path="res://addons/penny_godot/assets/textures/icons/Clear.svg" id="3_aabdw"]
+[ext_resource type="Texture2D" uid="uid://dbn36dthttn4c" path="res://addons/penny_godot/assets/textures/icons/Search.svg" id="4_v17jm"]
 
 [node name="penny_cell_viewer" type="Control"]
 layout_mode = 3
@@ -30,3 +32,73 @@ columns = 3
 column_titles_visible = true
 hide_root = true
 script = ExtResource("1_gx8ks")
+
+[node name="hbox_view" type="HBoxContainer" parent="v_box_container"]
+layout_mode = 2
+
+[node name="filter_values" type="CheckButton" parent="v_box_container/hbox_view"]
+layout_mode = 2
+tooltip_text = "Also search values in the query."
+focus_mode = 0
+button_pressed = true
+
+[node name="sort" type="OptionButton" parent="v_box_container/hbox_view"]
+layout_mode = 2
+tooltip_text = "Sort order."
+selected = 0
+item_count = 3
+popup/item_0/text = "Default"
+popup/item_1/text = "A to Z"
+popup/item_1/id = 1
+popup/item_2/text = "Recent"
+popup/item_2/id = 2
+popup/item_2/disabled = true
+
+[node name="filter" type="LineEdit" parent="v_box_container/hbox_view"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+placeholder_text = "Search..."
+
+[node name="filter_clear" type="Button" parent="v_box_container/hbox_view/filter"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -8.0
+grow_horizontal = 0
+grow_vertical = 2
+tooltip_text = "Clear search query."
+focus_mode = 0
+icon = ExtResource("3_aabdw")
+flat = true
+icon_alignment = 2
+
+[node name="hbox_zoom" type="HBoxContainer" parent="v_box_container/hbox_view"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="zoom" type="HSlider" parent="v_box_container/hbox_view/hbox_zoom"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 10.0
+max_value = 18.0
+step = 2.0
+value = 12.0
+tick_count = 5
+
+[node name="zoom_reset" type="Button" parent="v_box_container/hbox_view/hbox_zoom"]
+layout_mode = 2
+icon = ExtResource("4_v17jm")
+flat = true
+
+[connection signal="toggled" from="v_box_container/hbox_view/filter_values" to="v_box_container/data_tree" method="_on_filter_values_toggled"]
+[connection signal="item_selected" from="v_box_container/hbox_view/sort" to="v_box_container/data_tree" method="_on_sort_type_changed"]
+[connection signal="text_changed" from="v_box_container/hbox_view/filter" to="v_box_container/data_tree" method="_on_filter_query_changed"]
+[connection signal="pressed" from="v_box_container/hbox_view/filter/filter_clear" to="v_box_container/hbox_view/filter" method="clear"]
+[connection signal="pressed" from="v_box_container/hbox_view/filter/filter_clear" to="v_box_container/hbox_view/filter" method="release_focus"]
+[connection signal="value_changed" from="v_box_container/hbox_view/hbox_zoom/zoom" to="v_box_container/data_tree" method="_on_font_size_changed"]
+[connection signal="pressed" from="v_box_container/hbox_view/hbox_zoom/zoom_reset" to="v_box_container/hbox_view/hbox_zoom/zoom" method="set_value" binds= [10.0]]
