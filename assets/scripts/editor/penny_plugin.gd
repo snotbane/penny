@@ -4,8 +4,8 @@
 class_name PennyPlugin extends EditorPlugin
 
 const RECOGNIZED_EXTENSIONS : PackedStringArray = ["pny"]
-const IMPORTER := "res://addons/penny_godot/assets/scripts/resources/penny_script_importer.gd"
-const AUTOLOAD_NAME = "PennyImporterAutoload"
+const IMPORTER := "res://addons/penny_godot/assets/scripts/penny.gd"
+const AUTOLOAD_NAME = "penny"
 
 
 func _enable_plugin():

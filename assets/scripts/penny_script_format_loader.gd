@@ -20,7 +20,7 @@ func _load(path: String, original_path: String, use_sub_threads: bool, cache_mod
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file:
 		if not Engine.is_editor_hint():
-			Penny.log_timed("Started loading: %s" % path)
+			print("Started loading: %s" % path)
 
 		var result : PennyScript
 		if Engine.is_editor_hint():
@@ -32,10 +32,10 @@ func _load(path: String, original_path: String, use_sub_threads: bool, cache_mod
 			result = PennyScript.new(path)
 
 		result.update_from_file(file)
-		# PennyScriptImporter.inst.reload_single(result)
+		Penny.reload_single(result)
 	
 		if not Engine.is_editor_hint():
-			Penny.log_timed("Finished loading: %s" % path)
+			print("Finished loading: %s" % path)
 			
 		return result
 	else:
