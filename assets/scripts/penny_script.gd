@@ -44,7 +44,8 @@ func parse_tokens_to_stmts(tokens: Array[Token], context_file: FileAccess = null
 		stmts[i] = Stmt.new()
 		stmts[i].populate(self, i, token_groups[i])
 		stmts[i] = recycle_stmt(stmts[i], i, token_groups[i], context_file)
-		stmts[i].populate(self, i, token_groups[i])
+		if stmts[i]:
+			stmts[i].populate(self, i, token_groups[i])
 
 
 static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: FileAccess = null) -> Stmt:
@@ -251,10 +252,11 @@ class Op extends RefCounted:
 		DOT,
 		QUESTION,
 	}
+
 	static var PATTERNS := {
 		EVALUATE: 					RegEx.create_from_string(r"@"),
-		ARRAY_CLOSE: 				RegEx.create_from_string(r"]"),
-		ARRAY_OPEN: 				RegEx.create_from_string(r"["),
+		ARRAY_CLOSE: 				RegEx.create_from_string(r"\]"),
+		ARRAY_OPEN: 				RegEx.create_from_string(r"\["),
 		ITERATOR: 					RegEx.create_from_string(r","),
 		# LOOKUP: 					RegEx.create_from_string(r"$"),
 		NOT: 						RegEx.create_from_string(r"!|not"),

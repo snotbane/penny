@@ -6,7 +6,10 @@ const OMIT_SCRIPT_FOLDERS := [
 	".godot",
 	".vscode",
 	".templates",
-	"addons"
+	"addons",
+	"old",
+	"temp",
+	"tests",
 ]
 static var SCRIPT_RESOURCE_LOADER := preload("res://addons/penny_godot/assets/scripts/penny_script_format_loader.gd").new()
 
@@ -143,6 +146,7 @@ static func get_script_paths(omit := OMIT_SCRIPT_FOLDERS, start_path := "res://"
 signal on_reload_start
 signal on_reload_finish(success: bool)
 signal on_reload_cancel
+signal on_root_cell_modified
 
 
 func _enter_tree() -> void:
@@ -161,3 +165,15 @@ func _notification(what: int) -> void:
 				Penny.register_formats()
 			else:
 				Penny.reload_updated.call_deferred()
+
+
+static func get_value_string(value: Variant) -> String:
+	if value == null:
+		return "NULL"
+	elif value is Cell:
+		return value.key_name
+	elif value is String:
+		return "`%s`" % value
+	elif value is Color:
+		return "#" + value.to_html()
+	return str(value)

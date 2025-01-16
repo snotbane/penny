@@ -1,5 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://c7yh1rwq1ctx"]
+[gd_scene load_steps=3 format=3 uid="uid://c7yh1rwq1ctx"]
 
+[ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_4hgau"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/cell/cell_viewer_tree.gd" id="1_gx8ks"]
 
 [node name="penny_cell_viewer" type="Control"]
@@ -9,6 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_4hgau")
 
 [node name="v_box_container" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -28,5 +30,3 @@ columns = 3
 column_titles_visible = true
 hide_root = true
 script = ExtResource("1_gx8ks")
-
-[connection signal="visibility_changed" from="v_box_container/data_tree" to="v_box_container/data_tree" method="refresh"]
