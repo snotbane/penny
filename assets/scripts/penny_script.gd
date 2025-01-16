@@ -13,43 +13,84 @@ func _init(path : String) -> void:
 
 
 func update_from_file(file: FileAccess) -> void:
+	errors.clear()
+
 	var tokens := parse_code_to_tokens(file.get_as_text(true), file)
 
 	# var old_stmts : Array[Stmt]
 	# if not Engine.is_editor_hint():
 	# 	old_stmts = stmts.duplicate()
 
-	stmts = parse_tokens_to_stmts(tokens, file)
+	parse_tokens_to_stmts(tokens, file)
 
 	pass
 
 
-static func parse_tokens_to_stmts(tokens: Array[Token], context_file: FileAccess) -> Array[Stmt]:
+func parse_tokens_to_stmts(tokens: Array[Token], context_file: FileAccess = null) -> void:
 	var token_groups : Array = [[]]
-	var i := 0
+	var g := 0
 	for token in tokens:
 		if token.type == Token.Type.TERMINATOR:
-			if not token_groups[i].is_empty():
+			if not token_groups[g].is_empty():
 				token_groups.push_back([])
-				i += 1
+				g += 1
 			continue
-		token_groups[i].push_back(token)
+		token_groups[g].push_back(token)
 	if token_groups.back().is_empty(): token_groups.pop_back()
 
-	var result : Array[Stmt]
-	for group in token_groups:
-		## Determine the type of stmt to create
-		var stmt : Stmt
-		for token in group:
-			pass
-
-		## Populate the stmt with the tokens
-		for token in group:
-			pass
-
-	return result
+	stmts.clear()
+	stmts.resize(token_groups.size())
+	for i in token_groups.size():
+		stmts[i] = Stmt.new()
+		stmts[i].populate(self, i, token_groups[i])
+		stmts[i] = recycle_stmt(stmts[i], i, token_groups[i], context_file)
+		stmts[i].populate(self, i, token_groups[i])
 
 
+static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: FileAccess = null) -> Stmt:
+	# for token in tokens: if token.type == Token.Type.ASSIGNMENT: return StmtAssign.new()
+
+	if tokens.front().type == Token.Type.KEYWORD:
+		var keyword : StringName = tokens.front().value
+		match keyword:
+		# 	&"call": 	return StmtJumpCall.new()
+		# 	&"close": 	return StmtClose.new()
+		# 	&"else": 	return StmtConditionalElse.new()
+		# 	&"elif": 	return StmtConditionalElif.new()
+		# 	&"if": 		return StmtConditionalIf.new()
+		# 	&"init":	return StmtInit.new()
+		# 	&"jump": 	return StmtJump.new()
+			&"label": 	return StmtLabel.new()
+		# 	&"match": 	return StmtMatch.new()
+		# 	&"menu": 	return StmtMenu.new()
+		# 	&"open": 	return StmtOpen.new()
+		# 	&"pass": 	return StmtPass.new()
+		# 	&"print": 	return StmtPrint.new()
+		# 	&"return":	return StmtReturn.new()
+		# 	&"await":	return StmtAwait.new()
+		printerr("The keyword '%s' was found, but it isn't assigned to any Stmt.")
+		return null
+
+	# var block_header := stmt.get_prev_in_lower_depth()
+	# if block_header:
+	# 	if block_header is StmtMatch:
+	# 		return StmtConditionalMatch.new()
+	# 	elif block_header is StmtMenu:
+	# 		return StmtConditionalMenu.new()
+
+	# if tokens.back().type == Token.Type.VALUE_STRING:
+	# 	return StmtDialog.new()
+
+	# match tokens.front().type:
+	# 	Token.IDENTIFIER:
+	# 		if tokens.size() == 1 or tokens[1].value == '.':
+	# 			return StmtObject.new()
+	# 	Token.OPERATOR:
+	# 		if tokens[0].value == '.' and tokens[1].type == Token.IDENTIFIER:
+	# 			return StmtObject.new()
+
+	printerr("No Stmt recycled from tokens: %s" % tokens)
+	return null
 
 static func parse_code_to_tokens(raw: String, context_file: FileAccess = null) -> Array[Token]:
 	var result : Array[Token] = []

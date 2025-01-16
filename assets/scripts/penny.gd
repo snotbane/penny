@@ -97,6 +97,7 @@ static func reload_many(_scripts: Array[PennyScript] = scripts):
 				if scripts[j].id == script.id: i = j; break
 			if i == -1: scripts.push_back(script)
 			else: scripts[i] = script
+
 		labels.clear()
 
 		for script in scripts:
