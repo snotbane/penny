@@ -12,12 +12,12 @@ static var OBJECT := Cell.new(&"object", ROOT, {
 })
 static var DIALOG := Cell.new(&"dialog", ROOT, {
 	&"base": "object",
-	&"link": Lookup.new(&"dialog_default"),
+	# &"link": Lookup.new(&"dialog_default"),
 	&"link_layer": 0,
 })
 static var PROMPT := Cell.new(&"prompt", ROOT, {
 	&"base": "object",
-	&"link": Lookup.new(&"prompt_default"),
+	# &"link": Lookup.new(&"prompt_default"),
 	&"options": [],
 	&"response": null,
 })
@@ -54,14 +54,17 @@ func _init(_id : StringName, _parent : Cell, _data : Variant) -> void:
 	parent = _parent
 	data = _data
 	
-	parent.data[id] = self
+	if parent.data is not Dictionary:
+		printerr("Cell %s: Attempted to add this cell to parent %s, but is not a Dictionary.")
+	else:
+		parent.data[id] = self
 
 
 func _to_string() -> String:
 	return "@" + id
 
 
-func get_data_from_path(path_string: String) -> Variant:
+func get_data(path_string: String) -> Variant:
 	var path := CellPath.new(path_string)
 	var cursor : Variant = self if path.rel else ROOT
 	for i in path.ids:

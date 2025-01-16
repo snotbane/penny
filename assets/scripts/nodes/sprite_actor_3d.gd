@@ -1,5 +1,5 @@
 
-class_name SpriteActor3D extends PennyNode
+class_name SpriteActor3D extends Node
 
 signal flag_changed(value : StringName)
 signal eyes_changed(value : bool)

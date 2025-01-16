@@ -11,7 +11,7 @@ func _get_recognized_extensions() -> PackedStringArray:
 	return RECOGNIZED_EXTENSIONS
 
 func _get_resource_script_class(path: String) -> String:
-	return "PennyScript"
+	return "PennyScriptImporter"
 
 func _get_resource_type(path: String) -> String:
 	return "Resource"
@@ -32,7 +32,7 @@ func _load(path: String, original_path: String, use_sub_threads: bool, cache_mod
 			result = PennyScript.new(path)
 
 		result.update_from_file(file)
-		PennyImporter.inst.reload_single(result)
+		# PennyScriptImporter.inst.reload_single(result)
 	
 		if not Engine.is_editor_hint():
 			Penny.log_timed("Finished loading: %s" % path)
