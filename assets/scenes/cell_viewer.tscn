@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://c5nb4l2ge7dlq" path="res://addons/penny_godot/assets/textures/icons/Clear.svg" id="3_aabdw"]
 [ext_resource type="Texture2D" uid="uid://dbn36dthttn4c" path="res://addons/penny_godot/assets/textures/icons/Search.svg" id="4_v17jm"]
 
-[node name="penny_cell_viewer" type="Control"]
+[node name="cell_viewer" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

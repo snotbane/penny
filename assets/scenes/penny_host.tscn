@@ -1,12 +1,8 @@
-[gd_scene load_steps=22 format=3 uid="uid://gtm2kenc70u7"]
+[gd_scene load_steps=18 format=3 uid="uid://gtm2kenc70u7"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/penny_host.gd" id="1_jmae0"]
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/objects/lookup_table.gd" id="2_4q0nq"]
-[ext_resource type="Resource" uid="uid://cxfy5qyeucf76" path="res://addons/penny_godot/assets/narrative/lookup_table_default.tres" id="3_lw4vb"]
 [ext_resource type="PackedScene" uid="uid://ckwmom7w0dvh1" path="res://addons/penny_godot/assets/scenes/penny_history_box.tscn" id="4_hm4jj"]
 [ext_resource type="Resource" uid="uid://bsrrbmeopuowc" path="res://addons/penny_godot/assets/themes/penny_decos_default.tres" id="4_s55ao"]
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="5_3br4k"]
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/mouse_input_catcher.gd" id="5_bg7b0"]
 [ext_resource type="Texture2D" uid="uid://bqiynomjlbcme" path="res://addons/penny_godot/assets/textures/icons/UndoRedo.svg" id="7_ns3dh"]
 [ext_resource type="Texture2D" uid="uid://cclh3lyq0mgnm" path="res://addons/penny_godot/assets/textures/icons/UndoRedoFade.svg" id="9_y2csr"]
 [ext_resource type="Texture2D" uid="uid://bkes8nbos8gam" path="res://addons/penny_godot/assets/textures/icons/PlayTravel.svg" id="10_ryojg"]
@@ -34,10 +30,7 @@ keycode = 83
 [sub_resource type="Shortcut" id="Shortcut_o2m0l"]
 events = [SubResource("InputEventKey_2j54e")]
 
-[node name="penny_host" type="Node" node_paths=PackedStringArray("layers")]
-script = ExtResource("1_jmae0")
-lookup_tables = Array[ExtResource("2_4q0nq")]([ExtResource("3_lw4vb")])
-layers = [null, NodePath("canvas_layer/ui/v_box_container/history_layer/penny_history_box/panel_container/margin_container/scroll_container/margin_container/scroll_contents"), NodePath("canvas_layer/ui/other_layer")]
+[node name="penny_host" type="Node"]
 metadata/deco_registry_default = ExtResource("4_s55ao")
 
 [node name="canvas_layer" type="CanvasLayer" parent="."]
@@ -62,7 +55,6 @@ offset_bottom = 1064.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-script = ExtResource("5_bg7b0")
 
 [node name="v_box_container" type="VBoxContainer" parent="canvas_layer/ui"]
 layout_mode = 2
@@ -87,6 +79,7 @@ theme_override_constants/margin_right = 200
 
 [node name="penny_history_box" parent="canvas_layer/ui/v_box_container/history_layer" instance=ExtResource("4_hm4jj")]
 layout_mode = 2
+script = null
 
 [node name="scroll_contents" parent="canvas_layer/ui/v_box_container/history_layer/penny_history_box/panel_container/margin_container/scroll_container/margin_container" index="0"]
 theme_override_constants/separation = 16
@@ -235,10 +228,6 @@ texture_normal = ExtResource("10_ryojg")
 texture_pressed = ExtResource("11_rcx57")
 texture_disabled = ExtResource("11_rcx57")
 
-[connection signal="on_roll_ahead_disabled" from="." to="canvas_layer/ui/margin_container/h_box_container/roll_panel/margin_container/grid_container/button_roll_ahead" method="set_disabled"]
-[connection signal="on_roll_ahead_disabled" from="." to="canvas_layer/ui/margin_container/h_box_container/roll_panel/margin_container/grid_container/button_roll_end" method="set_disabled"]
-[connection signal="on_roll_back_disabled" from="." to="canvas_layer/ui/margin_container/h_box_container/roll_panel/margin_container/grid_container/button_roll_back" method="set_disabled"]
-[connection signal="on_click" from="canvas_layer/ui/input_catcher" to="." method="try_advance"]
 [connection signal="pressed" from="canvas_layer/ui/margin_container/h_box_container/file_panel/margin_container/grid_container/button_load" to="." method="load"]
 [connection signal="pressed" from="canvas_layer/ui/margin_container/h_box_container/file_panel/margin_container/grid_container/button_save" to="." method="save"]
 [connection signal="pressed" from="canvas_layer/ui/margin_container/h_box_container/file_panel/margin_container/grid_container/button_quit" to="." method="close"]

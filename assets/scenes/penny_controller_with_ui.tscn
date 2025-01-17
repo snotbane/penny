@@ -1,0 +1,218 @@
+[gd_scene load_steps=17 format=3 uid="uid://bpqllg6n5sq5a"]
+
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/penny_controller.gd" id="1_amygg"]
+[ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="2_wbk5u"]
+[ext_resource type="Texture2D" uid="uid://cnva3qm2uhcom" path="res://addons/penny_godot/assets/textures/icons/Load.svg" id="3_cxwlt"]
+[ext_resource type="Texture2D" uid="uid://yevin05lnguh" path="res://addons/penny_godot/assets/textures/icons/LoadFade.svg" id="4_quq2v"]
+[ext_resource type="Texture2D" uid="uid://cefiymcs8q7i7" path="res://addons/penny_godot/assets/textures/icons/Save.svg" id="5_kug6h"]
+[ext_resource type="Texture2D" uid="uid://chx1fwltwhmn5" path="res://addons/penny_godot/assets/textures/icons/SaveFade.svg" id="6_7hd8h"]
+[ext_resource type="Texture2D" uid="uid://cifrouur0xbp" path="res://addons/penny_godot/assets/textures/icons/Close.svg" id="7_cnibl"]
+[ext_resource type="Texture2D" uid="uid://oanyf2vrytst" path="res://addons/penny_godot/assets/textures/icons/CloseFade.svg" id="8_xgny0"]
+[ext_resource type="Texture2D" uid="uid://bqiynomjlbcme" path="res://addons/penny_godot/assets/textures/icons/UndoRedo.svg" id="9_c4iuu"]
+[ext_resource type="Texture2D" uid="uid://cclh3lyq0mgnm" path="res://addons/penny_godot/assets/textures/icons/UndoRedoFade.svg" id="10_8a7qu"]
+[ext_resource type="Texture2D" uid="uid://bkes8nbos8gam" path="res://addons/penny_godot/assets/textures/icons/PlayTravel.svg" id="11_55foh"]
+[ext_resource type="Texture2D" uid="uid://cltfleqkuxf36" path="res://addons/penny_godot/assets/textures/icons/PlayTravelFade.svg" id="12_ynwo7"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_4bh7u"]
+device = -1
+ctrl_pressed = true
+keycode = 79
+
+[sub_resource type="Shortcut" id="Shortcut_n8otq"]
+events = [SubResource("InputEventKey_4bh7u")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_2j54e"]
+device = -1
+ctrl_pressed = true
+keycode = 83
+
+[sub_resource type="Shortcut" id="Shortcut_8eokp"]
+events = [SubResource("InputEventKey_2j54e")]
+
+[node name="penny_controller" type="Node" node_paths=PackedStringArray("layers")]
+script = ExtResource("1_amygg")
+autostart = true
+layers = [NodePath("canvas_layer/ui/other_layer"), NodePath("canvas_layer/ui/main_container/hbox/dialog_layer")]
+
+[node name="canvas_layer" type="CanvasLayer" parent="."]
+
+[node name="ui" type="Control" parent="canvas_layer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme = ExtResource("2_wbk5u")
+
+[node name="input_catcher" type="Control" parent="canvas_layer/ui"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="vbox" type="VBoxContainer" parent="canvas_layer/ui"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+alignment = 2
+
+[node name="history_layer" type="MarginContainer" parent="canvas_layer/ui/vbox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_constants/margin_left = 200
+theme_override_constants/margin_right = 200
+
+[node name="other_layer" type="Control" parent="canvas_layer/ui"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="main_container" type="MarginContainer" parent="canvas_layer/ui"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -240.0
+grow_horizontal = 2
+grow_vertical = 0
+pivot_offset = Vector2(0, 240)
+
+[node name="hbox" type="HBoxContainer" parent="canvas_layer/ui/main_container"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="file_panel" type="PanelContainer" parent="canvas_layer/ui/main_container/hbox"]
+custom_minimum_size = Vector2(0, 128)
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="margin_container" type="MarginContainer" parent="canvas_layer/ui/main_container/hbox/file_panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_right = 24
+
+[node name="grid_container" type="GridContainer" parent="canvas_layer/ui/main_container/hbox/file_panel/margin_container"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+columns = 2
+
+[node name="button_load" type="TextureButton" parent="canvas_layer/ui/main_container/hbox/file_panel/margin_container/grid_container"]
+layout_mode = 2
+tooltip_text = "Load"
+focus_neighbor_right = NodePath("../button_save")
+focus_neighbor_bottom = NodePath("../button_quit")
+focus_next = NodePath("../button_save")
+focus_previous = NodePath("../../../../roll_panel/margin_container/grid_container/button_roll_end")
+focus_mode = 1
+shortcut = SubResource("Shortcut_n8otq")
+texture_normal = ExtResource("3_cxwlt")
+texture_pressed = ExtResource("4_quq2v")
+texture_disabled = ExtResource("4_quq2v")
+
+[node name="button_save" type="TextureButton" parent="canvas_layer/ui/main_container/hbox/file_panel/margin_container/grid_container"]
+layout_mode = 2
+tooltip_text = "Save"
+focus_neighbor_left = NodePath("../button_load")
+focus_neighbor_right = NodePath("../../../../roll_panel/margin_container/grid_container/button_roll_back")
+focus_next = NodePath("../button_quit")
+focus_previous = NodePath("../button_load")
+focus_mode = 1
+shortcut = SubResource("Shortcut_8eokp")
+texture_normal = ExtResource("5_kug6h")
+texture_pressed = ExtResource("6_7hd8h")
+texture_disabled = ExtResource("6_7hd8h")
+
+[node name="button_quit" type="TextureButton" parent="canvas_layer/ui/main_container/hbox/file_panel/margin_container/grid_container"]
+layout_mode = 2
+tooltip_text = "Exit"
+focus_neighbor_top = NodePath("../button_load")
+focus_next = NodePath("../../../../roll_panel/margin_container/grid_container/button_roll_back")
+focus_previous = NodePath("../button_save")
+focus_mode = 1
+texture_normal = ExtResource("7_cnibl")
+texture_pressed = ExtResource("8_xgny0")
+texture_disabled = ExtResource("8_xgny0")
+
+[node name="space" type="Control" parent="canvas_layer/ui/main_container/hbox/file_panel/margin_container/grid_container"]
+layout_mode = 2
+
+[node name="dialog_layer" type="Control" parent="canvas_layer/ui/main_container/hbox"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="roll_panel" type="PanelContainer" parent="canvas_layer/ui/main_container/hbox"]
+custom_minimum_size = Vector2(0, 128)
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="margin_container" type="MarginContainer" parent="canvas_layer/ui/main_container/hbox/roll_panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_right = 24
+
+[node name="grid_container" type="GridContainer" parent="canvas_layer/ui/main_container/hbox/roll_panel/margin_container"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+columns = 2
+
+[node name="button_roll_back" type="TextureButton" parent="canvas_layer/ui/main_container/hbox/roll_panel/margin_container/grid_container"]
+layout_mode = 2
+tooltip_text = "Roll Back"
+focus_neighbor_left = NodePath("../../../../file_panel/margin_container/grid_container/button_save")
+focus_neighbor_right = NodePath("../button_roll_ahead")
+focus_next = NodePath("../button_roll_ahead")
+focus_previous = NodePath("../../../../file_panel/margin_container/grid_container/button_quit")
+focus_mode = 1
+texture_normal = ExtResource("9_c4iuu")
+texture_pressed = ExtResource("10_8a7qu")
+texture_disabled = ExtResource("10_8a7qu")
+
+[node name="button_roll_ahead" type="TextureButton" parent="canvas_layer/ui/main_container/hbox/roll_panel/margin_container/grid_container"]
+layout_mode = 2
+tooltip_text = "Roll Ahead"
+focus_neighbor_left = NodePath("../button_roll_back")
+focus_neighbor_bottom = NodePath("../button_roll_end")
+focus_next = NodePath("../button_roll_end")
+focus_previous = NodePath("../button_roll_back")
+focus_mode = 1
+texture_normal = ExtResource("9_c4iuu")
+texture_pressed = ExtResource("10_8a7qu")
+texture_disabled = ExtResource("10_8a7qu")
+flip_h = true
+
+[node name="space" type="Control" parent="canvas_layer/ui/main_container/hbox/roll_panel/margin_container/grid_container"]
+layout_mode = 2
+
+[node name="button_roll_end" type="TextureButton" parent="canvas_layer/ui/main_container/hbox/roll_panel/margin_container/grid_container"]
+layout_mode = 2
+tooltip_text = "Roll Ahead to Latest"
+focus_neighbor_top = NodePath("../button_roll_ahead")
+focus_next = NodePath("../../../../file_panel/margin_container/grid_container/button_load")
+focus_previous = NodePath("../button_roll_ahead")
+focus_mode = 1
+texture_normal = ExtResource("11_55foh")
+texture_pressed = ExtResource("12_ynwo7")
+texture_disabled = ExtResource("12_ynwo7")

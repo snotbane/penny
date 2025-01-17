@@ -5,9 +5,9 @@
 [ext_resource type="PackedScene" uid="uid://ehssrfkq0q6c" path="res://addons/penny_godot/assets/scenes/penny_dock.tscn" id="2_if5x3"]
 [ext_resource type="Texture2D" uid="uid://cqkyoh7pijbha" path="res://addons/penny_godot/assets/textures/icons/Code.svg" id="5_ufwun"]
 [ext_resource type="Script" path="res://addons/penny_utils_godot/assets/scripts/tabs_with_icons.gd" id="5_uv7g7"]
-[ext_resource type="Texture2D" uid="uid://c5nb4l2ge7dlq" path="res://addons/penny_godot/assets/textures/icons/Clear.svg" id="5_uw3ek"]
 [ext_resource type="Texture2D" uid="uid://c3g6mc5ihxqvj" path="res://addons/penny_godot/assets/textures/icons/Label.svg" id="6_6v586"]
 [ext_resource type="Texture2D" uid="uid://dfir03166e6r2" path="res://addons/penny_godot/assets/textures/icons/Object.svg" id="7_44hdu"]
+[ext_resource type="PackedScene" uid="uid://c7yh1rwq1ctx" path="res://addons/penny_godot/assets/scenes/cell_viewer.tscn" id="7_sffmw"]
 [ext_resource type="Texture2D" uid="uid://dbn36dthttn4c" path="res://addons/penny_godot/assets/textures/icons/Search.svg" id="7_yvqnl"]
 [ext_resource type="Texture2D" uid="uid://casyj4t5bxxe2" path="res://addons/penny_godot/assets/textures/icons/History.svg" id="8_506l5"]
 [ext_resource type="Texture2D" uid="uid://yrrj3kgg2n2g" path="res://addons/penny_godot/assets/textures/icons/PackedScene.svg" id="10_q5msf"]
@@ -448,91 +448,9 @@ layout_mode = 2
 script = null
 metadata/_tab_index = 0
 
-[node name="Data" type="Control" parent="overlay/margin_container/h_split_container/static_tabs"]
+[node name="Data" parent="overlay/margin_container/h_split_container/static_tabs" instance=ExtResource("7_sffmw")]
 layout_mode = 2
-tooltip_text = "Check current state of objects, variables, and their values."
 metadata/_tab_index = 1
-
-[node name="vbox" type="VBoxContainer" parent="overlay/margin_container/h_split_container/static_tabs/Data"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="data_tree" type="Tree" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox"]
-layout_mode = 2
-size_flags_vertical = 3
-focus_mode = 0
-theme_override_font_sizes/font_size = 12
-theme_override_font_sizes/title_button_font_size = 12
-columns = 3
-column_titles_visible = true
-hide_root = true
-
-[node name="hbox_search" type="HBoxContainer" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox"]
-layout_mode = 2
-
-[node name="search_values_toggle" type="CheckButton" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search"]
-visible = false
-layout_mode = 2
-tooltip_text = "Also search values in the query."
-focus_mode = 0
-button_pressed = true
-
-[node name="sort_selector" type="OptionButton" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search"]
-layout_mode = 2
-tooltip_text = "Sort order."
-selected = 0
-item_count = 3
-popup/item_0/text = "Default"
-popup/item_1/text = "A to Z"
-popup/item_1/id = 1
-popup/item_2/text = "Recent"
-popup/item_2/id = 2
-popup/item_2/disabled = true
-
-[node name="search_bar" type="LineEdit" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 0
-placeholder_text = "Search..."
-
-[node name="search_clear" type="Button" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/search_bar"]
-layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -8.0
-grow_horizontal = 0
-grow_vertical = 2
-tooltip_text = "Clear search query."
-focus_mode = 0
-icon = ExtResource("5_uw3ek")
-flat = true
-icon_alignment = 2
-
-[node name="hbox_zoom" type="HBoxContainer" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search"]
-custom_minimum_size = Vector2(140, 0)
-layout_mode = 2
-size_flags_horizontal = 8
-
-[node name="zoom_slider" type="HSlider" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/hbox_zoom"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-min_value = 10.0
-max_value = 18.0
-step = 2.0
-value = 12.0
-tick_count = 5
-
-[node name="zoom_reset" type="Button" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/hbox_zoom"]
-layout_mode = 2
-icon = ExtResource("7_yvqnl")
-flat = true
 
 [node name="host_tabs" type="TabContainer" parent="overlay/margin_container/h_split_container"]
 layout_mode = 2
@@ -807,13 +725,5 @@ script = ExtResource("22_wyfls")
 
 [connection signal="visibility_changed" from="overlay" to="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/penny_history_box" method="scroll_to_end"]
 [connection signal="visibility_changed" from="overlay" to="overlay/margin_container/h_split_container/host_tabs/host_selector" method="refresh"]
-[connection signal="visibility_changed" from="overlay/margin_container/h_split_container/static_tabs/Data/vbox/data_tree" to="overlay/margin_container/h_split_container/static_tabs/Data/vbox/data_tree" method="refresh"]
-[connection signal="toggled" from="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/search_values_toggle" to="overlay/margin_container/h_split_container/static_tabs/Data/vbox/data_tree" method="_on_search_values_toggle_toggled"]
-[connection signal="item_selected" from="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/sort_selector" to="overlay/margin_container/h_split_container/static_tabs/Data/vbox/data_tree" method="_on_sort_selector_item_selected"]
-[connection signal="text_changed" from="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/search_bar" to="overlay/margin_container/h_split_container/static_tabs/Data/vbox/data_tree" method="_on_search_bar_text_changed"]
-[connection signal="pressed" from="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/search_bar/search_clear" to="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/search_bar" method="clear"]
-[connection signal="pressed" from="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/search_bar/search_clear" to="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/search_bar" method="release_focus"]
-[connection signal="value_changed" from="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/hbox_zoom/zoom_slider" to="overlay/margin_container/h_split_container/static_tabs/Data/vbox/data_tree" method="_on_zoom_slider_value_changed"]
-[connection signal="pressed" from="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/hbox_zoom/zoom_reset" to="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/hbox_zoom/zoom_slider" method="set_value" binds= [10.0]]
 [connection signal="pressed" from="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom/zoom_reset" to="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom/zoom_slider" method="set_value" binds= [10.0]]
 [connection signal="pressed" from="overlay/margin_container/h_split_container/host_tabs/host_menu/control/return_to_hosts_button" to="overlay/margin_container/h_split_container/host_tabs" method="set_current_tab" binds= [1]]

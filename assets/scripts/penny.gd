@@ -2,6 +2,7 @@
 @tool
 class_name Penny extends Node
 
+const PNY_FILE_EXTENSION := ".pny"
 const OMIT_SCRIPT_FOLDERS := [
 	".godot",
 	".vscode",
@@ -19,6 +20,7 @@ static var is_all_scripts_valid : bool = true
 static var script_reload_timestamps : Dictionary
 
 static var scripts : Array[PennyScript]
+static var inits : Array[Stmt]
 static var labels : Dictionary
 
 static var errors : Array[String] :
@@ -43,6 +45,21 @@ static func find_script_from_path(path: String) -> PennyScript:
 	return null
 
 
+static func get_stmt_from_address(path: String, index: int) -> Stmt:
+	for script in scripts:
+		if script.resource_path != path: continue
+		return script.stmts[index]
+	return null
+
+
+static func get_stmt_from_label(label_name: StringName) -> Stmt:
+	if labels.has(label_name):
+		return labels[label_name]
+	else:
+		printerr("Label '%s' does not exist in any loaded script." % label_name)
+		return null
+
+
 static func load_script(path: String, type_hint := "") -> Variant:
 	return ResourceLoader.load(path, type_hint, reload_cache_mode)
 
@@ -52,7 +69,7 @@ static func reload_all() -> void:
 	var result : Array[PennyScript] = []
 
 	script_reload_timestamps.clear()
-	for path in Penny.get_script_paths():
+	for path in Utils.get_paths_in_project(PNY_FILE_EXTENSION, OMIT_SCRIPT_FOLDERS):
 		script_reload_timestamps[path] = FileAccess.get_modified_time(path)
 		result.push_back(Penny.load_script(path))
 
@@ -64,7 +81,7 @@ static func reload_updated() -> void:
 	is_reloading_bulk = true
 	var result : Array[PennyScript] = []
 
-	var new_paths := get_script_paths()
+	var new_paths := Utils.get_paths_in_project(PNY_FILE_EXTENSION, OMIT_SCRIPT_FOLDERS)
 	var del_paths : Array[String] = []
 	for k in script_reload_timestamps.keys():
 		del_paths.push_back(k)
@@ -125,24 +142,6 @@ static func reload_many(_scripts: Array[PennyScript] = scripts):
 		inst.on_reload_finish.emit(false)
 
 
-static func get_script_paths(omit := OMIT_SCRIPT_FOLDERS, start_path := "res://") -> PackedStringArray:
-	var ext := ".pny"
-	var dir := DirAccess.open(start_path)
-	if not dir: return []
-	var result : Array[String]
-	dir.list_dir_begin()
-	var file_name := dir.get_next()
-	while file_name != "":
-		var next_path := start_path + file_name
-		if dir.current_is_dir():
-			if not omit.has(file_name):
-				result.append_array(Penny.get_script_paths(omit, next_path + "/"))
-		elif file_name.ends_with(ext):
-			result.push_back(next_path)
-		file_name = dir.get_next()
-	return result
-
-
 signal on_reload_start
 signal on_reload_finish(success: bool)
 signal on_reload_cancel
@@ -167,7 +166,7 @@ func _notification(what: int) -> void:
 				Penny.reload_updated.call_deferred()
 
 
-static func get_value_string(value: Variant) -> String:
+static func get_value_as_string(value: Variant) -> String:
 	if value == null:
 		return "NULL"
 	elif value is Cell:

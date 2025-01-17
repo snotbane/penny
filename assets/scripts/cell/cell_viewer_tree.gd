@@ -87,7 +87,7 @@ func create_tree_item_for_any(parent: TreeItem, key: StringName, value: Variant,
 		result.set_tooltip_text(Column.ICON, get_icon_tooltip(value))
 
 	result.set_selectable(Column.VALUE, false)
-	result.set_text(Column.VALUE, Penny.get_value_string(value))
+	result.set_text(Column.VALUE, Penny.get_value_as_string(value))
 	if value == null:
 		result.set_custom_color(Column.VALUE, Color(1, 1, 1, 0.125))
 	elif value is Cell:

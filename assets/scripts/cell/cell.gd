@@ -23,6 +23,10 @@ class Ref:
 		return Ref.new(path_string)
 
 
+	static func new_from_load_json(json: String) -> Ref:
+		return Ref.new(json.substr(Save.REF_PREFIX.length()))
+
+
 	func _to_string() -> String:
 		var result := "." if rel else ""
 		for id in ids:
@@ -78,18 +82,22 @@ func _to_string() -> String:
 	return "@" + key_name
 
 
-func get_data(path_string: String) -> Variant:
-	var path := Ref.new(path_string)
-	var cursor : Variant = self if path.rel else ROOT
-	for i in path.ids:
-		if cursor is not Cell:
-			printerr("Cell %s: Attempted to evaluate path %s, but '%s' is not a Cell." % [self, path, i])
-			return null
-
+func get_data_from_ref(ref_string: String) -> Variant:
+	var ref := Ref.new(ref_string)
+	var cursor : Variant = self if ref.rel else ROOT
+	for i in ref.ids:
 		if not cursor.data.has(i):
-			printerr("Cell %s: Attempted to evaluate path %s, but cell data '%s' does not exist in Dictionary." % [self, path, i])
+			printerr("Cell %s: Attempted to evaluate ref %s, but cell data '%s' does not exist in Dictionary." % [self, ref, i])
 			return null
-
 		cursor = data[i]
 	return cursor
+static func get_data_from_ref_global(ref_string: String) -> Variant:
+	return Cell.ROOT.get_data_from_ref(ref_string)
 
+
+func clear_instances(recursive: bool = false) -> void:
+	if recursive: for k in data.keys():
+		var v : Variant = data[k]
+		if v and v is Cell: v.clear_instances(true)
+	var node : Node = self.get_data_from_ref(".inst")
+	if node: node.queue_free()
