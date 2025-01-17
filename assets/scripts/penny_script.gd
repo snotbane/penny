@@ -79,8 +79,8 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 	# 	elif block_header is StmtMenu:
 	# 		return StmtConditionalMenu.new()
 
-	# if tokens.back().type == Token.Type.VALUE_STRING:
-	# 	return StmtDialog.new()
+	if tokens.back().type == Token.Type.VALUE_STRING:
+		return StmtDialog.new()
 
 	# match tokens.front().type:
 	# 	Token.IDENTIFIER:

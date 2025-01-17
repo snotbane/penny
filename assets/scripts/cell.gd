@@ -1,14 +1,15 @@
 
 class_name Cell extends RefCounted
 
-class Ref:
+class Ref extends Evaluable:
 	const COLOR := Color8(65, 122, 236)
 
 	var ids : PackedStringArray
 	var rel : bool
 
 	func _init(s: String = "") -> void:
-		rel = s[1] == "."
+		if s.is_empty(): return
+		rel = s[0] == "."
 		s = s.substr(1 if rel else 0)
 		ids = s.split(".", false)
 
@@ -34,7 +35,6 @@ class Ref:
 		return result
 
 
-	func evaluate(context: Cell = Cell.ROOT) -> Variant: return self._evaluate(context)
 	func _evaluate(context: Cell) -> Variant:
 		if not rel: context = Cell.ROOT
 		var result : Variant = context
@@ -53,22 +53,24 @@ class Ref:
 static var ROOT := Cell.new(&"", null, {})
 
 static var OBJECT := Cell.new(&"object", ROOT, {
-	&"dialog": &"dialog",
+	&"dialog": Ref.new("dialog"),
 	&"name": "",
 	&"name_prefix": "<>",
 	&"name_suffix": "</>",
 })
 static var DIALOG := Cell.new(&"dialog", ROOT, {
-	&"base": Ref.to(OBJECT),
+	&"base": Ref.new("object"),
+	&"link": "res://addons/penny_godot/assets/scenes/dialog_default.tscn",
 	&"layer": 0,
 })
 static var PROMPT := Cell.new(&"prompt", ROOT, {
-	&"base": Ref.to(OBJECT),
+	&"base": Ref.new("object"),
+	&"link": "res://addons/penny_godot/assets/scenes/prompt_default.tscn",
 	&"options": [],
 	# &"response": null,
 })
 static var OPTION := Cell.new(&"option", ROOT, {
-	&"base": Ref.to(OBJECT),
+	&"base": Ref.new("object"),
 	&"enabled": true,
 	&"visible": true,
 	&"consumed": false
@@ -78,6 +80,25 @@ static var OPTION := Cell.new(&"option", ROOT, {
 var key_name : StringName
 var parent : Cell
 var data : Dictionary
+
+
+var name : Text :
+	get: return Text.new(get_value_or_default(&"name", key_name))
+var name_prefix : Text :
+	get: return Text.new(get_value_or_default(&"name_prefix", "<>"))
+var name_suffix : Text :
+	get: return Text.new(get_value_or_default(&"name_suffix", "</>"))
+var rich_name : Text :
+	get: return Text.new(name_prefix.text + name.text + name_suffix.text)
+
+
+var node_name : String :
+	get: return self.to_string() if key_name.is_empty() else str(key_name)
+		# var n := name.to_string()
+		# if n.is_empty():
+		# 	return self.to_string()
+		# return name.to_string()
+
 
 var instance : Node :
 	get: return self.get_local_value(&"inst")

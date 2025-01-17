@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://c7yh1rwq1ctx"]
 
 [ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_4hgau"]
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/cell/cell_viewer_tree.gd" id="1_gx8ks"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/debug/cell_viewer_tree.gd" id="1_gx8ks"]
 [ext_resource type="Texture2D" uid="uid://c5nb4l2ge7dlq" path="res://addons/penny_godot/assets/textures/icons/Clear.svg" id="3_aabdw"]
 [ext_resource type="Texture2D" uid="uid://dbn36dthttn4c" path="res://addons/penny_godot/assets/textures/icons/Search.svg" id="4_v17jm"]
 
