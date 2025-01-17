@@ -7,24 +7,41 @@ class Ref:
 	var ids : PackedStringArray
 	var rel : bool
 
-	func _init(path_string: String) -> void:
-		rel = path_string[1] == "."
-		path_string = path_string.substr(1 if rel else 0)
-		ids = path_string.split(".", false)
+	func _init(s: String = "") -> void:
+		rel = s[1] == "."
+		s = s.substr(1 if rel else 0)
+		ids = s.split(".", false)
 
 
 	static func to(cell: Cell, _rel: bool = false) -> Ref:
-		var path_string := cell.key_name
+		var ref_string := cell.key_name
 		var cursor := cell.parent
 		while cursor:
-			path_string = cursor.key_name + "." + path_string
+			ref_string = cursor.key_name + "." + ref_string
 			cursor = cursor.parent
-		if _rel: path_string = "." + path_string
-		return Ref.new(path_string)
+		if _rel: ref_string = "." + ref_string
+		return Ref.new(ref_string)
 
 
 	static func new_from_load_json(json: String) -> Ref:
 		return Ref.new(json.substr(Save.REF_PREFIX.length()))
+
+
+	func duplicate() -> Ref:
+		var result := Ref.new()
+		result.ids = self.ids.duplicate()
+		result.rel = self.rel
+		return result
+
+
+	func evaluate(context: Cell = Cell.ROOT) -> Variant: return self._evaluate(context)
+	func _evaluate(context: Cell) -> Variant:
+		if not rel: context = Cell.ROOT
+		var result : Variant = context
+		for id in ids:
+			if result == null: return null
+			result = result.get_value(id)
+		return result
 
 
 	func _to_string() -> String:
@@ -36,7 +53,6 @@ class Ref:
 static var ROOT := Cell.new(&"", null, {})
 
 static var OBJECT := Cell.new(&"object", ROOT, {
-	&"base": null,
 	&"dialog": &"dialog",
 	&"name": "",
 	&"name_prefix": "<>",
@@ -44,17 +60,15 @@ static var OBJECT := Cell.new(&"object", ROOT, {
 })
 static var DIALOG := Cell.new(&"dialog", ROOT, {
 	&"base": Ref.to(OBJECT),
-	# &"link": Lookup.new(&"dialog_default"),
-	&"link_layer": 0,
+	&"layer": 0,
 })
 static var PROMPT := Cell.new(&"prompt", ROOT, {
-	&"base": Ref.new("object"),
-	# &"link": Lookup.new(&"prompt_default"),
+	&"base": Ref.to(OBJECT),
 	&"options": [],
-	&"response": null,
+	# &"response": null,
 })
 static var OPTION := Cell.new(&"option", ROOT, {
-	&"base": Ref.new("object"),
+	&"base": Ref.to(OBJECT),
 	&"enabled": true,
 	&"visible": true,
 	&"consumed": false
@@ -63,41 +77,90 @@ static var OPTION := Cell.new(&"option", ROOT, {
 
 var key_name : StringName
 var parent : Cell
-var data : Variant
+var data : Dictionary
+
+var instance : Node :
+	get: return self.get_local_value(&"inst")
+	set(value): self.set_local_value(&"inst", value)
 
 
-func _init(_key_name : StringName, _parent : Cell, _data : Variant) -> void:
+var layer : int :
+	get: return get_value_or_default(&"layer", -1)
+
+
+func _init(_key_name : StringName, _parent : Cell, _data : Dictionary) -> void:
 	key_name = _key_name
 	parent = _parent
 	data = _data
 
 	if parent:
-		if parent.data is not Dictionary:
-			printerr("Cell %s: Attempted to add this cell to parent %s, but is not a Dictionary.")
-		else:
-			parent.data[key_name] = self
+		parent.data[key_name] = self
 
 
 func _to_string() -> String:
 	return "@" + key_name
 
 
-func get_data_from_ref(ref_string: String) -> Variant:
-	var ref := Ref.new(ref_string)
-	var cursor : Variant = self if ref.rel else ROOT
-	for i in ref.ids:
-		if not cursor.data.has(i):
-			printerr("Cell %s: Attempted to evaluate ref %s, but cell data '%s' does not exist in Dictionary." % [self, ref, i])
-			return null
-		cursor = data[i]
-	return cursor
-static func get_data_from_ref_global(ref_string: String) -> Variant:
-	return Cell.ROOT.get_data_from_ref(ref_string)
+func get_value(key: StringName) -> Variant:
+	return data[key] if data.has(key) else get_base_value(key)
 
 
-func clear_instances(recursive: bool = false) -> void:
-	if recursive: for k in data.keys():
-		var v : Variant = data[k]
-		if v and v is Cell: v.clear_instances(true)
-	var node : Node = self.get_data_from_ref(".inst")
-	if node: node.queue_free()
+func get_local_value(key: StringName) -> Variant:
+	return data[key] if data.has(key) else null
+
+
+func get_base_value(key: StringName) -> Variant:
+	if self.data.has(&"base"):
+		var base_ref : Ref = self.data[&"base"].duplicate()
+		base_ref.ids.push_back(key)
+		return base_ref.evaluate()
+	else: return null
+
+
+func get_value_or_default(key: StringName, default: Variant) -> Variant:
+	var value : Variant = self.get_value(key)
+	return value if value else default
+
+
+func set_value(key: StringName, value: Variant) -> void:
+	self.set_local_value(key, value)
+
+
+func set_local_value(key: StringName, value: Variant) -> void:
+	if value == null: self.data.erase(key)
+	else: data[key] = value
+
+
+func add_cell(key: StringName, base: Ref = null) -> Cell:
+	var initial_data := {}
+	if base: initial_data[&"base"] = base
+
+	var result := Cell.new(key, self, initial_data)
+	return result
+
+
+func instantiate(host: PennyHost) -> Node:
+	self.close_instance()
+	var result : Node = load(get_value(&"link")).instantiate()
+	host.get_layer(self.layer).add_child(result)
+
+	if result is PennyNode:
+		result.populate(host, self)
+
+	result.tree_exiting.connect(self.disconnect_instance.bind(result))
+	result.name = self.node_name
+	self.instance = result
+	return result
+
+
+func disconnect_instance(match : Node = null) -> void:
+	if match and self.instance == match: return
+	self.instance = null
+
+
+func close_instance() -> void:
+	var inst := self.instance
+	if inst == null: return
+	if inst is PennyNode:
+		inst.close()
+	inst.queue_free()

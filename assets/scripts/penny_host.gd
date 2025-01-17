@@ -156,7 +156,7 @@ func _init() -> void:
 
 func _exit_tree() -> void:
 	insts.erase(self)
-	Cell.ROOT.clear_instances(true)
+	# Cell.ROOT.clear_instances(true)
 
 
 func _ready() -> void:

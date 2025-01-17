@@ -1,2 +1,2 @@
 
-class_name StmtDialog extends Stmt
+class_name StmtDialog extends StmtNode

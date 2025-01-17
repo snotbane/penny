@@ -1,6 +1,6 @@
 [gd_scene load_steps=17 format=3 uid="uid://bpqllg6n5sq5a"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/penny_controller.gd" id="1_amygg"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/penny_host.gd" id="1_amygg"]
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="2_wbk5u"]
 [ext_resource type="Texture2D" uid="uid://cnva3qm2uhcom" path="res://addons/penny_godot/assets/textures/icons/Load.svg" id="3_cxwlt"]
 [ext_resource type="Texture2D" uid="uid://yevin05lnguh" path="res://addons/penny_godot/assets/textures/icons/LoadFade.svg" id="4_quq2v"]
