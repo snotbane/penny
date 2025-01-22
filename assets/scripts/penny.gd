@@ -13,6 +13,7 @@ const OMIT_SCRIPT_FOLDERS := [
 	"tests",
 ]
 static var SCRIPT_RESOURCE_LOADER := preload("res://addons/penny_godot/assets/scripts/penny_script_format_loader.gd").new()
+static var PENNY_DEBUG_SCENE := preload("res://addons/penny_godot/assets/scenes/penny_debug.tscn")
 
 static var inst : Penny
 static var is_reloading_bulk : bool = false
@@ -154,6 +155,16 @@ func _enter_tree() -> void:
 
 
 func _ready():
+	if OS.is_debug_build():
+		var debug_canvas := CanvasLayer.new()
+		debug_canvas.layer = 256
+		self.add_child.call_deferred(debug_canvas)
+		var debug : PennyDebugUI = PENNY_DEBUG_SCENE.instantiate()
+		on_reload_start.connect(debug.on_reload_start.emit)
+		on_reload_finish.connect(debug.on_reload_finish.emit)
+		on_reload_cancel.connect(debug.on_reload_cancel.emit)
+		debug_canvas.add_child.call_deferred(debug)
+
 	Penny.reload_all.call_deferred()
 
 

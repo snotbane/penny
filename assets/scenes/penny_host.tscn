@@ -79,7 +79,6 @@ theme_override_constants/margin_right = 200
 
 [node name="penny_history_box" parent="canvas_layer/ui/v_box_container/history_layer" instance=ExtResource("4_hm4jj")]
 layout_mode = 2
-script = null
 
 [node name="scroll_contents" parent="canvas_layer/ui/v_box_container/history_layer/penny_history_box/panel_container/margin_container/scroll_container/margin_container" index="0"]
 theme_override_constants/separation = 16
