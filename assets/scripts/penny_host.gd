@@ -162,11 +162,10 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	Penny.inst.on_reload_finish.connect(try_reload)
 
-	# for meta_name in self.get_meta_list():
-	# 	var meta : Variant = self.get_meta(meta_name)
-	# 	if meta is PennyDecoRegistry:
-	# 		var registry : PennyDecoRegistry = meta
-	# 		registry.register_decos()
+	# var decoration_registries : Array = self.get_meta(&"decoration_registries")
+	# for i in decoration_registries:
+	# 	var registry : DecorationRegistry = i
+	# 	registry.register_decos()
 
 	if autostart:
 		jump_to.call_deferred(start_label)

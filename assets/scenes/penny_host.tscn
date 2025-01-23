@@ -1,7 +1,6 @@
-[gd_scene load_steps=18 format=3 uid="uid://gtm2kenc70u7"]
+[gd_scene load_steps=17 format=3 uid="uid://gtm2kenc70u7"]
 
 [ext_resource type="PackedScene" uid="uid://ckwmom7w0dvh1" path="res://addons/penny_godot/assets/scenes/penny_history_box.tscn" id="4_hm4jj"]
-[ext_resource type="Resource" uid="uid://bsrrbmeopuowc" path="res://addons/penny_godot/assets/themes/penny_decos_default.tres" id="4_s55ao"]
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="5_3br4k"]
 [ext_resource type="Texture2D" uid="uid://bqiynomjlbcme" path="res://addons/penny_godot/assets/textures/icons/UndoRedo.svg" id="7_ns3dh"]
 [ext_resource type="Texture2D" uid="uid://cclh3lyq0mgnm" path="res://addons/penny_godot/assets/textures/icons/UndoRedoFade.svg" id="9_y2csr"]
@@ -31,7 +30,6 @@ keycode = 83
 events = [SubResource("InputEventKey_2j54e")]
 
 [node name="penny_host" type="Node"]
-metadata/deco_registry_default = ExtResource("4_s55ao")
 
 [node name="canvas_layer" type="CanvasLayer" parent="."]
 

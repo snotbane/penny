@@ -40,10 +40,6 @@ func _execute(host: PennyHost) :
 		previous_dialog_node = null
 		incoming_needs_creation = true
 
-	# print("Previous: ", previous_dialog, ", Incoming: ", incoming_dialog)
-	# print("Previous node: ", previous_dialog_node)
-	# print("Incoming needs creation: ", incoming_needs_creation)
-
 	if incoming_needs_creation:
 		if previous_dialog_node != null:
 			await previous_dialog_node.close(true)
@@ -52,7 +48,7 @@ func _execute(host: PennyHost) :
 	else:
 		incoming_dialog_node = previous_dialog_node
 
-	var what := DisplayString.new_rich(pure_text)
+	var what := DisplayString.new_from_pure(pure_text)
 	var result := create_record(host, { "who": subject, "what": what })
 	incoming_dialog_node.receive(result)
 
@@ -62,6 +58,6 @@ func _execute(host: PennyHost) :
 
 
 func _abort(host: PennyHost) -> Record:
-	var what := DisplayString.new_rich(pure_text)
+	var what := DisplayString.new_from_pure(pure_text)
 	var result := create_record(host, { "who": subject, "what": what })
 	return result

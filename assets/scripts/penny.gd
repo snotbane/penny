@@ -14,6 +14,7 @@ const OMIT_SCRIPT_FOLDERS := [
 ]
 static var SCRIPT_RESOURCE_LOADER := preload("res://addons/penny_godot/assets/scripts/penny_script_format_loader.gd").new()
 static var PENNY_DEBUG_SCENE := preload("res://addons/penny_godot/assets/scenes/penny_debug.tscn")
+static var DECORATION_REGISTRY_DEFAULT : DecorationRegistry = preload("res://addons/penny_godot/assets/decorations/decoration_registry_default.tres")
 
 static var inst : Penny
 static var is_reloading_bulk : bool = false
@@ -33,6 +34,11 @@ static var errors : Array[String] :
 
 static var reload_cache_mode : ResourceLoader.CacheMode :
 	get: return ResourceLoader.CacheMode.CACHE_MODE_REUSE if OS.has_feature("template") else ResourceLoader.CacheMode.CACHE_MODE_REPLACE
+
+
+static func _static_init() -> void:
+	DECORATION_REGISTRY_DEFAULT.register_decos()
+	print(Deco.MASTER_REGISTRY)
 
 
 static func register_formats() -> void:

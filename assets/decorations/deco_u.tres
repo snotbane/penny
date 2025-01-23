@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="DecoSpan" load_steps=2 format=3 uid="uid://kpdhp1em5m4i"]
+
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/decorations/deco_span.gd" id="1_e445u"]
+
+[resource]
+script = ExtResource("1_e445u")
+argument_defaults = {}
+id = &"u"
