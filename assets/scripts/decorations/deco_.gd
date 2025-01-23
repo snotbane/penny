@@ -27,10 +27,10 @@ func _get_bbcode_tag_end(inst: DecoInst) -> String:
 	return "[/%s]" % self.id
 
 
-func _on_register_start(message: DecoratedText, inst: DecoInst) -> void: pass
+func _on_register_start(message: DisplayString, inst: DecoInst) -> void: pass
 
 
-func _on_register_end(message: DecoratedText, inst: DecoInst) -> void: pass
+func _on_register_end(message: DisplayString, inst: DecoInst) -> void: pass
 
 
 func _on_encounter_start(typewriter: Typewriter, inst: DecoInst): pass

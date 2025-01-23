@@ -12,10 +12,16 @@ func evaluate(context := Cell.ROOT) -> Variant:
 			printerr("Cyclical evaluation '%s' for object '%s'" % [result, context])
 			return null
 		evals_seen.push_back(result)
-		result = result._evaluate_shallow(context)
+
+		var incoming : Variant = result._evaluate(context)
+		if result is Cell.Ref and incoming is PennyString:
+			var new_context_ref : Cell.Ref = result.duplicate()
+			new_context_ref.ids.remove_at(new_context_ref.ids.size() - 1)
+			context = new_context_ref.evaluate(context)
+
+		result = incoming
 	return result
 
 
 ## Evaluate one layer. Non-recursive.
-func _evaluate_shallow(context := Cell.ROOT) -> Variant: return _evaluate(context)
 func _evaluate(context : Cell) -> Variant: return null

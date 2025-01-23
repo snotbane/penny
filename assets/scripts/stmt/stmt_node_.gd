@@ -1,16 +1,5 @@
 
-class_name StmtNode extends Stmt
-
-static var DEFAULT_CELL_REF := Cell.Ref.to(Cell.OBJECT)
-
-## When initialized, this should always be global -- never relative.
-var subject_ref : Cell.Ref
-
-var subject : Cell :
-	get: return subject_ref.evaluate()
-
-var subject_node : Node :
-	get: return subject.instance
+class_name StmtNode extends StmtCell
 
 
 func _get_verbosity() -> Verbosity:
@@ -18,7 +7,7 @@ func _get_verbosity() -> Verbosity:
 
 
 func _populate(tokens: Array) -> void:
-	subject_ref = Cell.Ref.new(str(tokens)) if tokens else DEFAULT_CELL_REF
+	super._populate(tokens)
 
 
 func instantiate_subject(host: PennyHost) -> Node:

@@ -12,7 +12,7 @@ static var focus_left : bool = false
 
 var is_mouse_inside : bool
 var is_preventing_skip : bool
-var message : DecoratedText
+var message : DisplayString
 
 
 func _enter_tree() -> void:

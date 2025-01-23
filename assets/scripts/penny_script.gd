@@ -16,14 +16,13 @@ func update_from_file(file: FileAccess) -> void:
 	errors.clear()
 
 	var tokens := parse_code_to_tokens(file.get_as_text(true), file)
+	# print("Tokens: %s" % str(tokens))
 
 	# var old_stmts : Array[Stmt]
 	# if not Engine.is_editor_hint():
 	# 	old_stmts = stmts.duplicate()
 
 	parse_tokens_to_stmts(tokens, file)
-
-	pass
 
 
 func parse_tokens_to_stmts(tokens: Array[Token], context_file: FileAccess = null) -> void:
@@ -49,7 +48,7 @@ func parse_tokens_to_stmts(tokens: Array[Token], context_file: FileAccess = null
 
 
 static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: FileAccess = null) -> Stmt:
-	# for token in tokens: if token.type == Token.Type.ASSIGNMENT: return StmtAssign.new()
+	for token in tokens: if token.type == Token.Type.ASSIGNMENT: return StmtAssign.new()
 
 	if tokens.front().type == Token.Type.KEYWORD:
 		var keyword : StringName = tokens.front().value
@@ -90,7 +89,7 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 	# 		if tokens[0].value == '.' and tokens[1].type == Token.IDENTIFIER:
 	# 			return StmtObject.new()
 
-	printerr("No Stmt recycled from tokens: %s" % tokens)
+	printerr("No Stmt recycled from tokens: %s" % str(tokens))
 	return null
 
 static func parse_code_to_tokens(raw: String, context_file: FileAccess = null) -> Array[Token]:
@@ -147,9 +146,9 @@ class Token extends RefCounted:
 		KEYWORD,
 		VALUE_BOOLEAN,
 		VALUE_COLOR,
+		ASSIGNMENT,
 		OPERATOR,
 		COMMENT,
-		ASSIGNMENT,
 		IDENTIFIER,
 		VALUE_NUMBER,
 		TERMINATOR,
@@ -161,9 +160,9 @@ class Token extends RefCounted:
 		Token.Type.KEYWORD: 				RegEx.create_from_string(r"\b(await|call|close|else|elif|if|init|jump|label|match|menu|open|pass|print|return)\b"),
 		Token.Type.VALUE_BOOLEAN: 			RegEx.create_from_string(r"\b([Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
 		Token.Type.VALUE_COLOR: 			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
-		Token.Type.OPERATOR: 				RegEx.create_from_string(r"([=!<>]=)|&&|\|\||(\b(and|nand|or|nor|not|new)\b)|([\.!+\-*/@\$%&|<>\[\]\(\),](?!=))"),
+		Token.Type.ASSIGNMENT: 				RegEx.create_from_string(r"([+\-*/]?)="),
+		Token.Type.OPERATOR: 				Expr.Op.PATTERN_COMPILED,
 		Token.Type.COMMENT: 				RegEx.create_from_string(r"(?ms)(([#/])\*.*?(\*\2))|((#|\/{2}).*?$)"),
-		Token.Type.ASSIGNMENT: 				RegEx.create_from_string(r"[+\-*/:]?="),
 		Token.Type.IDENTIFIER: 				RegEx.create_from_string(r"[a-zA-Z_]\w*"),
 		Token.Type.VALUE_NUMBER: 			RegEx.create_from_string(r"\d+\.\d*|\.?\d+"),
 		Token.Type.TERMINATOR: 				RegEx.create_from_string(r"(?m)[:;]|((?<!\[)(?<=[^\n:;])$\n(?!\]))"),
@@ -191,8 +190,7 @@ class Token extends RefCounted:
 	static func parse_code_as_literal(raw: String) -> Variant:
 		for i in LITERAL_PATTERNS.size():
 			var rx : RegExMatch = LITERAL_PATTERNS[i].search(raw)
-			if not rx: continue
-			match i:
+			if rx: match i:
 				Literal.STRING:			return rx.get_string()
 				Literal.COLOR:			return Color(raw)
 				Literal.NULL:			return null
@@ -209,7 +207,14 @@ class Token extends RefCounted:
 
 	func _init(_type: Type, _raw: String) -> void:
 		type = _type
-		value = Token.parse_code_as_literal(_raw)
+
+		match type:
+			Token.Type.INDENTATION:
+				value = _raw.length()
+			Token.Type.OPERATOR:
+				value = Expr.Op.new_from_string(_raw)
+			_:
+				value = Token.parse_code_as_literal(_raw)
 
 
 	func _to_string() -> String:
@@ -229,46 +234,3 @@ class Token extends RefCounted:
 			Token.Type.WHITESPACE: token_type_string = "whitespace"
 			_: token_type_string = "invalid_token"
 		return "%s:%s" % [token_type_string, str(value)]
-
-
-class Op extends RefCounted:
-	enum {
-		INVALID,
-		EVALUATE,
-		ARRAY_CLOSE,
-		ARRAY_OPEN,
-		ITERATOR,
-		NOT,
-		AND,
-		OR,
-		NEW,
-		IS_EQUAL,
-		NOT_EQUAL,
-		MORE_THAN,
-		MORE_EQUAL,
-		LESS_THAN,
-		LESS_EQUAL,
-		DOT,
-		QUESTION,
-	}
-
-	static var PATTERNS := {
-		EVALUATE: 					RegEx.create_from_string(r"@"),
-		ARRAY_CLOSE: 				RegEx.create_from_string(r"\]"),
-		ARRAY_OPEN: 				RegEx.create_from_string(r"\["),
-		ITERATOR: 					RegEx.create_from_string(r","),
-		NOT: 						RegEx.create_from_string(r"!|not"),
-		AND: 						RegEx.create_from_string(r"&&|and"),
-		OR: 						RegEx.create_from_string(r"\|\||or"),
-		NEW: 						RegEx.create_from_string(r"new"),
-		IS_EQUAL: 					RegEx.create_from_string(r"=="),
-		NOT_EQUAL: 					RegEx.create_from_string(r"!="),
-		MORE_THAN: 					RegEx.create_from_string(r">"),
-		MORE_EQUAL: 				RegEx.create_from_string(r">="),
-		LESS_THAN: 					RegEx.create_from_string(r"<"),
-		LESS_EQUAL: 				RegEx.create_from_string(r"<="),
-		DOT: 						RegEx.create_from_string(r"\."),
-		QUESTION: 					RegEx.create_from_string(r"\?"),
-	}
-
-	var type : int

@@ -15,11 +15,11 @@ func _get_bbcode_tag_end(inst: DecoInst) -> String:
 	return String()
 
 
-# func _on_register_start(message: DecoratedText, inst: DecoInst) -> void:
+# func _on_register_start(message: DisplayString, inst: DecoInst) -> void:
 # 	pass
 
 
-# func _on_register_end(message: DecoratedText, inst: DecoInst) -> void:
+# func _on_register_end(message: DisplayString, inst: DecoInst) -> void:
 # 	pass
 
 

@@ -20,12 +20,12 @@ func _get_bbcode_tag_end(inst: DecoInst) -> String:
 	return result
 
 
-func _on_register_start(message: DecoratedText, inst: DecoInst) -> void:
+func _on_register_start(message: DisplayString, inst: DecoInst) -> void:
 	for component in components:
 		component._on_register_start(message, inst)
 
 
-func _on_register_end(message: DecoratedText, inst: DecoInst) -> void:
+func _on_register_end(message: DisplayString, inst: DecoInst) -> void:
 	for i in components.size():
 		var component := components[components.size() - (i + 1)]
 		component._on_register_end(message, inst)

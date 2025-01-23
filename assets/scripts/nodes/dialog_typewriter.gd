@@ -75,7 +75,7 @@ var play_state : PlayState :
 				is_locked = false
 
 var subject : Cell
-var message : DecoratedText
+var message : DisplayString
 
 var unencountered_decos : Array[DecoInst]
 var unclosed_decos : Array[DecoInst]

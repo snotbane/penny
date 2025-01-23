@@ -6,11 +6,11 @@ func _get_is_span() -> bool:
 	return true
 
 
-# func _on_register_start(message: DecoratedText, inst: DecoInst) -> void:
+# func _on_register_start(message: DisplayString, inst: DecoInst) -> void:
 # 	pass
 
 
-# func _on_register_end(message: DecoratedText, inst: DecoInst) -> void:
+# func _on_register_end(message: DisplayString, inst: DecoInst) -> void:
 # 	pass
 
 

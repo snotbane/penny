@@ -191,7 +191,6 @@ func _input(event: InputEvent) -> void:
 
 
 func try_reload(success: bool) -> void:
-	print("try_reload : ", self.name)
 	if self.cursor:
 		self.abort(Record.Response.IGNORE)
 		reset_history_in_place()

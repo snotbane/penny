@@ -34,7 +34,7 @@ var bbcode_tag_end : String :
 func _init(string: String, context: Cell) -> void:
 	var arg_matches := ARG_PATTERN.search_all(string)
 	for arg_match in arg_matches:
-		var expr := Expr.from_string(arg_match.get_string(2))
+		var expr := Expr.new_from_string(arg_match.get_string(2))
 		var bind : Variant = expr.evaluate(context)
 		if bind != null:
 			args[StringName(arg_match.get_string(1))] = bind
@@ -55,13 +55,13 @@ func _to_string() -> String:
 	return "<%s>" % result
 
 
-func register_start(message: DecoratedText, index: int) -> void:
+func register_start(message: DisplayString, index: int) -> void:
 	start_index = index
 	if template:
 		template._on_register_start(message, self)
 
 
-func register_end(message: DecoratedText, index: int) -> void:
+func register_end(message: DisplayString, index: int) -> void:
 	end_index = index
 	if template:
 		template._on_register_end(message, self)

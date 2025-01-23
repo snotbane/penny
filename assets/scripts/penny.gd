@@ -123,6 +123,7 @@ static func reload_many(_scripts: Array[PennyScript] = scripts):
 
 		for script in scripts:
 			for stmt in script.stmts:
+				if stmt == null: continue
 				stmt.reload()
 
 		is_all_scripts_valid = errors.is_empty()
@@ -183,7 +184,7 @@ static func get_value_as_string(value: Variant) -> String:
 	elif value is Cell:
 		return value.key_name
 	elif value is String:
-		return "`%s`" % value
+		return "\"%s\"" % value
 	elif value is Color:
 		return "#" + value.to_html()
 	return str(value)

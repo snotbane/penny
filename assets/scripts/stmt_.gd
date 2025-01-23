@@ -18,6 +18,7 @@ signal aborted(record: Record)
 var owner : PennyScript
 var index : int
 var depth : int
+var _debug_string_do_not_use_for_anything_else_seriously_i_mean_it : String
 
 var prev_in_order : Stmt
 var prev_in_same_depth : Stmt
@@ -30,35 +31,55 @@ var next_in_same_or_lower_depth : Stmt
 var next_in_lower_depth : Stmt
 var next_in_higher_depth : Stmt
 
+var context_ref : Cell.Ref
+var context : Cell :
+	get: return context_ref.evaluate()
 
+## Defines whether or not this statement should show up in history. -1 = always show, even to end user. Values greater than 0 are used for debugging purposes.
 var verbosity : int :
 	get: return _get_verbosity()
-## Defines whether or not this statement should show up in history. -1 = always show, even to end user. Values greater than 0 are used for debugging purposes.
 func _get_verbosity() -> Verbosity:
 	return Verbosity.USER_FACING
 
 
+## Defines whether or not this statement can be used as a stop point when rolling back or forward. Usually true for any statement that pauses execution until user manually inputs.
 var is_rollable : bool :
 	get: return _get_is_rollable()
-## Defines whether or not this statement can be used as a stop point when rolling back or forward. Usually true for any statement that pauses execution until user manually inputs.
 func _get_is_rollable() -> bool:
 	return false
 
 
+## Defines whether or not this statement can be automatically skipped. This should be false for any stmt that both (1) relies on user input AND (2) alters the stmt flow. E.g. menus/prompts. True for all others.
 var is_skippable : bool :
 	get: return _get_is_skippable()
-## Defines whether or not this statement can be automatically skipped. This should be false for any stmt that both (1) relies on user input AND (2) alters the stmt flow. E.g. menus/prompts. True for all others.
 func _get_is_skippable() -> bool:
 	return true
 
+
+func _to_string() -> String:
+	return _debug_string_do_not_use_for_anything_else_seriously_i_mean_it
+
+
 ## Called after the statement is created.
 func populate(_owner : PennyScript, _index : int, tokens : Array) -> void:
+	tokens = tokens.duplicate()
+
 	owner = _owner
 	index = _index
-	depth = tokens[0].value.length() if (tokens and tokens[0].type == PennyScript.Token.Type.INDENTATION) else 0
+	depth = tokens.pop_front().value if (tokens and tokens[0].type == PennyScript.Token.Type.INDENTATION) else 0
+
+	if OS.is_debug_build():
+		var _d : String = ""
+		for token in tokens:
+			_d += token.to_string().split(":")[1] + " "
+		_debug_string_do_not_use_for_anything_else_seriously_i_mean_it = ">\t".repeat(depth + 1) + _d.substr(0, _d.length() - 1)
 
 	self._populate(tokens)
 func _populate(tokens: Array) -> void: pass
+
+
+func populate_from_other(other: Stmt, tokens : Array) -> void:
+	self.populate(other.owner, other.index, tokens)
 
 
 ## Called when Penny reloads all scripts. If any errors are produced, add them to [member script]'s error list.
@@ -74,8 +95,11 @@ func reload() -> void:
 	next_in_lower_depth = get_next_in_lower_depth()
 	next_in_higher_depth = get_next_in_higher_depth()
 
+	context_ref = get_context_ref()
+
 	self._reload()
 func _reload() -> void: pass
+
 
 ## Occurs when it is reached as a [PennyController] encounters it.
 func execute(host: PennyHost) :
@@ -207,3 +231,16 @@ func get_prev_in_higher_depth() -> Stmt :
 			return cursor
 		cursor = cursor.get_prev_in_order()
 	return null
+
+
+func get_context_ref() -> Cell.Ref:
+	var cursor := self.get_prev_in_lower_depth()
+	var _ids : PackedStringArray
+	while cursor:
+		if cursor is StmtCell: for i in cursor.subject_ref.ids.size():
+			_ids.insert(0, cursor.subject_ref.ids[-i - 1])
+			# ## Non-recursive
+			# _ids = cursor.subject_ref.ids.duplicate()
+			# break
+		cursor = cursor.get_prev_in_lower_depth()
+	return Cell.Ref.new(_ids, false)
