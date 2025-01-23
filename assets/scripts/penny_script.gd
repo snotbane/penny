@@ -59,41 +59,41 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 	if tokens.front().type == Token.Type.KEYWORD:
 		var keyword : StringName = tokens.front().value
 		match keyword:
-		# 	&"call": 	return StmtJumpCall.new()
-		# 	&"close": 	return StmtClose.new()
-		# 	&"else": 	return StmtConditionalElse.new()
-		# 	&"elif": 	return StmtConditionalElif.new()
-		# 	&"if": 		return StmtConditionalIf.new()
-		# 	&"init":	return StmtInit.new()
-		# 	&"jump": 	return StmtJump.new()
+			&"await":	return StmtAwait.new()
+			&"call": 	return StmtJumpCall.new()
+			&"close": 	return StmtClose.new()
+			&"else": 	return StmtConditionalElse.new()
+			&"elif": 	return StmtConditionalElif.new()
+			&"if": 		return StmtConditionalIf.new()
+			&"init":	return StmtInit.new()
+			&"jump": 	return StmtJump.new()
 			&"label": 	return StmtLabel.new()
-		# 	&"match": 	return StmtMatch.new()
-		# 	&"menu": 	return StmtMenu.new()
-		# 	&"open": 	return StmtOpen.new()
-		# 	&"pass": 	return StmtPass.new()
-		# 	&"print": 	return StmtPrint.new()
-		# 	&"return":	return StmtReturn.new()
-		# 	&"await":	return StmtAwait.new()
-		printerr("The keyword '%s' was found, but it isn't assigned to any Stmt.")
+			&"match": 	return StmtMatch.new()
+			&"menu": 	return StmtMenu.new()
+			&"open": 	return StmtOpen.new()
+			&"pass": 	return StmtPass.new()
+			&"print": 	return StmtPrint.new()
+			&"return":	return StmtReturn.new()
+		printerr("The keyword '%s' was found, but it isn't assigned to any Stmt." % keyword)
 		return null
 
-	# var block_header := stmt.get_prev_in_lower_depth()
-	# if block_header:
-	# 	if block_header is StmtMatch:
-	# 		return StmtConditionalMatch.new()
-	# 	elif block_header is StmtMenu:
-	# 		return StmtConditionalMenu.new()
+	var block_header := stmt.get_prev_in_lower_depth()
+	if block_header:
+		if block_header is StmtMatch:
+			return StmtConditionalMatch.new()
+		elif block_header is StmtMenu:
+			return StmtConditionalMenu.new()
 
 	if tokens.back().type == Token.Type.VALUE_STRING:
 		return StmtDialog.new()
 
-	# match tokens.front().type:
-	# 	Token.IDENTIFIER:
-	# 		if tokens.size() == 1 or tokens[1].value == '.':
-	# 			return StmtObject.new()
-	# 	Token.OPERATOR:
-	# 		if tokens[0].value == '.' and tokens[1].type == Token.IDENTIFIER:
-	# 			return StmtObject.new()
+	match tokens.front().type:
+		Token.Type.IDENTIFIER:
+			if tokens.size() == 1 or tokens[1].value == '.':
+				return StmtCell.new()
+		Token.Type.OPERATOR:
+			if tokens[0].value == '.' and tokens[1].type == Token.Type.IDENTIFIER:
+				return StmtCell.new()
 
 	printerr("No Stmt recycled from tokens: %s" % str(tokens))
 	return null

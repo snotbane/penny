@@ -162,11 +162,6 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	Penny.inst.on_reload_finish.connect(try_reload)
 
-	# var decoration_registries : Array = self.get_meta(&"decoration_registries")
-	# for i in decoration_registries:
-	# 	var registry : DecorationRegistry = i
-	# 	registry.register_decos()
-
 	if autostart:
 		jump_to.call_deferred(start_label)
 
@@ -195,7 +190,7 @@ func try_reload(success: bool) -> void:
 		reset_history_in_place()
 
 	if self.last_valid_cursor:
-		var start : Stmt = self.last_valid_cursor.owning_script.diff.remap_stmt_index(self.last_valid_cursor)
+		var start : Stmt = self.last_valid_cursor.owner.diff.remap_stmt_index(self.last_valid_cursor)
 		self.last_valid_cursor = null
 		if success:
 			## TODO: Go back through the records till you find the new cursor, and undo stmts until that point.
@@ -209,7 +204,7 @@ func perform_inits() -> void:
 
 func perform_inits_selective(scripts: Array[PennyScript]) -> void:
 	for init in Penny.inits:
-		if not scripts.has(init.owning_script): continue
+		if not scripts.has(init.owner): continue
 		await self.execute(init)
 
 

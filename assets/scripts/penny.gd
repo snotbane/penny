@@ -25,6 +25,7 @@ static var scripts : Array[PennyScript]
 static var inits : Array[Stmt]
 static var labels : Dictionary
 
+static var static_host : PennyHost
 static var errors : Array[String] :
 	get:
 		var result : Array[String] = []
@@ -37,8 +38,8 @@ static var reload_cache_mode : ResourceLoader.CacheMode :
 
 
 static func _static_init() -> void:
-	DECORATION_REGISTRY_DEFAULT.register_decos()
-	print(Deco.MASTER_REGISTRY)
+	if not Engine.is_editor_hint():
+		DECORATION_REGISTRY_DEFAULT.register_decos()
 
 
 static func register_formats() -> void:
@@ -136,7 +137,9 @@ static func reload_many(_scripts: Array[PennyScript] = scripts):
 
 		if is_all_scripts_valid:
 			print("Successfully loaded all %s script(s), %s total." % [str(_scripts.size()), str(scripts.size())])
-			# inits.sort_custom(stmt_init_sort)
+			inits.sort_custom(StmtInit.sort)
+			if not Engine.is_editor_hint():
+				static_host.perform_inits_selective(scripts)
 		else:
 			printerr("Failed to load one or more scripts:")
 			for e in errors:
@@ -162,15 +165,21 @@ func _enter_tree() -> void:
 
 
 func _ready():
-	if OS.is_debug_build():
-		var debug_canvas := CanvasLayer.new()
-		debug_canvas.layer = 256
-		self.add_child.call_deferred(debug_canvas)
-		var debug : PennyDebugUI = PENNY_DEBUG_SCENE.instantiate()
-		on_reload_start.connect(debug.on_reload_start.emit)
-		on_reload_finish.connect(debug.on_reload_finish.emit)
-		on_reload_cancel.connect(debug.on_reload_cancel.emit)
-		debug_canvas.add_child.call_deferred(debug)
+	if not Engine.is_editor_hint():
+		static_host = PennyHost.new()
+		static_host.name = "static_host"
+		static_host.allow_rolling = false
+		self.add_child.call_deferred(static_host)
+
+		if OS.is_debug_build():
+			var debug_canvas := CanvasLayer.new()
+			debug_canvas.layer = 256
+			self.add_child.call_deferred(debug_canvas)
+			var debug : PennyDebugUI = PENNY_DEBUG_SCENE.instantiate()
+			on_reload_start.connect(debug.on_reload_start.emit)
+			on_reload_finish.connect(debug.on_reload_finish.emit)
+			on_reload_cancel.connect(debug.on_reload_cancel.emit)
+			debug_canvas.add_child.call_deferred(debug)
 
 	Penny.reload_all.call_deferred()
 
