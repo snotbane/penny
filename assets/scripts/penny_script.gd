@@ -39,15 +39,21 @@ func parse_tokens_to_stmts(tokens: Array[Token], context_file: FileAccess = null
 
 	stmts.clear()
 	stmts.resize(token_groups.size())
+	var offset := 0
 	for i in token_groups.size():
-		stmts[i] = Stmt.new()
-		stmts[i].populate(self, i, token_groups[i])
-		stmts[i] = recycle_stmt(stmts[i], i, token_groups[i], context_file)
-		if stmts[i]:
-			stmts[i].populate(self, i, token_groups[i])
+		var j := i - offset
+		stmts[j] = Stmt.new()
+		stmts[j].populate(self, j, token_groups[i])
+		stmts[j] = recycle_stmt(stmts[j], j, token_groups[i], context_file)
+		if stmts[j]:
+			stmts[j].populate(self, j, token_groups[i])
+		else:
+			offset += 1
 
 
 static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: FileAccess = null) -> Stmt:
+	if tokens.size() == 1 and tokens[0].type == Token.Type.INDENTATION: return null
+
 	for token in tokens: if token.type == Token.Type.ASSIGNMENT: return StmtAssign.new()
 
 	if tokens.front().type == Token.Type.KEYWORD:

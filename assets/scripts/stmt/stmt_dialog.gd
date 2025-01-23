@@ -7,14 +7,14 @@ static var REGEX_CHAR_COUNT := RegEx.create_from_string(r"\S")
 
 
 var subject_dialog_path : Cell.Ref
-var raw_text : String
+var pure_text : String
 
 
 func _populate(tokens: Array) -> void:
 	var regex_whitespace := RegEx.create_from_string(DEPTH_REMOVAL_PATTERN % self.depth)
-	raw_text = regex_whitespace.sub(tokens.pop_back().value, "", true)
+	pure_text = regex_whitespace.sub(tokens.pop_back().value, "", true)
 
-	print("Dialog raw_text: %s" % raw_text)
+	print("Dialog pure_text: %s" % pure_text)
 
 	super._populate(tokens)
 
@@ -52,7 +52,7 @@ func _execute(host: PennyHost) :
 	else:
 		incoming_dialog_node = previous_dialog_node
 
-	var what : DisplayString = PennyString.new(raw_text).evaluate()
+	var what := DisplayString.new_rich(pure_text)
 	var result := create_record(host, { "who": subject, "what": what })
 	incoming_dialog_node.receive(result)
 
@@ -62,6 +62,6 @@ func _execute(host: PennyHost) :
 
 
 func _abort(host: PennyHost) -> Record:
-	var what : DisplayString = PennyString.new(raw_text).evaluate()
+	var what := DisplayString.new_rich(pure_text)
 	var result := create_record(host, { "who": subject, "what": what })
 	return result

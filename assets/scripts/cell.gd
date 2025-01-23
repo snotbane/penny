@@ -125,7 +125,6 @@ var key_name : StringName :
 var parent : Cell
 var data : Dictionary
 
-
 var name : String :
 	get: return get_value_or_default(&"name", key_name)
 var prefix : String :
@@ -134,7 +133,6 @@ var suffix : String :
 	get: return get_value_or_default(&"suffix", "</>")
 var rich_name : String :
 	get: return prefix + name + suffix
-
 
 var node_name : String :
 	get: return self.to_string() if key_name.is_empty() else str(key_name)

@@ -1,6 +1,6 @@
 
-## Raw text as written in the Penny script. Strings in Penny are usually stored as this.
-class_name PennyString extends Evaluable
+## Text that has been interpolated, filtered, decorated, etc., and is ready to be displayed.
+class_name DisplayString extends RefCounted
 
 static var INTERJECTION_PATTERN := RegEx.create_from_string(r"(?<!\\)\{(.*?)(?<!\\)\}")
 static var INTERPOLATION_PATTERN := RegEx.create_from_string(r"(?<!\\)@((?:\.?[A-Za-z_]\w*)+)|(?<!\\)\[(.*?)(?<!\\)\]")
@@ -15,46 +15,50 @@ static var ESCAPE_SUBSITUTIONS := {
 }
 
 var text : String
+var decos : Array[DecoInst]
 
-func _init(string: String = "") -> void:
-	text = string
+func _init(_text : String = "", _decos: Array[DecoInst] = []) -> void:
+	text = _text
+	decos = _decos
 
 
 func _to_string() -> String:
 	return "`%s`" % text
 
 
-func _evaluate(context: Cell) -> Variant:
-	var result = text
+static func new_pure(_text : String = "") -> DisplayString:
+	return DisplayString.new(_text)
 
-	print("Evaluating PennyString ", self)
 
-	## INTERPOLATION
+static func new_rich(pure: String = "", context := Cell.ROOT) -> DisplayString:
+	var result := pure
+
+	result = DisplayString.interpolate(result, context)
+
+	return DisplayString.new(result)
+
+
+static func interpolate(string: String, context: Cell) -> String:
 	while true:
-		var pattern_match := INTERPOLATION_PATTERN.search(result)
+		var pattern_match : RegExMatch = INTERPOLATION_PATTERN.search(string)
 		if not pattern_match: break
 
 		var interp_expr := Expr.new_from_string(pattern_match.get_string(1) + pattern_match.get_string(2))
 		var evaluation := interp_expr.evaluate_adaptive(context)
-		context = evaluation[&"context"]
 		var interp : Variant = evaluation[&"value"]
 		var interp_string : String
 		if interp == null:
 			interp_string = "NULL"
 		elif interp is Cell:
-			interp_string = interp.rich_name.text
+			interp_string = interp.rich_name
 		elif interp is Color:
 			interp_string = "#" + interp.to_html()
-		elif interp is PennyString:
-			print("PennyString! ", interp)
 		else:
 			interp_string = str(interp)
 
-		result = sub_match(pattern_match, interp_string)
-
-	print("Evaluated PennyString `%s`" % result)
-	return DisplayString.new(result)
+		string = replace_match(pattern_match, interpolate(interp_string, evaluation[&"context"]))
+	return string
 
 
-static func sub_match(match: RegExMatch, sub: String) -> String:
+static func replace_match(match: RegExMatch, sub: String) -> String:
 	return match.subject.substr(0, match.get_start()) + sub + match.subject.substr(match.get_end(), match.subject.length() - match.get_end())
