@@ -7,14 +7,14 @@ static var REGEX_CHAR_COUNT := RegEx.create_from_string(r"\S")
 
 
 var subject_dialog_path : Cell.Ref
-var text : PennyString
+var raw_text : String
 
 
 func _populate(tokens: Array) -> void:
 	var regex_whitespace := RegEx.create_from_string(DEPTH_REMOVAL_PATTERN % self.depth)
-	text = PennyString.new(regex_whitespace.sub(tokens.pop_back().value, "", true))
+	raw_text = regex_whitespace.sub(tokens.pop_back().value, "", true)
 
-	print("Dialog text: %s" % text)
+	print("Dialog raw_text: %s" % raw_text)
 
 	super._populate(tokens)
 
@@ -23,7 +23,6 @@ func _populate(tokens: Array) -> void:
 
 
 func _execute(host: PennyHost) :
-	print(self.subject_dialog_path.evaluate())
 	var incoming_dialog : Cell = self.subject_dialog_path.evaluate()
 	if not incoming_dialog:
 		printerr("Attempted to create dialog box for '%s', but no such object exists" % self.subject_dialog_path)
@@ -53,7 +52,7 @@ func _execute(host: PennyHost) :
 	else:
 		incoming_dialog_node = previous_dialog_node
 
-	var what : DisplayString = text.evaluate()
+	var what : DisplayString = PennyString.new(raw_text).evaluate()
 	var result := create_record(host, { "who": subject, "what": what })
 	incoming_dialog_node.receive(result)
 
@@ -63,6 +62,6 @@ func _execute(host: PennyHost) :
 
 
 func _abort(host: PennyHost) -> Record:
-	var what : DisplayString = text.evaluate()
+	var what : DisplayString = PennyString.new(raw_text).evaluate()
 	var result := create_record(host, { "who": subject, "what": what })
 	return result

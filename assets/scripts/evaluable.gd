@@ -12,15 +12,28 @@ func evaluate(context := Cell.ROOT) -> Variant:
 			printerr("Cyclical evaluation '%s' for object '%s'" % [result, context])
 			return null
 		evals_seen.push_back(result)
+		result = result._evaluate(context)
+	return result
 
-		var incoming : Variant = result._evaluate(context)
-		if result is Cell.Ref and incoming is PennyString:
+
+## Evaluate, but change the context whenever a [Cell.Ref] is encountered.
+func evaluate_adaptive(context := Cell.ROOT) -> Dictionary:
+	var evals_seen : Array[Evaluable]
+	var result : Variant = self
+	while result is Evaluable:
+		if evals_seen.has(result):
+			printerr("Cyclical evaluation '%s' for object '%s'" % [result, context])
+			break
+		evals_seen.push_back(result)
+		result = result._evaluate(context)
+		if result is Cell.Ref and not result.rel:
 			var new_context_ref : Cell.Ref = result.duplicate()
 			new_context_ref.ids.remove_at(new_context_ref.ids.size() - 1)
 			context = new_context_ref.evaluate(context)
-
-		result = incoming
-	return result
+	return {
+		&"context": context,
+		&"value": result
+	}
 
 
 ## Evaluate one layer. Non-recursive.

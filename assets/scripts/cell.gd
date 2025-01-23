@@ -87,8 +87,8 @@ static var ROOT := Cell.new(&"", null, {})
 static var OBJECT := Cell.new(&"object", ROOT, {
 	&"dialog": Ref.new_from_string("dialog"),
 	&"name": "",
-	&"name_prefix": "<>",
-	&"name_suffix": "</>",
+	&"prefix": "<>",
+	&"suffix": "</>",
 })
 static var DIALOG := Cell.new(&"dialog", ROOT, {
 	&"base": Ref.new_from_string("object"),
@@ -126,14 +126,14 @@ var parent : Cell
 var data : Dictionary
 
 
-var name : PennyString :
-	get: return PennyString.new(get_value_or_default(&"name", key_name))
-var name_prefix : PennyString :
-	get: return PennyString.new(get_value_or_default(&"name_prefix", "<>"))
-var name_suffix : PennyString :
-	get: return PennyString.new(get_value_or_default(&"name_suffix", "</>"))
-var rich_name : PennyString :
-	get: return PennyString.new(name_prefix.text + name.text + name_suffix.text)
+var name : String :
+	get: return get_value_or_default(&"name", key_name)
+var prefix : String :
+	get: return get_value_or_default(&"prefix", "<>")
+var suffix : String :
+	get: return get_value_or_default(&"suffix", "</>")
+var rich_name : String :
+	get: return prefix + name + suffix
 
 
 var node_name : String :
