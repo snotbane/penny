@@ -42,22 +42,24 @@ func parse_tokens_to_stmts(tokens: Array[Token], context_file: FileAccess = null
 	var offset := 0
 	for i in token_groups.size():
 		var j := i - offset
-		stmts[j] = Stmt.new()
-		stmts[j].populate(self, j, token_groups[i])
-		stmts[j] = recycle_stmt(stmts[j], j, token_groups[i], context_file)
+		var stmt_temp := Stmt.new()
+		stmt_temp.populate(self, j, token_groups[i])
+		stmts[j] = recycle_stmt(stmt_temp, j, token_groups[i], context_file)
 		if stmts[j]:
-			stmts[j].populate(self, j, token_groups[i])
+			stmts[j].populate_from_other(stmt_temp, token_groups[i])
 		else:
 			offset += 1
 
 
 static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: FileAccess = null) -> Stmt:
-	if tokens.size() == 1 and tokens[0].type == Token.Type.INDENTATION: return null
+	if tokens[0].type == Token.Type.INDENTATION:
+		tokens.pop_front()
+		if tokens.size() == 0: return null
 
 	for token in tokens: if token.type == Token.Type.ASSIGNMENT: return StmtAssign.new()
 
 	if tokens.front().type == Token.Type.KEYWORD:
-		var keyword : StringName = tokens.front().value
+		var keyword : StringName = tokens.pop_front().value
 		match keyword:
 			&"await":	return StmtAwait.new()
 			&"call": 	return StmtJumpCall.new()

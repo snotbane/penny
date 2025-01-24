@@ -13,8 +13,8 @@ func _get_verbosity() -> Verbosity:
 
 
 func _populate(tokens: Array) -> void:
-	if tokens.size() == 2:
-		order = int(tokens[1].value)
+	if tokens.size() == 1:
+		order = int(tokens[0].value)
 
 
 func _reload() -> void:

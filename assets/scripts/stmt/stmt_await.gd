@@ -18,9 +18,9 @@ func _get_is_skippable() -> bool:
 
 
 func _populate(tokens: Array) -> void:
-	is_simple_timer_delay = tokens[1].value is float or tokens[1].value is int
+	is_simple_timer_delay = tokens[0].value is float or tokens[0].value is int
 	if is_simple_timer_delay:
-		await_value = float(tokens[1].value)
+		await_value = float(tokens[0].value)
 	else:
 		await_value = Cell.Ref.new_from_tokens(tokens)
 

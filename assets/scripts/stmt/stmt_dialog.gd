@@ -14,8 +14,6 @@ func _populate(tokens: Array) -> void:
 	var regex_whitespace := RegEx.create_from_string(DEPTH_REMOVAL_PATTERN % self.depth)
 	pure_text = regex_whitespace.sub(tokens.pop_back().value, "", true)
 
-	print("Dialog pure_text: %s" % pure_text)
-
 	super._populate(tokens)
 
 	subject_dialog_path = subject_ref.duplicate()

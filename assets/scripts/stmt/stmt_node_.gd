@@ -6,10 +6,6 @@ func _get_verbosity() -> Verbosity:
 	return Verbosity.NODE_ACTIVITY
 
 
-func _populate(tokens: Array) -> void:
-	super._populate(tokens)
-
-
 func instantiate_subject(host: PennyHost) -> Node:
 	return subject.instantiate(host)
 

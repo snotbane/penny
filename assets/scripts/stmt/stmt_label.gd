@@ -3,8 +3,9 @@ class_name StmtLabel extends Stmt
 
 var label_name : StringName
 
+
 func _populate(tokens: Array) -> void:
-	label_name = tokens[1].value
+	label_name = tokens[0].value
 
 
 func _reload() -> void :

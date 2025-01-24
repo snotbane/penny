@@ -31,6 +31,8 @@ var next_in_same_or_lower_depth : Stmt
 var next_in_lower_depth : Stmt
 var next_in_higher_depth : Stmt
 
+var index_in_same_depth_chain : int = -1
+
 var context_ref : Cell.Ref
 var context : Cell :
 	get: return context_ref.evaluate()
@@ -74,12 +76,19 @@ func populate(_owner : PennyScript, _index : int, tokens : Array) -> void:
 			_d += token.to_string().split(":")[1] + " "
 		_debug_string_do_not_use_for_anything_else_seriously_i_mean_it = ">\t".repeat(depth + 1) + _d.substr(0, _d.length() - 1)
 
-	self._populate(tokens)
+	index_in_same_depth_chain = get_index_in_same_depth_chain()
 func _populate(tokens: Array) -> void: pass
 
 
 func populate_from_other(other: Stmt, tokens : Array) -> void:
-	self.populate(other.owner, other.index, tokens)
+	owner = other.owner
+	index = other.index
+	depth = other.depth
+	_debug_string_do_not_use_for_anything_else_seriously_i_mean_it = other._debug_string_do_not_use_for_anything_else_seriously_i_mean_it
+
+	index_in_same_depth_chain = other.index_in_same_depth_chain
+
+	self._populate(tokens)
 
 
 ## Called when Penny reloads all scripts. If any errors are produced, add them to [member script]'s error list.
@@ -233,6 +242,11 @@ func get_prev_in_higher_depth() -> Stmt :
 	return null
 
 
+func get_index_in_same_depth_chain() -> int:
+	var cursor := self.get_prev_in_same_depth()
+	return cursor.index_in_same_depth_chain + 1 if cursor else 0
+
+
 func get_context_ref() -> Cell.Ref:
 	var cursor := self.get_prev_in_lower_depth()
 	var _ids : PackedStringArray
@@ -244,3 +258,13 @@ func get_context_ref() -> Cell.Ref:
 			# break
 		cursor = cursor.get_prev_in_lower_depth()
 	return Cell.Ref.new(_ids, false)
+
+
+var nested_stmts_single_depth : Array[Stmt] :
+	get:
+		var cursor := self.next_in_higher_depth
+		var result : Array[Stmt]
+		while cursor:
+			result.push_back(cursor)
+			cursor = cursor.next_in_same_depth
+		return result
