@@ -27,7 +27,7 @@ static func new_from_tokens(tokens: Array, _stmt: Stmt = null) -> Expr:
 				var op : Op = token.value
 				if op.type == Op.ITERATOR: continue
 				while ops and op.type <= ops.back().type:
-					ops.pop_back().apply_static(_symbols)
+					ops.pop_back().apply_init(_symbols)
 				match op.type:
 					Op.DOT, Op.ARRAY_OPEN, Op.ARRAY_CLOSE:
 						ops.push_back(op)

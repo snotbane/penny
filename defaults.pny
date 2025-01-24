@@ -1,0 +1,40 @@
+
+init
+
+Character = new object
+	.unknown = new Unknown
+	.name = "@.f_name"
+	.d_name = "Mx."
+	.fl_name = "@.prefix@.f_name @.l_name</>"
+	.dl_name = "@.prefix@.d_name @.l_name</>"
+	.fml_name = "@.prefix@.f_name @.m_name @.l_name</>"
+	.prefix = "<b;color=@.color>"
+	.color = #ffffff
+
+Unknown = new Character
+	.name = "???"
+
+filter = new object
+
+PARAGRAPH_DEFAULT = new filter
+	.pattern = `^`
+	.replace = `<p>`
+
+PUNCTUATION_TO_PIPE = new filter
+	.pattern = `(?<!(?:Mr|Dr|Prof)s?)([.,?!:;]|-{2,})+['")\]]?`
+	.replace = `$0|`
+
+SLOW_ELLIPSES = new filter
+	.pattern = `\.{3}`
+	.replace = `<delay=0.33; speed=4>...</>`
+
+PIPE_TO_DELAY = new filter
+	.pattern = `\|`
+	.replace = `<delay>`
+
+SLASH_TO_WAIT = new filter
+	.pattern = `(?<!\\)\/`
+	.replace = `<wait>`
+
+
+filters = [PARAGRAPH_DEFAULT, PIPE_TO_DELAY, SLASH_TO_WAIT]

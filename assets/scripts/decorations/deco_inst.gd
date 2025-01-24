@@ -39,7 +39,7 @@ func _init(string: String, context: Cell) -> void:
 		if bind != null:
 			args[StringName(arg_match.get_string(1))] = bind
 		else:
-			printerr("deco argument '%s' evaluated to null." % arg_match.get_string(1))
+			printerr("deco argument '%s' evaluated to null in string: `%s`." % [arg_match.get_string(1), string])
 
 	var id_match := ID_PATTERN.search(string)
 	if id_match:

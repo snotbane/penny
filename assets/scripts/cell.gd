@@ -86,9 +86,8 @@ static var ROOT := Cell.new(&"", null, {})
 
 static var OBJECT := Cell.new(&"object", ROOT, {
 	&"dialog": Ref.new_from_string("dialog"),
-	&"name": "",
+	&"text": "@.prefix@.name</>",
 	&"prefix": "<>",
-	&"suffix": "</>",
 })
 static var DIALOG := Cell.new(&"dialog", ROOT, {
 	&"base": Ref.new_from_string("object"),
@@ -125,21 +124,13 @@ var key_name : StringName :
 var parent : Cell
 var data : Dictionary
 
-var name : String :
-	get: return get_value_or_default(&"name", key_name)
-var prefix : String :
-	get: return get_value_or_default(&"prefix", "<>")
-var suffix : String :
-	get: return get_value_or_default(&"suffix", "</>")
-var rich_name : String :
-	get: return prefix + name + suffix
+var text : String :
+	get: return get_value_or_default(&"text", key_name)
+var text_as_display_string : DisplayString :
+	get: return DisplayString.new_from_pure(text, self)
 
 var node_name : String :
-	get: return self.to_string() if key_name.is_empty() else str(key_name)
-		# var n := name.to_string()
-		# if n.is_empty():
-		# 	return self.to_string()
-		# return name.to_string()
+	get: return key_name
 
 
 var instance : Node :
@@ -214,8 +205,8 @@ func instantiate(host: PennyHost) -> Node:
 
 
 func disconnect_instance(match : Node = null) -> void:
-	if match and self.instance == match: return
-	self.instance = null
+	if match == null or self.instance == match:
+		self.instance = null
 
 
 func close_instance() -> void:

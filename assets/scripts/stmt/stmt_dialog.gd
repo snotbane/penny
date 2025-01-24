@@ -32,7 +32,7 @@ func _execute(host: PennyHost) :
 	var incoming_needs_creation : bool
 
 	if previous_dialog != null:
-		previous_dialog_node = previous_dialog.local_instance
+		previous_dialog_node = previous_dialog.instance
 		incoming_needs_creation = previous_dialog_node == null or previous_dialog != incoming_dialog
 	else:
 		previous_dialog_node = null

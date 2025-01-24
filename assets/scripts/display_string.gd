@@ -87,24 +87,27 @@ static func new_from_filtered(string: String, context: Cell) -> DisplayString:
 
 
 static func interpolate(string: String, context: Cell) -> String:
+	print("interpolating: %s, context: %s" % [string, context])
 	while true:
 		var pattern_match : RegExMatch = INTERPOLATION_PATTERN.search(string)
 		if not pattern_match: break
 
 		var interp_expr := Expr.new_from_string(pattern_match.get_string(1) + pattern_match.get_string(2))
 		var evaluation := interp_expr.evaluate_adaptive(context)
+		var interp_context : Cell = evaluation[&"context"]
 		var interp_value : Variant = evaluation[&"value"]
 		var interp_string : String
 		if interp_value == null:
 			interp_string = "NULL"
 		elif interp_value is Cell:
-			interp_string = interp_value.rich_name
+			interp_context = interp_value
+			interp_string = interp_value.text
 		elif interp_value is Color:
 			interp_string = "#" + interp_value.to_html()
 		else:
 			interp_string = str(interp_value)
 
-		string = replace_match(pattern_match, DisplayString.interpolate(interp_string, evaluation[&"context"]))
+		string = replace_match(pattern_match, DisplayString.interpolate(interp_string, interp_context))
 	return string
 
 

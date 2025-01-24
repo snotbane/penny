@@ -7,7 +7,6 @@ const OMIT_SCRIPT_FOLDERS := [
 	".godot",
 	".vscode",
 	".templates",
-	"addons",
 	"old",
 	"temp",
 	"tests",

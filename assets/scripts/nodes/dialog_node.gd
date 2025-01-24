@@ -42,7 +42,7 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func receive(record: Record) -> void:
-	name_label.text = str(record.data["who"].rich_name)
+	name_label.text = record.data["who"].text_as_display_string.text
 	typewriter.receive(record)
 
 
