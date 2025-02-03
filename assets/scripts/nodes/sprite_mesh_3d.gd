@@ -40,7 +40,7 @@ var _cast_shadow := GeometryInstance3D.SHADOW_CASTING_SETTING_DOUBLE_SIDED
 	set(value):
 		self.mesh_instance.transparency = 1.0 - value
 		if self.material is ShaderMaterial:
-			self.material.set_shader_parameter('opacity_scalar', value)
+			self.material.set_shader_parameter('opacity', value)
 		if value < 1.0:
 			self.mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		else:

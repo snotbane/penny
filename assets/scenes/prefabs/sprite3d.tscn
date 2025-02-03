@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/sprite_mesh_3d.gd" id="1_qp14h"]
 
-[node name="sprite_3d" type="Node3D"]
+[node name="sprite3d" type="Node3D"]
 script = ExtResource("1_qp14h")

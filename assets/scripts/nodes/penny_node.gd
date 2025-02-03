@@ -13,7 +13,10 @@ signal opening
 
 @export_subgroup("Save Data")
 
+## If enabled, this [PennyNode] will be instantiated when loading (and also destroyed when unloading).
 @export var save_spawn : bool = true
+
+## If enabled, this [PennyNode]'s transform will be saved.
 @export var save_transform : bool = true
 
 var host : PennyHost

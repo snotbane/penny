@@ -1,8 +1,7 @@
-[gd_resource type="VisualShader" load_steps=58 format=3 uid="uid://de7w4cmvbj0gb"]
+[gd_resource type="VisualShader" load_steps=59 format=3 uid="uid://de7w4cmvbj0gb"]
 
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_bysli"]
 parameter_name = "rom"
-color_default = 1
 texture_repeat = 2
 
 [sub_resource type="VisualShaderNodeVectorDecompose" id="VisualShaderNodeVectorDecompose_q7jrj"]
@@ -58,7 +57,7 @@ default_input_values = [0, 0.0, 1, 1.0]
 operator = 2
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_6dl1e"]
-parameter_name = "opacity_scalar"
+parameter_name = "opacity"
 hint = 1
 default_value_enabled = true
 default_value = 1.0
@@ -93,7 +92,6 @@ default_value = 1.0
 
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_tra1w"]
 parameter_name = "rom_mirror"
-color_default = 1
 texture_repeat = 2
 
 [sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_vjxf3"]
@@ -209,14 +207,20 @@ port_type = 5
 
 [sub_resource type="VisualShaderNodeReroute" id="VisualShaderNodeReroute_4robe"]
 
-[sub_resource type="VisualShaderNodeReroute" id="VisualShaderNodeReroute_q8chw"]
-
 [sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_7867o"]
 source = 5
 
 [sub_resource type="VisualShaderNodeReroute" id="VisualShaderNodeReroute_1ibr6"]
 
 [sub_resource type="VisualShaderNodeReroute" id="VisualShaderNodeReroute_mtt0n"]
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_5bo1i"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_s0x0p"]
+parameter_name = "metallic"
+hint = 1
+default_value_enabled = true
 
 [resource]
 code = "shader_type spatial;
@@ -225,9 +229,10 @@ render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_lambert_wrap, s
 uniform bool unique_backface = false;
 uniform sampler2D albedo : source_color, repeat_disable;
 uniform sampler2D albedo_mirror : source_color, repeat_disable;
-uniform sampler2D rom : hint_default_black, repeat_disable;
-uniform sampler2D rom_mirror : hint_default_black, repeat_disable;
-uniform float opacity_scalar : hint_range(0, 1) = 1;
+uniform sampler2D rom : repeat_disable;
+uniform sampler2D rom_mirror : repeat_disable;
+uniform float opacity : hint_range(0, 1) = 1;
+uniform float metallic : hint_range(0, 1) = 0;
 uniform float Specular : hint_range(0, 1) = 1;
 uniform sampler2D emission : source_color, hint_default_black, repeat_disable;
 uniform sampler2D emission_mirror : source_color, hint_default_black, repeat_disable;
@@ -310,7 +315,7 @@ void fragment() {
 
 
 // FloatParameter:37
-	float n_out37p0 = opacity_scalar;
+	float n_out37p0 = opacity;
 
 
 // FloatOp:34
@@ -321,8 +326,12 @@ void fragment() {
 	float n_out90p0 = n_out11p2;
 
 
-// Reroute:89
-	float n_out89p0 = n_out90p0;
+// FloatParameter:93
+	float n_out93p0 = metallic;
+
+
+// FloatOp:92
+	float n_out92p0 = n_out90p0 * n_out93p0;
 
 
 // Reroute:87
@@ -451,7 +460,7 @@ void fragment() {
 // Output:0
 	ALBEDO = vec3(n_out84p0.xyz);
 	ALPHA = n_out34p0;
-	METALLIC = n_out89p0;
+	METALLIC = n_out92p0;
 	ROUGHNESS = n_out88p0;
 	SPECULAR = n_out86p0;
 	EMISSION = n_out81p0;
@@ -463,7 +472,6 @@ void fragment() {
 
 }
 "
-graph_offset = Vector2(-662.592, -513.602)
 modes/cull = 2
 modes/diffuse = 1
 modes/specular = 1
@@ -577,10 +585,12 @@ nodes/fragment/87/node = SubResource("VisualShaderNodeReroute_cv55u")
 nodes/fragment/87/position = Vector2(1140, 760)
 nodes/fragment/88/node = SubResource("VisualShaderNodeReroute_4robe")
 nodes/fragment/88/position = Vector2(1520, 500)
-nodes/fragment/89/node = SubResource("VisualShaderNodeReroute_q8chw")
-nodes/fragment/89/position = Vector2(1520, 460)
 nodes/fragment/90/node = SubResource("VisualShaderNodeReroute_1ibr6")
 nodes/fragment/90/position = Vector2(1140, 860)
 nodes/fragment/91/node = SubResource("VisualShaderNodeReroute_mtt0n")
 nodes/fragment/91/position = Vector2(1140, 1040)
-nodes/fragment/connections = PackedInt32Array(2, 0, 3, 2, 5, 0, 6, 2, 10, 0, 9, 2, 14, 0, 19, 2, 23, 0, 24, 2, 19, 0, 18, 2, 3, 0, 18, 1, 3, 0, 16, 2, 18, 0, 16, 1, 34, 0, 0, 1, 37, 0, 34, 1, 43, 0, 0, 7, 26, 0, 0, 9, 51, 0, 0, 10, 6, 0, 27, 1, 27, 0, 26, 1, 24, 0, 27, 2, 6, 0, 26, 2, 52, 0, 0, 6, 54, 0, 55, 2, 56, 0, 57, 1, 57, 0, 11, 0, 9, 0, 56, 1, 55, 0, 56, 2, 9, 0, 57, 2, 61, 0, 58, 2, 59, 0, 60, 2, 64, 0, 16, 0, 65, 0, 18, 0, 68, 0, 57, 0, 69, 0, 56, 0, 70, 0, 63, 0, 71, 0, 62, 0, 74, 0, 26, 0, 75, 0, 27, 0, 63, 0, 78, 0, 76, 0, 78, 1, 78, 0, 79, 0, 77, 0, 79, 1, 80, 3, 81, 1, 58, 0, 62, 1, 58, 0, 63, 2, 62, 0, 63, 1, 60, 0, 62, 2, 79, 0, 81, 0, 63, 0, 80, 0, 81, 0, 0, 5, 11, 1, 52, 0, 16, 0, 83, 0, 16, 0, 84, 0, 84, 0, 0, 0, 82, 0, 85, 0, 85, 0, 86, 0, 86, 0, 0, 4, 11, 0, 87, 0, 87, 0, 88, 0, 88, 0, 0, 3, 89, 0, 0, 2, 11, 2, 90, 0, 90, 0, 89, 0, 53, 0, 91, 0, 91, 0, 52, 1, 11, 3, 34, 0)
+nodes/fragment/92/node = SubResource("VisualShaderNodeFloatOp_5bo1i")
+nodes/fragment/92/position = Vector2(1540, 280)
+nodes/fragment/93/node = SubResource("VisualShaderNodeFloatParameter_s0x0p")
+nodes/fragment/93/position = Vector2(880, 360)
+nodes/fragment/connections = PackedInt32Array(2, 0, 3, 2, 5, 0, 6, 2, 10, 0, 9, 2, 14, 0, 19, 2, 23, 0, 24, 2, 19, 0, 18, 2, 3, 0, 18, 1, 3, 0, 16, 2, 18, 0, 16, 1, 34, 0, 0, 1, 37, 0, 34, 1, 43, 0, 0, 7, 26, 0, 0, 9, 51, 0, 0, 10, 6, 0, 27, 1, 27, 0, 26, 1, 24, 0, 27, 2, 6, 0, 26, 2, 52, 0, 0, 6, 54, 0, 55, 2, 56, 0, 57, 1, 57, 0, 11, 0, 9, 0, 56, 1, 55, 0, 56, 2, 9, 0, 57, 2, 61, 0, 58, 2, 59, 0, 60, 2, 64, 0, 16, 0, 65, 0, 18, 0, 68, 0, 57, 0, 69, 0, 56, 0, 70, 0, 63, 0, 71, 0, 62, 0, 74, 0, 26, 0, 75, 0, 27, 0, 63, 0, 78, 0, 76, 0, 78, 1, 78, 0, 79, 0, 77, 0, 79, 1, 80, 3, 81, 1, 58, 0, 62, 1, 58, 0, 63, 2, 62, 0, 63, 1, 60, 0, 62, 2, 79, 0, 81, 0, 63, 0, 80, 0, 81, 0, 0, 5, 11, 1, 52, 0, 16, 0, 83, 0, 16, 0, 84, 0, 84, 0, 0, 0, 82, 0, 85, 0, 85, 0, 86, 0, 86, 0, 0, 4, 11, 0, 87, 0, 87, 0, 88, 0, 88, 0, 0, 3, 11, 2, 90, 0, 53, 0, 91, 0, 91, 0, 52, 1, 11, 3, 34, 0, 92, 0, 0, 2, 90, 0, 92, 0, 93, 0, 92, 1)
