@@ -9,7 +9,6 @@ const OMIT_SCRIPT_FOLDERS := [
 	".templates",
 	"old",
 	"temp",
-	"tests",
 ]
 static var SCRIPT_RESOURCE_LOADER := preload("res://addons/penny_godot/assets/scripts/penny_script_format_loader.gd").new()
 static var PENNY_DEBUG_SCENE := preload("res://addons/penny_godot/assets/scenes/penny_debug.tscn")
@@ -135,7 +134,8 @@ static func reload_many(_scripts: Array[PennyScript] = scripts):
 		is_all_scripts_valid = errors.is_empty()
 
 		if is_all_scripts_valid:
-			print("Successfully loaded all %s script(s), %s total." % [str(_scripts.size()), str(scripts.size())])
+			print("Successfully loaded %s script(s), %s total." % [str(_scripts.size()), str(scripts.size())])
+			print("Labels: ", labels)
 			inits.sort_custom(StmtInit.sort)
 			if not Engine.is_editor_hint():
 				static_host.perform_inits_selective(scripts)
@@ -156,6 +156,19 @@ signal on_reload_start
 signal on_reload_finish(success: bool)
 signal on_reload_cancel
 signal on_root_cell_modified
+
+
+@export var create_debug_info : bool :
+	get: return false
+	set(value):
+		var data := {}
+		for script in Penny.scripts:
+			var stmts := []
+			for stmt in script.stmts:
+				stmts.push_back(stmt.to_string())
+			data[&"scripts"] = stmts
+		DisplayServer.clipboard_set(str(data))
+		print("Copied Penny info to clipboard")
 
 
 func _enter_tree() -> void:

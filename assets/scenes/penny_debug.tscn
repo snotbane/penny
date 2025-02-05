@@ -419,14 +419,20 @@ theme = ExtResource("1_hv265")
 script = ExtResource("2_07hpy")
 
 [node name="overlay" type="Control" parent="."]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="overlay_panel" type="PanelContainer" parent="overlay"]
-layout_mode = 2
-offset_right = 1920.0
-offset_bottom = 1080.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_337gi")
 
 [node name="margin_container" type="MarginContainer" parent="overlay/overlay_panel"]
@@ -647,12 +653,16 @@ flat = true
 
 [node name="reload_notify" type="Control" parent="."]
 custom_minimum_size = Vector2(0, 80)
-layout_mode = 2
-anchors_preset = 0
-offset_left = 960.0
-offset_top = 500.0
-offset_right = 960.0
-offset_bottom = 580.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = -40.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 mouse_filter = 2

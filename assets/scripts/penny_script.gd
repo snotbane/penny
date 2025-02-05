@@ -16,7 +16,6 @@ func update_from_file(file: FileAccess) -> void:
 	errors.clear()
 
 	var tokens := parse_code_to_tokens(file.get_as_text(true), file)
-	# print("Tokens: %s" % str(tokens))
 
 	# var old_stmts : Array[Stmt]
 	# if not Engine.is_editor_hint():
@@ -91,10 +90,10 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 
 	match tokens.front().type:
 		Token.Type.IDENTIFIER:
-			if tokens.size() == 1 or tokens[1].value == '.':
+			if tokens.size() == 1 or (tokens[1].value is Expr.Op and tokens[1].value.type == Expr.Op.DOT):
 				return StmtCell.new()
 		Token.Type.OPERATOR:
-			if tokens[0].value == '.' and tokens[1].type == Token.Type.IDENTIFIER:
+			if tokens.front().value.type == Expr.Op.DOT and tokens[1].type == Token.Type.IDENTIFIER:
 				return StmtCell.new()
 
 	printerr("No Stmt recycled from tokens: %s" % str(tokens))
@@ -154,8 +153,8 @@ class Token extends RefCounted:
 		KEYWORD,
 		VALUE_BOOLEAN,
 		VALUE_COLOR,
-		ASSIGNMENT,
 		OPERATOR,
+		ASSIGNMENT,
 		COMMENT,
 		IDENTIFIER,
 		VALUE_NUMBER,
@@ -168,8 +167,8 @@ class Token extends RefCounted:
 		Token.Type.KEYWORD: 				RegEx.create_from_string(r"\b(await|call|close|else|elif|if|init|jump|label|match|menu|open|pass|print|return)\b"),
 		Token.Type.VALUE_BOOLEAN: 			RegEx.create_from_string(r"\b([Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
 		Token.Type.VALUE_COLOR: 			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
-		Token.Type.ASSIGNMENT: 				RegEx.create_from_string(r"([+\-*/]?)="),
 		Token.Type.OPERATOR: 				Expr.Op.PATTERN_COMPILED,
+		Token.Type.ASSIGNMENT: 				RegEx.create_from_string(r"([+\-*/]?)="),
 		Token.Type.COMMENT: 				RegEx.create_from_string(r"(?ms)(([#/])\*.*?(\*\2))|((#|\/{2}).*?$)"),
 		Token.Type.IDENTIFIER: 				RegEx.create_from_string(r"[a-zA-Z_]\w*"),
 		Token.Type.VALUE_NUMBER: 			RegEx.create_from_string(r"\d+\.\d*|\.?\d+"),
