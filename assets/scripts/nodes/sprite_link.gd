@@ -4,10 +4,9 @@ class_name SpriteLink extends Resource
 
 enum TextureComponent {
 	ALBEDO,
-	NORMAL,
-	OCCLUSION,
 	EMISSIVE,
-	RSM,
+	ROM,
+	NORMAL,
 }
 
 
@@ -69,10 +68,9 @@ var path : String :
 
 		match component:
 			TextureComponent.ALBEDO: 		result += "_a"
-			TextureComponent.NORMAL: 		result += "_n"
-			TextureComponent.OCCLUSION: 	result += "_o"
 			TextureComponent.EMISSIVE: 		result += "_e"
-			TextureComponent.RSM: 			result += "_m"
+			TextureComponent.ROM: 			result += "_m"
+			TextureComponent.NORMAL: 		result += "_n"
 
 		result += "." + extension
 		return result
@@ -138,9 +136,8 @@ func refresh_attributes_from_resource() -> void:
 		match component_match.get_string(1):
 			"a": component = TextureComponent.ALBEDO
 			"e": component = TextureComponent.EMISSIVE
+			"m": component = TextureComponent.ROM
 			"n": component = TextureComponent.NORMAL
-			"o": component = TextureComponent.OCCLUSION
-			"m": component = TextureComponent.RSM
 		if component_match.get_start() < name.length():
 			name = name.substr(0, component_match.get_start())
 	else:
