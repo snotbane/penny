@@ -33,12 +33,17 @@ func get_category_flags(category: StringName) -> Array:
 	return flag_data[category]
 
 
-func has_flag(flag: StringName) -> bool:
+func has_possible_flag(flag: StringName) -> bool:
+	for k in flag_data.keys(): for i in flag_data[k]: if flag == i: return true
+	return false
+
+
+func has_current_flag(flag: StringName) -> bool:
 	return current_flags.has(flag)
 
 
-func set_flag(flag: StringName) -> void:
-	if current_flags.has(flag): return
+func set_current_flag(flag: StringName) -> void:
+	if has_current_flag(flag) or not has_possible_flag(flag): return
 	var category := get_flag_category(flag)
 	for i in current_flags:
 		if category == get_flag_category(i):
@@ -54,7 +59,7 @@ func _flags_changed() -> void:
 
 func refresh_sprite(sprite: AnimatedSprite2D) -> void:
 	var anim := get_animation_with_most_matching_flags(sprite.sprite_frames, current_flags)
-	if anim == &"" or not sprite.sprite_frames.has_animation(anim): return
+	if anim == &"" or anim == sprite.animation or not sprite.sprite_frames.has_animation(anim): return
 	if await_frame_change_if_playing and is_sprite_interruptible(sprite):
 		await sprite.frame_changed
 	sprite.animation = anim
@@ -66,7 +71,7 @@ static func is_sprite_interruptible(sprite: AnimatedSprite2D) -> bool:
 
 
 func set_talking_flag(value: bool) -> void:
-	set_flag(&"talk" if value else &"silent")
+	set_current_flag(&"talk" if value else &"silent")
 
 
 static func get_animation_with_most_matching_flags(frames: SpriteFrames, flags: PackedStringArray) -> StringName:
