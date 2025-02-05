@@ -100,6 +100,8 @@ func create_subviewport_from_template(mirrored : bool, component : SpriteCompone
 		SpriteComponent.TextureComponent.NORMAL: 	suffix += "_n"
 
 	var result : SubViewport = template_svp.duplicate()
+	while result.get_child_count() > 0:
+		result.remove_child(result.get_child(0))
 	self.add_child(result)
 	result.owner = get_tree().edited_scene_root
 	result.name = "_" + template_svp.name + suffix
