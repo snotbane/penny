@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_mrpay")
 argument_defaults = {
-"like": Cell.K_OBJECT
+"like": &"object"
 }
 id = &"like"

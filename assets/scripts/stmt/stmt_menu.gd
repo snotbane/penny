@@ -19,11 +19,8 @@ func _get_is_skippable() -> bool:
 
 func _populate(tokens: Array) -> void:
 	super._populate(tokens)
-
-	print("Menu subject before: ", subject)
 	if tokens.is_empty():
 		subject_ref = Cell.Ref.new([ Cell.K_PROMPT ], false)
-	print("Menu subject after: ", subject)
 
 
 func _reload() -> void:

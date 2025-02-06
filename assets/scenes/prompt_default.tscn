@@ -1,14 +1,18 @@
-[gd_scene format=3 uid="uid://cuu7puh0nnyug"]
+[gd_scene load_steps=2 format=3 uid="uid://cuu7puh0nnyug"]
 
-[node name="prompt_default" type="Control"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/prompt_control.gd" id="1_y665k"]
+
+[node name="prompt_default" type="Control" node_paths=PackedStringArray("button_container")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_y665k")
+button_container = NodePath("button_container")
 
-[node name="v_box_container" type="VBoxContainer" parent="."]
+[node name="button_container" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.25

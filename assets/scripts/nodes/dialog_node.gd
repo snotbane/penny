@@ -21,8 +21,8 @@ func _enter_tree() -> void:
 		self.mouse_exited.connect(self.set.bind("is_mouse_inside", false))
 
 
-func _populate(_host: PennyHost, _cell: Cell) -> void:
-	_host.on_try_advance.connect(try_advance)
+func _populate() -> void:
+	host.on_try_advance.connect(try_advance)
 
 
 func _notification(what: int) -> void:

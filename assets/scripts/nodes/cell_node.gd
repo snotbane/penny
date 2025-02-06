@@ -1,5 +1,5 @@
 
-## A representation of a Penny Object.
+## A representation of a Cell as a Node.
 class_name CellNode extends Node
 
 signal advanced
@@ -28,8 +28,8 @@ func populate(_host: PennyHost, _cell: Cell = null) -> void:
 
 	self.closing.connect(cell.disconnect_instance.bind(self))
 
-	_populate(_host, _cell)
-func _populate(_host: PennyHost, _cell: Cell) -> void: pass
+	_populate()
+func _populate() -> void: pass
 
 
 func open(wait : bool = false) :
