@@ -10,15 +10,20 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_y665k")
-button_container = NodePath("button_container")
+button_container = NodePath("scroll_box/button_container")
 
-[node name="button_container" type="VBoxContainer" parent="."]
+[node name="scroll_box" type="ScrollContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.25
-anchor_top = 0.5
 anchor_right = 0.75
-anchor_bottom = 0.5
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-alignment = 1
+follow_focus = true
+horizontal_scroll_mode = 0
+
+[node name="button_container" type="VBoxContainer" parent="scroll_box"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3

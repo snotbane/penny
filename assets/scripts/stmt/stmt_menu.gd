@@ -25,7 +25,7 @@ func _populate(tokens: Array) -> void:
 
 func _reload() -> void:
 	super._reload()
-	for stmt in self.nested_stmts_single_depth:
+	for stmt in self.get_nested_stmts_single_depth():
 		if stmt is StmtConditionalMenu:
 			nested_option_stmts.push_back(stmt)
 
@@ -33,8 +33,7 @@ func _reload() -> void:
 func _execute(host: PennyHost) :
 	host.expecting_conditional = true
 
-	var prompt_options : Array = subject.get_value(Cell.K_OPTIONS)
-	prompt_options.clear()
+	var prompt_option_refs : Array
 
 	var i := -1
 	for stmt in nested_option_stmts:
@@ -45,13 +44,15 @@ func _execute(host: PennyHost) :
 			key = "_" + str(i)
 			option = Cell.new(key, Cell.ROOT, {
 				Cell.K_BASE: Cell.Ref.new([Cell.K_OPTION], false),
-				Cell.K_NAME: stmt.expr.evaluate()
+				Cell.K_TEXT: stmt.expr.evaluate()
 			})
 		else:
 			option = stmt.expr.evaluate()
 			key = option.self_key
 		Cell.ROOT.set_value(key, option)
-		prompt_options.push_back(Cell.Ref.new([key], false))
+		prompt_option_refs.push_back(Cell.Ref.new([key], false))
+
+	subject.set_value(Cell.K_OPTIONS, prompt_option_refs)
 
 	var data := { "before": subject.get_value(Cell.K_RESPONSE) }
 

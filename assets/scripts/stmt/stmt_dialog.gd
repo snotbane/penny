@@ -46,7 +46,7 @@ func _execute(host: PennyHost) :
 	else:
 		incoming_dialog_node = previous_dialog_node
 
-	var what := DisplayString.new_from_pure(pure_text)
+	var what := DisplayString.new_from_pure(pure_text, Cell.ROOT, incoming_dialog)
 	var result := create_record(host, { "who": subject, "what": what })
 	incoming_dialog_node.receive(result)
 

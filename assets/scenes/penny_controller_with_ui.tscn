@@ -29,10 +29,14 @@ keycode = 83
 [sub_resource type="Shortcut" id="Shortcut_8eokp"]
 events = [SubResource("InputEventKey_2j54e")]
 
-[node name="penny_controller" type="Node" node_paths=PackedStringArray("layers")]
+[node name="penny_controller" type="Node"]
 script = ExtResource("1_amygg")
 autostart = true
-layers = [NodePath("canvas_layer/ui/other_layer"), NodePath("canvas_layer/ui/main_container/hbox/dialog_layer")]
+layers = {
+"dialog": NodePath("canvas_layer/ui/main_container/v_box_container/hbox/dialog_layer"),
+"prompt": NodePath("canvas_layer/ui/main_container/v_box_container/prompt_area/prompt_container"),
+"ui": NodePath("canvas_layer/ui/ui_other_layer")
+}
 
 [node name="canvas_layer" type="CanvasLayer" parent="."]
 
@@ -75,7 +79,7 @@ mouse_filter = 2
 theme_override_constants/margin_left = 200
 theme_override_constants/margin_right = 200
 
-[node name="other_layer" type="Control" parent="canvas_layer/ui"]
+[node name="ui_other_layer" type="Control" parent="canvas_layer/ui"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -86,37 +90,51 @@ mouse_filter = 2
 
 [node name="main_container" type="MarginContainer" parent="canvas_layer/ui"]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -240.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
 pivot_offset = Vector2(0, 240)
 
-[node name="hbox" type="HBoxContainer" parent="canvas_layer/ui/main_container"]
+[node name="v_box_container" type="VBoxContainer" parent="canvas_layer/ui/main_container"]
+layout_mode = 2
+alignment = 2
+
+[node name="prompt_area" type="Control" parent="canvas_layer/ui/main_container/v_box_container"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="prompt_container" type="Control" parent="canvas_layer/ui/main_container/v_box_container/prompt_area"]
+layout_mode = 1
+anchor_left = 0.2
+anchor_right = 0.8
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="hbox" type="HBoxContainer" parent="canvas_layer/ui/main_container/v_box_container"]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="file_panel" type="PanelContainer" parent="canvas_layer/ui/main_container/hbox"]
+[node name="file_panel" type="PanelContainer" parent="canvas_layer/ui/main_container/v_box_container/hbox"]
 custom_minimum_size = Vector2(0, 128)
 layout_mode = 2
 size_flags_vertical = 8
 
-[node name="margin_container" type="MarginContainer" parent="canvas_layer/ui/main_container/hbox/file_panel"]
+[node name="margin_container" type="MarginContainer" parent="canvas_layer/ui/main_container/v_box_container/hbox/file_panel"]
 layout_mode = 2
 theme_override_constants/margin_left = 24
 theme_override_constants/margin_right = 24
 
-[node name="grid_container" type="GridContainer" parent="canvas_layer/ui/main_container/hbox/file_panel/margin_container"]
+[node name="grid_container" type="GridContainer" parent="canvas_layer/ui/main_container/v_box_container/hbox/file_panel/margin_container"]
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_constants/h_separation = 16
 theme_override_constants/v_separation = 16
 columns = 2
 
-[node name="button_load" type="TextureButton" parent="canvas_layer/ui/main_container/hbox/file_panel/margin_container/grid_container"]
+[node name="button_load" type="TextureButton" parent="canvas_layer/ui/main_container/v_box_container/hbox/file_panel/margin_container/grid_container"]
 layout_mode = 2
 tooltip_text = "Load"
 focus_neighbor_right = NodePath("../button_save")
@@ -129,7 +147,7 @@ texture_normal = ExtResource("3_cxwlt")
 texture_pressed = ExtResource("4_quq2v")
 texture_disabled = ExtResource("4_quq2v")
 
-[node name="button_save" type="TextureButton" parent="canvas_layer/ui/main_container/hbox/file_panel/margin_container/grid_container"]
+[node name="button_save" type="TextureButton" parent="canvas_layer/ui/main_container/v_box_container/hbox/file_panel/margin_container/grid_container"]
 layout_mode = 2
 tooltip_text = "Save"
 focus_neighbor_left = NodePath("../button_load")
@@ -142,7 +160,7 @@ texture_normal = ExtResource("5_kug6h")
 texture_pressed = ExtResource("6_7hd8h")
 texture_disabled = ExtResource("6_7hd8h")
 
-[node name="button_quit" type="TextureButton" parent="canvas_layer/ui/main_container/hbox/file_panel/margin_container/grid_container"]
+[node name="button_quit" type="TextureButton" parent="canvas_layer/ui/main_container/v_box_container/hbox/file_panel/margin_container/grid_container"]
 layout_mode = 2
 tooltip_text = "Exit"
 focus_neighbor_top = NodePath("../button_load")
@@ -153,32 +171,32 @@ texture_normal = ExtResource("7_cnibl")
 texture_pressed = ExtResource("8_xgny0")
 texture_disabled = ExtResource("8_xgny0")
 
-[node name="space" type="Control" parent="canvas_layer/ui/main_container/hbox/file_panel/margin_container/grid_container"]
+[node name="space" type="Control" parent="canvas_layer/ui/main_container/v_box_container/hbox/file_panel/margin_container/grid_container"]
 layout_mode = 2
 
-[node name="dialog_layer" type="Control" parent="canvas_layer/ui/main_container/hbox"]
+[node name="dialog_layer" type="Control" parent="canvas_layer/ui/main_container/v_box_container/hbox"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="roll_panel" type="PanelContainer" parent="canvas_layer/ui/main_container/hbox"]
+[node name="roll_panel" type="PanelContainer" parent="canvas_layer/ui/main_container/v_box_container/hbox"]
 custom_minimum_size = Vector2(0, 128)
 layout_mode = 2
 size_flags_vertical = 8
 
-[node name="margin_container" type="MarginContainer" parent="canvas_layer/ui/main_container/hbox/roll_panel"]
+[node name="margin_container" type="MarginContainer" parent="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel"]
 layout_mode = 2
 theme_override_constants/margin_left = 24
 theme_override_constants/margin_right = 24
 
-[node name="grid_container" type="GridContainer" parent="canvas_layer/ui/main_container/hbox/roll_panel/margin_container"]
+[node name="grid_container" type="GridContainer" parent="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel/margin_container"]
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_constants/h_separation = 16
 theme_override_constants/v_separation = 16
 columns = 2
 
-[node name="button_roll_back" type="TextureButton" parent="canvas_layer/ui/main_container/hbox/roll_panel/margin_container/grid_container"]
+[node name="button_roll_back" type="TextureButton" parent="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel/margin_container/grid_container"]
 layout_mode = 2
 tooltip_text = "Roll Back"
 focus_neighbor_left = NodePath("../../../../file_panel/margin_container/grid_container/button_save")
@@ -190,7 +208,7 @@ texture_normal = ExtResource("9_c4iuu")
 texture_pressed = ExtResource("10_8a7qu")
 texture_disabled = ExtResource("10_8a7qu")
 
-[node name="button_roll_ahead" type="TextureButton" parent="canvas_layer/ui/main_container/hbox/roll_panel/margin_container/grid_container"]
+[node name="button_roll_ahead" type="TextureButton" parent="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel/margin_container/grid_container"]
 layout_mode = 2
 tooltip_text = "Roll Ahead"
 focus_neighbor_left = NodePath("../button_roll_back")
@@ -203,10 +221,10 @@ texture_pressed = ExtResource("10_8a7qu")
 texture_disabled = ExtResource("10_8a7qu")
 flip_h = true
 
-[node name="space" type="Control" parent="canvas_layer/ui/main_container/hbox/roll_panel/margin_container/grid_container"]
+[node name="space" type="Control" parent="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel/margin_container/grid_container"]
 layout_mode = 2
 
-[node name="button_roll_end" type="TextureButton" parent="canvas_layer/ui/main_container/hbox/roll_panel/margin_container/grid_container"]
+[node name="button_roll_end" type="TextureButton" parent="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel/margin_container/grid_container"]
 layout_mode = 2
 tooltip_text = "Roll Ahead to Latest"
 focus_neighbor_top = NodePath("../button_roll_ahead")

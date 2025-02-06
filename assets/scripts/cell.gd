@@ -116,25 +116,25 @@ static var OBJECT := Cell.new(Cell.K_OBJECT, ROOT, {
 	Cell.K_TEXT: "@.prefix@.name</>",
 	Cell.K_PREFIX: "<>",
 })
-static var DIALOG := Cell.new(Cell.K_DIALOG, ROOT, {
-	Cell.K_BASE: Ref.new_from_string("object"),
-	Cell.K_LINK: "res://addons/penny_godot/assets/scenes/dialog_default.tscn",
-	Cell.K_LAYER: 1,
-})
-static var PROMPT := Cell.new(Cell.K_PROMPT, ROOT, {
-	Cell.K_BASE: Ref.new_from_string("object"),
-	Cell.K_LINK: "res://addons/penny_godot/assets/scenes/prompt_default.tscn",
-	Cell.K_LAYER: 0,
-	Cell.K_OPTIONS: [],
-	# Cell.K_RESPONSE: null,
-})
-static var OPTION := Cell.new(Cell.K_OPTION, ROOT, {
-	Cell.K_BASE: Ref.new_from_string("object"),
-	Cell.K_LINK: "res://addons/penny_godot/assets/scenes/prompt_button_default.tscn",
-	Cell.K_ENABLED: true,
-	Cell.K_VISIBLE: true,
-	Cell.K_CONSUMED: false
-})
+# static var DIALOG := Cell.new(Cell.K_DIALOG, ROOT, {
+# 	Cell.K_BASE: Ref.new_from_string("object"),
+# 	Cell.K_LINK: "res://addons/penny_godot/assets/scenes/dialog_default.tscn",
+# 	Cell.K_LAYER: &"dialog",
+# })
+# static var PROMPT := Cell.new(Cell.K_PROMPT, ROOT, {
+# 	Cell.K_BASE: Ref.new_from_string("object"),
+# 	Cell.K_LINK: "res://addons/penny_godot/assets/scenes/prompt_default.tscn",
+# 	Cell.K_LAYER: &"prompt",
+# 	Cell.K_OPTIONS: [],
+# 	# Cell.K_RESPONSE: null,
+# })
+# static var OPTION := Cell.new(Cell.K_OPTION, ROOT, {
+# 	Cell.K_BASE: Ref.new_from_string("object"),
+# 	Cell.K_LINK: "res://addons/penny_godot/assets/scenes/prompt_button_default.tscn",
+# 	Cell.K_ENABLED: true,
+# 	Cell.K_VISIBLE: true,
+# 	Cell.K_CONSUMED: false
+# })
 
 var _key_name : StringName
 var key_name : StringName :
@@ -165,10 +165,6 @@ var node_name : String :
 var instance : Node :
 	get: return self.get_local_value(Cell.K_INST)
 	set(value): self.set_local_value(Cell.K_INST, value)
-
-
-var layer : int :
-	get: return get_value_or_default(Cell.K_LAYER, -1)
 
 
 func _init(__key_name : StringName, _parent : Cell, _data : Dictionary) -> void:
@@ -223,8 +219,8 @@ func instantiate(host: PennyHost) -> Node:
 	self.close_instance()
 	var result : Node = load(get_value(Cell.K_LINK)).instantiate()
 
-	if self.layer >= 0:
-		host.get_layer(self.layer).add_child(result)
+	if self.get_value(Cell.K_LAYER) != null:
+		host.get_layer_for(self).add_child(result)
 
 	if result is CellNode:
 		result.populate(host, self)

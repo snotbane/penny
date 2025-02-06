@@ -31,11 +31,11 @@ static func new_as_is(_text : String = "") -> DisplayString:
 	return DisplayString.new(_text)
 
 
-static func new_from_pure(pure: String = "", context := Cell.ROOT) -> DisplayString:
+static func new_from_pure(pure: String = "", context := Cell.ROOT, filter_context := context) -> DisplayString:
 	var result := pure
 
 	result = DisplayString.interpolate(result, context)
-	result = DisplayString.filter_from_context(result, context)
+	result = DisplayString.filter_from_context(result, filter_context)
 
 	return DisplayString.new_from_filtered(result, context)
 
@@ -87,7 +87,7 @@ static func new_from_filtered(string: String, context: Cell) -> DisplayString:
 
 
 static func interpolate(string: String, context: Cell) -> String:
-	print("interpolating: %s, context: %s" % [string, context])
+	# print("interpolating: %s, context: %s" % [string, context])
 	while true:
 		var pattern_match : RegExMatch = INTERPOLATION_PATTERN.search(string)
 		if not pattern_match: break

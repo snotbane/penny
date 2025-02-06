@@ -8,7 +8,9 @@ signal closing
 signal opened
 signal opening
 
+## If true, the Penny script will not await anything to proceed before this node enters the scene tree. I.E. It will open on ready. If false, you'll have to manually open the node.
 @export var immediate_open : bool = true
+## If true, the Penny script will not await anything to proceed before this node exits the scene tree. I.E. It will queue free on close. If false, you'll have to manually queue_free the node.
 @export var immediate_close : bool = true
 
 @export_subgroup("Save Data")

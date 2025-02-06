@@ -260,11 +260,10 @@ func get_context_ref() -> Cell.Ref:
 	return Cell.Ref.new(_ids, false)
 
 
-var nested_stmts_single_depth : Array[Stmt] :
-	get:
-		var cursor := self.next_in_higher_depth
-		var result : Array[Stmt]
-		while cursor:
-			result.push_back(cursor)
-			cursor = cursor.next_in_same_depth
-		return result
+func get_nested_stmts_single_depth() -> Array[Stmt] :
+	var cursor := self.get_next_in_higher_depth()
+	var result : Array[Stmt]
+	while cursor:
+		result.push_back(cursor)
+		cursor = cursor.get_next_in_same_depth()
+	return result
