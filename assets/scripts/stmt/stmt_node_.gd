@@ -12,7 +12,7 @@ func instantiate_subject(host: PennyHost) -> Node:
 
 func open_subject(host: PennyHost, wait : bool = true) :
 	var node : Node = subject_node if subject_node else self.instantiate_subject(host)
-	if node is PennyNode:
+	if node is CellNode:
 		await node.open(wait)
 	return node
 
@@ -21,7 +21,7 @@ func close_subject(host : PennyHost, wait : bool = true) :
 	var node := self.subject_node
 	if node == null: return
 
-	if node is PennyNode:
+	if node is CellNode:
 		await node.close(wait)
 	else:
 		node.queue_free()

@@ -1,11 +1,38 @@
 
 class_name Cell extends RefCounted
 
+
+const K_ROOT := &"root"
+const K_OBJECT := &"object"
+const K_OPTION := &"option"
+const K_PROMPT := &"prompt"
+const K_DIALOG := &"dialog"
+const K_ABLE := &"able"
+const K_BASE := &"base"
+const K_COLOR := &"color"
+const K_FILTERS := &"filters"
+const K_FILTER_PATTERN := &"pattern"
+const K_FILTER_REPLACE := &"replace"
+const K_LINK := &"link"
+const K_LAYER := &"layer"
+const K_NAME := &"name"
+const K_PREFIX := &"prefix"
+const K_SUFFIX := &"suffix"
+const K_ICON := &"icon"
+const K_INST := &"inst"
+const K_OPTIONS := &"options"
+const K_RESPONSE := &"response"
+const K_VISIBLE := &"visible"
+const K_ENABLED := &"enabled"
+const K_CONSUMED := &"consumed"
+const K_TEXT := &"text"
+
+
 class Ref extends Evaluable:
 	const COLOR := Color8(65, 122, 236)
 
 	static var ROOT := Ref.new([], false)
-	static var DEFAULT_BASE := Ref.new([&"object"], false)
+	static var DEFAULT_BASE := Ref.new([Cell.K_OBJECT], false)
 	static var NEW : Ref :
 		get: return ROOT.duplicate()
 
@@ -84,27 +111,27 @@ class Ref extends Evaluable:
 
 static var ROOT := Cell.new(&"", null, {})
 
-static var OBJECT := Cell.new(&"object", ROOT, {
-	&"dialog": Ref.new_from_string("dialog"),
-	&"text": "@.prefix@.name</>",
-	&"prefix": "<>",
+static var OBJECT := Cell.new(Cell.K_OBJECT, ROOT, {
+	Cell.K_DIALOG: Ref.new_from_string("dialog"),
+	Cell.K_TEXT: "@.prefix@.name</>",
+	Cell.K_PREFIX: "<>",
 })
-static var DIALOG := Cell.new(&"dialog", ROOT, {
-	&"base": Ref.new_from_string("object"),
-	&"link": "res://addons/penny_godot/assets/scenes/dialog_default.tscn",
-	&"layer": 0,
+static var DIALOG := Cell.new(Cell.K_DIALOG, ROOT, {
+	Cell.K_BASE: Ref.new_from_string("object"),
+	Cell.K_LINK: "res://addons/penny_godot/assets/scenes/dialog_default.tscn",
+	Cell.K_LAYER: 0,
 })
-static var PROMPT := Cell.new(&"prompt", ROOT, {
-	&"base": Ref.new_from_string("object"),
-	&"link": "res://addons/penny_godot/assets/scenes/prompt_default.tscn",
-	&"options": [],
-	# &"response": null,
+static var PROMPT := Cell.new(Cell.K_PROMPT, ROOT, {
+	Cell.K_BASE: Ref.new_from_string("object"),
+	Cell.K_LINK: "res://addons/penny_godot/assets/scenes/prompt_default.tscn",
+	Cell.K_OPTIONS: [],
+	# Cell.K_RESPONSE: null,
 })
-static var OPTION := Cell.new(&"option", ROOT, {
-	&"base": Ref.new_from_string("object"),
-	&"enabled": true,
-	&"visible": true,
-	&"consumed": false
+static var OPTION := Cell.new(Cell.K_OPTION, ROOT, {
+	Cell.K_BASE: Ref.new_from_string("object"),
+	Cell.K_ENABLED: true,
+	Cell.K_VISIBLE: true,
+	Cell.K_CONSUMED: false
 })
 
 var _key_name : StringName
@@ -125,7 +152,7 @@ var parent : Cell
 var data : Dictionary
 
 var text : String :
-	get: return get_value_or_default(&"text", key_name)
+	get: return get_value_or_default(Cell.K_TEXT, key_name)
 var text_as_display_string : DisplayString :
 	get: return DisplayString.new_from_pure(text, self)
 
@@ -134,12 +161,12 @@ var node_name : String :
 
 
 var instance : Node :
-	get: return self.get_local_value(&"inst")
-	set(value): self.set_local_value(&"inst", value)
+	get: return self.get_local_value(Cell.K_INST)
+	set(value): self.set_local_value(Cell.K_INST, value)
 
 
 var layer : int :
-	get: return get_value_or_default(&"layer", -1)
+	get: return get_value_or_default(Cell.K_LAYER, -1)
 
 
 func _init(__key_name : StringName, _parent : Cell, _data : Dictionary) -> void:
@@ -161,8 +188,8 @@ func get_local_value(key: StringName) -> Variant:
 
 
 func get_base_value(key: StringName) -> Variant:
-	if self.data.has(&"base"):
-		var base_ref : Ref = self.data[&"base"].duplicate()
+	if self.data.has(Cell.K_BASE):
+		var base_ref : Ref = self.data[Cell.K_BASE].duplicate()
 		base_ref.ids.push_back(key)
 		return base_ref.evaluate()
 	else: return null
@@ -184,7 +211,7 @@ func set_local_value(key: StringName, value: Variant) -> void:
 
 func add_cell(key: StringName, base: Ref = null) -> Cell:
 	var initial_data := {}
-	if base: initial_data[&"base"] = base
+	if base: initial_data[Cell.K_BASE] = base
 
 	var result := Cell.new(key, self, initial_data)
 	return result
@@ -192,10 +219,10 @@ func add_cell(key: StringName, base: Ref = null) -> Cell:
 
 func instantiate(host: PennyHost) -> Node:
 	self.close_instance()
-	var result : Node = load(get_value(&"link")).instantiate()
+	var result : Node = load(get_value(Cell.K_LINK)).instantiate()
 	host.get_layer(self.layer).add_child(result)
 
-	if result is PennyNode:
+	if result is CellNode:
 		result.populate(host, self)
 
 	result.tree_exiting.connect(self.disconnect_instance.bind(result))
@@ -212,6 +239,6 @@ func disconnect_instance(match : Node = null) -> void:
 func close_instance() -> void:
 	var inst := self.instance
 	if inst == null: return
-	if inst is PennyNode:
+	if inst is CellNode:
 		inst.close()
 	inst.queue_free()

@@ -17,7 +17,7 @@ func _populate(tokens: Array) -> void:
 	super._populate(tokens)
 
 	subject_dialog_path = subject_ref.duplicate()
-	subject_dialog_path.ids.push_back(&"dialog")
+	subject_dialog_path.ids.push_back(Cell.K_DIALOG)
 
 
 func _execute(host: PennyHost) :

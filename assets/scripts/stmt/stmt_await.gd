@@ -30,11 +30,11 @@ func _execute(host: PennyHost) :
 		await host.get_tree().create_timer(await_value, false, false, false).timeout
 	else:
 		var object : Cell = (await_value as Cell.Ref).evaluate()
-		var node : PennyNode = object.local_instance
+		var node : CellNode = object.local_instance
 		if node == null:
 			printerr("Attempted to await the node of %s, but the node is null." % object)
-		elif node is not PennyNode:
-			printerr("Attempted to await the node of %s, but the node isn't a PennyNode." % object)
+		elif node is not CellNode:
+			printerr("Attempted to await the node of %s, but the node isn't a CellNode." % object)
 		else:
 			await node.advanced
 	return super._execute(host)

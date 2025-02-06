@@ -1,6 +1,6 @@
 
 ## A representation of a Penny Object.
-class_name PennyNode extends Node
+class_name CellNode extends Node
 
 signal advanced
 signal closed

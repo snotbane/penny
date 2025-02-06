@@ -88,7 +88,7 @@ signal on_roll_ahead_disabled(value : bool)
 
 @export var allow_rolling := true
 
-## [PennyNode]s instantiated via script will be added to their preferred layer, else the last in this list. Require at least one element. Any node/space can be used.
+## [CellNode]s instantiated via script will be added to their preferred layer, else the last in this list. Require at least one element. Any node/space can be used.
 @export var layers : Array[Node]
 
 static var insts : Array[PennyHost] = []

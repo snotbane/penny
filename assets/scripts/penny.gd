@@ -161,12 +161,17 @@ signal on_root_cell_modified
 @export var create_debug_info : bool :
 	get: return false
 	set(value):
-		var data := {}
-		for script in Penny.scripts:
-			var stmts := []
-			for stmt in script.stmts:
-				stmts.push_back(stmt.to_string())
-			data[&"scripts"] = stmts
+		var data := {
+			# &"scripts": [],
+			&"cells": Cell.ROOT.data
+		}
+		# for script in Penny.scripts:
+		# 	var stmts := []
+		# 	for stmt in script.stmts:
+		# 		stmts.push_back(stmt.to_string())
+		# 	data[&"scripts"].push_back(stmts)
+
+
 		DisplayServer.clipboard_set(str(data))
 		print("Copied Penny info to clipboard")
 

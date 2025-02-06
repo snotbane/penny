@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://h8clfdlwjtg7"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/sprite_component_template.gd" id="1_cwx0v"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/sprite/sprite_component_template.gd" id="1_cwx0v"]
 
 [node name="sprite_canvas_group" type="CanvasGroup"]
 script = ExtResource("1_cwx0v")

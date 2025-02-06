@@ -260,9 +260,9 @@ class Op extends RefCounted:
 			NEW:
 				var data := {}
 				if stack:
-					data[&"base"] = stack.pop_back()
+					data[Cell.K_BASE] = stack.pop_back()
 				else:
-					data[&"base"] = Cell.Ref.DEFAULT_BASE
+					data[Cell.K_BASE] = Cell.Ref.DEFAULT_BASE
 				stack.push_back(Cell.new(&"new_object", context, data))
 				return
 

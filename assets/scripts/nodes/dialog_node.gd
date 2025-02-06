@@ -1,5 +1,5 @@
 
-class_name DialogNode extends PennyNode
+class_name DialogNode extends CellNode
 
 const PREVENT_SKIP_DELAY_SECONDS := 0.125
 
