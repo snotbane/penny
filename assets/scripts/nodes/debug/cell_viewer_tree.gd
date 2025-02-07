@@ -118,18 +118,16 @@ static func get_icon(value: Variant) -> Texture2D:
 		return preload("res://addons/penny_godot/assets/textures/icons/Color.svg")
 	if value is Cell.Ref:
 		return preload("res://addons/penny_godot/assets/textures/icons/Ref.svg")
-	# if value is Lookup:
-	# 	return preload("res://addons/penny_godot/assets/textures/icons/Lookup.svg")
-	# if value is Expr:
-	# 	return preload("res://addons/penny_godot/assets/textures/icons/PrismMesh.svg")
+	if value is Expr:
+		return preload("res://addons/penny_godot/assets/textures/icons/PrismMesh.svg")
 	if value is Node:
 		return preload("res://addons/penny_godot/assets/textures/icons/Node.svg")
 	return null
 
 
 static func get_icon_tooltip(value: Variant) -> String:
-	# if value is Cell:
-	# 	return "ref"
+	if value is Cell:
+		return "cell"
 	if value is Dictionary:
 		return "dictionary"
 	if value is Array:
@@ -138,10 +136,8 @@ static func get_icon_tooltip(value: Variant) -> String:
 		return "color"
 	if value is Cell.Ref:
 		return "ref"
-	# if value is Lookup:
-	# 	return "lookup"
-	# if value is Expr:
-	# 	return "expression"
+	if value is Expr:
+		return "expression"
 	if value is Node:
 		return "node"
 	return "other"

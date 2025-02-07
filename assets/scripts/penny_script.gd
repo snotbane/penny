@@ -176,7 +176,7 @@ class Token extends RefCounted:
 		Token.Type.VALUE_BOOLEAN: 			RegEx.create_from_string(r"\b([Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
 		Token.Type.VALUE_COLOR: 			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
 		Token.Type.OPERATOR: 				Expr.Op.PATTERN_COMPILED,
-		Token.Type.ASSIGNMENT: 				RegEx.create_from_string(r"([+\-*/]?)="),
+		Token.Type.ASSIGNMENT: 				RegEx.create_from_string(r"=>|([+\-*/]?)="),
 		Token.Type.COMMENT: 				RegEx.create_from_string(r"(?ms)(([#/])\*.*?(\*\2))|((#|\/{2}).*?$)"),
 		Token.Type.IDENTIFIER: 				RegEx.create_from_string(r"[a-zA-Z_]\w*"),
 		Token.Type.VALUE_NUMBER: 			RegEx.create_from_string(r"\d+\.\d*|\.?\d+"),

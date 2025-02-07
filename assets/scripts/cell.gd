@@ -119,31 +119,7 @@ class Ref extends Evaluable:
 		return "@" + result.substr(0, result.length() - 1)
 
 static var ROOT := Cell.new(&"", null, {})
-
-static var OBJECT := Cell.new(Cell.K_OBJECT, ROOT, {
-	# Cell.K_DIALOG: Ref.new_from_string("dialog"),
-	# Cell.K_TEXT: "@.prefix@.name</>",
-	# Cell.K_PREFIX: "<>",
-})
-# static var DIALOG := Cell.new(Cell.K_DIALOG, ROOT, {
-# 	Cell.K_BASE: Ref.new_from_string("object"),
-# 	Cell.K_LINK: "res://addons/penny_godot/assets/scenes/dialog_default.tscn",
-# 	Cell.K_LAYER: &"dialog",
-# })
-# static var PROMPT := Cell.new(Cell.K_PROMPT, ROOT, {
-# 	Cell.K_BASE: Ref.new_from_string("object"),
-# 	Cell.K_LINK: "res://addons/penny_godot/assets/scenes/prompt_default.tscn",
-# 	Cell.K_LAYER: &"prompt",
-# 	Cell.K_OPTIONS: [],
-# 	# Cell.K_RESPONSE: null,
-# })
-# static var OPTION := Cell.new(Cell.K_OPTION, ROOT, {
-# 	Cell.K_BASE: Ref.new_from_string("object"),
-# 	Cell.K_LINK: "res://addons/penny_godot/assets/scenes/prompt_button_default.tscn",
-# 	Cell.K_ENABLED: true,
-# 	Cell.K_VISIBLE: true,
-# 	Cell.K_CONSUMED: false
-# })
+static var OBJECT := Cell.new(Cell.K_OBJECT, ROOT, {})
 
 var _key_name : StringName
 var key_name : StringName :
@@ -163,7 +139,7 @@ var parent : Cell
 var data : Dictionary
 
 var text : String :
-	get: return get_value_or_default(Cell.K_TEXT, key_name)
+	get: return get_value(Cell.K_TEXT, key_name)
 var text_as_display_string : DisplayString :
 	get: return DisplayString.new_from_pure(text, self)
 
@@ -186,14 +162,6 @@ func _to_string() -> String:
 	return "&" + key_name
 
 
-func get_value(key: StringName) -> Variant:
-	return data[key] if data.has(key) else get_base_value(key)
-
-
-func get_local_value(key: StringName) -> Variant:
-	return data[key] if data.has(key) else null
-
-
 func get_base_value(key: StringName) -> Variant:
 	if self.data.has(Cell.K_BASE):
 		var base_ref : Ref = self.data[Cell.K_BASE].duplicate()
@@ -202,9 +170,19 @@ func get_base_value(key: StringName) -> Variant:
 	else: return null
 
 
-func get_value_or_default(key: StringName, default: Variant) -> Variant:
-	var value : Variant = self.get_value(key)
-	return value if value else default
+func get_local_value(key: StringName, default: Variant = null) -> Variant:
+	var result : Variant = data[key] if data.has(key) else null
+	return default if result == null else result
+
+
+func get_value(key: StringName, default : Variant = null) -> Variant:
+	var result : Variant = data[key] if data.has(key) else get_base_value(key)
+	return default if result == null else result
+
+
+func get_value_evaluated(key: StringName, default: Variant = null) -> Variant:
+	var result : Variant = self.get_value(key, default)
+	return result.evaluate() if result is Evaluable else result
 
 
 func set_value(key: StringName, value: Variant) -> void:

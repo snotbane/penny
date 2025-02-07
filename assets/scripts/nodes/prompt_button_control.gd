@@ -17,9 +17,9 @@ func _set_consumed(value: bool) -> void:
 
 
 func _populate() -> void:
-	self.visible = cell.get_value_or_default(Cell.K_VISIBLE, true)
-	self.disabled = not cell.get_value_or_default(Cell.K_ENABLED, true)
-	self.consumed = cell.get_value_or_default(Cell.K_CONSUMED, false)
+	self.visible = cell.get_value_evaluated(Cell.K_VISIBLE, true)
+	self.disabled = not cell.get_value_evaluated(Cell.K_ENABLED, true)
+	self.consumed = cell.get_value_evaluated(Cell.K_CONSUMED, false)
 
 	label.text = DisplayString.new_from_pure(cell.get_value(Cell.K_TEXT), Cell.ROOT, cell).text
 

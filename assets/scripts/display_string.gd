@@ -112,7 +112,7 @@ static func interpolate(string: String, context: Cell) -> String:
 
 
 static func filter_from_context(string: String, context: Cell) -> String:
-	var filters : Array = context.get_value_or_default(Cell.K_FILTERS, [])
+	var filters : Array = context.get_value(Cell.K_FILTERS, [])
 	for filter_ref in filters:
 		var filter_cell : Cell = filter_ref.evaluate(context)
 		string = DisplayString.filter(string, filter_cell.get_value(Cell.K_FILTER_PATTERN), filter_cell.get_value(Cell.K_FILTER_REPLACE))

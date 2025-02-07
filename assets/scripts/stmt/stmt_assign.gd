@@ -1,12 +1,33 @@
 
 class_name StmtAssign extends StmtCell
 
+enum Type {
+	INVALID,
+	EXPRESSION,
+	FLAT,
+	ADD,
+	SUBTRACT,
+	MULTIPLY,
+	DIVIDE,
+}
+
+var type : Type
 var expr: Expr
 
 func _populate(tokens: Array) -> void:
 	var op_index := -1
 	for i in tokens.size():
 		if tokens[i].type == PennyScript.Token.Type.ASSIGNMENT:
+			match tokens[i].value:
+				"=>": 	type = Type.EXPRESSION
+				"=": 	type = Type.FLAT
+				"+=": 	type = Type.ADD
+				"-=": 	type = Type.SUBTRACT
+				"*=": 	type = Type.MULTIPLY
+				"/=": 	type = Type.DIVIDE
+				_:
+					type = Type.INVALID
+					printerr("Invalid assignment type '%s'" % tokens[i].value)
 			op_index = i
 			break
 
@@ -28,7 +49,16 @@ func _populate(tokens: Array) -> void:
 
 func _execute(host: PennyHost) :
 	var prior : Variant = subject
-	var after : Variant = expr.evaluate_keep_refs(context)
+	var after : Variant
+
+	match type:
+		Type.EXPRESSION:	after = expr
+		Type.FLAT:			after = expr.evaluate_keep_refs(context)
+		Type.ADD:			after = prior + expr.evaluate_keep_refs(context)
+		Type.SUBTRACT:		after = prior - expr.evaluate_keep_refs(context)
+		Type.MULTIPLY:		after = prior * expr.evaluate_keep_refs(context)
+		Type.DIVIDE:		after = prior / expr.evaluate_keep_refs(context)
+
 	if after is Cell:
 		if after.key_name == Cell.NEW_OBJECT_KEY_NAME:
 			after.key_name = subject_ref.ids[subject_ref.ids.size() - 1]
