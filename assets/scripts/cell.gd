@@ -1,6 +1,7 @@
 
 class_name Cell extends RefCounted
 
+const NEW_OBJECT_KEY_NAME := &"_NEW_OBJECT"
 const K_ROOT := &"root"
 const K_OBJECT := &"object"
 const K_OPTION := &"option"
@@ -44,8 +45,8 @@ class Ref extends Evaluable:
 
 	static func to(cell: Cell, _rel: bool = false) -> Ref:
 		var _ids : PackedStringArray
-		var cursor := cell.parent
-		while cursor:
+		var cursor := cell
+		while cursor and cursor != Cell.ROOT:
 			_ids.insert(0, cursor.key_name)
 			cursor = cursor.parent
 		return Ref.new(_ids, _rel)
@@ -150,13 +151,11 @@ var key_name : StringName :
 	set(value):
 		if _key_name == value: return
 
-		print("Self: %s, parent: %s" % [self, parent])
 		if parent:
 			parent.set_local_value(_key_name, null)
 
 		_key_name = value
 
-		print("Self: %s, parent: %s" % [self, parent])
 		if parent:
 			parent.set_local_value(_key_name, self)
 
