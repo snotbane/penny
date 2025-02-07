@@ -162,14 +162,6 @@ func _to_string() -> String:
 	return "&" + key_name
 
 
-func get_base_value(key: StringName) -> Variant:
-	if self.data.has(Cell.K_BASE):
-		var base_ref : Ref = self.data[Cell.K_BASE].duplicate()
-		base_ref.ids.push_back(key)
-		return base_ref.evaluate()
-	else: return null
-
-
 func get_local_value(key: StringName, default: Variant = null) -> Variant:
 	var result : Variant = data[key] if data.has(key) else null
 	return default if result == null else result
@@ -182,7 +174,15 @@ func get_value(key: StringName, default : Variant = null) -> Variant:
 
 func get_value_evaluated(key: StringName, default: Variant = null) -> Variant:
 	var result : Variant = self.get_value(key, default)
-	return result.evaluate() if result is Evaluable else result
+	return result.evaluate(self) if result is Evaluable else result
+
+
+func get_base_value(key: StringName) -> Variant:
+	if self.data.has(Cell.K_BASE):
+		var base_ref : Ref = self.data[Cell.K_BASE].duplicate()
+		base_ref.ids.push_back(key)
+		return base_ref.evaluate()
+	else: return null
 
 
 func set_value(key: StringName, value: Variant) -> void:
