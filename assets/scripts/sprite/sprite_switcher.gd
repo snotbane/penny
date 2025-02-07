@@ -2,10 +2,6 @@
 @tool
 class_name SpriteSwitcher extends CanvasGroup
 
-@export var refresh: bool:
-	set(value):
-		# _ready()
-		print(sprites)
 @export var clear: bool:
 	set(value):
 		# _ready()

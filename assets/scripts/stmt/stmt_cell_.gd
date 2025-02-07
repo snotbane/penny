@@ -9,7 +9,7 @@ var local_subject_ref : Cell.Ref :
 	get: return _local_subject_ref
 	set(value):
 		_local_subject_ref = value
-		_subject_ref = context_ref.append(local_subject_ref)
+		_subject_ref = context_ref.append(local_subject_ref) if _local_subject_ref.rel else _local_subject_ref
 
 
 var _subject_ref : Cell.Ref

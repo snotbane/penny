@@ -4,7 +4,6 @@ class_name PennyPrompt extends CellNode
 var options : Array
 
 func _populate() -> void:
-	print("Populate options: ", cell.get_value(Cell.K_OPTIONS))
 	receive_options(host, cell.get_value(Cell.K_OPTIONS))
 
 

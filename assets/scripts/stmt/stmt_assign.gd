@@ -28,15 +28,14 @@ func _populate(tokens: Array) -> void:
 
 func _execute(host: PennyHost) :
 	var prior : Variant = subject
-	var after : Variant = expr.evaluate(context)
+	var after : Variant = expr.evaluate_keep_refs(context)
 	if after is Cell:
 		if after.key_name == Cell.NEW_OBJECT_KEY_NAME:
 			after.key_name = subject_ref.ids[subject_ref.ids.size() - 1]
 		else:
-			print(after)
 			after = Cell.Ref.to(after)
 	subject_ref.set_local_value_in_cell(self.context, after)
 
-	print({ &"ref": subject_ref.globalize(self.context), &"prior": prior, &"after": after })
+	# print({ &"ref": subject_ref.globalize(self.context), &"prior": prior, &"after": after })
 
 	return create_record(host, { &"prior": prior, &"after": after })

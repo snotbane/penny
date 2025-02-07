@@ -135,7 +135,6 @@ static func reload_many(_scripts: Array[PennyScript] = scripts):
 
 		if is_all_scripts_valid:
 			print("Successfully loaded %s script(s), %s total." % [str(_scripts.size()), str(scripts.size())])
-			print("Labels: ", labels)
 			inits.sort_custom(StmtInit.sort)
 			if not Engine.is_editor_hint():
 				static_host.perform_inits_selective(scripts)
@@ -156,24 +155,6 @@ signal on_reload_start
 signal on_reload_finish(success: bool)
 signal on_reload_cancel
 signal on_root_cell_modified
-
-
-@export var create_debug_info : bool :
-	get: return false
-	set(value):
-		var data := {
-			# &"scripts": [],
-			&"cells": Cell.ROOT.data
-		}
-		# for script in Penny.scripts:
-		# 	var stmts := []
-		# 	for stmt in script.stmts:
-		# 		stmts.push_back(stmt.to_string())
-		# 	data[&"scripts"].push_back(stmts)
-
-
-		DisplayServer.clipboard_set(str(data))
-		print("Copied Penny info to clipboard")
 
 
 func _enter_tree() -> void:

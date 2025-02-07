@@ -116,12 +116,12 @@ class Ref extends Evaluable:
 		var result := "." if self.rel else ""
 		for id in self.ids:
 			result += id + "."
-		return "/" + result.substr(0, result.length() - 1)
+		return "@" + result.substr(0, result.length() - 1)
 
 static var ROOT := Cell.new(&"", null, {})
 
 static var OBJECT := Cell.new(Cell.K_OBJECT, ROOT, {
-	Cell.K_DIALOG: Ref.new_from_string("dialog"),
+	# Cell.K_DIALOG: Ref.new_from_string("dialog"),
 	# Cell.K_TEXT: "@.prefix@.name</>",
 	# Cell.K_PREFIX: "<>",
 })
@@ -183,7 +183,7 @@ func _init(__key_name : StringName, _parent : Cell, _data : Dictionary) -> void:
 
 
 func _to_string() -> String:
-	return "@" + key_name
+	return "&" + key_name
 
 
 func get_value(key: StringName) -> Variant:

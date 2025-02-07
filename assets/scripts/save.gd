@@ -14,7 +14,7 @@ static func any(value: Variant, use_cell_refs: bool = false) -> Variant:
 
 static func object(value: Object, use_cell_refs: bool = false) -> Variant:
 	if value is Cell:
-		print("value is Cell: use_cell_refs: ", use_cell_refs, " ", value.save_path())
+		# print("value is Cell: use_cell_refs: ", use_cell_refs, " ", value.save_path())
 		if use_cell_refs:
 			return value.save_path()
 		else:

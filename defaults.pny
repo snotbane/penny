@@ -2,11 +2,10 @@
 init
 
 object
-	# .dialog = dialog
+	.dialog = dialog
 	.text = "@.prefix@.name</>"
 	.name = "Unnamed Object"
 	.prefix = "<>"
-
 
 dialog = new object
 	.link = "res://addons/penny_godot/assets/scenes/dialog_default.tscn"

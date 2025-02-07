@@ -62,7 +62,12 @@ func _to_string() -> String:
 	return result.substr(0, result.length() - 1)
 
 
-func _evaluate(context: Cell) -> Variant:
+func _evaluate(context: Cell) -> Variant: return _evaluate_actually(context, false)
+
+## Evaluates the expression, but doesn't evaluate any paths found along the way.
+func evaluate_keep_refs(context: Cell) -> Variant: return _evaluate_actually(context, true)
+
+func _evaluate_actually(context: Cell, keep_refs : bool):
 	var stack : Array = []
 	var ops : Array[Op] = []
 
@@ -70,18 +75,19 @@ func _evaluate(context: Cell) -> Variant:
 		if symbol is Op:
 			if symbol.type == Op.ITERATOR: continue
 			while ops and symbol.type <= ops.back().type:
-				ops.pop_back().apply(stack, context)
+				ops.pop_back().apply(stack, context, keep_refs)
 			ops.push_back(symbol)
 		else:
 			stack.push_back(symbol)
 	while ops:
-		ops.pop_back().apply(stack, context)
+		ops.pop_back().apply(stack, context, keep_refs)
 
 	if stack.size() != 1:
 		printerr("Expression not evaluated: result stack size is not 1. Symbols: %s | Stack: %s" % [str(symbols), str(stack)])
 		return null
 
 	return stack[0]
+
 
 
 static func type_safe_equals(a: Variant, b: Variant) -> bool:
@@ -91,6 +97,8 @@ static func type_safe_equals(a: Variant, b: Variant) -> bool:
 
 
 class Op extends RefCounted:
+
+	## This order determines the priority in which they are applied, if two or more are encountered in a row (lowest value first).
 	enum {
 		INVALID,
 
@@ -107,10 +115,6 @@ class Op extends RefCounted:
 		LESS_EQUAL,
 		LESS_THAN,
 
-		EVALUATE,
-		DOT,
-		QUESTION,
-
 		NEW,
 		NOT,
 		AND,
@@ -123,6 +127,10 @@ class Op extends RefCounted:
 		MODULO,
 		BIT_AND,
 		BIT_OR,
+
+		EVALUATE,
+		QUESTION,
+		DOT,
 	}
 
 	static var PATTERNS := {
@@ -139,7 +147,8 @@ class Op extends RefCounted:
 		LESS_EQUAL: 				RegEx.create_from_string(r"<="),
 		LESS_THAN: 					RegEx.create_from_string(r"<"),
 
-		EVALUATE:					RegEx.create_from_string(r"@"),		DOT: 						RegEx.create_from_string(r"\."),
+		EVALUATE:					RegEx.create_from_string(r"@"),
+		DOT: 						RegEx.create_from_string(r"\."),
 		QUESTION: 					RegEx.create_from_string(r"\?"),
 
 		NEW: 						RegEx.create_from_string(r"new"),
@@ -255,7 +264,7 @@ class Op extends RefCounted:
 							stack.push_back(Cell.Ref.new([b], true))
 
 
-	func apply(stack: Array[Variant], context: Cell) -> void:
+	func apply(stack: Array[Variant], context: Cell, force_paths := false) -> void:
 		match type:
 			NEW:
 				var data := {}
@@ -270,13 +279,16 @@ class Op extends RefCounted:
 		for i in symbols_required:
 			abc.push_front(stack.pop_back())
 
-		for i in abc.size():
+		if force_paths:
+			pass
+		else: for i in abc.size():
 			var e = abc[i]
 			if e is Evaluable:
 				abc[i] = e.evaluate(context)
 
 		match type:
-			QUESTION:		stack.push_back(abc[0] if abc[0] else abc[1])
+			EVALUATE:		stack.push_back(abc[0].evaluate(context))
+			QUESTION:		stack.push_back(abc[0] if abc[0] != null else abc[1])
 			NOT:			stack.push_back(		! abc[0])
 			AND:			stack.push_back(abc[0] && abc[1])
 			OR:				stack.push_back(abc[0] || abc[1])
