@@ -263,6 +263,7 @@ class Op extends RefCounted:
 					data[Cell.K_BASE] = stack.pop_back()
 				else:
 					data[Cell.K_BASE] = Cell.Ref.DEFAULT_BASE
+				print("Apply > new > context: ", context)
 				stack.push_back(Cell.new(&"new_object", context, data))
 				return
 

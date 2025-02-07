@@ -91,15 +91,17 @@ class Ref extends Evaluable:
 		return result
 
 
+	func append(other: Ref) -> Ref:
+		var result := self.duplicate()
+		result.ids.append_array(other.ids)
+		return result
+
+
 	func set_local_value_in_cell(context: Cell, value: Variant) -> void:
 		if not rel: context = Cell.ROOT
 		for i in ids.size() - 1: context = context.get_value(ids[i])
 		context.set_local_value(ids[ids.size() - 1], value)
 
-		# var cell_ref := self.duplicate()
-		# cell_ref.ids.remove_at(cell_ref.ids.size() - 1)
-		# var cell : Cell = cell_ref.evaluate(context)
-		# cell.set_value(self.ids[self.ids.size() - 1], value)
 
 	func _evaluate(context: Cell) -> Variant:
 		if not rel: context = Cell.ROOT
@@ -148,11 +150,13 @@ var key_name : StringName :
 	set(value):
 		if _key_name == value: return
 
+		print("Self: %s, parent: %s" % [self, parent])
 		if parent:
 			parent.set_local_value(_key_name, null)
 
 		_key_name = value
 
+		print("Self: %s, parent: %s" % [self, parent])
 		if parent:
 			parent.set_local_value(_key_name, self)
 

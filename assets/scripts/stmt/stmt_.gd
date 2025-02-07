@@ -77,6 +77,7 @@ func populate(_owner : PennyScript, _index : int, tokens : Array) -> void:
 		_debug_string_do_not_use_for_anything_else_seriously_i_mean_it = ">\t".repeat(depth + 1) + _d.substr(0, _d.length() - 1)
 
 	index_in_same_depth_chain = get_index_in_same_depth_chain()
+	context_ref = get_context_ref()
 func _populate(tokens: Array) -> void: pass
 
 
@@ -87,6 +88,7 @@ func populate_from_other(other: Stmt, tokens : Array) -> void:
 	_debug_string_do_not_use_for_anything_else_seriously_i_mean_it = other._debug_string_do_not_use_for_anything_else_seriously_i_mean_it
 
 	index_in_same_depth_chain = other.index_in_same_depth_chain
+	context_ref = other.context_ref
 
 	self._populate(tokens)
 
@@ -103,8 +105,6 @@ func reload() -> void:
 	next_in_same_or_lower_depth = get_next_in_same_or_lower_depth()
 	next_in_lower_depth = get_next_in_lower_depth()
 	next_in_higher_depth = get_next_in_higher_depth()
-
-	context_ref = get_context_ref()
 
 	self._reload()
 func _reload() -> void: pass
@@ -251,8 +251,8 @@ func get_context_ref() -> Cell.Ref:
 	var cursor := self.get_prev_in_lower_depth()
 	var _ids : PackedStringArray
 	while cursor:
-		if cursor is StmtCell: for i in cursor.subject_ref.ids.size():
-			_ids.insert(0, cursor.subject_ref.ids[-i - 1])
+		if cursor is StmtCell: for i in cursor.local_subject_ref.ids.size():
+			_ids.insert(0, cursor.local_subject_ref.ids[-i - 1])
 			# ## Non-recursive
 			# _ids = cursor.subject_ref.ids.duplicate()
 			# break

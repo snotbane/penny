@@ -2,8 +2,9 @@
 init
 
 object
-	.dialog = dialog
+	# .dialog = dialog
 	.text = "@.prefix@.name</>"
+	.name = "Unnamed Object"
 	.prefix = "<>"
 
 

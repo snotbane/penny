@@ -20,7 +20,7 @@ func _get_is_skippable() -> bool:
 func _populate(tokens: Array) -> void:
 	super._populate(tokens)
 	if tokens.is_empty():
-		subject_ref = Cell.Ref.new([ Cell.K_PROMPT ], false)
+		local_subject_ref = Cell.Ref.new([ Cell.K_PROMPT ], false)
 
 
 func _reload() -> void:

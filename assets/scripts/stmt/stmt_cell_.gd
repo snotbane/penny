@@ -4,8 +4,17 @@ class_name StmtCell extends Stmt
 
 static var DEFAULT_CELL_REF := Cell.Ref.to(Cell.OBJECT)
 
-## When initialized, this should always be global -- never relative.
-var subject_ref : Cell.Ref
+var _local_subject_ref : Cell.Ref
+var local_subject_ref : Cell.Ref :
+	get: return _local_subject_ref
+	set(value):
+		_local_subject_ref = value
+		_subject_ref = context_ref.append(local_subject_ref)
+
+
+var _subject_ref : Cell.Ref
+var subject_ref : Cell.Ref :
+	get: return _subject_ref
 
 var subject : Variant :
 	get: return subject_ref.evaluate()
@@ -15,7 +24,7 @@ var subject_node : Node :
 
 
 func _populate(tokens: Array) -> void:
-	subject_ref = Cell.Ref.new_from_tokens(tokens)
+	local_subject_ref = Cell.Ref.new_from_tokens(tokens)
 
 	if subject_ref == null:
 		printerr("subject_ref evaluated to null from tokens: %s" % str(tokens))
