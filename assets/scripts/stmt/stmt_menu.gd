@@ -48,7 +48,7 @@ func _execute(host: PennyHost) :
 			})
 		else:
 			option = stmt.expr.evaluate()
-			key = option.self_key
+			key = option.key_name
 		Cell.ROOT.set_value(key, option)
 		prompt_option_refs.push_back(Cell.Ref.new([key], false))
 

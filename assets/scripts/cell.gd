@@ -1,7 +1,6 @@
 
 class_name Cell extends RefCounted
 
-
 const K_ROOT := &"root"
 const K_OBJECT := &"object"
 const K_OPTION := &"option"
@@ -26,7 +25,6 @@ const K_VISIBLE := &"visible"
 const K_ENABLED := &"enabled"
 const K_CONSUMED := &"consumed"
 const K_TEXT := &"text"
-
 
 class Ref extends Evaluable:
 	const COLOR := Color8(65, 122, 236)
@@ -83,6 +81,16 @@ class Ref extends Evaluable:
 		return Ref.new(self.ids.duplicate(), self.rel)
 
 
+	func globalize(context: Cell) -> Ref:
+		var result := self.duplicate()
+		if not self.rel: return result
+		while context and context != Cell.ROOT:
+			result.ids.insert(0, context.key_name)
+			context = context.parent
+		result.rel = false
+		return result
+
+
 	func set_local_value_in_cell(context: Cell, value: Variant) -> void:
 		if not rel: context = Cell.ROOT
 		for i in ids.size() - 1: context = context.get_value(ids[i])
@@ -93,19 +101,17 @@ class Ref extends Evaluable:
 		# var cell : Cell = cell_ref.evaluate(context)
 		# cell.set_value(self.ids[self.ids.size() - 1], value)
 
-
 	func _evaluate(context: Cell) -> Variant:
 		if not rel: context = Cell.ROOT
 		var result : Variant = context
 		for id in ids:
-			if result == null: return null
 			result = result.get_value(id)
 		return result
 
 
 	func _to_string() -> String:
-		var result := "." if rel else ""
-		for id in ids:
+		var result := "." if self.rel else ""
+		for id in self.ids:
 			result += id + "."
 		return "/" + result.substr(0, result.length() - 1)
 
@@ -113,8 +119,8 @@ static var ROOT := Cell.new(&"", null, {})
 
 static var OBJECT := Cell.new(Cell.K_OBJECT, ROOT, {
 	Cell.K_DIALOG: Ref.new_from_string("dialog"),
-	Cell.K_TEXT: "@.prefix@.name</>",
-	Cell.K_PREFIX: "<>",
+	# Cell.K_TEXT: "@.prefix@.name</>",
+	# Cell.K_PREFIX: "<>",
 })
 # static var DIALOG := Cell.new(Cell.K_DIALOG, ROOT, {
 # 	Cell.K_BASE: Ref.new_from_string("object"),
@@ -216,6 +222,10 @@ func add_cell(key: StringName, base: Ref = null) -> Cell:
 
 
 func instantiate(host: PennyHost) -> Node:
+	if self.get_value(Cell.K_LINK) == null:
+		printerr("Attempted to instantiate cell '%s', but it does not have a '%s' attribute." % [self, Cell.K_LINK])
+		return null
+
 	self.close_instance()
 	var result : Node = load(get_value(Cell.K_LINK)).instantiate()
 

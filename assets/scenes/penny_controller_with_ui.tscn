@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bpqllg6n5sq5a"]
+[gd_scene load_steps=18 format=3 uid="uid://bpqllg6n5sq5a"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/penny_host.gd" id="1_amygg"]
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="2_wbk5u"]
@@ -12,6 +12,38 @@
 [ext_resource type="Texture2D" uid="uid://cclh3lyq0mgnm" path="res://addons/penny_godot/assets/textures/icons/UndoRedoFade.svg" id="10_8a7qu"]
 [ext_resource type="Texture2D" uid="uid://bkes8nbos8gam" path="res://addons/penny_godot/assets/textures/icons/PlayTravel.svg" id="11_55foh"]
 [ext_resource type="Texture2D" uid="uid://cltfleqkuxf36" path="res://addons/penny_godot/assets/textures/icons/PlayTravelFade.svg" id="12_ynwo7"]
+
+[sub_resource type="GDScript" id="GDScript_oqyii"]
+script/source = "extends Control
+
+signal on_click
+
+var was_pressed : bool
+var is_mouse_inside : bool
+
+func _enter_tree() -> void:
+	self.mouse_entered.connect(self.set.bind(\"is_mouse_inside\", true))
+	self.mouse_exited.connect(self.set.bind(\"is_mouse_inside\", false))
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.is_pressed():
+			self.was_pressed = true
+		elif event.is_released():
+			if self.was_pressed and self.is_mouse_inside:
+				self.on_click.emit()
+			self.was_pressed = false
+"
 
 [sub_resource type="InputEventKey" id="InputEventKey_4bh7u"]
 device = -1
@@ -58,9 +90,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+script = SubResource("GDScript_oqyii")
 
 [node name="vbox" type="VBoxContainer" parent="canvas_layer/ui"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -96,14 +128,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(0, 240)
+mouse_filter = 2
 
 [node name="v_box_container" type="VBoxContainer" parent="canvas_layer/ui/main_container"]
 layout_mode = 2
+mouse_filter = 2
 alignment = 2
 
 [node name="prompt_area" type="Control" parent="canvas_layer/ui/main_container/v_box_container"]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="prompt_container" type="Control" parent="canvas_layer/ui/main_container/v_box_container/prompt_area"]
 layout_mode = 1
@@ -112,8 +147,10 @@ anchor_right = 0.8
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="hbox" type="HBoxContainer" parent="canvas_layer/ui/main_container/v_box_container"]
+custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 theme_override_constants/separation = 16
 
@@ -234,3 +271,5 @@ focus_mode = 1
 texture_normal = ExtResource("11_55foh")
 texture_pressed = ExtResource("12_ynwo7")
 texture_disabled = ExtResource("12_ynwo7")
+
+[connection signal="on_click" from="canvas_layer/ui/input_catcher" to="." method="emit_signal" binds= [&"on_try_advance"]]

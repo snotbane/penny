@@ -5,13 +5,8 @@ class_name Evaluable extends RefCounted
 
 ## Evaluate until no further evaluations can be made.
 func evaluate(context := Cell.ROOT) -> Variant:
-	var evals_seen : Array[Evaluable]
 	var result : Variant = self
 	while result is Evaluable:
-		if evals_seen.has(result):
-			printerr("Cyclical evaluation '%s' for object '%s'" % [result, context])
-			return null
-		evals_seen.push_back(result)
 		result = result._evaluate(context)
 	return result
 

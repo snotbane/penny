@@ -16,6 +16,7 @@ func update_from_file(file: FileAccess) -> void:
 	errors.clear()
 
 	var tokens := parse_code_to_tokens(file.get_as_text(true), file)
+	# print(tokens)
 
 	# var old_stmts : Array[Stmt]
 	# if not Engine.is_editor_hint():
@@ -119,8 +120,15 @@ static func parse_code_to_tokens(raw: String, context_file: FileAccess = null) -
 					pass
 				_:
 					cursor = rx.get_start()
-					var token = Token.new(i, rx.get_string())
+
+					var value : Variant = rx.get_string()
+					match i:
+						Token.Type.VALUE_STRING:
+							value = rx.get_string()
+
+					var token = Token.new(i, value)
 					result.push_back(token)
+
 			cursor = rx.get_end()
 			break
 
@@ -163,7 +171,7 @@ class Token extends RefCounted:
 	}
 	static var TYPE_PATTERNS := {
 		Token.Type.INDENTATION: 			RegEx.create_from_string(r"(?m)^\t+"),
-		Token.Type.VALUE_STRING: 			RegEx.create_from_string(r"(?s)(\"\"\"|\"|'''|'|```|`).*?\1"),
+		Token.Type.VALUE_STRING: 			RegEx.create_from_string(r"(?s)([`'\"]).*?\1"),
 		Token.Type.KEYWORD: 				RegEx.create_from_string(r"\b(await|call|close|else|elif|if|init|jump|label|match|menu|open|pass|print|return)\b"),
 		Token.Type.VALUE_BOOLEAN: 			RegEx.create_from_string(r"\b([Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
 		Token.Type.VALUE_COLOR: 			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
@@ -186,7 +194,7 @@ class Token extends RefCounted:
 		NUMBER_INTEGER,
 	}
 	static var LITERAL_PATTERNS := {
-		Literal.STRING: 			RegEx.create_from_string(r"(?s)(?<=(\"\"\"|\"|'''|'|```|`)).*?(?=\1)"),
+		Literal.STRING: 			RegEx.create_from_string(r"(?s)(?<=([`'\"])).*?(?=\1)"),
 		Literal.COLOR: 				TYPE_PATTERNS[Token.Type.VALUE_COLOR],
 		Literal.NULL: 				RegEx.create_from_string(r"\b([Nn]ull|NULL)\b"),
 		Literal.BOOLEAN_TRUE: 		RegEx.create_from_string(r"\b([Tt]rue|TRUE)\b"),

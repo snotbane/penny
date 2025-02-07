@@ -1,7 +1,7 @@
 
 class_name StmtDialog extends StmtNode
 
-const DEPTH_REMOVAL_PATTERN := r"(?<=\n)\t{0,%s}"
+const DEPTH_REMOVAL_PATTERN := r"\n\t{0,%s}"
 static var REGEX_WORD_COUNT := RegEx.create_from_string(r"\b\S+\b")
 static var REGEX_CHAR_COUNT := RegEx.create_from_string(r"\S")
 
@@ -12,7 +12,7 @@ var pure_text : String
 
 func _populate(tokens: Array) -> void:
 	var regex_whitespace := RegEx.create_from_string(DEPTH_REMOVAL_PATTERN % self.depth)
-	pure_text = regex_whitespace.sub(tokens.pop_back().value, "", true)
+	pure_text = regex_whitespace.sub(tokens.pop_back().value, " ", true)
 
 	super._populate(tokens)
 

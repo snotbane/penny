@@ -292,10 +292,6 @@ func execute_at_history_cursor() :
 		self.execute_at_end()
 
 
-func try_advance() -> void:
-	on_try_advance.emit()
-
-
 func on_reach_end() -> void:
 	close()
 
