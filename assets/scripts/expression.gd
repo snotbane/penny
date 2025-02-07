@@ -151,10 +151,10 @@ class Op extends RefCounted:
 		DOT: 						RegEx.create_from_string(r"\."),
 		QUESTION: 					RegEx.create_from_string(r"\?"),
 
-		NEW: 						RegEx.create_from_string(r"new"),
-		NOT: 						RegEx.create_from_string(r"!|not"),
-		AND: 						RegEx.create_from_string(r"&&|and"),
-		OR: 						RegEx.create_from_string(r"\|\||or"),
+		NEW: 						RegEx.create_from_string(r"\bnew\b"),
+		NOT:						RegEx.create_from_string(r"!|\bnot\b"),
+		AND:						RegEx.create_from_string(r"&&|\band\b"),
+		OR:							RegEx.create_from_string(r"\|\||\bor\b"),
 
 		ADD:						RegEx.create_from_string(r"\+"),
 		SUBTRACT:					RegEx.create_from_string(r"\-"),

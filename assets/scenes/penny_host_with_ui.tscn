@@ -61,7 +61,7 @@ keycode = 83
 [sub_resource type="Shortcut" id="Shortcut_8eokp"]
 events = [SubResource("InputEventKey_2j54e")]
 
-[node name="penny_controller" type="Node"]
+[node name="penny_host" type="Node"]
 script = ExtResource("1_amygg")
 autostart = true
 layers = {
@@ -273,3 +273,8 @@ texture_pressed = ExtResource("12_ynwo7")
 texture_disabled = ExtResource("12_ynwo7")
 
 [connection signal="on_click" from="canvas_layer/ui/input_catcher" to="." method="emit_signal" binds= [&"on_try_advance"]]
+[connection signal="pressed" from="canvas_layer/ui/main_container/v_box_container/hbox/file_panel/margin_container/grid_container/button_load" to="." method="load"]
+[connection signal="pressed" from="canvas_layer/ui/main_container/v_box_container/hbox/file_panel/margin_container/grid_container/button_save" to="." method="save"]
+[connection signal="pressed" from="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel/margin_container/grid_container/button_roll_back" to="." method="roll_back"]
+[connection signal="pressed" from="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel/margin_container/grid_container/button_roll_ahead" to="." method="roll_ahead"]
+[connection signal="pressed" from="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel/margin_container/grid_container/button_roll_end" to="." method="roll_end"]
