@@ -2,7 +2,7 @@
 class_name StmtAwait extends Stmt
 
 var is_simple_timer_delay : bool
-var await_value : Variant
+var expr : Variant
 
 
 func _get_verbosity() -> Verbosity:
@@ -20,17 +20,17 @@ func _get_is_skippable() -> bool:
 func _populate(tokens: Array) -> void:
 	is_simple_timer_delay = tokens[0].value is float or tokens[0].value is int
 	if is_simple_timer_delay:
-		await_value = float(tokens[0].value)
+		expr = float(tokens[0].value)
 	else:
-		await_value = Cell.Ref.new_from_tokens(tokens)
+		expr = Cell.Ref.new_from_tokens(tokens)
 
 
 func _execute(host: PennyHost) :
 	if is_simple_timer_delay:
-		await host.get_tree().create_timer(await_value, false, false, false).timeout
+		await host.get_tree().create_timer(expr, false, false, false).timeout
 	else:
-		var object : Cell = (await_value as Cell.Ref).evaluate()
-		var node : CellNode = object.local_instance
+		var object : Cell = expr.evaluate()
+		var node : CellNode = object.instance
 		if node == null:
 			printerr("Attempted to await the node of %s, but the node is null." % object)
 		elif node is not CellNode:
