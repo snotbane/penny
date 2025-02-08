@@ -59,8 +59,8 @@ func next() -> Stmt:
 	return stmt.next(self)
 
 
-# func create_history_listing() -> HistoryListing:
-# 	return stmt.create_history_listing(self)
+func create_history_listing() -> HistoryListing:
+	return stmt.create_history_listing(self)
 
 
 func save_data() -> Variant:

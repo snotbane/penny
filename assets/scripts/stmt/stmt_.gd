@@ -13,6 +13,15 @@ enum Verbosity {
 	MAX = (1 << 6) - 1,
 }
 
+const VERBOSITY_NAMES : PackedStringArray = [
+	"User Facing:1",
+	"Debug Messages:2",
+	"Flow Activity:4",
+	"Data Activity:8",
+	"Node Activity:16",
+	"Ignored:32"
+]
+
 signal aborted(record: Record)
 
 var owner : PennyScript
@@ -144,6 +153,18 @@ func _next(record: Record) -> Stmt:
 
 func create_record(host: PennyHost, data: Variant = null) -> Record:
 	return Record.new(host, self, data)
+
+
+func create_history_listing(record: Record) -> HistoryListing: return _create_history_listing(record)
+func _create_history_listing(record: Record) -> HistoryListing:
+	var result : HistoryListing = load("res://addons/penny_godot/assets/scenes/history_listings/history_listing_default.tscn").instantiate()
+	result.populate(record)
+	return result
+
+
+func get_record_message(record: Record) -> String: return _get_record_message(record)
+func _get_record_message(record: Record) -> String:
+	return "[code][color=#a030a0ff]%s[/color][/code]" % record
 
 
 func get_next_in_order() -> Stmt :

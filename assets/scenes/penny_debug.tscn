@@ -8,10 +8,10 @@
 [ext_resource type="Texture2D" uid="uid://c3g6mc5ihxqvj" path="res://addons/penny_godot/assets/textures/icons/Label.svg" id="6_6v586"]
 [ext_resource type="Texture2D" uid="uid://dfir03166e6r2" path="res://addons/penny_godot/assets/textures/icons/Object.svg" id="7_44hdu"]
 [ext_resource type="PackedScene" uid="uid://c7yh1rwq1ctx" path="res://addons/penny_godot/assets/scenes/cell_viewer.tscn" id="7_sffmw"]
-[ext_resource type="Texture2D" uid="uid://dbn36dthttn4c" path="res://addons/penny_godot/assets/textures/icons/Search.svg" id="7_yvqnl"]
 [ext_resource type="Texture2D" uid="uid://casyj4t5bxxe2" path="res://addons/penny_godot/assets/textures/icons/History.svg" id="8_506l5"]
 [ext_resource type="Texture2D" uid="uid://yrrj3kgg2n2g" path="res://addons/penny_godot/assets/textures/icons/PackedScene.svg" id="10_q5msf"]
 [ext_resource type="Texture2D" uid="uid://brecacl0mws63" path="res://addons/penny_godot/assets/textures/icons/Array.svg" id="11_baclu"]
+[ext_resource type="PackedScene" uid="uid://jumi8ea6vo4f" path="res://addons/penny_godot/assets/scenes/debug_panel_view_controls.tscn" id="11_n03pg"]
 [ext_resource type="PackedScene" uid="uid://b22t2f84jaety" path="res://addons/penny_godot/assets/scenes/debug_labels_panel.tscn" id="14_0uwmn"]
 [ext_resource type="PackedScene" uid="uid://ckwmom7w0dvh1" path="res://addons/penny_godot/assets/scenes/penny_history_box.tscn" id="14_elw5r"]
 [ext_resource type="Texture2D" uid="uid://xpmyo52daraf" path="res://addons/penny_godot/assets/textures/icons/Back.svg" id="15_mpfsm"]
@@ -493,38 +493,31 @@ metadata/_tab_index = 0
 [node name="tab_container" type="TabContainer" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu"]
 layout_mode = 2
 tab_alignment = 2
-current_tab = 1
+current_tab = 0
 tab_focus_mode = 1
 script = ExtResource("5_uv7g7")
 tab_icons = Array[Texture2D]([ExtResource("8_506l5"), ExtResource("6_6v586")])
 
-[node name="History" type="Control" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container"]
-visible = false
+[node name="History" type="VBoxContainer" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container"]
 layout_mode = 2
 tooltip_text = "Detailed history view with customizable verbosity settings."
 metadata/_tab_index = 0
 
-[node name="v_box_container" type="VBoxContainer" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="penny_history_box" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container" instance=ExtResource("14_elw5r")]
+[node name="penny_history_box" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History" instance=ExtResource("14_elw5r")]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="panel_container" type="PanelContainer" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container"]
+[node name="debug_panel_view_controls" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History" instance=ExtResource("11_n03pg")]
 layout_mode = 2
 
-[node name="hbox_2" type="HBoxContainer" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container"]
-layout_mode = 2
+[node name="sort_type_selector" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls" index="0"]
+visible = false
 
-[node name="verbosity_selector" type="OptionButton" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container/hbox_2"]
+[node name="search_query_textedit" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls" index="1"]
+visible = false
+
+[node name="verbosity_selector" type="OptionButton" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls"]
 layout_mode = 2
-flat = true
 selected = 7
 item_count = 8
 popup/item_0/text = "Story"
@@ -548,27 +541,12 @@ popup/item_7/text = "ALL"
 popup/item_7/icon = ExtResource("11_baclu")
 popup/item_7/id = 63
 
-[node name="hbox_zoom" type="HBoxContainer" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container/hbox_2"]
-custom_minimum_size = Vector2(140, 0)
-layout_mode = 2
-size_flags_horizontal = 10
-
-[node name="zoom_slider" type="HSlider" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom"]
+[node name="control" type="Control" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 4
-min_value = 10.0
-max_value = 18.0
-step = 2.0
-value = 12.0
-tick_count = 5
-
-[node name="zoom_reset" type="Button" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom"]
-layout_mode = 2
-icon = ExtResource("7_yvqnl")
-flat = true
 
 [node name="Labels" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container" instance=ExtResource("14_0uwmn")]
+visible = false
 layout_mode = 2
 
 [node name="control" type="Control" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu"]
@@ -705,12 +683,15 @@ libraries = {
 }
 script = SubResource("GDScript_jk4x3")
 
+[connection signal="host_changed" from="." to="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/penny_history_box" method="_update_host"]
 [connection signal="host_changed_unbound" from="." to="overlay/overlay_panel/margin_container/h_split_container/host_tabs" method="set_current_tab" binds= [0]]
 [connection signal="on_reload_cancel" from="." to="reload_notify/animation_player" method="cancel"]
 [connection signal="on_reload_finish" from="." to="reload_notify/animation_player" method="finish"]
 [connection signal="on_reload_start" from="." to="reload_notify/animation_player" method="start"]
-[connection signal="visibility_changed" from="overlay/overlay_panel" to="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/penny_history_box" method="scroll_to_end"]
-[connection signal="pressed" from="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom/zoom_reset" to="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom/zoom_slider" method="set_value" binds= [10.0]]
+[connection signal="visibility_changed" from="overlay/overlay_panel" to="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/penny_history_box" method="scroll_to_end"]
+[connection signal="item_selected" from="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls/verbosity_selector" to="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/penny_history_box" method="_update_verbosity"]
 [connection signal="pressed" from="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/control/return_to_hosts_button" to="overlay/overlay_panel/margin_container/h_split_container/host_tabs" method="set_current_tab" binds= [1]]
 [connection signal="on_selected" from="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_selector" to="." method="set_active_host"]
 [connection signal="pressed" from="overlay/close_button" to="overlay" method="set_visible" binds= [false]]
+
+[editable path="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls"]
