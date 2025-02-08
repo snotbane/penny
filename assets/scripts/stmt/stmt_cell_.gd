@@ -23,6 +23,10 @@ var subject_node : Node :
 	get: return subject.instance if subject is Cell else null
 
 
+func _get_verbosity() -> Verbosity:
+	return Verbosity.IGNORED
+
+
 func _populate(tokens: Array) -> void:
 	local_subject_ref = Cell.Ref.new_from_tokens(tokens)
 

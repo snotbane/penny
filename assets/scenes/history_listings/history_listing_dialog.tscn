@@ -8,7 +8,7 @@ script/source = "extends HistoryListing
 @export var name_label : RichTextLabel
 
 func _populate(record: Record) -> void:
-	name_label.text = record.data[\"who\"].text
+	name_label.text = record.data[\"who\"].text_as_display_string.text
 "
 
 [node name="history_listing_dialog" type="PanelContainer" node_paths=PackedStringArray("name_label", "message_label")]
@@ -28,7 +28,7 @@ message_label = NodePath("h_box_container/message_label")
 layout_mode = 2
 
 [node name="name_label" type="RichTextLabel" parent="h_box_container"]
-custom_minimum_size = Vector2(250, 0)
+custom_minimum_size = Vector2(128, 0)
 layout_mode = 2
 focus_mode = 2
 mouse_filter = 2

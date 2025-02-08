@@ -39,8 +39,8 @@ var verbosity : int :
 func refresh() -> void:
 	for listing in content_container.get_children():
 		listing.queue_free()
-	for record in host.history.records:
-		on_record_added(record)
+	for i in host.history.records.size():
+		on_record_added(host.history.records[-i-1])
 	refresh_visibility()
 	scroll_to_end.call_deferred()
 

@@ -9,6 +9,10 @@ var response : Variant :
 		return subject.get_value(Cell.K_RESPONSE)
 
 
+func _get_verbosity() -> Verbosity:
+	return Verbosity.FLOW_ACTIVITY
+
+
 func _get_is_rollable() -> bool:
 	return true
 

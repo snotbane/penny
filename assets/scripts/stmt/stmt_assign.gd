@@ -15,6 +15,9 @@ enum Type {
 var type : Type
 var expr: Expr
 
+func _get_verbosity() -> Verbosity:
+	return Verbosity.DATA_ACTIVITY
+
 func _populate(tokens: Array) -> void:
 	var op_index := -1
 	for i in tokens.size():

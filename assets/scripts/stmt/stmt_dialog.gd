@@ -10,6 +10,10 @@ var subject_dialog_path : Cell.Ref
 var pure_text : String
 
 
+func _get_verbosity() -> Verbosity:
+	return Verbosity.USER_FACING
+
+
 func _populate(tokens: Array) -> void:
 	var regex_whitespace := RegEx.create_from_string(DEPTH_REMOVAL_PATTERN % self.depth)
 	pure_text = regex_whitespace.sub(tokens.pop_back().value, " ", true)

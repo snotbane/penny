@@ -162,8 +162,7 @@ func _create_history_listing(record: Record) -> HistoryListing:
 	return result
 
 
-func get_record_message(record: Record) -> String:
-	return ("[code][color=dim_grey]%s[/color][/code] " % self.index) + _get_record_message(record)
+func get_record_message(record: Record) -> String: return _get_record_message(record)
 func _get_record_message(record: Record) -> String:
 	return "[code][color=deep_pink]Unimplemented Stmt %s[/color][/code]" % self
 

@@ -16,7 +16,7 @@ func _ready() -> void:
 	$overlay.visible = false
 
 	if PennyHost.insts:
-		host = PennyHost.insts.front()
+		set_active_host(PennyHost.insts.front())
 
 
 func _input(event: InputEvent) -> void:

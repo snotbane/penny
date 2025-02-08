@@ -4,6 +4,10 @@ class_name StmtLabel extends Stmt
 var label_name : StringName
 
 
+func _get_verbosity() -> Verbosity:
+	return Verbosity.DEBUG_MESSAGES
+
+
 func _populate(tokens: Array) -> void:
 	label_name = tokens[0].value
 
