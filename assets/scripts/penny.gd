@@ -173,7 +173,7 @@ func _ready():
 			var debug_canvas := CanvasLayer.new()
 			debug_canvas.layer = 256
 			self.add_child.call_deferred(debug_canvas)
-			var debug : PennyDebugUI = PENNY_DEBUG_SCENE.instantiate()
+			var debug : PennyDebug = PENNY_DEBUG_SCENE.instantiate()
 			on_reload_start.connect(debug.on_reload_start.emit)
 			on_reload_finish.connect(debug.on_reload_finish.emit)
 			on_reload_cancel.connect(debug.on_reload_cancel.emit)

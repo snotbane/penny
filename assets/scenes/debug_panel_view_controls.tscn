@@ -1,0 +1,80 @@
+[gd_scene load_steps=4 format=3 uid="uid://jumi8ea6vo4f"]
+
+[ext_resource type="Texture2D" uid="uid://c5nb4l2ge7dlq" path="res://addons/penny_godot/assets/textures/icons/Clear.svg" id="1_xhr8h"]
+[ext_resource type="Texture2D" uid="uid://dbn36dthttn4c" path="res://addons/penny_godot/assets/textures/icons/Search.svg" id="2_g63wf"]
+
+[sub_resource type="GDScript" id="GDScript_7c4hn"]
+script/source = "extends Control
+
+signal sort_type_changed(idx: int)
+signal search_query_changed(s: String)
+signal zoom_changed(value: float)
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	$sort_type_selector.item_selected.connect(sort_type_changed.emit)
+	$search_query_textedit.text_changed.connect(search_query_changed.emit)
+	$hbox_zoom/zoom_hslider.value_changed.connect(zoom_changed.emit)
+"
+
+[node name="debug_panel_view_controls" type="HBoxContainer"]
+size_flags_horizontal = 3
+script = SubResource("GDScript_7c4hn")
+
+[node name="sort_type_selector" type="OptionButton" parent="."]
+layout_mode = 2
+tooltip_text = "Sort order."
+selected = 0
+item_count = 3
+popup/item_0/text = "Default"
+popup/item_1/text = "A to Z"
+popup/item_1/id = 1
+popup/item_2/text = "Recent"
+popup/item_2/id = 2
+popup/item_2/disabled = true
+
+[node name="search_query_textedit" type="LineEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+placeholder_text = "Search..."
+
+[node name="search_query_clear" type="Button" parent="search_query_textedit"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -8.0
+grow_horizontal = 0
+grow_vertical = 2
+tooltip_text = "Clear search query."
+focus_mode = 0
+icon = ExtResource("1_xhr8h")
+flat = true
+icon_alignment = 2
+
+[node name="hbox_zoom" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="zoom_hslider" type="HSlider" parent="hbox_zoom"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 10.0
+max_value = 18.0
+step = 2.0
+value = 12.0
+tick_count = 5
+
+[node name="zoom_reset" type="Button" parent="hbox_zoom"]
+layout_mode = 2
+icon = ExtResource("2_g63wf")
+flat = true
+
+[connection signal="pressed" from="search_query_textedit/search_query_clear" to="search_query_textedit" method="clear"]
+[connection signal="pressed" from="search_query_textedit/search_query_clear" to="search_query_textedit" method="release_focus"]
+[connection signal="pressed" from="hbox_zoom/zoom_reset" to="hbox_zoom/zoom_hslider" method="set_value" binds= [10.0]]

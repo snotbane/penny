@@ -1,0 +1,58 @@
+[gd_scene load_steps=3 format=3 uid="uid://b1vfx4lulfl6h"]
+
+[sub_resource type="GDScript" id="GDScript_scf20"]
+script/source = "
+extends Control
+
+signal on_selected(host: PennyHost)
+
+@onready var none_available_node : Control = $no_hosts
+@onready var host_listing_container := $v_box_container/host_list
+
+
+func _ready() -> void:
+	visibility_changed.connect(refresh)
+
+
+func refresh() -> void:
+	none_available_node.visible = PennyHost.insts.is_empty()
+
+	for child in host_listing_container.get_children():
+		child.queue_free()
+
+	for host in PennyHost.insts:
+		var button := Button.new()
+		button.text = host.name
+		button.pressed.connect(self.on_selected.emit.bind(host))
+		host_listing_container.add_child.call_deferred(button)
+"
+
+[sub_resource type="LabelSettings" id="LabelSettings_kjwga"]
+font_size = 40
+
+[node name="host_selector" type="PanelContainer"]
+script = SubResource("GDScript_scf20")
+metadata/_tab_index = 1
+
+[node name="no_hosts" type="Label" parent="."]
+layout_mode = 2
+tooltip_text = "No PennyHosts exist in get_tree().root."
+mouse_filter = 1
+text = "NO HOSTS AVAILABLE"
+label_settings = SubResource("LabelSettings_kjwga")
+horizontal_alignment = 1
+
+[node name="v_box_container" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="label" type="Label" parent="v_box_container"]
+layout_mode = 2
+text = "Select a PennyHost to view it."
+horizontal_alignment = 1
+
+[node name="host_list" type="VBoxContainer" parent="v_box_container"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+alignment = 1

@@ -272,6 +272,9 @@ texture_normal = ExtResource("11_55foh")
 texture_pressed = ExtResource("12_ynwo7")
 texture_disabled = ExtResource("12_ynwo7")
 
+[connection signal="on_roll_ahead_disabled" from="." to="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel/margin_container/grid_container/button_roll_ahead" method="set_disabled"]
+[connection signal="on_roll_ahead_disabled" from="." to="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel/margin_container/grid_container/button_roll_end" method="set_disabled"]
+[connection signal="on_roll_back_disabled" from="." to="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel/margin_container/grid_container/button_roll_back" method="set_disabled"]
 [connection signal="on_click" from="canvas_layer/ui/input_catcher" to="." method="emit_signal" binds= [&"on_try_advance"]]
 [connection signal="pressed" from="canvas_layer/ui/main_container/v_box_container/hbox/file_panel/margin_container/grid_container/button_load" to="." method="load"]
 [connection signal="pressed" from="canvas_layer/ui/main_container/v_box_container/hbox/file_panel/margin_container/grid_container/button_save" to="." method="save"]

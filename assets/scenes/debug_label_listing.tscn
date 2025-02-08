@@ -1,9 +1,29 @@
-[gd_scene load_steps=2 format=3 uid="uid://drv4a57pwbptd"]
+[gd_scene load_steps=3 format=3 uid="uid://drv4a57pwbptd"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/debug_label_listing.gd" id="1_nu7gm"]
+[ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_46g3t"]
+
+[sub_resource type="GDScript" id="GDScript_w6uhd"]
+script/source = "
+class_name DebugLabelListing extends Control
+
+var label_name : StringName
+
+func populate(_label: StringName) -> void:
+	label_name = _label
+	$label.text = label_name
 
 
-[node name="debug_label_listing" type="HBoxContainer" node_paths=PackedStringArray("label_node")]
+#region Events
+func _on_jump_button_pressed() -> void:
+	PennyDebug.inst.host.jump_to(label_name)
+
+func _on_call_button_pressed() -> void:
+	PennyDebug.inst.host.call_stack.push_back(Penny.inst.host.cursor.next_in_order)
+	PennyDebug.inst.host.jump_to(label_name)
+#endregion
+"
+
+[node name="debug_label_listing" type="HBoxContainer"]
 custom_minimum_size = Vector2(0, 32)
 anchors_preset = 14
 anchor_top = 0.5
@@ -13,16 +33,19 @@ offset_top = -16.0
 offset_bottom = 16.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_nu7gm")
-label_node = NodePath("label")
+size_flags_horizontal = 3
+theme_override_constants/separation = 16
+script = SubResource("GDScript_w6uhd")
 
-[node name="undo_button" type="Button" parent="."]
-visible = false
-custom_minimum_size = Vector2(100, 0)
+[node name="label" type="Label" parent="."]
 layout_mode = 2
-tooltip_text = "Undo time until this label was most recently encountered."
-text = "Undo
-"
+text = "start"
+
+[node name="h_separator" type="HSeparator" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme = ExtResource("1_46g3t")
 
 [node name="jump_button" type="Button" parent="."]
 custom_minimum_size = Vector2(100, 0)
@@ -36,11 +59,8 @@ layout_mode = 2
 tooltip_text = "Jump to this label and return here afterwards."
 text = "Call"
 
-[node name="label" type="Label" parent="."]
+[node name="space" type="Control" parent="."]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "start"
 
-[connection signal="pressed" from="undo_button" to="." method="_on_undo_button_pressed"]
 [connection signal="pressed" from="jump_button" to="." method="_on_jump_button_pressed"]
 [connection signal="pressed" from="call_button" to="." method="_on_call_button_pressed"]
