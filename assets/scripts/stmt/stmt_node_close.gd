@@ -18,3 +18,6 @@ func _undo(record: Record) -> void:
 
 func _redo(record: Record) -> void:
 	self.subject_node.queue_free()
+
+func _get_record_message(record: Record) -> String:
+	return "[code][color=dim_gray]close : [/color]%s[/code]" % Penny.get_value_as_bbcode_string(subject)

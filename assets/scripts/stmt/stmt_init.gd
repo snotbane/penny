@@ -33,5 +33,9 @@ func _undo(record: Record) -> void:
 	assert(false, "Shouldn't be able to undo init statements.")
 
 
+func _get_record_message(record: Record) -> String:
+	return "[code][color=dim_gray]init %s[/color][/code]" % self.order
+
+
 static func sort(a: StmtInit, b: StmtInit) -> bool:
 	return a.order < b.order

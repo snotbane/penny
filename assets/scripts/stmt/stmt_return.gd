@@ -13,3 +13,7 @@ func _execute(host: PennyHost) :
 
 func _next(record: Record) -> Stmt:
 	return null
+
+
+func _get_record_message(record: Record) -> String:
+	return "[code][color=dim_gray]return[/code]"

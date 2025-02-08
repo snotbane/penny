@@ -201,3 +201,12 @@ static func get_value_as_string(value: Variant) -> String:
 	elif value is Color:
 		return "#" + value.to_html()
 	return str(value)
+
+
+static func get_value_as_bbcode_string(value: Variant) -> String:
+	var s := get_value_as_string(value)
+	if value is Cell or value is Expr:
+		return "[color=peru]%s[/color]" % s
+	if value is Color:
+		return "[color=%s]%s[/color]" % [s, s]
+	return "[color=deep_pink]%s[/color]" % s

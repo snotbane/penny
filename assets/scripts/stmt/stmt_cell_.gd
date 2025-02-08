@@ -29,3 +29,7 @@ func _populate(tokens: Array) -> void:
 	if subject_ref == null:
 		printerr("subject_ref evaluated to null from tokens: %s" % str(tokens))
 		owner.errors.push_back("subject_ref evaluated to null from tokens: %s" % str(tokens))
+
+
+func _get_record_message(record: Record) -> String:
+	return "[code][color=dim_gray]cell : %s[/color][/code]" % Penny.get_value_as_bbcode_string(subject_ref)

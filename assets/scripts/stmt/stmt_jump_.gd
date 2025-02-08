@@ -19,3 +19,7 @@ func _execute(host: PennyHost) :
 
 func _next(record: Record) -> Stmt:
 	return Penny.get_stmt_from_label(record.data)
+
+
+func _get_record_message(record: Record) -> String:
+	return "[code][color=dim_gray]jump : [/color][color=lawn_green]%s[/color][/code]" % Penny.get_value_as_bbcode_string(label_name)

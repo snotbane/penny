@@ -112,6 +112,14 @@ class Ref extends Evaluable:
 		return result
 
 
+	func evaluate_local(context := Cell.ROOT) -> Variant:
+		if not rel: context = Cell.ROOT
+		var result : Variant = context
+		for id in ids:
+			result = result.get_local_value(id)
+		return result
+
+
 	func _to_string() -> String:
 		var result := "." if self.rel else ""
 		for id in self.ids:

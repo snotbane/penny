@@ -46,3 +46,7 @@ func _execute(host: PennyHost) :
 
 # func _next(record: Record) -> Stmt:
 # 	return super._next(record)
+
+
+func _get_record_message(record: Record) -> String:
+	return "[code][color=dim_gray]await : %s[/color][/code]" % Penny.get_value_as_bbcode_string(expr)

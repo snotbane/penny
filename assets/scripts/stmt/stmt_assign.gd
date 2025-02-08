@@ -1,4 +1,5 @@
 
+## Assigns the local value of a [Cell] to a specified value.
 class_name StmtAssign extends StmtCell
 
 enum Type {
@@ -48,7 +49,7 @@ func _populate(tokens: Array) -> void:
 
 
 func _execute(host: PennyHost) :
-	var prior : Variant = subject
+	var prior : Variant = local_subject_ref.evaluate_local(context)
 	var after : Variant
 
 	match type:
@@ -69,3 +70,7 @@ func _execute(host: PennyHost) :
 	# print({ &"ref": subject_ref.globalize(self.context), &"prior": prior, &"after": after })
 
 	return create_record(host, { &"prior": prior, &"after": after })
+
+
+func _get_record_message(record: Record) -> String:
+	return "[code][color=dim_gray]assign %s : [color=slate_gray]%s[/color] => [color=dodger_blue]%s[/color][/color][/code]" % [Penny.get_value_as_bbcode_string(subject_ref), Penny.get_value_as_bbcode_string(record.data[&"prior"]), Penny.get_value_as_bbcode_string(record.data[&"after"])]

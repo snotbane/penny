@@ -29,19 +29,17 @@ func _next(record: Record) -> Stmt:
 		return next_in_same_or_lower_depth
 
 
-# func _create_history_listing(record: Record) -> HistoryListing:
-# 	var result := super._create_history_listing(record)
-# 	match record.data:
-# 		true:
-# 			result.message_label.text = "%s [code][color=#%s]PASSED[/color][/code]" % [_get_record_message(record), Penny.HAPPY_COLOR.to_html()]
-# 		false:
-# 			result.message_label.text = "%s [code][color=#%s]FAILED[/color][/code]" % [_get_record_message(record), Penny.ANGRY_COLOR.to_html()]
-# 		_:
-# 			result.message_label.text = "[s]%s [code]SKIPPED[/code]" % _get_record_message(record)
-# 	return result
-
-
 func _evaluate_self(host: PennyHost) -> Variant: return null
 
 
 func _should_passover(record: Record) -> bool: return true
+
+
+func _get_record_message(record: Record) -> String:
+	match record.data:
+		true:
+			return "[code][color=lawn_green]PASSED[/color][/code]"
+		false:
+			return "[code][color=deep_pink]FAILED[/color][/code]"
+		_:
+			return "[s]%s [code][color=dim_gray]SKIPPED[/color][/code]"

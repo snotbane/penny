@@ -76,3 +76,7 @@ func _redo(record: Record) -> void:
 
 func _get_default_subject() -> Cell.Ref:
 	return Cell.Ref.new([Cell.K_PROMPT], false)
+
+
+func _get_record_message(record: Record) -> String:
+	return "[code][color=dim_gray]menu : [/color]%s[/code]" % Penny.get_value_as_bbcode_string(subject)

@@ -13,7 +13,5 @@ func _execute(host: PennyHost) :
 	return self.create_record(host, message)
 
 
-# func _create_history_listing(record: Record) -> HistoryListing:
-# 	var result := super._create_history_listing(record)
-# 	result.message_label.text = record.data
-# 	return result
+func _get_record_message(record: Record) -> String:
+	return "[code][color=dim_gray]print : [/color][color=light_gray]%s[/color][/code]" % record.data

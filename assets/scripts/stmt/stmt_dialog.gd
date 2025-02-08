@@ -59,3 +59,13 @@ func _abort(host: PennyHost) -> Record:
 	var what := DisplayString.new_from_pure(pure_text)
 	var result := create_record(host, { "who": subject, "what": what })
 	return result
+
+
+func _create_history_listing(record: Record) -> HistoryListing:
+	var result : HistoryListing = load("res://addons/penny_godot/assets/scenes/history_listings/history_listing_dialog.tscn").instantiate()
+	result.populate(record)
+	return result
+
+
+func _get_record_message(record: Record) -> String:
+	return record.data[&"what"].text
