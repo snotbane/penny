@@ -6,10 +6,9 @@ const COMPOSITE_SPRITE2D_SCRIPT := preload("res://addons/penny_atlas_godot/asset
 
 enum TextureComponent {
 	ALBEDO,
-	NORMAL,
-	OCCLUSION,
 	EMISSIVE,
-	RSM,
+	ROM,
+	NORMAL,
 }
 
 var _template : SpriteComponentTemplate
