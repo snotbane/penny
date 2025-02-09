@@ -2,9 +2,8 @@
 
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/sprite_actor.gd" id="1_fq1wr"]
 
-[node name="actor3d" type="Node3D" node_paths=PackedStringArray("voice_audio_player")]
+[node name="actor3d" type="Node3D"]
 script = ExtResource("1_fq1wr")
-voice_audio_player = NodePath("voice")
 
 [node name="voice" type="AudioStreamPlayer3D" parent="."]
 max_polyphony = 4

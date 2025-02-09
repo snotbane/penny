@@ -1,5 +1,5 @@
 
-class_name SpriteActor extends PennyNode
+class_name SpriteActor extends CellNode
 
 signal flag_changed(value : StringName)
 signal eyes_changed(value : bool)
