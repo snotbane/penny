@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cqv2gnjjkdh6c"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/prompt_button.gd" id="1_05bjl"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/prompt_button_control.gd" id="1_j0oty"]
 
 [node name="prompt_button_default" type="Button" node_paths=PackedStringArray("label")]
 custom_minimum_size = Vector2(640, 0)
@@ -15,7 +15,7 @@ offset_right = 320.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_05bjl")
+script = ExtResource("1_j0oty")
 label = NodePath("rich_text_label")
 
 [node name="rich_text_label" type="RichTextLabel" parent="."]

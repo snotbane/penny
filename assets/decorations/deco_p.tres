@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DecoSpan" load_steps=2 format=3 uid="uid://cexw8bn0gevts"]
+
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/decorations/deco_span.gd" id="1_3rvk1"]
+
+[resource]
+script = ExtResource("1_3rvk1")
+argument_defaults = {
+"align": &"fill",
+"jst": PackedStringArray("w", "k", "sl")
+}
+id = &"p"

@@ -1,18 +1,13 @@
 
-class_name PennyPromptControl extends PennyPrompt
+extends PennyPrompt
 
-@export var button_prefab : PackedScene = load("res://addons/penny_godot/assets/scenes/prompt_button_default.tscn")
+@export_file var button_scene_path : String = "res://addons/penny_godot/assets/scenes/prompt_button_default.tscn"
 @export var button_container : Container
 
-# func _populate(_host: PennyHost, _attach: Variant = null) -> void:
-# 	super._populate(_host, _attach)
-
-
-func _receive_options(_options: Array) -> void:
+func _receive_options(_host: PennyHost, _options: Array) -> void:
+	# var button_scene = load(button_scene_path)
 	for path in _options:
-		var button : PromptButton = button_prefab.instantiate()
+		var option : Cell = path.evaluate()
+		var button : PennyPromptButton = option.instantiate(host)
 		button.pressed.connect(receive_response.bind(path))
-
-		button.receive(path.evaluate())
-
 		button_container.add_child(button)

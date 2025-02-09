@@ -1,8 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://7br0ixjsw2t"]
-
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/history_listing_dialog.gd" id="1_t6h63"]
+[gd_scene load_steps=3 format=3 uid="uid://c4ye52jktr1so"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_up5ly"]
+
+[sub_resource type="GDScript" id="GDScript_yeksk"]
+script/source = "extends HistoryListing
+
+@export var name_label : RichTextLabel
+
+func _populate(record: Record) -> void:
+	name_label.text = record.data[\"who\"].text_as_display_string.text
+"
 
 [node name="history_listing_dialog" type="PanelContainer" node_paths=PackedStringArray("name_label", "message_label")]
 custom_minimum_size = Vector2(0, 36)
@@ -13,7 +20,7 @@ grow_horizontal = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_up5ly")
-script = ExtResource("1_t6h63")
+script = SubResource("GDScript_yeksk")
 name_label = NodePath("h_box_container/name_label")
 message_label = NodePath("h_box_container/message_label")
 
@@ -21,7 +28,7 @@ message_label = NodePath("h_box_container/message_label")
 layout_mode = 2
 
 [node name="name_label" type="RichTextLabel" parent="h_box_container"]
-custom_minimum_size = Vector2(250, 0)
+custom_minimum_size = Vector2(128, 0)
 layout_mode = 2
 focus_mode = 2
 mouse_filter = 2

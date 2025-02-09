@@ -1,5 +1,5 @@
 
-class_name DialogNode extends PennyNode
+class_name DialogNode extends CellNode
 
 const PREVENT_SKIP_DELAY_SECONDS := 0.125
 
@@ -12,7 +12,7 @@ static var focus_left : bool = false
 
 var is_mouse_inside : bool
 var is_preventing_skip : bool
-var message : DecoratedText
+var message : DisplayString
 
 
 func _enter_tree() -> void:
@@ -21,8 +21,8 @@ func _enter_tree() -> void:
 		self.mouse_exited.connect(self.set.bind("is_mouse_inside", false))
 
 
-func _populate(_host: PennyHost, _object: PennyObject) -> void:
-	_host.on_try_advance.connect(try_advance)
+func _populate() -> void:
+	host.on_try_advance.connect(try_advance)
 
 
 func _notification(what: int) -> void:
@@ -42,7 +42,7 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func receive(record: Record) -> void:
-	name_label.text = record.data["who"].rich_name.to_decorated().text
+	name_label.text = record.data["who"].text_as_display_string.text
 	typewriter.receive(record)
 
 

@@ -74,8 +74,8 @@ var play_state : PlayState :
 			PlayState.READY, PlayState.COMPLETED:
 				is_locked = false
 
-var subject : PennyObject
-var message : DecoratedText
+var subject : Cell
+var message : DisplayString
 
 var unencountered_decos : Array[DecoInst]
 var unclosed_decos : Array[DecoInst]
@@ -154,9 +154,9 @@ var is_talking : bool :
 		_is_talking = value
 
 		if subject == null: return
-		if subject.local_instance == null: return
-		if subject.local_instance.has_signal("talking_changed"):
-			subject.local_instance.talking_changed.emit(_is_talking)
+		if subject.instance == null: return
+		if subject.instance.has_signal("talking_changed"):
+			subject.instance.talking_changed.emit(_is_talking)
 
 
 var next_prod_stop : int :

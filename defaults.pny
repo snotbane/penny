@@ -1,0 +1,69 @@
+
+init
+
+object
+	.dialog = dialog
+	.text = "@.prefix@.name</>"
+	.name = "Unnamed Object"
+	.prefix = "<>"
+
+dialog = new object
+	.link = "res://addons/penny_godot/assets/scenes/dialog_default.tscn"
+	.layer = "dialog"
+	.filters = [PARAGRAPH_DEFAULT, PIPE_TO_DELAY, SLASH_TO_WAIT]
+
+prompt = new object
+	.link = "res://addons/penny_godot/assets/scenes/prompt_default.tscn"
+	.layer = "prompt"
+	.options = []
+
+option = new object
+	.link = "res://addons/penny_godot/assets/scenes/prompt_button_default.tscn"
+	.enabled = true
+	.visible = true
+	.consumed = false
+	.filters = [PARAGRAPH_CENTERED, PIPE_TO_DELAY, SLASH_TO_WAIT]
+
+filter = new object
+	.pattern = ".+"
+	.replace = "default_filter_replace"
+
+Character = new object
+	.unknown = new Unknown
+	.name = "@.f_name"
+	.d_name = "Mx."
+	.fl_name = "@.prefix@.f_name @.l_name</>"
+	.dl_name = "@.prefix@.d_name @.l_name</>"
+	.fml_name = "@.prefix@.f_name @.m_name @.l_name</>"
+	.prefix = "<b;color=@.color>"
+	.color = #ffffff
+
+Unknown = new Character
+	.name = "???"
+
+PARAGRAPH_DEFAULT = new filter
+	.pattern = `^`
+	.replace = `<p>`
+
+PARAGRAPH_CENTERED = new filter
+	.pattern = `^`
+	.replace = `<p align="center">`
+
+PUNCTUATION_TO_PIPE = new filter
+	.pattern = `(?<!(?:Mr|Dr|Prof)s?)([.,?!:;]|-{2,})+['")\]]?`
+	.replace = `$0|`
+
+SLOW_ELLIPSES = new filter
+	.pattern = `\.{3}`
+	.replace = `<delay=0.33; speed=4>...</>`
+
+PIPE_TO_DELAY = new filter
+	.pattern = `\|`
+	.replace = `<delay>`
+
+SLASH_TO_WAIT = new filter
+	.pattern = `(?<!\\)\/`
+	.replace = `<wait>`
+
+
+filters = [PARAGRAPH_DEFAULT, PIPE_TO_DELAY, SLASH_TO_WAIT]

@@ -1,41 +1,31 @@
-[gd_scene load_steps=35 format=3 uid="uid://cfkhtume00g5e"]
+[gd_scene load_steps=29 format=3 uid="uid://cfkhtume00g5e"]
 
 [ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_hv265"]
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/penny_debug.gd" id="2_4v1jc"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/debug/penny_debug.gd" id="2_07hpy"]
 [ext_resource type="Texture2D" uid="uid://5dmiewmbmtxq" path="res://addons/penny_godot/assets/textures/overlay.png" id="2_7s783"]
-[ext_resource type="PackedScene" uid="uid://ehssrfkq0q6c" path="res://addons/penny_godot/assets/scenes/penny_dock.tscn" id="2_if5x3"]
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/data_viewer_tree.gd" id="5_2yu6x"]
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/debug_host_selector.gd" id="5_roq4y"]
 [ext_resource type="Texture2D" uid="uid://cqkyoh7pijbha" path="res://addons/penny_godot/assets/textures/icons/Code.svg" id="5_ufwun"]
 [ext_resource type="Script" path="res://addons/penny_utils_godot/assets/scripts/tabs_with_icons.gd" id="5_uv7g7"]
-[ext_resource type="Texture2D" uid="uid://c5nb4l2ge7dlq" path="res://addons/penny_godot/assets/textures/icons/Clear.svg" id="5_uw3ek"]
 [ext_resource type="Texture2D" uid="uid://c3g6mc5ihxqvj" path="res://addons/penny_godot/assets/textures/icons/Label.svg" id="6_6v586"]
 [ext_resource type="Texture2D" uid="uid://dfir03166e6r2" path="res://addons/penny_godot/assets/textures/icons/Object.svg" id="7_44hdu"]
-[ext_resource type="Texture2D" uid="uid://dbn36dthttn4c" path="res://addons/penny_godot/assets/textures/icons/Search.svg" id="7_yvqnl"]
+[ext_resource type="PackedScene" uid="uid://c7yh1rwq1ctx" path="res://addons/penny_godot/assets/scenes/cell_viewer.tscn" id="7_sffmw"]
 [ext_resource type="Texture2D" uid="uid://casyj4t5bxxe2" path="res://addons/penny_godot/assets/textures/icons/History.svg" id="8_506l5"]
 [ext_resource type="Texture2D" uid="uid://yrrj3kgg2n2g" path="res://addons/penny_godot/assets/textures/icons/PackedScene.svg" id="10_q5msf"]
 [ext_resource type="Texture2D" uid="uid://brecacl0mws63" path="res://addons/penny_godot/assets/textures/icons/Array.svg" id="11_baclu"]
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/debug_label_viewer.gd" id="11_epa23"]
-[ext_resource type="PackedScene" uid="uid://drv4a57pwbptd" path="res://addons/penny_godot/assets/scenes/debug_label_listing.tscn" id="11_v4nj7"]
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/option_button_advanced.gd" id="12_xgrrm"]
+[ext_resource type="PackedScene" uid="uid://jumi8ea6vo4f" path="res://addons/penny_godot/assets/scenes/debug_panel_view_controls.tscn" id="11_n03pg"]
+[ext_resource type="PackedScene" uid="uid://b22t2f84jaety" path="res://addons/penny_godot/assets/scenes/debug_labels_panel.tscn" id="14_0uwmn"]
 [ext_resource type="PackedScene" uid="uid://ckwmom7w0dvh1" path="res://addons/penny_godot/assets/scenes/penny_history_box.tscn" id="14_elw5r"]
 [ext_resource type="Texture2D" uid="uid://xpmyo52daraf" path="res://addons/penny_godot/assets/textures/icons/Back.svg" id="15_mpfsm"]
+[ext_resource type="PackedScene" uid="uid://b1vfx4lulfl6h" path="res://addons/penny_godot/assets/scenes/debug_host_selector.tscn" id="15_xs3rt"]
 [ext_resource type="Texture2D" uid="uid://dw74g8fttffmq" path="res://addons/penny_godot/assets/textures/icons/Reload.svg" id="20_3765o"]
 [ext_resource type="FontFile" uid="uid://dwidsc5m3kiw" path="res://addons/penny_godot/assets/fonts/IBMPlexSans-BoldItalic.ttf" id="21_nb1sm"]
 [ext_resource type="Texture2D" uid="uid://cb8qfgw6tykev" path="res://addons/penny_godot/assets/textures/icons/CheckBox.svg" id="21_nfjft"]
 [ext_resource type="Texture2D" uid="uid://cifrouur0xbp" path="res://addons/penny_godot/assets/textures/icons/Close.svg" id="22_o11uj"]
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/debug/penny_debug_reload_notify_anim.gd" id="22_wyfls"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6r5gf"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_337gi"]
 texture = ExtResource("2_7s783")
 axis_stretch_horizontal = 2
 axis_stretch_vertical = 2
 modulate_color = Color(0.5, 0.46875, 0.125, 0.784314)
-
-[sub_resource type="LabelSettings" id="LabelSettings_kjwga"]
-font_size = 40
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1mrjq"]
 bg_color = Color(0, 0, 0, 0.847059)
@@ -415,7 +405,26 @@ _data = {
 "success": SubResource("Animation_vv3o8")
 }
 
-[node name="penny_debug" type="PanelContainer"]
+[sub_resource type="GDScript" id="GDScript_jk4x3"]
+script/source = "extends AnimationPlayer
+
+func start() -> void:
+	self.play(\"loop\")
+
+
+func finish(success: bool) -> void:
+	if success:
+		self.play(\"success\")
+	else:
+		self.play(\"failure\")
+
+
+func cancel() -> void:
+	self.play(\"RESET\")
+"
+
+[node name="penny_debug" type="Control"]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -423,43 +432,9 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("1_hv265")
-theme_override_styles/panel = SubResource("StyleBoxEmpty_6r5gf")
-script = ExtResource("2_4v1jc")
+script = ExtResource("2_07hpy")
 
-[node name="overlay" type="PanelContainer" parent="."]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_337gi")
-
-[node name="margin_container" type="MarginContainer" parent="overlay"]
-layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
-
-[node name="h_split_container" type="HSplitContainer" parent="overlay/margin_container"]
-layout_mode = 2
-split_offset = -300
-
-[node name="static_tabs" type="TabContainer" parent="overlay/margin_container/h_split_container"]
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-current_tab = 0
-script = ExtResource("5_uv7g7")
-tab_icons = Array[Texture2D]([ExtResource("5_ufwun"), ExtResource("7_44hdu")])
-
-[node name="Console" parent="overlay/margin_container/h_split_container/static_tabs" instance=ExtResource("2_if5x3")]
-layout_mode = 2
-metadata/_tab_index = 0
-
-[node name="Data" type="Control" parent="overlay/margin_container/h_split_container/static_tabs"]
-visible = false
-layout_mode = 2
-tooltip_text = "Check current state of objects, variables, and their values."
-metadata/_tab_index = 1
-
-[node name="vbox" type="VBoxContainer" parent="overlay/margin_container/h_split_container/static_tabs/Data"]
+[node name="overlay" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -467,88 +442,46 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="data_tree" type="Tree" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox" node_paths=PackedStringArray("debug")]
-layout_mode = 2
-size_flags_vertical = 3
-focus_mode = 0
-theme_override_font_sizes/font_size = 12
-theme_override_font_sizes/title_button_font_size = 12
-columns = 3
-column_titles_visible = true
-hide_root = true
-script = ExtResource("5_2yu6x")
-debug = NodePath("../../../../../../..")
-
-[node name="hbox_search" type="HBoxContainer" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox"]
-layout_mode = 2
-
-[node name="search_values_toggle" type="CheckButton" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search"]
-visible = false
-layout_mode = 2
-tooltip_text = "Also search values in the query."
-focus_mode = 0
-button_pressed = true
-
-[node name="sort_selector" type="OptionButton" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search"]
-layout_mode = 2
-tooltip_text = "Sort order."
-selected = 0
-item_count = 3
-popup/item_0/text = "Default"
-popup/item_1/text = "A to Z"
-popup/item_1/id = 1
-popup/item_2/text = "Recent"
-popup/item_2/id = 2
-popup/item_2/disabled = true
-
-[node name="search_bar" type="LineEdit" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 0
-placeholder_text = "Search..."
-
-[node name="search_clear" type="Button" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/search_bar"]
+[node name="overlay_panel" type="PanelContainer" parent="overlay"]
 layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -8.0
-grow_horizontal = 0
+grow_horizontal = 2
 grow_vertical = 2
-tooltip_text = "Clear search query."
-focus_mode = 0
-icon = ExtResource("5_uw3ek")
-flat = true
-icon_alignment = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_337gi")
 
-[node name="hbox_zoom" type="HBoxContainer" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search"]
-custom_minimum_size = Vector2(140, 0)
+[node name="margin_container" type="MarginContainer" parent="overlay/overlay_panel"]
 layout_mode = 2
-size_flags_horizontal = 8
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
 
-[node name="zoom_slider" type="HSlider" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/hbox_zoom"]
+[node name="h_split_container" type="HSplitContainer" parent="overlay/overlay_panel/margin_container"]
+layout_mode = 2
+split_offset = -300
+
+[node name="static_tabs" type="TabContainer" parent="overlay/overlay_panel/margin_container/h_split_container"]
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 4
-min_value = 10.0
-max_value = 18.0
-step = 2.0
-value = 12.0
-tick_count = 5
+tab_alignment = 2
+current_tab = 0
+script = ExtResource("5_uv7g7")
+tab_icons = Array[Texture2D]([ExtResource("7_44hdu"), ExtResource("5_ufwun")])
 
-[node name="zoom_reset" type="Button" parent="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/hbox_zoom"]
+[node name="Data" parent="overlay/overlay_panel/margin_container/h_split_container/static_tabs" instance=ExtResource("7_sffmw")]
 layout_mode = 2
-icon = ExtResource("7_yvqnl")
-flat = true
+metadata/_tab_index = 0
 
-[node name="host_tabs" type="TabContainer" parent="overlay/margin_container/h_split_container"]
+[node name="host_tabs" type="TabContainer" parent="overlay/overlay_panel/margin_container/h_split_container"]
 layout_mode = 2
 size_flags_horizontal = 3
 current_tab = 0
 tabs_visible = false
 
-[node name="host_menu" type="MarginContainer" parent="overlay/margin_container/h_split_container/host_tabs"]
+[node name="host_menu" type="MarginContainer" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs"]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 theme_override_constants/margin_left = 0
@@ -557,7 +490,7 @@ theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 metadata/_tab_index = 0
 
-[node name="tab_container" type="TabContainer" parent="overlay/margin_container/h_split_container/host_tabs/host_menu"]
+[node name="tab_container" type="TabContainer" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu"]
 layout_mode = 2
 tab_alignment = 2
 current_tab = 0
@@ -565,33 +498,26 @@ tab_focus_mode = 1
 script = ExtResource("5_uv7g7")
 tab_icons = Array[Texture2D]([ExtResource("8_506l5"), ExtResource("6_6v586")])
 
-[node name="History" type="Control" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container"]
+[node name="History" type="VBoxContainer" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container"]
 layout_mode = 2
 tooltip_text = "Detailed history view with customizable verbosity settings."
 metadata/_tab_index = 0
 
-[node name="v_box_container" type="VBoxContainer" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="penny_history_box" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container" instance=ExtResource("14_elw5r")]
+[node name="penny_history_box" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History" instance=ExtResource("14_elw5r")]
 layout_mode = 2
 size_flags_vertical = 3
-verbosity = 63
 
-[node name="panel_container" type="PanelContainer" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container"]
+[node name="debug_panel_view_controls" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History" instance=ExtResource("11_n03pg")]
 layout_mode = 2
 
-[node name="hbox_2" type="HBoxContainer" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container"]
-layout_mode = 2
+[node name="sort_type_selector" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls" index="0"]
+visible = false
 
-[node name="verbosity_selector" type="OptionButton" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container/hbox_2"]
+[node name="search_query_textedit" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls" index="1"]
+visible = false
+
+[node name="verbosity_selector" type="OptionButton" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls"]
 layout_mode = 2
-flat = true
 selected = 7
 item_count = 8
 popup/item_0/text = "Story"
@@ -614,81 +540,21 @@ popup/item_6/separator = true
 popup/item_7/text = "ALL"
 popup/item_7/icon = ExtResource("11_baclu")
 popup/item_7/id = 63
-script = ExtResource("12_xgrrm")
 
-[node name="hbox_zoom" type="HBoxContainer" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container/hbox_2"]
-custom_minimum_size = Vector2(140, 0)
-layout_mode = 2
-size_flags_horizontal = 10
-
-[node name="zoom_slider" type="HSlider" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom"]
+[node name="control" type="Control" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 4
-min_value = 10.0
-max_value = 18.0
-step = 2.0
-value = 12.0
-tick_count = 5
 
-[node name="zoom_reset" type="Button" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom"]
-layout_mode = 2
-icon = ExtResource("7_yvqnl")
-flat = true
-
-[node name="Labels" type="Control" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container"]
-visible = false
-layout_mode = 2
-tooltip_text = "Navigation tools."
-metadata/_tab_index = 1
-
-[node name="v_box_container" type="VBoxContainer" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/Labels"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="panel" type="Panel" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/Labels/v_box_container"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="margin_container" type="MarginContainer" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/Labels/v_box_container/panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 3
-
-[node name="v_box_container" type="VBoxContainer" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/Labels/v_box_container/panel/margin_container" node_paths=PackedStringArray("debug")]
-layout_mode = 2
-script = ExtResource("11_epa23")
-debug = NodePath("../../../../../../../../../../..")
-label_listing_prefab = ExtResource("11_v4nj7")
-
-[node name="h_box_container" type="HBoxContainer" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/Labels/v_box_container"]
+[node name="Labels" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container" instance=ExtResource("14_0uwmn")]
 visible = false
 layout_mode = 2
 
-[node name="button_jump" type="Button" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/Labels/v_box_container/h_box_container"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Jump"
-
-[node name="button_call" type="Button" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/Labels/v_box_container/h_box_container"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Call"
-
-[node name="control" type="Control" parent="overlay/margin_container/h_split_container/host_tabs/host_menu"]
+[node name="control" type="Control" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
-[node name="return_to_hosts_button" type="Button" parent="overlay/margin_container/h_split_container/host_tabs/host_menu/control"]
+[node name="return_to_hosts_button" type="Button" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/control"]
 layout_mode = 2
 offset_left = 6.0
 offset_top = 4.0
@@ -700,40 +566,33 @@ tooltip_text = "Back to PennyHost list"
 icon = ExtResource("15_mpfsm")
 flat = true
 
-[node name="host_selector" type="PanelContainer" parent="overlay/margin_container/h_split_container/host_tabs" node_paths=PackedStringArray("vbox", "none_available_node")]
+[node name="host_selector" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs" instance=ExtResource("15_xs3rt")]
 visible = false
 layout_mode = 2
-script = ExtResource("5_roq4y")
-vbox = NodePath("v_box_container/host_list")
-none_available_node = NodePath("no_hosts")
-metadata/_tab_index = 1
 
-[node name="no_hosts" type="Label" parent="overlay/margin_container/h_split_container/host_tabs/host_selector"]
+[node name="close_button" type="Button" parent="overlay"]
 layout_mode = 2
-tooltip_text = "No PennyHosts exist in get_tree().root."
-mouse_filter = 1
-text = "NO HOSTS AVAILABLE"
-label_settings = SubResource("LabelSettings_kjwga")
-horizontal_alignment = 1
-
-[node name="v_box_container" type="VBoxContainer" parent="overlay/margin_container/h_split_container/host_tabs/host_selector"]
-layout_mode = 2
-
-[node name="label" type="Label" parent="overlay/margin_container/h_split_container/host_tabs/host_selector/v_box_container"]
-layout_mode = 2
-text = "Select a PennyHost to view it."
-horizontal_alignment = 1
-
-[node name="host_list" type="VBoxContainer" parent="overlay/margin_container/h_split_container/host_tabs/host_selector/v_box_container"]
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 3
-alignment = 1
+offset_left = 16.0
+offset_top = 6.0
+offset_right = 56.0
+offset_bottom = 46.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+icon = ExtResource("22_o11uj")
+flat = true
 
 [node name="reload_notify" type="Control" parent="."]
 custom_minimum_size = Vector2(0, 80)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = -40.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 mouse_filter = 2
@@ -752,6 +611,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_1mrjq")
 
 [node name="h_box_container" type="HBoxContainer" parent="reload_notify/panel_container"]
 layout_mode = 2
+mouse_filter = 0
 
 [node name="control" type="Control" parent="reload_notify/panel_container/h_box_container"]
 custom_minimum_size = Vector2(80, 80)
@@ -775,6 +635,7 @@ layout_mode = 0
 offset_right = 80.0
 offset_bottom = 80.0
 pivot_offset = Vector2(36, 40)
+mouse_filter = 2
 texture = ExtResource("20_3765o")
 expand_mode = 2
 stretch_mode = 3
@@ -787,6 +648,7 @@ offset_top = -2.0
 offset_right = 80.0
 offset_bottom = 78.0
 pivot_offset = Vector2(36, 40)
+mouse_filter = 2
 texture = ExtResource("21_nfjft")
 expand_mode = 2
 stretch_mode = 3
@@ -798,6 +660,7 @@ layout_mode = 0
 offset_right = 80.0
 offset_bottom = 80.0
 pivot_offset = Vector2(36, 40)
+mouse_filter = 2
 texture = ExtResource("22_o11uj")
 expand_mode = 2
 stretch_mode = 3
@@ -818,24 +681,17 @@ fit_content = true
 libraries = {
 "": SubResource("AnimationLibrary_aybwd")
 }
-script = ExtResource("22_wyfls")
+script = SubResource("GDScript_jk4x3")
 
-[connection signal="on_host_changed" from="." to="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/penny_history_box" method="_on_penny_debug_on_host_changed"]
-[connection signal="on_host_changed" from="." to="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/penny_history_box" method="scroll_to_end" unbinds=1]
+[connection signal="host_changed" from="." to="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/penny_history_box" method="_update_host"]
+[connection signal="host_changed_unbound" from="." to="overlay/overlay_panel/margin_container/h_split_container/host_tabs" method="set_current_tab" binds= [0]]
 [connection signal="on_reload_cancel" from="." to="reload_notify/animation_player" method="cancel"]
 [connection signal="on_reload_finish" from="." to="reload_notify/animation_player" method="finish"]
 [connection signal="on_reload_start" from="." to="reload_notify/animation_player" method="start"]
-[connection signal="visibility_changed" from="overlay" to="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/penny_history_box" method="scroll_to_end"]
-[connection signal="visibility_changed" from="overlay" to="overlay/margin_container/h_split_container/host_tabs/host_selector" method="refresh"]
-[connection signal="visibility_changed" from="overlay/margin_container/h_split_container/static_tabs/Data/vbox/data_tree" to="overlay/margin_container/h_split_container/static_tabs/Data/vbox/data_tree" method="refresh"]
-[connection signal="toggled" from="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/search_values_toggle" to="overlay/margin_container/h_split_container/static_tabs/Data/vbox/data_tree" method="_on_search_values_toggle_toggled"]
-[connection signal="item_selected" from="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/sort_selector" to="overlay/margin_container/h_split_container/static_tabs/Data/vbox/data_tree" method="_on_sort_selector_item_selected"]
-[connection signal="text_changed" from="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/search_bar" to="overlay/margin_container/h_split_container/static_tabs/Data/vbox/data_tree" method="_on_search_bar_text_changed"]
-[connection signal="pressed" from="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/search_bar/search_clear" to="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/search_bar" method="clear"]
-[connection signal="pressed" from="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/search_bar/search_clear" to="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/search_bar" method="release_focus"]
-[connection signal="value_changed" from="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/hbox_zoom/zoom_slider" to="overlay/margin_container/h_split_container/static_tabs/Data/vbox/data_tree" method="_on_zoom_slider_value_changed"]
-[connection signal="pressed" from="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/hbox_zoom/zoom_reset" to="overlay/margin_container/h_split_container/static_tabs/Data/vbox/hbox_search/hbox_zoom/zoom_slider" method="set_value" binds= [10.0]]
-[connection signal="item_selected_id" from="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/verbosity_selector" to="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/penny_history_box" method="_on_verbosity_selector_item_selected_id"]
-[connection signal="pressed" from="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom/zoom_reset" to="overlay/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/v_box_container/panel_container/hbox_2/hbox_zoom/zoom_slider" method="set_value" binds= [10.0]]
-[connection signal="pressed" from="overlay/margin_container/h_split_container/host_tabs/host_menu/control/return_to_hosts_button" to="overlay/margin_container/h_split_container/host_tabs" method="set_current_tab" binds= [1]]
-[connection signal="on_selected" from="overlay/margin_container/h_split_container/host_tabs/host_selector" to="overlay/margin_container/h_split_container/host_tabs" method="set_current_tab" binds= [0]]
+[connection signal="visibility_changed" from="overlay/overlay_panel" to="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/penny_history_box" method="scroll_to_end"]
+[connection signal="item_selected" from="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls/verbosity_selector" to="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/penny_history_box" method="_update_verbosity"]
+[connection signal="pressed" from="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/control/return_to_hosts_button" to="overlay/overlay_panel/margin_container/h_split_container/host_tabs" method="set_current_tab" binds= [1]]
+[connection signal="on_selected" from="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_selector" to="." method="set_active_host"]
+[connection signal="pressed" from="overlay/close_button" to="overlay" method="set_visible" binds= [false]]
+
+[editable path="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls"]

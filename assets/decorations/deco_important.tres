@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DecoCombination" load_steps=6 format=3 uid="uid://b4iefc2on00xw"]
+
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/decorations/deco_.gd" id="1_wuncp"]
+[ext_resource type="Resource" uid="uid://me6j8h0b81v6" path="res://addons/penny_godot/assets/decorations/deco_b.tres" id="2_g64yh"]
+[ext_resource type="Resource" uid="uid://bhk8uyim1pkme" path="res://addons/penny_godot/assets/decorations/deco_rainbow.tres" id="3_glvas"]
+[ext_resource type="Resource" uid="uid://cpailwautokxp" path="res://addons/penny_godot/assets/decorations/deco_wave.tres" id="4_bdheu"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/decorations/deco_combo.gd" id="5_87iy4"]
+
+[resource]
+script = ExtResource("5_87iy4")
+components = Array[ExtResource("1_wuncp")]([ExtResource("2_g64yh"), ExtResource("3_glvas"), ExtResource("4_bdheu")])
+id = &"highlight"

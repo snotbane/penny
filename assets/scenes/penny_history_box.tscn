@@ -1,18 +1,18 @@
 [gd_scene load_steps=3 format=3 uid="uid://ckwmom7w0dvh1"]
 
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/history_viewer.gd" id="1_fie1n"]
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="1_lr0qd"]
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/history_handler.gd" id="1_vh1ak"]
 
-[node name="penny_history_box" type="Control" node_paths=PackedStringArray("scroll_container", "vbox")]
+[node name="penny_history_box" type="Control" node_paths=PackedStringArray("scroll_container", "content_container")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_vh1ak")
+script = ExtResource("1_fie1n")
 scroll_container = NodePath("panel_container/margin_container/scroll_container")
-vbox = NodePath("panel_container/margin_container/scroll_container/margin_container/scroll_contents")
+content_container = NodePath("panel_container/margin_container/scroll_container/margin_container/content")
 verbosity = 1
 
 [node name="panel_container" type="PanelContainer" parent="."]
@@ -22,6 +22,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_vertical = 3
 
 [node name="margin_container" type="MarginContainer" parent="panel_container"]
 layout_mode = 2
@@ -41,8 +42,8 @@ theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_bottom = 0
 
-[node name="scroll_contents" type="VBoxContainer" parent="panel_container/margin_container/scroll_container/margin_container"]
+[node name="content" type="VBoxContainer" parent="panel_container/margin_container/scroll_container/margin_container"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 0
+theme_override_constants/separation = 12

@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://cuu7puh0nnyug"]
+[gd_scene load_steps=2 format=3 uid="uid://cuu7puh0nnyug"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/prompt_control.gd" id="2_m6ko3"]
-[ext_resource type="PackedScene" uid="uid://cqv2gnjjkdh6c" path="res://addons/penny_godot/assets/scenes/prompt_button_default.tscn" id="3_18yd8"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/prompt_control.gd" id="1_y665k"]
 
 [node name="prompt_default" type="Control" node_paths=PackedStringArray("button_container")]
 layout_mode = 3
@@ -10,19 +9,22 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("2_m6ko3")
-button_prefab = ExtResource("3_18yd8")
-button_container = NodePath("v_box_container")
+script = ExtResource("1_y665k")
+button_container = NodePath("scroll_box/button_container")
 
-[node name="v_box_container" type="VBoxContainer" parent="."]
+[node name="scroll_box" type="ScrollContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.25
-anchor_top = 0.5
 anchor_right = 0.75
-anchor_bottom = 0.5
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-alignment = 1
+follow_focus = true
+horizontal_scroll_mode = 0
 
-[connection signal="advanced" from="." to="." method="queue_free"]
+[node name="button_container" type="VBoxContainer" parent="scroll_box"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1

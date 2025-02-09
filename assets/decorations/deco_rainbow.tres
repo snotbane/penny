@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DecoSpan" load_steps=2 format=3 uid="uid://bhk8uyim1pkme"]
+
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/decorations/deco_span.gd" id="1_rssf3"]
+
+[resource]
+script = ExtResource("1_rssf3")
+argument_defaults = {
+"freq": 0.333,
+"sat": 0.8,
+"val": 0.8
+}
+id = &"rainbow"
