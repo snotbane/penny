@@ -16,3 +16,11 @@ var _is_talking : bool
 		_is_talking = value
 
 		talking_changed.emit(value)
+
+
+func _ready() -> void:
+	super._ready()
+
+	if not self.flag_changed.is_connected(sprite_flags.set_current_flag):
+		self.flag_changed.connect(sprite_flags.set_current_flag)
+		self.talking_changed.connect(sprite_flags.set_talking_flag)

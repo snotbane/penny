@@ -26,6 +26,10 @@ var cell : Cell
 
 var is_open : bool = false
 
+
+func _ready() -> void: pass
+
+
 ## Called immediately after instantiation. Use to "populate" the node with specific, one-time information it may need.
 func populate(_host: PennyHost, _cell: Cell = null) -> void:
 	host = _host

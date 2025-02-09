@@ -2,13 +2,11 @@
 @tool
 extends MeshInstance3D
 
-@export var refresh_all : bool :
+@export var refresh : bool :
 	get: return false
-	set(value): _ready()
-
-@export_category("SubViewports")
-
-@export var template_svp : SubViewport
+	set(value):
+		_ready()
+		_refresh_viewports()
 
 var _template : SpriteComponentTemplate
 @export var template : SpriteComponentTemplate :
@@ -19,14 +17,13 @@ var _template : SpriteComponentTemplate
 
 		refresh_quad_size()
 
-@export var refresh_viewports : bool :
-	get: return false
-	set(value):	_refresh_viewports()
+@export_subgroup("Sprite")
+
 @export var enable_mirrors : bool = true
 @export_flags("Emissive", "ROM", "Normal") var enable_components : int = 7
 @export var opacity_source_component : SpriteComponent.TextureComponent
 
-@export_category("Mesh")
+@export_subgroup("Mesh")
 
 var _pixel_size : float = 0.001
 @export_range(0.0001, 1.0, 0.0001, "or_greater") var pixel_size : float = 0.001 :
@@ -50,6 +47,9 @@ var _pixel_size : float = 0.001
 			self.cast_shadow = self.cast_shadow
 
 
+@onready var viewport : SubViewport = template.get_parent() if template else null
+
+
 var quad : QuadMesh :
 	get: return self.mesh
 
@@ -69,18 +69,19 @@ func _ready() -> void:
 
 
 func refresh_quad_size() -> void:
-	if self.mesh is not QuadMesh: return
+	if not viewport or self.mesh is not QuadMesh: return
 	quad.size = template.size * _pixel_size
-	template_svp.size = template.size
+	viewport.size = template.size
 
 
 func _refresh_viewports() -> void:
+	if not viewport: return
 	for child in self.get_children():
-		if child == template_svp: continue
+		if child == viewport: continue
 		self.remove_child(child)
 		child.queue_free()
 
-	template_svp.size = template.size
+	viewport.size = template.size
 
 	if enable_mirrors:
 		create_subviewport_from_template(true, SpriteComponent.TextureComponent.ALBEDO)
@@ -99,12 +100,12 @@ func create_subviewport_from_template(mirrored : bool, component : SpriteCompone
 		SpriteComponent.TextureComponent.ROM: 		suffix += "_m"
 		SpriteComponent.TextureComponent.NORMAL: 	suffix += "_n"
 
-	var result : SubViewport = template_svp.duplicate()
+	var result : SubViewport = viewport.duplicate()
 	while result.get_child_count() > 0:
 		result.remove_child(result.get_child(0))
 	self.add_child(result)
 	result.owner = get_tree().edited_scene_root
-	result.name = "_" + template_svp.name + suffix
+	result.name = "_" + viewport.name + suffix
 
 
 	var comp := SpriteComponent.new()
@@ -118,5 +119,3 @@ func create_subviewport_from_template(mirrored : bool, component : SpriteCompone
 	result.set_display_folded(true)
 
 	return result
-
-
