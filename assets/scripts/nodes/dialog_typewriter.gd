@@ -52,6 +52,11 @@ var _minimum_audio_delay : float = 0.033
 @export var audio_sample : AudioStream
 
 
+@export_file var spinner_scene_path : String = "res://addons/penny_godot/assets/scenes/spinner.tscn"
+var spinner_scene : PackedScene :
+	get: return load(spinner_scene_path)
+
+
 ## Fake label used to calculate appropriate scroll amount.
 var fake_rtl : RichTextLabel
 var scrollbar : VScrollBar

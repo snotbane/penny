@@ -42,13 +42,16 @@ func has_current_flag(flag: StringName) -> bool:
 	return current_flags.has(flag)
 
 
-func set_current_flag(flag: StringName) -> void:
+func set_current_flag(flag: StringName, play := true) -> void:
 	if has_current_flag(flag) or not has_possible_flag(flag): return
 	var category := get_flag_category(flag)
 	for i in current_flags:
 		if category == get_flag_category(i):
 			current_flags.erase(i)
 	current_flags.push_back(flag)
+
+	if not play: return
+
 	flags_changed.emit()
 
 
