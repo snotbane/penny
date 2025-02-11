@@ -1,6 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://b8sp6ey8fsgt7"]
+[gd_scene load_steps=9 format=3 uid="uid://b8sp6ey8fsgt7"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/dialog_node.gd" id="2_44j7f"]
+[ext_resource type="PackedScene" uid="uid://byamam888n7fp" path="res://addons/penny_godot/assets/scenes/roger.tscn" id="3_bfsyc"]
+[ext_resource type="Script" path="res://addons/penny_utils_godot/assets/scripts/glyph_tracker.gd" id="3_n4pn3"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/dialog_typewriter.gd" id="3_q7721"]
 
 [sub_resource type="Animation" id="Animation_th5j2"]
@@ -138,11 +140,13 @@ immediate_close = false
 save_spawn = false
 save_transform = false
 
-[node name="typewriter" type="Node" parent="." node_paths=PackedStringArray("rtl", "scroll_container", "audio_player")]
+[node name="typewriter" type="Node" parent="." node_paths=PackedStringArray("rtl", "scroll_container", "audio_player", "roger")]
 script = ExtResource("3_q7721")
 rtl = NodePath("../panel/margin_container/scroll_container/margin_container/text_label")
 scroll_container = NodePath("../panel/margin_container/scroll_container")
 audio_player = NodePath("nondirectional_audio_stream_player")
+roger = NodePath("../roger")
+roger_appears_on_paused = true
 
 [node name="nondirectional_audio_stream_player" type="AudioStreamPlayer" parent="typewriter"]
 
@@ -215,6 +219,23 @@ scroll_active = false
 shortcut_keys_enabled = false
 selection_enabled = true
 visible_characters_behavior = 1
+script = ExtResource("3_n4pn3")
+
+[node name="roger" parent="." instance=ExtResource("3_bfsyc")]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 8
+size_flags_vertical = 8
 
 [node name="animation_player" type="AnimationPlayer" parent="."]
 libraries = {

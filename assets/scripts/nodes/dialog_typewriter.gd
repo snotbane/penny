@@ -52,10 +52,10 @@ var _minimum_audio_delay : float = 0.033
 @export var audio_sample : AudioStream
 
 
-@export_file var spinner_scene_path : String = "res://addons/penny_godot/assets/scenes/spinner.tscn"
-var spinner_scene : PackedScene :
-	get: return load(spinner_scene_path)
+@export_category("Roger")
 
+@export var roger : CanvasItem
+@export var roger_appears_on_paused := false
 
 ## Fake label used to calculate appropriate scroll amount.
 var fake_rtl : RichTextLabel
@@ -78,6 +78,11 @@ var play_state : PlayState :
 		match _play_state:
 			PlayState.READY, PlayState.COMPLETED:
 				is_locked = false
+
+		match _play_state:
+			PlayState.PAUSED:		roger.visible = roger_appears_on_paused
+			PlayState.COMPLETED:	roger.visible = true
+			_:						roger.visible = false
 
 var subject : Cell
 var message : DisplayString
@@ -138,6 +143,9 @@ var visible_characters : int :
 		elif rtl.visible_characters > 0:
 			is_talking = true
 			self.character_encountered(rtl.text[rtl.visible_characters - 1])
+
+		# var last_visible_character_bounds : Rect2 = rtl.last_visible_character_bounds
+		# roger.position = last_visible_character_bounds.position
 
 		fake_rtl.visible_characters = rtl.visible_characters
 

@@ -1,0 +1,126 @@
+[gd_scene load_steps=9 format=3 uid="uid://byamam888n7fp"]
+
+[ext_resource type="Texture2D" uid="uid://bwkpyykbnbfrb" path="res://addons/penny_godot/assets/textures/roger.png" id="1_mocis"]
+
+[sub_resource type="GDScript" id="GDScript_vkyqm"]
+script/source = "extends Control
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	$texture_rect/spin.play(&\"spin\")
+	visibility_changed.connect(_visibility_changed)
+
+
+func _visibility_changed() -> void:
+	$fade.stop()
+	$fade.play(&\"fade\")
+"
+
+[sub_resource type="Animation" id="Animation_aasq0"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("texture_rect:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_88l3c"]
+resource_name = "spin"
+length = 4.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("texture_rect:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 6.28319]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_y5ek0"]
+_data = {
+"RESET": SubResource("Animation_aasq0"),
+"spin": SubResource("Animation_88l3c")
+}
+
+[sub_resource type="Animation" id="Animation_0v5b5"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_wnu7b"]
+resource_name = "fade"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.5, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ov7bs"]
+_data = {
+"RESET": SubResource("Animation_0v5b5"),
+"fade": SubResource("Animation_wnu7b")
+}
+
+[node name="roger" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = SubResource("GDScript_vkyqm")
+
+[node name="texture_rect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.4, 0.4)
+pivot_offset = Vector2(32, 32)
+texture = ExtResource("1_mocis")
+
+[node name="spin" type="AnimationPlayer" parent="texture_rect"]
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_y5ek0")
+}
+
+[node name="fade" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_ov7bs")
+}
