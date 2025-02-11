@@ -16,4 +16,4 @@ id = &"color"
 [resource]
 script = ExtResource("2_whh78")
 components = Array[ExtResource("1_kkix2")]([SubResource("Resource_w2cef"), ExtResource("3_txxjh"), ExtResource("4_o3shj")])
-id = &""
+id = &"whisper"

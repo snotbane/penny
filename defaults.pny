@@ -28,8 +28,8 @@ filter = new object
 	.pattern = ".+"
 	.replace = "default_filter_replace"
 
-Character = new object
-	.unknown = new Unknown
+character = new object
+	.unknown = new unknown
 	.name = "@.f_name"
 	.d_name = "Mx."
 	.fl_name = "@.prefix@.f_name @.l_name</>"
@@ -38,7 +38,7 @@ Character = new object
 	.prefix = "<b;color=@.color>"
 	.color = #ffffff
 
-Unknown = new Character
+unknown = new character
 	.name = "???"
 
 PARAGRAPH_DEFAULT = new filter

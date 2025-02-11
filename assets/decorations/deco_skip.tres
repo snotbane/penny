@@ -5,4 +5,4 @@
 [resource]
 script = ExtResource("1_fbrer")
 argument_defaults = {}
-id = &""
+id = &"skip"

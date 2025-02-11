@@ -9,4 +9,4 @@
 [resource]
 script = ExtResource("5_87iy4")
 components = Array[ExtResource("1_wuncp")]([ExtResource("2_g64yh"), ExtResource("3_glvas"), ExtResource("4_bdheu")])
-id = &"highlight"
+id = &"important"

@@ -12,7 +12,7 @@ func receive_options(_host: PennyHost, _options: Array) -> void:
 
 	var has_visible_option := false
 	for option in options:
-		if not option.get_value(Cell.K_VISIBLE): continue
+		if not option.evaluate().get_value(Cell.K_VISIBLE): continue
 		has_visible_option = true
 		break
 
