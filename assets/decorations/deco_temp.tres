@@ -1,10 +1,18 @@
-[gd_resource type="Resource" script_class="DecoCombination" load_steps=4 format=3 uid="uid://chffki7r7qe7f"]
+[gd_resource type="Resource" script_class="DecoCombination" load_steps=6 format=3 uid="uid://chffki7r7qe7f"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/decorations/deco_.gd" id="1_1uxhn"]
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/decorations/deco_combo.gd" id="2_xd6nk"]
 [ext_resource type="Resource" uid="uid://kpdhp1em5m4i" path="res://addons/penny_godot/assets/decorations/deco_u.tres" id="3_2fdol"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/decorations/deco_span.gd" id="3_tukvn"]
+
+[sub_resource type="Resource" id="Resource_ri57s"]
+script = ExtResource("3_tukvn")
+argument_defaults = {
+"color": Color(0.791, 0.34, 1, 1)
+}
+id = &"color"
 
 [resource]
 script = ExtResource("2_xd6nk")
-components = Array[ExtResource("1_1uxhn")]([ExtResource("3_2fdol"), null])
+components = Array[ExtResource("1_1uxhn")]([ExtResource("3_2fdol"), SubResource("Resource_ri57s")])
 id = &"temp"
