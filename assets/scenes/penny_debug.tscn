@@ -1,7 +1,7 @@
 [gd_scene load_steps=29 format=3 uid="uid://cfkhtume00g5e"]
 
 [ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_hv265"]
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/debug/penny_debug.gd" id="2_07hpy"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/penny_debug.gd" id="2_07hpy"]
 [ext_resource type="Texture2D" uid="uid://5dmiewmbmtxq" path="res://addons/penny_godot/assets/textures/overlay.png" id="2_7s783"]
 [ext_resource type="Texture2D" uid="uid://cqkyoh7pijbha" path="res://addons/penny_godot/assets/textures/icons/Code.svg" id="5_ufwun"]
 [ext_resource type="Script" path="res://addons/penny_utils_godot/assets/scripts/tabs_with_icons.gd" id="5_uv7g7"]
@@ -493,12 +493,13 @@ metadata/_tab_index = 0
 [node name="tab_container" type="TabContainer" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu"]
 layout_mode = 2
 tab_alignment = 2
-current_tab = 0
+current_tab = 1
 tab_focus_mode = 1
 script = ExtResource("5_uv7g7")
 tab_icons = Array[Texture2D]([ExtResource("8_506l5"), ExtResource("6_6v586")])
 
 [node name="History" type="VBoxContainer" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container"]
+visible = false
 layout_mode = 2
 tooltip_text = "Detailed history view with customizable verbosity settings."
 metadata/_tab_index = 0
@@ -546,7 +547,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Labels" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container" instance=ExtResource("14_0uwmn")]
-visible = false
 layout_mode = 2
 
 [node name="control" type="Control" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu"]

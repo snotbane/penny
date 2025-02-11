@@ -2,7 +2,12 @@
 ## No description
 class_name StmtMenu extends StmtOpen
 
+enum OptionType {
+	EXPLICIT,
+	CELL,
+}
 
+var prompt_cell_ref : Cell.Ref
 var nested_option_stmts : Array[StmtConditionalMenu]
 var response : Variant :
 	get:

@@ -146,7 +146,6 @@ rtl = NodePath("../panel/margin_container/scroll_container/margin_container/text
 scroll_container = NodePath("../panel/margin_container/scroll_container")
 audio_player = NodePath("nondirectional_audio_stream_player")
 roger = NodePath("../roger")
-roger_appears_on_paused = true
 
 [node name="nondirectional_audio_stream_player" type="AudioStreamPlayer" parent="typewriter"]
 

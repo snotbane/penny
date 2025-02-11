@@ -18,7 +18,7 @@ func _on_jump_button_pressed() -> void:
 	PennyDebug.inst.host.jump_to(label_name)
 
 func _on_call_button_pressed() -> void:
-	PennyDebug.inst.host.call_stack.push_back(Penny.inst.host.cursor.next_in_order)
+	PennyDebug.inst.host.call_stack.push_back(PennyDebug.inst.host.cursor.next_in_order)
 	PennyDebug.inst.host.jump_to(label_name)
 #endregion
 "

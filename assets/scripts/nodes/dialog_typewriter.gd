@@ -79,10 +79,11 @@ var play_state : PlayState :
 			PlayState.READY, PlayState.COMPLETED:
 				is_locked = false
 
-		match _play_state:
-			PlayState.PAUSED:		roger.visible = roger_appears_on_paused
-			PlayState.COMPLETED:	roger.visible = true
-			_:						roger.visible = false
+		if roger:
+			match _play_state:
+				PlayState.PAUSED:		roger.visible = roger_appears_on_paused
+				PlayState.COMPLETED:	roger.visible = true
+				_:						roger.visible = false
 
 var subject : Cell
 var message : DisplayString

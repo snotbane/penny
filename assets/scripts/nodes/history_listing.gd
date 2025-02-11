@@ -12,8 +12,8 @@ func populate(_record: Record) -> void:
 		c.a = 0.25
 		message_label.add_theme_color_override('default_color', c)
 	message_label.text = record.stmt.get_record_message(_record)
-	_populate(_record)
-func _populate(_record: Record) -> void: pass
+	_populate()
+func _populate() -> void: pass
 
 
 func refresh_visibility(verbosity: int) -> void:

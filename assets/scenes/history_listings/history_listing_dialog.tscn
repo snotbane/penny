@@ -7,7 +7,7 @@ script/source = "extends HistoryListing
 
 @export var name_label : RichTextLabel
 
-func _populate(record: Record) -> void:
+func _populate() -> void:
 	name_label.text = record.data[\"who\"].text_as_display_string.text
 "
 
