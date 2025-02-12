@@ -148,11 +148,6 @@ static func reload_many(many: Array[PennyScript] = scripts):
 		inst.on_reload_finish.emit(false)
 
 
-static func perform_inits_all() -> void:
-	inits.sort_custom(StmtInit.sort)
-	static_host.perform_inits_selective(scripts)
-
-
 signal on_reload_start
 signal on_reload_finish(success: bool)
 signal on_reload_cancel
@@ -184,7 +179,8 @@ func _ready():
 	Penny.reload_all.call_deferred()
 
 	if not Engine.is_editor_hint():
-		Penny.perform_inits_all.call_deferred()
+		inits.sort_custom(StmtInit.sort)
+		static_host.perform_inits_selective(scripts)
 
 
 func _notification(what: int) -> void:
