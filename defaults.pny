@@ -12,6 +12,8 @@ dialog = new object
 	.layer = "dialog"
 	.filters = [PARAGRAPH_DEFAULT, PIPE_TO_DELAY, SLASH_TO_WAIT]
 
+print "Initialized dialog!"
+
 prompt = new object
 	.link = "res://addons/penny_godot/assets/scenes/prompt_default.tscn"
 	.layer = "prompt"

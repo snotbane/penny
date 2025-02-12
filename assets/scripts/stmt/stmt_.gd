@@ -27,6 +27,7 @@ signal aborted(record: Record)
 var owner : PennyScript
 var index : int
 var depth : int
+var hash_id : int
 var _debug_string_do_not_use_for_anything_else_seriously_i_mean_it : String
 
 var prev_in_order : Stmt
@@ -75,9 +76,13 @@ func _to_string() -> String:
 func populate(_owner : PennyScript, _index : int, tokens : Array) -> void:
 	tokens = tokens.duplicate()
 
+	for i in tokens:
+		hash_id += hash(i.value)
+
 	owner = _owner
 	index = _index
 	depth = tokens.pop_front().value if (tokens and tokens[0].type == PennyScript.Token.Type.INDENTATION) else 0
+
 
 	if OS.is_debug_build():
 		var _d : String = ""
@@ -91,6 +96,7 @@ func _populate(tokens: Array) -> void: pass
 
 
 func populate_from_other(other: Stmt, tokens : Array) -> void:
+	hash_id = other.hash_id
 	owner = other.owner
 	index = other.index
 	depth = other.depth

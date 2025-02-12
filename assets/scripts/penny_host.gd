@@ -191,10 +191,13 @@ func try_reload(success: bool) -> void:
 
 	if self.last_valid_cursor:
 		var start : Stmt = self.last_valid_cursor.owner.diff.remap_stmt_index(self.last_valid_cursor)
-		self.last_valid_cursor = null
 		if success:
 			## TODO: Go back through the records till you find the new cursor, and undo stmts until that point.
+			# self.last_valid_cursor.undo(history_cursor)
+			self.last_valid_cursor = null
 			self.execute(start)
+		else:
+			self.last_valid_cursor = null
 
 
 func perform_inits() -> void:
@@ -366,4 +369,3 @@ func save_data() -> Variant:
 func emit_roll_events() -> void:
 	on_roll_ahead_disabled.emit(not can_roll_ahead)
 	on_roll_back_disabled.emit(not can_roll_back)
-	print("History: ", history.records)

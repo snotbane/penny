@@ -9,6 +9,7 @@ const OMIT_SCRIPT_FOLDERS := [
 	".templates",
 	"old",
 	"temp",
+	"tests"
 ]
 static var SCRIPT_RESOURCE_LOADER := preload("res://addons/penny_godot/assets/scripts/penny_script_format_loader.gd").new()
 static var PENNY_DEBUG_SCENE := preload("res://addons/penny_godot/assets/scenes/penny_debug.tscn")
@@ -112,12 +113,12 @@ static func reload_single(script : PennyScript) -> void:
 	Penny.reload_many([script])
 
 
-static func reload_many(_scripts: Array[PennyScript] = scripts):
+static func reload_many(many: Array[PennyScript] = scripts):
 	inst.on_reload_start.emit()
 
-	if _scripts.size() > 0:
+	if many.size() > 0:
 
-		for script in _scripts:
+		for script in many:
 			var i : int = -1
 			for j in scripts.size():
 				if scripts[j].id == script.id: i = j; break
@@ -134,21 +135,22 @@ static func reload_many(_scripts: Array[PennyScript] = scripts):
 		is_all_scripts_valid = errors.is_empty()
 
 		if is_all_scripts_valid:
-			print("Successfully loaded %s script(s), %s total." % [str(_scripts.size()), str(scripts.size())])
-			inits.sort_custom(StmtInit.sort)
-			if not Engine.is_editor_hint():
-				static_host.perform_inits_selective(scripts)
+			print("Successfully loaded %s script(s), %s total." % [str(many.size()), str(scripts.size())])
 		else:
 			printerr("Failed to load one or more scripts:")
 			for e in errors:
 				printerr("\t" + e)
-
 
 		inst.on_reload_finish.emit(is_all_scripts_valid)
 	elif is_all_scripts_valid:
 		inst.on_reload_cancel.emit()
 	else:
 		inst.on_reload_finish.emit(false)
+
+
+static func perform_inits_all() -> void:
+	inits.sort_custom(StmtInit.sort)
+	static_host.perform_inits_selective(scripts)
 
 
 signal on_reload_start
@@ -180,6 +182,9 @@ func _ready():
 			debug_canvas.add_child.call_deferred(debug)
 
 	Penny.reload_all.call_deferred()
+
+	if not Engine.is_editor_hint():
+		Penny.perform_inits_all.call_deferred()
 
 
 func _notification(what: int) -> void:
