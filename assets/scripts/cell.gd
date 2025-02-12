@@ -217,9 +217,7 @@ func instantiate(host: PennyHost) -> Node:
 
 	self.close_instance()
 	var result : Node = load(get_value(Cell.K_LINK)).instantiate()
-
-	if self.get_value(Cell.K_LAYER) != null:
-		host.get_layer_for(self).add_child(result)
+	host.get_layer_for(self).add_child(result)
 
 	if result is CellNode:
 		result.populate(host, self)

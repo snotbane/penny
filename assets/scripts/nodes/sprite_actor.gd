@@ -19,7 +19,7 @@ signal talking_changed(value : bool)
 
 
 @export var is_talking : bool :
-	get: return sprite_flags.has_current_flag(&"talk")
+	get: return sprite_flags.has_current_flag(&"talk") if sprite_flags else false
 	set(value):
 		sprite_flags.set_current_flag(&"talk" if value else &"silent")
 		talking_changed.emit(value)

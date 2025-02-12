@@ -303,7 +303,7 @@ func close() -> void:
 
 func get_layer_for(cell: Cell) -> Node:
 	var layer : Variant = cell.get_value(Cell.K_LAYER)
-	if layer == null: return layers[layers.keys().front()]
+	if layer == null: return self
 	return self.get_node(layers[layer] as NodePath)
 
 

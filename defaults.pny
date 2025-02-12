@@ -37,6 +37,7 @@ character = new object
 	.fml_name = "@.prefix@.f_name @.m_name @.l_name</>"
 	.prefix = "<b;color=@.color>"
 	.color = #ffffff
+	.link = "res://addons/penny_godot/assets/scenes/actor3d_placeholder.tscn"
 
 unknown = new character
 	.name = "???"
