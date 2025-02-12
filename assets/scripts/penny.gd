@@ -2,6 +2,7 @@
 @tool
 class_name Penny extends Node
 
+const STAGE_GROUP_NAME := &"penny_stage"
 const PNY_FILE_EXTENSION := ".pny"
 const OMIT_SCRIPT_FOLDERS := [
 	".godot",

@@ -88,9 +88,6 @@ signal on_roll_ahead_disabled(value : bool)
 
 @export var allow_rolling := true
 
-## [CellNode]s instantiated via script will be added to their preferred stage, else the last in this list. Require at least one element. Any node can be used.
-@export var stages : Dictionary
-
 static var insts : Array[PennyHost] = []
 
 var call_stack : Array[Stmt]
@@ -302,12 +299,6 @@ func on_reach_end() -> void:
 func close() -> void:
 	on_close.emit()
 	return
-
-
-func get_stage_for(cell: Cell) -> Node:
-	var stage : Variant = cell.get_value(Cell.K_STAGE)
-	if stage == null: return self
-	return self.get_node(stages[stage] as NodePath)
 
 
 func save() -> void:

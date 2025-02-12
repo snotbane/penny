@@ -64,11 +64,6 @@ events = [SubResource("InputEventKey_2j54e")]
 [node name="penny_host" type="Node"]
 script = ExtResource("1_amygg")
 autostart = true
-stages = {
-"dialog": NodePath("canvas_layer/ui/main_container/v_box_container/hbox/dialog_layer"),
-"prompt": NodePath("canvas_layer/ui/main_container/v_box_container/prompt_area/prompt_container"),
-"ui": NodePath("canvas_layer/ui/ui_other_layer")
-}
 
 [node name="canvas_layer" type="CanvasLayer" parent="."]
 
@@ -111,15 +106,6 @@ mouse_filter = 2
 theme_override_constants/margin_left = 200
 theme_override_constants/margin_right = 200
 
-[node name="ui_other_layer" type="Control" parent="canvas_layer/ui"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
 [node name="main_container" type="MarginContainer" parent="canvas_layer/ui"]
 layout_mode = 1
 anchors_preset = 15
@@ -140,7 +126,7 @@ layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="prompt_container" type="Control" parent="canvas_layer/ui/main_container/v_box_container/prompt_area"]
+[node name="prompt" type="Control" parent="canvas_layer/ui/main_container/v_box_container/prompt_area" groups=["penny_stage"]]
 layout_mode = 1
 anchor_left = 0.2
 anchor_right = 0.8
@@ -211,7 +197,7 @@ texture_disabled = ExtResource("8_xgny0")
 [node name="space" type="Control" parent="canvas_layer/ui/main_container/v_box_container/hbox/file_panel/margin_container/grid_container"]
 layout_mode = 2
 
-[node name="dialog_layer" type="Control" parent="canvas_layer/ui/main_container/v_box_container/hbox"]
+[node name="dialog" type="Control" parent="canvas_layer/ui/main_container/v_box_container/hbox" groups=["penny_stage"]]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2

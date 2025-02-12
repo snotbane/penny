@@ -217,7 +217,7 @@ func instantiate(host: PennyHost) -> Node:
 
 	self.close_instance()
 	var result : Node = load(get_value(Cell.K_RES)).instantiate()
-	host.get_stage_for(self).add_child(result)
+	self.get_stage_node(host).add_child(result)
 
 	if result is CellNode:
 		result.populate(host, self)
@@ -239,3 +239,9 @@ func close_instance() -> void:
 	if inst is CellNode:
 		inst.close()
 	inst.queue_free()
+
+
+func get_stage_node(host: PennyHost) -> Node:
+	for node in host.get_tree().get_nodes_in_group(Penny.STAGE_GROUP_NAME):
+		if self.get_value(Cell.K_STAGE) == node.name: return node
+	return host.get_tree().root
