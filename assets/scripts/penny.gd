@@ -180,7 +180,7 @@ func _ready():
 
 	if not Engine.is_editor_hint():
 		inits.sort_custom(StmtInit.sort)
-		static_host.perform_inits_selective(scripts)
+		static_host.perform_inits_selective.call_deferred(scripts)
 
 
 func _notification(what: int) -> void:
