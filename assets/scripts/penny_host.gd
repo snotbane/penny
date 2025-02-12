@@ -88,8 +88,8 @@ signal on_roll_ahead_disabled(value : bool)
 
 @export var allow_rolling := true
 
-## [CellNode]s instantiated via script will be added to their preferred layer, else the last in this list. Require at least one element. Any node can be used.
-@export var layers : Dictionary
+## [CellNode]s instantiated via script will be added to their preferred stage, else the last in this list. Require at least one element. Any node can be used.
+@export var stages : Dictionary
 
 static var insts : Array[PennyHost] = []
 
@@ -304,10 +304,10 @@ func close() -> void:
 	return
 
 
-func get_layer_for(cell: Cell) -> Node:
-	var layer : Variant = cell.get_value(Cell.K_LAYER)
-	if layer == null: return self
-	return self.get_node(layers[layer] as NodePath)
+func get_stage_for(cell: Cell) -> Node:
+	var stage : Variant = cell.get_value(Cell.K_STAGE)
+	if stage == null: return self
+	return self.get_node(stages[stage] as NodePath)
 
 
 func save() -> void:

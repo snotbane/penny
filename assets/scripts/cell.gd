@@ -13,8 +13,8 @@ const K_COLOR := &"color"
 const K_FILTERS := &"filters"
 const K_FILTER_PATTERN := &"pattern"
 const K_FILTER_REPLACE := &"replace"
-const K_LINK := &"link"
-const K_LAYER := &"layer"
+const K_RES := &"res"
+const K_STAGE := &"stage"
 const K_NAME := &"name"
 const K_PREFIX := &"prefix"
 const K_SUFFIX := &"suffix"
@@ -211,13 +211,13 @@ func add_cell(key: StringName, base: Ref = null) -> Cell:
 
 
 func instantiate(host: PennyHost) -> Node:
-	if self.get_value(Cell.K_LINK) == null:
-		printerr("Attempted to instantiate cell '%s', but it does not have a '%s' attribute." % [self, Cell.K_LINK])
+	if self.get_value(Cell.K_RES) == null:
+		printerr("Attempted to instantiate cell '%s', but it does not have a '%s' attribute." % [self, Cell.K_RES])
 		return null
 
 	self.close_instance()
-	var result : Node = load(get_value(Cell.K_LINK)).instantiate()
-	host.get_layer_for(self).add_child(result)
+	var result : Node = load(get_value(Cell.K_RES)).instantiate()
+	host.get_stage_for(self).add_child(result)
 
 	if result is CellNode:
 		result.populate(host, self)

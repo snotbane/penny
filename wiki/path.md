@@ -18,7 +18,7 @@ Variable type that stores a reference to a Resource stored in a LookupTable, usu
 ```pny
 Rubin
 	.base = Character
-	.link = $rubin		## Packed scene to instantiate before applying any visuals to this object
+	.scene = $rubin		## Packed scene to instantiate before applying any visuals to this object
 	.inst = null		## Handled internally, it's the actual instantiated node itself. Don't touch.
 ```
 

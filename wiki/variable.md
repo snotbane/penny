@@ -26,7 +26,6 @@ These are the variable types that Penny understands:
 - `float` — numeric id with a `.`
 - `color` — hex id beginning with `#`, e.g. `#ff4128`
 - `string` — string id with quotes, e.g. `"chapter"`
-- `link` — string id beginning with `$`, e.g. `$setting`. Retrieves a value from host settings. Usually a key to a PackedScene in the settings dictionary
 - `object` — string id with no quotes, e.g. `Rubin`. Contains any other variable type.
 
 ## Arrays
@@ -130,7 +129,7 @@ Objects are used differently based on what is using them.
 
 - `Object = object` : entire object
 - `"@Object"` : use rich_name
-- `Object.anim "walk"` : use link
+- `Object.anim "walk"` : use scene
 
 ### Object Referencing
 
@@ -311,13 +310,13 @@ object
 
 #### Entity
 
-Think of entities like "key items." They cannot speak (by default) but they are set up to have decorations added to their names to make them stand out when evaluated. They can even appear in the world using `link`.
+Think of entities like "key items." They cannot speak (by default) but they are set up to have decorations added to their names to make them stand out when evaluated. They can even appear in the world using `scene`.
 
 ```pny
 Entity = object
-	link = null
+	scene = null
 ```
-- `link` is a `StringName` referring to the engine PackedScene this `object` will instantiate and then control. Setting this value will not take effect until the existing node is destroyed.
+- `scene` is a `StringName` referring to the engine PackedScene this `object` will instantiate and then control. Setting this value will not take effect until the existing node is destroyed.
 
 #### Character
 

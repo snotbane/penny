@@ -267,7 +267,7 @@ I thought you were going to—<next>
 
 - Unique to Penny
 - Plays a sound effect when printed out
-- Required link argument
+- Required scene argument
 
 #### `size`
 
@@ -284,7 +284,7 @@ I thought you were going to—<next>
 
 - Unique to Penny
 - Sets the sound effects the typewriter uses during printout
-- Required link argument
+- Required scene argument
 - Usage:
 
 ```pny
@@ -310,7 +310,7 @@ Normal text <typesound=$angry_text>Angry text!!!</> Normal text again.
 - Plays a voice acting sound
 - Prevents text from continuing until both sound and text are finished playing/displaying (unless manually interrupted) at the tag end or the next `va` tag
 - Only affects typewritten text
-- Required link argument
+- Required scene argument
 - Usage
 
 ```pny

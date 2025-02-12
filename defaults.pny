@@ -8,19 +8,19 @@ object
 	.prefix = "<>"
 
 dialog = new object
-	.link = "res://addons/penny_godot/assets/scenes/dialog_default.tscn"
-	.layer = "dialog"
+	.res = "res://addons/penny_godot/assets/scenes/dialog_default.tscn"
+	.stage = "dialog"
 	.filters = [PARAGRAPH_DEFAULT, PIPE_TO_DELAY, SLASH_TO_WAIT]
 
 print "Initialized dialog!"
 
 prompt = new object
-	.link = "res://addons/penny_godot/assets/scenes/prompt_default.tscn"
-	.layer = "prompt"
+	.res = "res://addons/penny_godot/assets/scenes/prompt_default.tscn"
+	.stage = "prompt"
 	.options = []
 
 option = new object
-	.link = "res://addons/penny_godot/assets/scenes/prompt_button_default.tscn"
+	.res = "res://addons/penny_godot/assets/scenes/prompt_button_default.tscn"
 	.enabled = true
 	.visible = true
 	.consumed = false
@@ -39,7 +39,7 @@ character = new object
 	.fml_name = "@.prefix@.f_name @.m_name @.l_name</>"
 	.prefix = "<b;color=@.color>"
 	.color = #ffffff
-	.link = "res://addons/penny_godot/assets/scenes/actor3d_placeholder.tscn"
+	.res = "res://addons/penny_godot/assets/scenes/actor3d_placeholder.tscn"
 
 unknown = new character
 	.name = "???"

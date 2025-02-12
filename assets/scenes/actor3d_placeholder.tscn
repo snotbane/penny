@@ -1,7 +1,8 @@
 [gd_scene load_steps=3 format=3 uid="uid://3tbms65op2ht"]
 
-[ext_resource type="PackedScene" uid="uid://6k8awu3o3u4k" path="res://addons/penny_godot/assets/scenes/actor3d.tscn" id="1_vf1pr"]
+[ext_resource type="PackedScene" path="res://addons/penny_godot/assets/scenes/actor3d.tscn" id="1_vf1pr"]
 [ext_resource type="Texture2D" uid="uid://d32s2mav1d2xi" path="res://addons/penny_godot/assets/textures/actor_placeholder.png" id="2_qdyt2"]
+
 
 [node name="actor3d" instance=ExtResource("1_vf1pr")]
 

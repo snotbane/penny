@@ -14,8 +14,8 @@ Everything you see in Penny is instantiated from a preexisting object in the gam
 ```pny
 dialog = new object
 	.base = object
-	.link = $dialog_default
-	.link_layer = 0
+	.scene = $dialog_default
+	.stage = 0
 ```
 
 Due to inheritance, objects will all share the same dialog object, and thus the same text box, which will persist until it is manually closed. Characters that inherit their `.dialog` object from the default will all share that one (as if they are the same character.) All of this to say, this is the default behavior for Ren'Py.
@@ -52,7 +52,7 @@ Rubin = new Male
 Esther = new Female
 	.dialog = new base.dialog
 
-## These two will share THE SAME dialog box, not only the same link.
+## These two will share THE SAME dialog box, not only the same scene.
 
 System = new object
 Narrator = new object

@@ -64,7 +64,7 @@ events = [SubResource("InputEventKey_2j54e")]
 [node name="penny_host" type="Node"]
 script = ExtResource("1_amygg")
 autostart = true
-layers = {
+stages = {
 "dialog": NodePath("canvas_layer/ui/main_container/v_box_container/hbox/dialog_layer"),
 "prompt": NodePath("canvas_layer/ui/main_container/v_box_container/prompt_area/prompt_container"),
 "ui": NodePath("canvas_layer/ui/ui_other_layer")
