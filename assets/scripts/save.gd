@@ -1,7 +1,7 @@
 
 class_name Save extends Object
 
-const REF_PREFIX := "ref::/"
+const REF_PREFIX := "ref::"
 const COLOR_PREFIX := "col::#"
 
 static func any(value: Variant, use_cell_refs: bool = false) -> Variant:
@@ -14,13 +14,13 @@ static func any(value: Variant, use_cell_refs: bool = false) -> Variant:
 
 static func object(value: Object, use_cell_refs: bool = false) -> Variant:
 	if value is Cell:
-		# print("value is Cell: use_cell_refs: ", use_cell_refs, " ", value.save_path())
+		# print("value is Cell: use_cell_refs: ", use_cell_refs, " ", value.get_save_path())
 		if use_cell_refs:
-			return value.save_path()
+			return value.get_save_ref()
 		else:
-			return value.save_data()
-	elif value.has_method("save_data"):
-		return value.save_data()
+			return value.get_save_data()
+	elif value.has_method("get_save_data"):
+		return value.get_save_data()
 	elif value is Node:
 		return Save.node(value)
 	else:
@@ -50,4 +50,4 @@ static func array(value: Array, use_cell_refs: bool = false) -> Array:
 
 
 static func color(value: Color) -> String:
-	return "color::#" + value.to_html(true)
+	return COLOR_PREFIX + value.to_html(true)

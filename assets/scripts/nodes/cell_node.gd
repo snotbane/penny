@@ -63,7 +63,7 @@ func close_finish() -> void:
 	queue_free()
 
 
-func save_data() -> Variant:
+func get_save_data() -> Variant:
 	return {
 		"name": self.name,
 		"parent": self.get_parent().name,

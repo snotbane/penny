@@ -173,6 +173,18 @@ func _get_record_message(record: Record) -> String:
 	return "[code][color=deep_pink]Unimplemented Stmt %s[/color][/code]" % self
 
 
+func get_save_data() -> Variant:
+	var result := {
+		"index": index,
+		"script": owner.resource_path,
+	}
+	# if OS.is_debug_build():
+	# 	result.merge({
+	# 		"debug_string": _debug_string_do_not_use_for_anything_else_seriously_i_mean_it
+	# 	})
+	return result
+
+
 func get_next_in_order() -> Stmt :
 	var i := self.index + 1
 	if i >= owner.stmts.size():

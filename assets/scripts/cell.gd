@@ -75,7 +75,16 @@ class Ref extends Evaluable:
 
 	## Creates a new [Ref] from a json string. Mainly used in saving/loading data.
 	static func new_from_load_json(json: String) -> Ref:
-		return Ref.new_from_string(json.substr(Save.REF_PREFIX.length()))
+		return Ref.new_from_string(json.substr(Save.REF_PREFIX.length() + 1))
+	func get_save_data() -> Variant:
+		return Save.REF_PREFIX + self.to_string()
+
+
+	func _to_string() -> String:
+		var result := "." if self.rel else ""
+		for id in self.ids:
+			result += id + "."
+		return "@" + result.substr(0, result.length() - 1)
 
 
 	func duplicate() -> Ref:
@@ -119,12 +128,6 @@ class Ref extends Evaluable:
 			result = result.get_local_value(id)
 		return result
 
-
-	func _to_string() -> String:
-		var result := "." if self.rel else ""
-		for id in self.ids:
-			result += id + "."
-		return "@" + result.substr(0, result.length() - 1)
 
 static var ROOT := Cell.new(&"", null, {})
 static var OBJECT := Cell.new(Cell.K_OBJECT, ROOT, {})
@@ -210,6 +213,12 @@ func add_cell(key: StringName, base: Ref = null) -> Cell:
 	return result
 
 
+func get_stage_node(host: PennyHost) -> Node:
+	for node in host.get_tree().get_nodes_in_group(Penny.STAGE_GROUP_NAME):
+		if self.get_value(Cell.K_STAGE) == node.name: return node
+	return host.get_tree().root
+
+
 func instantiate(host: PennyHost) -> Node:
 	if self.get_value(Cell.K_RES) == null:
 		printerr("Attempted to instantiate cell '%s', but it does not have a '%s' attribute." % [self, Cell.K_RES])
@@ -241,7 +250,36 @@ func close_instance() -> void:
 	inst.queue_free()
 
 
-func get_stage_node(host: PennyHost) -> Node:
-	for node in host.get_tree().get_nodes_in_group(Penny.STAGE_GROUP_NAME):
-		if self.get_value(Cell.K_STAGE) == node.name: return node
-	return host.get_tree().root
+func get_save_data() -> Variant:
+	return Save.any(data)
+
+func get_save_ref() -> Variant:
+	return (Cell.Ref.to(self)).get_save_data()
+
+
+func load_data(host: PennyHost, json: Dictionary) -> void:
+	self.close_instance()
+
+	var result_data := {}
+	var inst_data : Dictionary
+	for k in json.keys():
+		match k:
+			K_INST:
+				inst_data = json[k]
+			_:
+				if json[k] is Dictionary:
+					var cell : Cell = data[k] if data.has(k) else Cell.new(k, self, {})
+					cell.load_data(host, json[k])
+					result_data[k] = cell
+				else:
+					result_data[k] = Load.any(json[k])
+
+	# Assuming all is valid. We don't want to set any data if the load fails.
+	data = result_data
+
+	if inst_data:
+		# prints(self, self.local_instance)
+		if inst_data.has("spawn_used") and inst_data["spawn_used"]:
+			var node := self.instantiate(host)
+			if node is CellNode:
+				node.load_data(inst_data)

@@ -59,7 +59,7 @@ class History:
 		return records.size() - i - 1
 
 
-	func save_data() -> Variant:
+	func get_save_data() -> Variant:
 		var copy := records.duplicate()
 		copy.reverse()
 		return {
@@ -306,7 +306,7 @@ func save() -> void:
 	if path == null: return
 
 	var save_file := FileAccess.open(path, FileAccess.WRITE)
-	var save_dict : Dictionary = save_data()
+	var save_dict : Dictionary = get_save_data()
 	var save_json := JSON.stringify(save_dict, "")
 	save_file.store_line(save_json)
 
@@ -343,7 +343,7 @@ func prompt_file_path(mode : FileDialog.FileMode) :
 	return result
 
 
-func save_data() -> Variant:
+func get_save_data() -> Variant:
 	return {
 		"meta": {
 			"git_rev_penny": Utils.get_git_commit_id("res://addons/penny_godot/"),
