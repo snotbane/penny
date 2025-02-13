@@ -66,6 +66,3 @@ PIPE_TO_DELAY = new filter
 SLASH_TO_WAIT = new filter
 	.pattern = `(?<!\\)\/`
 	.replace = `<wait>`
-
-
-filters = [PARAGRAPH_DEFAULT, PIPE_TO_DELAY, SLASH_TO_WAIT]
