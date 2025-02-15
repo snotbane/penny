@@ -167,10 +167,9 @@ var is_talking : bool :
 		if _is_talking == value: return
 		_is_talking = value
 
-		if subject == null: return
-		if subject.instance == null: return
-		if subject.instance.has_signal("talking_changed"):
-			subject.instance.talking_changed.emit(_is_talking)
+		if subject == null or subject.instance == null or not subject.instance.has_method("set_is_talking"): return
+
+		subject.instance.set_is_talking(_is_talking)
 
 
 var next_prod_stop : int :

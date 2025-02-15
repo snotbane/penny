@@ -32,3 +32,7 @@ func _ready() -> void:
 	# if not self.flag_changed.is_connected(sprite_flags.set_current_flag):
 	# 	self.flag_changed.connect(sprite_flags.set_current_flag)
 	# 	self.talking_changed.connect(sprite_flags.set_talking_flag)
+
+
+func set_is_talking(value: bool) -> void:
+	is_talking = value

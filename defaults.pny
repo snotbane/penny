@@ -36,6 +36,7 @@ character = new object
 	.fl_name = "@.prefix@.f_name @.l_name</>"
 	.dl_name = "@.prefix@.d_name @.l_name</>"
 	.fml_name = "@.prefix@.f_name @.m_name @.l_name</>"
+	.dfl_name = "@.prefix@.d_name @.f_name @.l_name</>"
 	.prefix = "<b;color=@.color>"
 	.color = #ffffff
 	.res = "res://addons/penny_godot/assets/scenes/actor3d_placeholder.tscn"
