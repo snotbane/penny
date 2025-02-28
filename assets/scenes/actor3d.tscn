@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://6k8awu3o3u4k"]
+[gd_scene load_steps=2 format=3 uid="uid://bl0oaq5hnsnsg"]
 
 [ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/sprite_actor.gd" id="1_yvc5t"]
 

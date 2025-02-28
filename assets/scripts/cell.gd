@@ -214,8 +214,11 @@ func add_cell(key: StringName, base: Ref = null) -> Cell:
 
 
 func get_stage_node(host: PennyHost) -> Node:
+	var stage = self.get_value(Cell.K_STAGE)
+	print(stage)
+	if stage == null: return null
 	for node in host.get_tree().get_nodes_in_group(Penny.STAGE_GROUP_NAME):
-		if self.get_value(Cell.K_STAGE) == node.name: return node
+		if stage == node.name: return node
 	return host.get_tree().root
 
 
@@ -226,7 +229,9 @@ func instantiate(host: PennyHost) -> Node:
 
 	self.close_instance()
 	var result : Node = load(get_value(Cell.K_RES)).instantiate()
-	self.get_stage_node(host).add_child(result)
+	var stage : Node = self.get_stage_node(host)
+	if stage != null:
+		stage.add_child(result)
 
 	if result is CellNode:
 		result.populate(host, self)

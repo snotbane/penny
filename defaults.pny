@@ -6,7 +6,7 @@ object
 	.text = "@.prefix@.name</>"
 	.name = "Unnamed Object"
 	.prefix = "<>"
-	.stage = "default"
+	# .stage = "default"
 
 dialog = new object
 	.res = "res://addons/penny_godot/assets/scenes/dialog_default.tscn"
@@ -20,6 +20,7 @@ prompt = new object
 
 option = new object
 	.res = "res://addons/penny_godot/assets/scenes/prompt_button_default.tscn"
+	.stage = null
 	.enabled = true
 	.visible = true
 	.consumed = false
@@ -40,6 +41,7 @@ character = new object
 	.prefix = "<b;color=@.color>"
 	.color = #ffffff
 	.res = "res://addons/penny_godot/assets/scenes/actor3d_placeholder.tscn"
+	.stage = "default"
 
 unknown = new character
 	.name = "???"
@@ -53,7 +55,7 @@ PARAGRAPH_CENTERED = new filter
 	.replace = `<p align="center">`
 
 PUNCTUATION_TO_PIPE = new filter
-	.pattern = `(?<!(?:Mr|Dr|Prof)s?)([.,?!:;]|-{2,})+['")\]]?`
+	.pattern = `(?<!(?:Mx|Mr|Dr|Prof)s?)([.,?!:;]|-{2,})+['")\]]?`
 	.replace = `$0|`
 
 SLOW_ELLIPSES = new filter

@@ -1,7 +1,7 @@
 [gd_resource type="VisualShader" load_steps=62 format=3 uid="uid://de7w4cmvbj0gb"]
 
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_bysli"]
-parameter_name = "rom"
+parameter_name = "r_m"
 texture_repeat = 2
 
 [sub_resource type="VisualShaderNodeVectorDecompose" id="VisualShaderNodeVectorDecompose_q7jrj"]
@@ -9,7 +9,7 @@ default_input_values = [0, Quaternion(0, 0, 0, 0)]
 op_type = 2
 
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_ibhxy"]
-parameter_name = "albedo_mirror"
+parameter_name = "l_a"
 texture_type = 1
 texture_repeat = 2
 
@@ -30,12 +30,12 @@ op_type = 5
 source = 5
 
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_qulk3"]
-parameter_name = "albedo"
+parameter_name = "r_a"
 texture_type = 1
 texture_repeat = 2
 
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_4wtb2"]
-parameter_name = "normal_mirror"
+parameter_name = "l_n"
 texture_type = 2
 texture_repeat = 2
 
@@ -67,11 +67,12 @@ default_value = 1.0
 parameter_name = "occlusion_light_scalar"
 hint = 1
 default_value_enabled = true
+default_value = 0.667
 
 [sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_nuq53"]
 
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_7ofer"]
-parameter_name = "normal"
+parameter_name = "r_n"
 texture_type = 2
 texture_repeat = 2
 
@@ -79,7 +80,7 @@ texture_repeat = 2
 parameter_name = "normal_scalar"
 hint = 1
 default_value_enabled = true
-default_value = 1.0
+default_value = 0.5
 
 [sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_6irmh"]
 operator = 5
@@ -89,10 +90,10 @@ parameter_name = "occlusion_power"
 hint = 1
 max = 10.0
 default_value_enabled = true
-default_value = 1.0
+default_value = 4.0
 
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_tra1w"]
-parameter_name = "rom_mirror"
+parameter_name = "l_m"
 texture_repeat = 2
 
 [sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_vjxf3"]
@@ -110,7 +111,7 @@ op_type = 5
 source = 5
 
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_2qnpg"]
-parameter_name = "emission_mirror"
+parameter_name = "l_e"
 texture_type = 1
 color_default = 1
 texture_repeat = 2
@@ -122,7 +123,7 @@ source = 5
 source = 5
 
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_b7awr"]
-parameter_name = "emission"
+parameter_name = "r_e"
 texture_type = 1
 color_default = 1
 texture_repeat = 2
@@ -216,6 +217,7 @@ operator = 2
 parameter_name = "metallic"
 hint = 1
 default_value_enabled = true
+default_value = 1.0
 
 [sub_resource type="VisualShaderNodeColorFunc" id="VisualShaderNodeColorFunc_lfwso"]
 expanded_output_ports = [0]
@@ -235,22 +237,22 @@ code = "shader_type spatial;
 render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_lambert_wrap, specular_toon, depth_prepass_alpha;
 
 uniform bool unique_backface = false;
-uniform sampler2D albedo : source_color, repeat_disable;
-uniform sampler2D albedo_mirror : source_color, repeat_disable;
+uniform sampler2D r_a : source_color, repeat_disable;
+uniform sampler2D l_a : source_color, repeat_disable;
 uniform float opacity : hint_range(0, 1) = 1;
-uniform sampler2D rom : repeat_disable;
-uniform sampler2D rom_mirror : repeat_disable;
-uniform float metallic : hint_range(0, 1) = 0;
+uniform sampler2D r_m : repeat_disable;
+uniform sampler2D l_m : repeat_disable;
+uniform float metallic : hint_range(0, 1) = 1;
 uniform float Specular : hint_range(0, 1) = 1;
-uniform sampler2D emission : source_color, hint_default_black, repeat_disable;
-uniform sampler2D emission_mirror : source_color, hint_default_black, repeat_disable;
+uniform sampler2D r_e : source_color, hint_default_black, repeat_disable;
+uniform sampler2D l_e : source_color, hint_default_black, repeat_disable;
 uniform vec4 emission_color : source_color = vec4(1.000000, 1.000000, 1.000000, 1.000000);
 uniform float emission_strength : hint_range(0, 1) = 1;
-uniform float occlusion_power : hint_range(0, 10) = 1;
-uniform float occlusion_light_scalar : hint_range(0, 1) = 0;
-uniform sampler2D normal : hint_normal, repeat_disable;
-uniform sampler2D normal_mirror : hint_normal, repeat_disable;
-uniform float normal_scalar : hint_range(0, 1) = 1;
+uniform float occlusion_power : hint_range(0, 10) = 4;
+uniform float occlusion_light_scalar : hint_range(0, 1) = 0.66699999570847;
+uniform sampler2D r_n : hint_normal, repeat_disable;
+uniform sampler2D l_n : hint_normal, repeat_disable;
+uniform float normal_scalar : hint_range(0, 1) = 0.5;
 
 
 
@@ -265,12 +267,12 @@ void fragment() {
 
 	vec4 n_out3p0;
 // Texture2D:3
-	n_out3p0 = texture(albedo, UV);
+	n_out3p0 = texture(r_a, UV);
 
 
 	vec4 n_out19p0;
 // Texture2D:19
-	n_out19p0 = texture(albedo_mirror, UV);
+	n_out19p0 = texture(l_a, UV);
 
 
 	vec4 n_out18p0;
@@ -306,12 +308,12 @@ void fragment() {
 
 	vec4 n_out9p0;
 // Texture2D:9
-	n_out9p0 = texture(rom, UV);
+	n_out9p0 = texture(r_m, UV);
 
 
 	vec4 n_out55p0;
 // Texture2D:55
-	n_out55p0 = texture(rom_mirror, UV);
+	n_out55p0 = texture(l_m, UV);
 
 
 	vec4 n_out56p0;
@@ -388,12 +390,12 @@ void fragment() {
 
 	vec4 n_out58p0;
 // Texture2D:58
-	n_out58p0 = texture(emission, UV);
+	n_out58p0 = texture(r_e, UV);
 
 
 	vec4 n_out60p0;
 // Texture2D:60
-	n_out60p0 = texture(emission_mirror, UV);
+	n_out60p0 = texture(l_e, UV);
 
 
 	vec4 n_out62p0;
@@ -463,12 +465,12 @@ void fragment() {
 
 	vec4 n_out6p0;
 // Texture2D:6
-	n_out6p0 = texture(normal, UV);
+	n_out6p0 = texture(r_n, UV);
 
 
 	vec4 n_out24p0;
 // Texture2D:24
-	n_out24p0 = texture(normal_mirror, UV);
+	n_out24p0 = texture(l_n, UV);
 
 
 	vec3 n_out27p0;
@@ -500,6 +502,7 @@ void fragment() {
 
 }
 "
+graph_offset = Vector2(-244.651, -436.26)
 modes/cull = 2
 modes/diffuse = 1
 modes/specular = 1

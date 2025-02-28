@@ -10,7 +10,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_y665k")
-button_container = NodePath("scroll_box/button_container")
+button_container = NodePath("scroll_box/options")
 
 [node name="scroll_box" type="ScrollContainer" parent="."]
 layout_mode = 1
@@ -23,7 +23,7 @@ grow_vertical = 2
 follow_focus = true
 horizontal_scroll_mode = 0
 
-[node name="button_container" type="VBoxContainer" parent="scroll_box"]
+[node name="options" type="VBoxContainer" parent="scroll_box" groups=["penny_stage"]]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
