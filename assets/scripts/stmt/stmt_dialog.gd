@@ -29,6 +29,8 @@ func _populate(tokens: Array) -> void:
 
 
 func _execute(host: PennyHost) :
+	super._execute(host)
+
 	var incoming_dialog : Cell = self.subject_dialog_path.evaluate()
 	if not incoming_dialog:
 		printerr("Attempted to create dialog box for '%s', but no such object exists" % self.subject_dialog_path)

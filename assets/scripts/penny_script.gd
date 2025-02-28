@@ -205,8 +205,7 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 
 	match tokens.front().type:
 		Token.Type.IDENTIFIER:
-			if tokens.size() == 1 or (tokens[1].value is Expr.Op and tokens[1].value.type == Expr.Op.DOT):
-				return StmtCell.new()
+			return StmtCell.new()
 		Token.Type.OPERATOR:
 			if tokens.front().value.type == Expr.Op.DOT and tokens[1].type == Token.Type.IDENTIFIER:
 				return StmtCell.new()

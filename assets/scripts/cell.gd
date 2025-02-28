@@ -52,15 +52,26 @@ class Ref extends Evaluable:
 		return Ref.new(_ids, _rel)
 
 
-	## Creates a new [Ref] from tokens. Mainly used when parsing scripts.
+	## Creates a new [Ref] from tokens. Mainly used when parsing scripts. Removes used tokens from the passed array.
 	static func new_from_tokens(tokens: Array) -> Ref:
 		if not tokens: return Ref.ROOT
 		var _rel : bool = tokens[0].type == PennyScript.Token.Type.OPERATOR and tokens[0].value.type == Expr.Op.DOT
 		if _rel: tokens.pop_front()
 
 		var _ids : PackedStringArray
-		var l = floor(tokens.size() * 0.5) + 1
-		for i in l: _ids.push_back(tokens[i * 2].value)
+		var expect_dot := false
+		while tokens:
+			if expect_dot:
+				if tokens.front().type == PennyScript.Token.Type.OPERATOR and tokens.front().value.type == Expr.Op.DOT:
+					tokens.pop_front()
+					expect_dot = false
+					continue
+				else: break
+			else:
+				_ids.push_back(tokens.pop_front().value)
+				expect_dot = true
+				continue
+
 		return Ref.new(_ids, _rel)
 
 
