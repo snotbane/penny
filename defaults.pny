@@ -60,7 +60,7 @@ PUNCTUATION_TO_PIPE = new filter
 
 SLOW_ELLIPSES = new filter
 	.pattern = `\.{3}`
-	.replace = `<delay=0.33; speed=4>...</>`
+	.replace = `<delay=0.2; speed=5>...</>`
 
 PIPE_TO_DELAY = new filter
 	.pattern = `\|`
