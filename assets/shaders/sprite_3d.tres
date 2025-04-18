@@ -239,20 +239,20 @@ render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_lambert_wrap, s
 uniform bool unique_backface = false;
 uniform sampler2D r_a : source_color, repeat_disable;
 uniform sampler2D l_a : source_color, repeat_disable;
-uniform float opacity : hint_range(0, 1) = 1;
+uniform float opacity : hint_range(0.0, 1.0) = 1.0;
 uniform sampler2D r_m : repeat_disable;
 uniform sampler2D l_m : repeat_disable;
-uniform float metallic : hint_range(0, 1) = 1;
-uniform float Specular : hint_range(0, 1) = 1;
+uniform float metallic : hint_range(0.0, 1.0) = 1.0;
+uniform float Specular : hint_range(0.0, 1.0) = 1.0;
 uniform sampler2D r_e : source_color, hint_default_black, repeat_disable;
 uniform sampler2D l_e : source_color, hint_default_black, repeat_disable;
 uniform vec4 emission_color : source_color = vec4(1.000000, 1.000000, 1.000000, 1.000000);
-uniform float emission_strength : hint_range(0, 1) = 1;
-uniform float occlusion_power : hint_range(0, 10) = 4;
-uniform float occlusion_light_scalar : hint_range(0, 1) = 0.66699999570847;
+uniform float emission_strength : hint_range(0.0, 1.0) = 1.0;
+uniform float occlusion_power : hint_range(0.0, 10.0) = 4.0;
+uniform float occlusion_light_scalar : hint_range(0.0, 1.0) = 0.66699999570847;
 uniform sampler2D r_n : hint_normal, repeat_disable;
 uniform sampler2D l_n : hint_normal, repeat_disable;
-uniform float normal_scalar : hint_range(0, 1) = 0.5;
+uniform float normal_scalar : hint_range(0.0, 1.0) = 0.5;
 
 
 
