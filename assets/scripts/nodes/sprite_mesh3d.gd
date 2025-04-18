@@ -2,11 +2,10 @@
 @tool
 extends MeshInstance3D
 
-@export var refresh : bool :
-	get: return false
-	set(value):
-		_ready()
-		_refresh_viewports()
+@export_tool_button("Refresh Composites") var refresh : Callable = func():
+	_ready()
+	_refresh_viewports()
+
 
 var _template : SpriteComponentTemplate
 @export var template : SpriteComponentTemplate :
