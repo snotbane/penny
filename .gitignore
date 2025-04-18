@@ -14,7 +14,11 @@ export_presets.cfg
 data_*/
 mono_crash.*.json
 
+template.config.js
+.templates/
 .vscode/
 
-
 desktop.ini
+
+*.kra-autosave.kra
+.DS_Store

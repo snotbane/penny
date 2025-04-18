@@ -1,6 +1,4 @@
-[gd_resource type="Theme" load_steps=4 format=3 uid="uid://cuqma0tj3my70"]
-
-[ext_resource type="FontFile" uid="uid://cgxoa5vuur6al" path="res://addons/penny_godot/assets/fonts/NotoSansMono-Medium.ttf" id="1_3ctjh"]
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://cuqma0tj3my70"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_l10w6"]
 color = Color(0.5, 0.5, 0.5, 1)
@@ -15,7 +13,7 @@ MarginContainer/constants/margin_left = 2
 MarginContainer/constants/margin_right = 2
 MarginContainer/constants/margin_top = 2
 RichTextLabel/font_sizes/mono_font_size = 16
-RichTextLabel/fonts/mono_font = ExtResource("1_3ctjh")
+RichTextLabel/fonts/mono_font = null
 TabContainer/styles/panel = SubResource("StyleBoxEmpty_tmgjb")
 Tree/constants/draw_guides = 0
 Tree/constants/draw_relationship_lines = 1
@@ -23,4 +21,4 @@ Tree/constants/inner_item_margin_left = 4
 Tree/constants/item_margin = 10
 Tree/constants/v_separation = 1
 Tree/font_sizes/font_size = 11
-Tree/fonts/font = ExtResource("1_3ctjh")
+Tree/fonts/font = null
