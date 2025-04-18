@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cqv2gnjjkdh6c"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/prompt_button_control.gd" id="1_j0oty"]
+[ext_resource type="Script" uid="uid://3f1ktlga6fm1" path="res://addons/penny_godot/assets/scripts/nodes/prompt_button_control.gd" id="1_j0oty"]
 
 [node name="prompt_button_default" type="Button" node_paths=PackedStringArray("label")]
 custom_minimum_size = Vector2(640, 0)

@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="DecorationRegistry" load_steps=27 format=3 uid="uid://drmpmcuvh657f"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/decorations/deco_.gd" id="1_p62ro"]
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/decorations/decoration_registry.gd" id="2_0rjbu"]
+[ext_resource type="Script" uid="uid://b1lnjoj3hk6qj" path="res://addons/penny_godot/assets/scripts/decorations/deco_.gd" id="1_p62ro"]
+[ext_resource type="Script" uid="uid://cr3lmmfkuc6cm" path="res://addons/penny_godot/assets/scripts/decorations/decoration_registry.gd" id="2_0rjbu"]
 [ext_resource type="Resource" uid="uid://db3vyvqvl2a84" path="res://addons/penny_godot/assets/decorations/deco_null.tres" id="2_e78fn"]
 [ext_resource type="Resource" uid="uid://3enqono67neh" path="res://addons/penny_godot/assets/decorations/deco_empty.tres" id="3_tmanw"]
 [ext_resource type="Resource" uid="uid://me6j8h0b81v6" path="res://addons/penny_godot/assets/decorations/deco_b.tres" id="4_8ss4u"]

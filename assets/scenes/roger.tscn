@@ -51,8 +51,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_y5ek0"]
 _data = {
-"RESET": SubResource("Animation_aasq0"),
-"spin": SubResource("Animation_88l3c")
+&"RESET": SubResource("Animation_aasq0"),
+&"spin": SubResource("Animation_88l3c")
 }
 
 [sub_resource type="Animation" id="Animation_0v5b5"]
@@ -88,8 +88,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ov7bs"]
 _data = {
-"RESET": SubResource("Animation_0v5b5"),
-"fade": SubResource("Animation_wnu7b")
+&"RESET": SubResource("Animation_0v5b5"),
+&"fade": SubResource("Animation_wnu7b")
 }
 
 [node name="roger" type="Control"]

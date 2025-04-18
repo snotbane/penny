@@ -1,9 +1,9 @@
 [gd_scene load_steps=9 format=3 uid="uid://b8sp6ey8fsgt7"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/dialog_node.gd" id="2_44j7f"]
+[ext_resource type="Script" uid="uid://drwhjiuoinitd" path="res://addons/penny_godot/assets/scripts/nodes/dialog_node.gd" id="2_44j7f"]
 [ext_resource type="PackedScene" uid="uid://byamam888n7fp" path="res://addons/penny_godot/assets/scenes/roger.tscn" id="3_bfsyc"]
-[ext_resource type="Script" path="res://addons/penny_utils_godot/assets/scripts/glyph_tracker.gd" id="3_n4pn3"]
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/dialog_typewriter.gd" id="3_q7721"]
+[ext_resource type="Script" uid="uid://cusx0ftgkhm1d" path="res://addons/penny_utils_godot/assets/scripts/glyph_tracker.gd" id="3_n4pn3"]
+[ext_resource type="Script" uid="uid://cdrs673e0hg62" path="res://addons/penny_godot/assets/scripts/nodes/dialog_typewriter.gd" id="3_q7721"]
 
 [sub_resource type="Animation" id="Animation_th5j2"]
 length = 0.001
@@ -118,9 +118,9 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ywfyv"]
 _data = {
-"RESET": SubResource("Animation_th5j2"),
-"close": SubResource("Animation_niumw"),
-"open": SubResource("Animation_kij65")
+&"RESET": SubResource("Animation_th5j2"),
+&"close": SubResource("Animation_niumw"),
+&"open": SubResource("Animation_kij65")
 }
 
 [node name="dialog_default" type="Control" node_paths=PackedStringArray("name_label", "text_label", "typewriter")]

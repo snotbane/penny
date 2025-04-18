@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="DecoSkip" load_steps=2 format=3 uid="uid://7ym6v8mi45nv"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/decorations/deco_skip.gd" id="1_fbrer"]
+[ext_resource type="Script" uid="uid://ce47k6e4mrbxl" path="res://addons/penny_godot/assets/scripts/decorations/deco_skip.gd" id="1_fbrer"]
 
 [resource]
 script = ExtResource("1_fbrer")

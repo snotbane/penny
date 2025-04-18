@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bl0oaq5hnsnsg"]
 
-[ext_resource type="Script" path="res://addons/penny_godot/assets/scripts/nodes/sprite_actor.gd" id="1_yvc5t"]
+[ext_resource type="Script" uid="uid://dxewyime2dtii" path="res://addons/penny_godot/assets/scripts/nodes/sprite_actor.gd" id="1_yvc5t"]
 
 [node name="actor3d" type="Node3D" node_paths=PackedStringArray("voice_audio_player")]
 script = ExtResource("1_yvc5t")
