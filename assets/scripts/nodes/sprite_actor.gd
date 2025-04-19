@@ -1,5 +1,5 @@
 
-class_name SpriteActor extends CellNode
+@tool class_name SpriteActor extends CellNode
 
 signal flag_changed(value : StringName)
 signal blinking_changed(value : bool)
@@ -8,6 +8,11 @@ signal talking_changed(value : bool)
 @export var voice_audio_player : Node
 @export var sprite_flags : FlagController
 @export var sprite_blink_anim : Node
+
+
+@export var current_flags : Array[StringName] :
+	get: return sprite_flags.current_flags
+	set(value): sprite_flags.current_flags = value
 
 
 @export var is_blinking : bool :
