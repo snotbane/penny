@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://byamam888n7fp"]
 
-[ext_resource type="Texture2D" uid="uid://bwkpyykbnbfrb" path="res://addons/penny_godot/assets/textures/roger.png" id="1_mocis"]
+[ext_resource type="Texture2D" uid="uid://m3grldoj3m4o" path="res://logo_1024.png" id="1_m3qjw"]
 
 [sub_resource type="GDScript" id="GDScript_vkyqm"]
 script/source = "extends Control
@@ -104,23 +104,24 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -32.0
-offset_top = -32.0
-offset_right = 32.0
-offset_bottom = 32.0
+offset_left = -35.0
+offset_top = -35.0
+offset_right = 35.0
+offset_bottom = 35.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.4, 0.4)
-pivot_offset = Vector2(32, 32)
-texture = ExtResource("1_mocis")
+pivot_offset = Vector2(35, 35)
+texture = ExtResource("1_m3qjw")
+expand_mode = 1
 
 [node name="spin" type="AnimationPlayer" parent="texture_rect"]
 root_node = NodePath("../..")
 libraries = {
-"": SubResource("AnimationLibrary_y5ek0")
+&"": SubResource("AnimationLibrary_y5ek0")
 }
 
 [node name="fade" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_ov7bs")
+&"": SubResource("AnimationLibrary_ov7bs")
 }

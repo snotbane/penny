@@ -31,6 +31,7 @@ var _enable_mirrors : bool = true
 @export_flags("Emissive", "ROM", "Normal") var enable_components : int = 7
 @export var opacity_source_component : SpriteComponent.TextureComponent
 
+
 @export_subgroup("Mesh")
 
 var _pixel_size : float = 0.001
