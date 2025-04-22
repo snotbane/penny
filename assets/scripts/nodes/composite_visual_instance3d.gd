@@ -10,9 +10,18 @@ var _template : SpriteComponentTemplate
 		self._template_changed()
 func _template_changed() -> void: pass
 
+
+var _pixel_size : float = 0.001
+@export_range(0.0001, 1.0, 0.0001, "or_greater") var pixel_size : float = 0.001 :
+	get: return _pixel_size
+	set(value):
+		if _pixel_size == value: return
+		_pixel_size = value
+		refresh_quad()
+
 var _features : int
 ## Texture features for this visual instance.
-@export_flags("Mirrored", "Emissive", "Roughness+", "Normal") var features : int = 15 :
+@export_flags("Mirrored", "Emissive", "Roughness+", "Normal") var features : int :
 	get: return _features
 	set(value):
 		if _features == value: return
@@ -21,9 +30,12 @@ var _features : int
 var enable_mirrors : bool :
 	get: return features & 1
 
-## Material that is used by the visual instance. Can be copied elsewhere in this scene or modified here. Do NOT delete outright.
-@export var material : Material
-
+@export var quad : QuadMesh
+var material : Material :
+	get: return quad.material if quad else null
+	set(value):
+		if quad.material == value: return
+		quad.material = value
 
 @onready var viewport : SubViewport = template.get_parent() if template else null
 
@@ -33,15 +45,25 @@ func _ready() -> void:
 
 
 func refresh() -> void:
+	if not Engine.is_editor_hint(): return
+	refresh_quad()
 	refresh_material()
 	refresh_viewports()
 
 
+func refresh_quad() -> void:
+	if not self.quad:
+		self.quad = QuadMesh.new()
+		self.quad.resource_local_to_scene = true
+	if not template: return
+	self.quad.size = template.size * pixel_size
+
+
 func refresh_material() -> void:
-	if material: return
-	self.material = ShaderMaterial.new()
-	self.material.resource_local_to_scene = true
-	self.material.shader = preload("res://addons/penny_godot/assets/shaders/sprite_3d.tres")
+	if not material:
+		self.material = ShaderMaterial.new()
+		self.material.resource_local_to_scene = true
+		self.material.shader = preload("res://addons/penny_godot/assets/shaders/sprite_3d.tres")
 
 
 func refresh_viewports() -> void:
