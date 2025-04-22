@@ -222,7 +222,7 @@ operator = 2
 parameter_name = "metallic"
 hint = 1
 default_value_enabled = true
-default_value = 1.0
+default_value = 0.5
 
 [sub_resource type="VisualShaderNodeColorFunc" id="VisualShaderNodeColorFunc_lfwso"]
 expanded_output_ports = [0]
@@ -245,7 +245,7 @@ uniform sampler2D l_a : source_color, repeat_disable;
 instance uniform float opacity : hint_range(0.0, 1.0) = 1.0;
 uniform sampler2D r_m : repeat_disable;
 uniform sampler2D l_m : repeat_disable;
-uniform float metallic : hint_range(0.0, 1.0) = 1.0;
+uniform float metallic : hint_range(0.0, 1.0) = 0.5;
 uniform float roughness : hint_range(0.0, 1.0) = 1.0;
 uniform float Specular : hint_range(0.0, 1.0) = 1.0;
 uniform sampler2D r_e : source_color, hint_default_black, repeat_disable;
@@ -506,6 +506,7 @@ void fragment() {
 
 }
 "
+graph_offset = Vector2(344.32, -355.84)
 modes/cull = 2
 modes/diffuse = 1
 modes/specular = 1

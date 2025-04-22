@@ -61,7 +61,8 @@ func spawn_emanata(id : StringName, attached := false) -> void:
 		hook.add_child(current_emanata)
 	else:
 		self.get_tree().root.add_child(current_emanata)
-		current_emanata.global_transform = hook.global_transform
+		current_emanata.global_position = hook.global_position
+		# current_emanata.global_transform = hook.global_transform
 
 
 func clear_emanata() -> void:
