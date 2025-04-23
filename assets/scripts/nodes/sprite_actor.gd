@@ -54,21 +54,6 @@ func set_is_talking(value: bool) -> void:
 # var current_emanata : Node
 func spawn_emanata(id : StringName, attached := false) -> void:
 	emanata_spawner.spawn_emanata(id)
-	# clear_emanata()
-	# current_emanata = load(emanata_paths[id]).instantiate()
-	# self.tree_exiting.connect(current_emanata.queue_free)
-	# var hook := get_emanata_hook(current_emanata)
-	# if attached:
-	# 	hook.add_child(current_emanata)
-	# else:
-	# 	self.get_tree().root.add_child(current_emanata)
-	# 	hook.remote_path = hook.get_path_to(current_emanata)
-	# 	# current_emanata.global_position = hook.global_position
-	# 	# current_emanata.global_transform = hook.global_transform
-
-
-# func clear_emanata() -> void:
-# 	if current_emanata: current_emanata.queue_free()
 
 
 func get_emanata_hook(node: Node) -> Node:
