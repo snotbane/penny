@@ -5,7 +5,7 @@ class_name PennyScriptFormatLoader extends ResourceFormatLoader
 const RECOGNIZED_EXTENSIONS : PackedStringArray = ["pny"]
 
 func _handles_type(type: StringName) -> bool:
-	return type == "Resource"
+	return type == &"Resource"
 
 func _get_recognized_extensions() -> PackedStringArray:
 	return RECOGNIZED_EXTENSIONS
