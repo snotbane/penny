@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://b738ne6tpjblc" path="res://addons/penny_godot/assets/scripts/nodes/penny_debug.gd" id="2_07hpy"]
 [ext_resource type="Texture2D" uid="uid://5dmiewmbmtxq" path="res://addons/penny_godot/assets/textures/overlay.png" id="2_7s783"]
 [ext_resource type="Texture2D" uid="uid://cqkyoh7pijbha" path="res://addons/penny_godot/assets/textures/icons/Code.svg" id="5_ufwun"]
-[ext_resource type="Script" uid="uid://3c4o4hpqwdbn" path="res://addons/penny_utils_godot/assets/scripts/tabs_with_icons.gd" id="5_uv7g7"]
+[ext_resource type="Script" uid="uid://3c4o4hpqwdbn" path="res://addons/penny_godot/assets/scripts/utils/tabs_with_icons.gd" id="5_uv7g7"]
 [ext_resource type="Texture2D" uid="uid://c3g6mc5ihxqvj" path="res://addons/penny_godot/assets/textures/icons/Label.svg" id="6_6v586"]
 [ext_resource type="Texture2D" uid="uid://dfir03166e6r2" path="res://addons/penny_godot/assets/textures/icons/Object.svg" id="7_44hdu"]
 [ext_resource type="PackedScene" uid="uid://c7yh1rwq1ctx" path="res://addons/penny_godot/assets/scenes/cell_viewer.tscn" id="7_sffmw"]

@@ -2,7 +2,7 @@
 @tool
 class_name SpriteComponent extends Node2D
 
-const COMPOSITE_SPRITE2D_SCRIPT := preload("res://addons/penny_atlas_godot/assets/scripts/composite_sprite2d.gd")
+const COMPOSITE_SPRITE2D_SCRIPT := preload("res://addons/fatlas/assets/scripts/composite_sprite2d.gd")
 
 enum TextureComponent {
 	ALBEDO,

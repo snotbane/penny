@@ -12,7 +12,7 @@ const OMIT_SCRIPT_FOLDERS := [
 	"temp",
 	"tests"
 ]
-static var SCRIPT_RESOURCE_LOADER := preload("res://addons/penny_godot/assets/scripts/penny_script_format_loader.gd").new()
+static var SCRIPT_RESOURCE_LOADER := preload("res://addons/penny_godot/assets/scripts/objects/penny_script_format_loader.gd").new()
 static var PENNY_DEBUG_SCENE := preload("res://addons/penny_godot/assets/scenes/penny_debug.tscn")
 static var DECORATION_REGISTRY_DEFAULT : DecorationRegistry = preload("res://addons/penny_godot/assets/decorations/decoration_registry_default.tres")
 
