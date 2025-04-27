@@ -77,7 +77,7 @@ static func reload_all() -> void:
 	var result : Array[PennyScript] = []
 
 	script_reload_timestamps.clear()
-	for path in Utils.get_paths_in_project(PNY_FILE_EXTENSION, OMIT_SCRIPT_FOLDERS):
+	for path in PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(PNY_FILE_EXTENSION + "$")):
 		script_reload_timestamps[path] = FileAccess.get_modified_time(path)
 		result.push_back(Penny.load_script(path))
 
@@ -89,7 +89,7 @@ static func reload_updated() -> void:
 	is_reloading_bulk = true
 	var result : Array[PennyScript] = []
 
-	var new_paths := Utils.get_paths_in_project(PNY_FILE_EXTENSION, OMIT_SCRIPT_FOLDERS)
+	var new_paths := PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(PNY_FILE_EXTENSION + "$"))
 	var del_paths : Array[String] = []
 	for k in script_reload_timestamps.keys():
 		del_paths.push_back(k)

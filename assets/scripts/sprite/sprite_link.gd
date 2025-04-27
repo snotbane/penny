@@ -93,11 +93,11 @@ func resource_changed() -> void:
 
 func refresh_resource_from_attributes() -> void:
 	var _resource : Resource = null
-	if OS.has_feature("template") or Utils.is_valid_path(path):
+	if FileAccess.file_exists(path):
 		_resource = load(path)
 	if _resource == null:
 		_mirror = not _mirror
-		if OS.has_feature("template") or Utils.is_valid_path(path):
+		if FileAccess.file_exists(path):
 			_resource = load(path)
 
 	is_changing_internally = true

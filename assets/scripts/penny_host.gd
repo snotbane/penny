@@ -346,8 +346,8 @@ func prompt_file_path(mode : FileDialog.FileMode) :
 func get_save_data() -> Variant:
 	return {
 		"meta": {
-			"git_rev_penny": Utils.get_git_commit_id("res://addons/penny_godot/"),
-			"git_rev_project": Utils.get_git_commit_id(),
+			"git_rev_penny": PennyUtils.get_git_commit_id("res://addons/penny_godot/"),
+			"git_rev_project": PennyUtils.get_git_commit_id(),
 			"screenshot": null,
 			"time_saved_utc": Time.get_datetime_dict_from_system(true),
 		},
