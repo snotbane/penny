@@ -7,9 +7,9 @@
 
 [sub_resource type="Resource" id="Resource_ri57s"]
 script = ExtResource("3_tukvn")
-argument_defaults = {
-"color": Color(0.791, 0.34, 1, 1)
-}
+argument_defaults = Dictionary[StringName, Variant]({
+&"color": Color(0.791, 0.34, 1, 1)
+})
 id = &"color"
 
 [resource]

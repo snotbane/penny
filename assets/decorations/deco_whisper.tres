@@ -8,9 +8,9 @@
 
 [sub_resource type="Resource" id="Resource_w2cef"]
 script = ExtResource("2_pd7v6")
-argument_defaults = {
-"color": Color(1, 1, 1, 0.392157)
-}
+argument_defaults = Dictionary[StringName, Variant]({
+&"color": Color(1, 1, 1, 0.392157)
+})
 id = &"color"
 
 [resource]
