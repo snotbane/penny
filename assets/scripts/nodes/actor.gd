@@ -35,8 +35,6 @@ func populate(_host: PennyHost, _cell: Cell = null) -> void:
 	host = _host
 	cell = _cell
 
-	self.closing.connect(cell.disconnect_instance.bind(self))
-
 	_populate()
 func _populate() -> void: pass
 
