@@ -1,5 +1,5 @@
 
-class_name PennyPrompt extends CellNode
+class_name PennyPrompt extends Actor
 
 var options : Array
 

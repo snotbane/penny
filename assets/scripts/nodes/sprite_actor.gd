@@ -1,5 +1,5 @@
 
-@tool class_name SpriteActor extends CellNode
+@tool class_name SpriteActor extends Actor
 
 signal flag_changed(value : StringName)
 signal blinking_changed(value : bool)

@@ -1,5 +1,5 @@
 
-class_name DialogNode extends CellNode
+class_name DialogNode extends Actor
 
 const PREVENT_SKIP_DELAY_SECONDS := 0.125
 

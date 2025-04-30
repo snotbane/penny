@@ -30,11 +30,11 @@ func _execute(host: PennyHost) :
 		await host.get_tree().create_timer(expr, false, false, false).timeout
 	else:
 		var object : Cell = expr.evaluate()
-		var node : CellNode = object.instance
+		var node : Actor = object.instance
 		if node == null:
 			printerr("Attempted to await the node of %s, but the node is null." % object)
-		elif node is not CellNode:
-			printerr("Attempted to await the node of %s, but the node isn't a CellNode." % object)
+		elif node is not Actor:
+			printerr("Attempted to await the node of %s, but the node isn't a Actor." % object)
 		else:
 			await node.advanced
 	return super._execute(host)

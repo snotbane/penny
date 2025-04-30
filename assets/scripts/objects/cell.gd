@@ -244,7 +244,7 @@ func instantiate(host: PennyHost) -> Node:
 	if stage != null:
 		stage.add_child(result)
 
-	if result is CellNode:
+	if result is Actor:
 		result.populate(host, self)
 
 	result.tree_exiting.connect(self.disconnect_instance.bind(result))
@@ -261,7 +261,7 @@ func disconnect_instance(match : Node = null) -> void:
 func close_instance() -> void:
 	var inst := self.instance
 	if inst == null: return
-	if inst is CellNode:
+	if inst is Actor:
 		inst.close()
 	inst.queue_free()
 
@@ -297,5 +297,5 @@ func load_data(host: PennyHost, json: Dictionary) -> void:
 		# prints(self, self.local_instance)
 		if inst_data.has(&"spawn_used") and inst_data[&"spawn_used"]:
 			var node := self.instantiate(host)
-			if node is CellNode:
+			if node is Actor:
 				node.load_data(inst_data)

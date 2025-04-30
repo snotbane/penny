@@ -1,5 +1,5 @@
 
-class_name PennyPromptButton extends CellNode
+class_name PennyPromptButton extends Actor
 
 signal pressed
 

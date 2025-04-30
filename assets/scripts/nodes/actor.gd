@@ -1,6 +1,6 @@
 
-## A representation of a Cell as a Node.
-class_name CellNode extends Node
+## A [Node] that can/must be safely opened and closed. In [Penny], these nodes can be awaited so that the script flows together cleanly.
+class_name Actor extends Node
 
 signal advanced
 signal closed
