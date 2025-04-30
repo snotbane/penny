@@ -1,8 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://b8sp6ey8fsgt7"]
+[gd_scene load_steps=8 format=3 uid="uid://b8sp6ey8fsgt7"]
 
 [ext_resource type="Script" uid="uid://drwhjiuoinitd" path="res://addons/penny_godot/assets/scripts/nodes/dialog_node.gd" id="2_44j7f"]
 [ext_resource type="PackedScene" uid="uid://byamam888n7fp" path="res://addons/penny_godot/assets/scenes/roger.tscn" id="3_bfsyc"]
-[ext_resource type="Script" uid="uid://cusx0ftgkhm1d" path="res://addons/penny_utils_godot/assets/scripts/glyph_tracker.gd" id="3_n4pn3"]
 [ext_resource type="Script" uid="uid://cdrs673e0hg62" path="res://addons/penny_godot/assets/scripts/nodes/dialog_typewriter.gd" id="3_q7721"]
 
 [sub_resource type="Animation" id="Animation_th5j2"]
@@ -219,7 +218,6 @@ scroll_active = false
 shortcut_keys_enabled = false
 selection_enabled = true
 visible_characters_behavior = 1
-script = ExtResource("3_n4pn3")
 
 [node name="roger" parent="." instance=ExtResource("3_bfsyc")]
 layout_mode = 1
@@ -239,7 +237,7 @@ size_flags_vertical = 8
 
 [node name="animation_player" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_ywfyv")
+&"": SubResource("AnimationLibrary_ywfyv")
 }
 
 [connection signal="closing" from="." to="animation_player" method="play" binds= [&"close"]]

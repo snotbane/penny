@@ -109,7 +109,6 @@ class Diff:
 	func remap_stmt_index(cursor: Stmt) -> Stmt:
 		return self.news[self.map[cursor.index]]
 
-
 static var LINE_FEED_REGEX := RegEx.create_from_string(r"\n")
 
 @export_storage var id : int

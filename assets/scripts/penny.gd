@@ -1,20 +1,19 @@
+@tool class_name Penny extends Node
 
-@tool
-class_name Penny extends Node
+signal on_reload_start
+signal on_reload_finish(success: bool)
+signal on_reload_cancel
+signal on_root_cell_modified
 
+
+const PENNY_FILE_EXTENSION := ".pny"
 const STAGE_GROUP_NAME := &"penny_stage"
-const PNY_FILE_EXTENSION := ".pny"
-const OMIT_SCRIPT_FOLDERS := [
-	".godot",
-	".vscode",
-	".templates",
-	"old",
-	"temp",
-	"tests"
-]
+
+
 static var SCRIPT_RESOURCE_LOADER := preload("res://addons/penny_godot/assets/scripts/objects/penny_script_format_loader.gd").new()
 static var PENNY_DEBUG_SCENE := preload("res://addons/penny_godot/assets/scenes/penny_debug.tscn")
 static var DECORATION_REGISTRY_DEFAULT : DecorationRegistry = preload("res://addons/penny_godot/assets/decorations/decoration_registry_default.tres")
+
 
 static var inst : Penny
 static var is_reloading_bulk : bool = false
@@ -77,7 +76,7 @@ static func reload_all() -> void:
 	var result : Array[PennyScript] = []
 
 	script_reload_timestamps.clear()
-	for path in PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(PNY_FILE_EXTENSION + "$")):
+	for path in PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(PENNY_FILE_EXTENSION + "$")):
 		script_reload_timestamps[path] = FileAccess.get_modified_time(path)
 		result.push_back(Penny.load_script(path))
 
@@ -89,7 +88,7 @@ static func reload_updated() -> void:
 	is_reloading_bulk = true
 	var result : Array[PennyScript] = []
 
-	var new_paths := PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(PNY_FILE_EXTENSION + "$"))
+	var new_paths := PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(PENNY_FILE_EXTENSION + "$"))
 	var del_paths : Array[String] = []
 	for k in script_reload_timestamps.keys():
 		del_paths.push_back(k)
@@ -147,12 +146,6 @@ static func reload_many(many: Array[PennyScript] = scripts):
 		inst.on_reload_cancel.emit()
 	else:
 		inst.on_reload_finish.emit(false)
-
-
-signal on_reload_start
-signal on_reload_finish(success: bool)
-signal on_reload_cancel
-signal on_root_cell_modified
 
 
 func _enter_tree() -> void:
