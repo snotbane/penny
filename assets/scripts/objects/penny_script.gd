@@ -281,7 +281,7 @@ class Token extends RefCounted:
 		TERMINATOR,
 		WHITESPACE,
 	}
-	static var TYPE_PATTERNS := {
+	static var TYPE_PATTERNS : Dictionary[Type, RegEx] = {
 		Token.Type.INDENTATION: 			RegEx.create_from_string(r"(?m)^\t+"),
 		Token.Type.VALUE_STRING: 			RegEx.create_from_string(r"(?s)([`'\"]).*?\1"),
 		Token.Type.KEYWORD: 				RegEx.create_from_string(r"\b(await|call|close|else|elif|if|init|jump|label|match|menu|open|pass|print|return)\b"),
@@ -305,7 +305,7 @@ class Token extends RefCounted:
 		NUMBER_DECIMAL,
 		NUMBER_INTEGER,
 	}
-	static var LITERAL_PATTERNS := {
+	static var LITERAL_PATTERNS : Dictionary[Literal, RegEx] = {
 		Literal.STRING: 			RegEx.create_from_string(r"(?s)(?<=([`'\"])).*?(?=\1)"),
 		Literal.COLOR: 				TYPE_PATTERNS[Token.Type.VALUE_COLOR],
 		Literal.NULL: 				RegEx.create_from_string(r"\b([Nn]ull|NULL)\b"),

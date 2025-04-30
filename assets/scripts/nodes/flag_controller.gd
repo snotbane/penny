@@ -9,7 +9,7 @@ signal flags_changed
 @export var await_frame_change_if_playing : bool = true
 
 ## A dictionary of [StringName] : [Array] containing [StringName]s. Defines all categories of each flag. When a flag is set, it will replace any/all other flags within the same category. Any [AnimatedSprite2D]s will play the animation with the most matching flags across ALL categories.
-@export var flag_data : Dictionary
+@export var flag_data : Dictionary[StringName, Array]
 
 var _current_flags : Array[StringName]
 @export var current_flags : Array[StringName] :

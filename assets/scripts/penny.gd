@@ -18,11 +18,11 @@ static var DECORATION_REGISTRY_DEFAULT : DecorationRegistry = preload("res://add
 static var inst : Penny
 static var is_reloading_bulk : bool = false
 static var is_all_scripts_valid : bool = true
-static var script_reload_timestamps : Dictionary
+static var script_reload_timestamps : Dictionary[String, int]
 
 static var scripts : Array[PennyScript]
 static var inits : Array[Stmt]
-static var labels : Dictionary
+static var labels : Dictionary[StringName, Stmt]
 
 static var static_host : PennyHost
 static var errors : Array[String] :
@@ -46,9 +46,7 @@ static func register_formats() -> void:
 
 
 static func find_script_from_path(path: String) -> PennyScript:
-	for i in scripts:
-		if i.resource_path == path:
-			return i
+	for i in scripts: if i.resource_path == path: return i
 	return null
 
 

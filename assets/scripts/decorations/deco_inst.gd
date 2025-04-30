@@ -7,7 +7,7 @@ static var ARG_PATTERN := RegEx.create_from_string("([^=\\s]+)\\s*=\\s*([^=\\s]+
 static var STRIP_BBCODE_PATTERN := RegEx.create_from_string("\\[.+?\\]")
 
 var id : StringName
-var args : Dictionary
+var args : Dictionary[StringName, Variant]
 
 var start_index : int
 var end_index : int = -1

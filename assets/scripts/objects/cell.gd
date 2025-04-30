@@ -158,7 +158,7 @@ var key_name : StringName :
 			parent.set_local_value(_key_name, self)
 
 var parent : Cell
-var data : Dictionary
+var data : Dictionary[StringName, Variant]
 
 var text : String :
 	get: return get_value(Cell.K_TEXT, key_name)
@@ -174,7 +174,7 @@ var instance : Node :
 	set(value): self.set_local_value(Cell.K_INST, value)
 
 
-func _init(__key_name : StringName, _parent : Cell, _data : Dictionary) -> void:
+func _init(__key_name : StringName, _parent : Cell, _data : Dictionary[StringName, Variant]) -> void:
 	parent = _parent
 	key_name = __key_name
 	data = _data
@@ -217,7 +217,7 @@ func set_local_value(key: StringName, value: Variant) -> void:
 
 
 func add_cell(key: StringName, base: Ref = null) -> Cell:
-	var initial_data := {}
+	var initial_data : Dictionary[StringName, Variant] = {}
 	if base: initial_data[Cell.K_BASE] = base
 
 	var result := Cell.new(key, self, initial_data)
@@ -276,7 +276,7 @@ func get_save_ref() -> Variant:
 func load_data(host: PennyHost, json: Dictionary) -> void:
 	self.close_instance()
 
-	var result_data := {}
+	var result_data : Dictionary[StringName, Variant] = {}
 	var inst_data : Dictionary
 	for k in json.keys():
 		match k:
@@ -295,7 +295,7 @@ func load_data(host: PennyHost, json: Dictionary) -> void:
 
 	if inst_data:
 		# prints(self, self.local_instance)
-		if inst_data.has("spawn_used") and inst_data["spawn_used"]:
+		if inst_data.has(&"spawn_used") and inst_data[&"spawn_used"]:
 			var node := self.instantiate(host)
 			if node is CellNode:
 				node.load_data(inst_data)

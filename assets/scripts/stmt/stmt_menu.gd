@@ -67,7 +67,7 @@ func _execute(host: PennyHost) :
 			subject.set_value(Cell.K_OPTIONS, prompt_option_refs)
 
 
-	var data := { &"prior": subject.get_value(Cell.K_RESPONSE) }
+	var data : Dictionary[StringName, Variant] = { &"prior": subject.get_value(Cell.K_RESPONSE) }
 
 	await super._execute(host)
 	await subject_node.advanced

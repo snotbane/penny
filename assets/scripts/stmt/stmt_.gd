@@ -174,13 +174,13 @@ func _get_record_message(record: Record) -> String:
 
 
 func get_save_data() -> Variant:
-	var result := {
-		"index": index,
-		"script": owner.resource_path,
+	var result : Dictionary[StringName, Variant] = {
+		&"index": index,
+		&"script": owner.resource_path,
 	}
 	# if OS.is_debug_build():
 	# 	result.merge({
-	# 		"debug_string": _debug_string_do_not_use_for_anything_else_seriously_i_mean_it
+	# 		&"debug_string": _debug_string_do_not_use_for_anything_else_seriously_i_mean_it
 	# 	})
 	return result
 

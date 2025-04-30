@@ -23,8 +23,8 @@ var speed_stack : Array[float] = [ 40.0 ]
 
 
 ## Dictionary of RegEx patterns with an assigned value. Must match one single character. By default, this is used to determine if a character should or should not make a sound.
-@export var character_values := {
-	"[\\S]": true
+@export var character_values : Dictionary[String, Variant] = {
+	r"[\S]": true
 }
 
 ## If enabled, delays will be treated like wait tags in that when we try to prod the typewriter to continue, we will stop at both delays and waits. (This mimics Ren'Py behavior.)

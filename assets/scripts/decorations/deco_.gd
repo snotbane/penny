@@ -1,7 +1,7 @@
 
 class_name Deco extends Resource
 
-static var MASTER_REGISTRY : Dictionary
+static var MASTER_REGISTRY : Dictionary[StringName, Deco]
 
 ## The id used in both penny and bbcode. E.g. "b", "i", "u".
 @export var id : StringName

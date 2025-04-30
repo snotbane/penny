@@ -133,7 +133,7 @@ class Op extends RefCounted:
 		DOT,
 	}
 
-	static var PATTERNS := {
+	static var PATTERNS : Dictionary[int, RegEx] = {
 		GROUP_CLOSE: 				RegEx.create_from_string(r"\)"),
 		GROUP_OPEN: 				RegEx.create_from_string(r"\("),
 		ARRAY_CLOSE: 				RegEx.create_from_string(r"\]"),
@@ -267,7 +267,7 @@ class Op extends RefCounted:
 	func apply(stack: Array[Variant], context: Cell, force_paths := false) -> void:
 		match type:
 			NEW:
-				var data := {}
+				var data : Dictionary[StringName, Variant] = {}
 				if stack:
 					data[Cell.K_BASE] = stack.pop_back()
 				else:

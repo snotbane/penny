@@ -64,13 +64,14 @@ func close_finish() -> void:
 
 
 func get_save_data() -> Variant:
-	return {
-		"name": self.name,
-		"parent": self.get_parent().name,
-		"spawn_used": self.save_spawn,
-		"transform_used": self.save_transform,
-		"transform": self.get_save_transform_data()
+	var result : Dictionary[StringName, Variant] = {
+		&"name": self.name,
+		&"parent": self.get_parent().name,
+		&"spawn_used": self.save_spawn,
+		&"transform_used": self.save_transform,
+		&"transform": self.get_save_transform_data()
 	}
+	return result
 
 func load_data(json: Dictionary) -> void:
 	self.name = json["name"]

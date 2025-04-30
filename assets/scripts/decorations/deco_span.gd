@@ -2,7 +2,7 @@
 class_name DecoSpan extends Deco
 
 ## Defines the allowed arguments and their default values. Arguments used that don't match here will be ignored.
-@export var argument_defaults := {}
+@export var argument_defaults : Dictionary[StringName, Variant] = {}
 
 
 func _to_string() -> String:

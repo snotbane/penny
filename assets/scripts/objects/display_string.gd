@@ -8,7 +8,7 @@ static var INTERPOLATION_PATTERN := RegEx.create_from_string(r"(?<!\\)@((?:\.?[A
 static var DECO_TAG_PATTERN := RegEx.create_from_string(r"(?<!\\)<(.*?)(?<!\\)>")
 # static var DECO_SPAN_PATTERN := RegEx.create_from_string("(?s)<(.*?)>(.*)(?:<\\/>)")
 static var ESCAPE_PATTERN := RegEx.create_from_string(r"\\(.)")
-static var ESCAPE_SUBSITUTIONS := {
+static var ESCAPE_SUBSITUTIONS : Dictionary[String, String] = {
 	"n": "\n",
 	"t": "\t",
 	"[": "[lb]",
