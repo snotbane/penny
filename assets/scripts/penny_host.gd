@@ -213,6 +213,11 @@ func jump_to(label: StringName) -> void:
 	self.execute(Penny.get_stmt_from_label(label))
 
 
+func call_to(label: StringName) -> void:
+	self.call_stack.push_back(cursor.next_in_order)
+	self.jump_to(label)
+
+
 func execute(stmt : Stmt) :
 	cursor = stmt
 	if cursor == null: return

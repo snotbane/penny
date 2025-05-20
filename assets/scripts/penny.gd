@@ -5,7 +5,7 @@ signal on_reload_finish(success: bool)
 signal on_reload_cancel
 signal on_root_cell_modified
 
-const RECOGNIZED_EXTENSIONS : PackedStringArray = [ ".pen", ".penny" ]
+const RECOGNIZED_EXTENSIONS : PackedStringArray = [ "pen", "penny" ]
 const STAGE_GROUP_NAME := &"penny_stage"
 
 
@@ -75,8 +75,8 @@ static func reload_all() -> void:
 	script_reload_timestamps.clear()
 	for ext in Penny.RECOGNIZED_EXTENSIONS:
 		for path in PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(ext + "$")):
-		script_reload_timestamps[path] = FileAccess.get_modified_time(path)
-		result.push_back(Penny.load_script(path))
+			script_reload_timestamps[path] = FileAccess.get_modified_time(path)
+			result.push_back(Penny.load_script(path))
 
 	Penny.reload_many(result)
 	is_reloading_bulk = false
@@ -87,7 +87,7 @@ static func reload_updated() -> void:
 	var result : Array[PennyScript] = []
 
 	for ext in Penny.RECOGNIZED_EXTENSIONS:
-		var new_paths := PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(PENNY_FILE_EXTENSION + "$"))
+		var new_paths := PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(ext + "$"))
 		var del_paths : Array[String] = []
 		for k in script_reload_timestamps.keys():
 			del_paths.push_back(k)
