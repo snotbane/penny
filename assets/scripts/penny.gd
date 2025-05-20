@@ -5,8 +5,7 @@ signal on_reload_finish(success: bool)
 signal on_reload_cancel
 signal on_root_cell_modified
 
-
-const PENNY_FILE_EXTENSION := ".pny"
+const RECOGNIZED_EXTENSIONS : PackedStringArray = [ ".pen", ".penny" ]
 const STAGE_GROUP_NAME := &"penny_stage"
 
 
@@ -74,7 +73,8 @@ static func reload_all() -> void:
 	var result : Array[PennyScript] = []
 
 	script_reload_timestamps.clear()
-	for path in PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(PENNY_FILE_EXTENSION + "$")):
+	for ext in Penny.RECOGNIZED_EXTENSIONS:
+		for path in PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(ext + "$")):
 		script_reload_timestamps[path] = FileAccess.get_modified_time(path)
 		result.push_back(Penny.load_script(path))
 
@@ -86,20 +86,21 @@ static func reload_updated() -> void:
 	is_reloading_bulk = true
 	var result : Array[PennyScript] = []
 
-	var new_paths := PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(PENNY_FILE_EXTENSION + "$"))
-	var del_paths : Array[String] = []
-	for k in script_reload_timestamps.keys():
-		del_paths.push_back(k)
-	for path in new_paths:
-		if script_reload_timestamps.has(path):
-			del_paths.erase(path)
-			if FileAccess.get_modified_time(path) != script_reload_timestamps[path]:
+	for ext in Penny.RECOGNIZED_EXTENSIONS:
+		var new_paths := PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(PENNY_FILE_EXTENSION + "$"))
+		var del_paths : Array[String] = []
+		for k in script_reload_timestamps.keys():
+			del_paths.push_back(k)
+		for path in new_paths:
+			if script_reload_timestamps.has(path):
+				del_paths.erase(path)
+				if FileAccess.get_modified_time(path) != script_reload_timestamps[path]:
+					result.push_back(Penny.load_script(path))
+			else:
 				result.push_back(Penny.load_script(path))
-		else:
-			result.push_back(Penny.load_script(path))
-		script_reload_timestamps[path] = FileAccess.get_modified_time(path)
-	for path in del_paths:
-		script_reload_timestamps.erase(path)
+			script_reload_timestamps[path] = FileAccess.get_modified_time(path)
+		for path in del_paths:
+			script_reload_timestamps.erase(path)
 
 	Penny.reload_many(result)
 	is_reloading_bulk = false

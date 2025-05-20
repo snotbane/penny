@@ -3,7 +3,6 @@
 @tool
 class_name PennyPlugin extends EditorPlugin
 
-const RECOGNIZED_EXTENSIONS : PackedStringArray = ["pny"]
 const IMPORTER := "res://addons/penny_godot/assets/scripts/penny.gd"
 const AUTOLOAD_NAME = "penny"
 
@@ -19,7 +18,7 @@ func _disable_plugin():
 
 
 func _resources_reimported(resources: PackedStringArray) -> void:
-	for path in resources: for ext in RECOGNIZED_EXTENSIONS:
+	for path in resources: for ext in Penny.RECOGNIZED_EXTENSIONS:
 		if path.ends_with(ext): _penny_resource_reimported(path); break
 
 
