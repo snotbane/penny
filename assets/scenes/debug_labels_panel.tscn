@@ -1,51 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b22t2f84jaety"]
 
+[ext_resource type="Script" uid="uid://b4qxarub32obt" path="res://addons/penny_godot/assets/scenes/debug_labels_panel.gd" id="1_5pfnu"]
 [ext_resource type="PackedScene" uid="uid://jumi8ea6vo4f" path="res://addons/penny_godot/assets/scenes/debug_panel_view_controls.tscn" id="1_ee1ew"]
-
-[sub_resource type="GDScript" id="GDScript_r6bqj"]
-script/source = "extends Control
-
-@export_file var label_listing_path := \"res://addons/penny_godot/assets/scenes/debug_label_listing.tscn\"
-var label_listing_scene : PackedScene :
-	get: return load(label_listing_path)
-	
-@onready var container := $panel_container/margin_container/scroll_container/label_listing_container
-	
-var _search_query : String = \"\"
-var search_query : String = \"\" :
-	get: return _search_query
-	set (value):
-		_search_query = value
-		refresh_search()
-
-
-func _ready() -> void:
-	Penny.inst.on_reload_finish.connect(refresh.unbind(1))
-
-
-func refresh() -> void:
-	for child in container.get_children():
-		child.queue_free()
-	for label in Penny.labels:
-		var node := label_listing_scene.instantiate()
-		node.populate(label)
-		container.add_child(node)
-
-
-func refresh_search() -> void:
-	if search_query == \"\":
-		for child in container.get_children():
-			child.visible = true
-	else:
-		for child in container.get_children():
-			child.visible = child.label_name.containsn(search_query)
-
-
-#region Events
-func _search_query_changed(s: String) -> void:
-	search_query = s
-#endregion
-"
 
 [node name="Labels" type="VBoxContainer"]
 anchors_preset = 15
@@ -56,7 +12,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 tooltip_text = "Navigation tools."
-script = SubResource("GDScript_r6bqj")
+script = ExtResource("1_5pfnu")
 metadata/_tab_index = 1
 
 [node name="panel_container" type="PanelContainer" parent="."]
@@ -73,7 +29,12 @@ layout_mode = 2
 follow_focus = true
 horizontal_scroll_mode = 0
 
+[node name="tree" type="Tree" parent="panel_container/margin_container/scroll_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="label_listing_container" type="VBoxContainer" parent="panel_container/margin_container/scroll_container"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
