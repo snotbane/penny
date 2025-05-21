@@ -6,7 +6,6 @@ object
 	.text = "@.prefix@.name</>"
 	.name = "Unnamed Object"
 	.prefix = "<>"
-	# .stage = "default"
 
 dialog = new object
 	.res = "uid://b8sp6ey8fsgt7"
