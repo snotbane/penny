@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://dmbg70yn4283k"]
+
+[ext_resource type="PackedScene" uid="uid://do5fxa3uetnvv" path="res://addons/penny_godot/assets/scenes/debug_tree.tscn" id="1_0826c"]
+[ext_resource type="Script" uid="uid://db3c7qayg745q" path="res://addons/penny_godot/assets/scenes/debug_tree_labels.gd" id="2_2ryc6"]
+
+[node name="debug_tree_labels" instance=ExtResource("1_0826c")]
+
+[node name="tree" parent="v_box_container" index="0"]
+focus_mode = 0
+columns = 2
+script = ExtResource("2_2ryc6")

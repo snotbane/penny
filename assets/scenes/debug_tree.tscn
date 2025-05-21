@@ -1,0 +1,76 @@
+[gd_scene load_steps=3 format=3 uid="uid://do5fxa3uetnvv"]
+
+[ext_resource type="Script" uid="uid://dyyhyy2q5bjow" path="res://addons/penny_godot/assets/scenes/debug_tree.gd" id="1_5k2ps"]
+[ext_resource type="Texture2D" uid="uid://dbn36dthttn4c" path="res://addons/penny_godot/assets/textures/icons/Search.svg" id="2_1mdob"]
+
+[node name="debug_tree" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="v_box_container" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="tree" type="Tree" parent="v_box_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+allow_search = false
+hide_root = true
+select_mode = 1
+scroll_horizontal_enabled = false
+auto_tooltip = false
+script = ExtResource("1_5k2ps")
+
+[node name="debug_panel_view_controls" type="HBoxContainer" parent="v_box_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="sort_type_selector" type="OptionButton" parent="v_box_container/debug_panel_view_controls"]
+layout_mode = 2
+tooltip_text = "Sort order."
+selected = 0
+item_count = 2
+popup/item_0/id = 0
+popup/item_1/text = "Alphabetical"
+popup/item_1/id = 1
+
+[node name="filter" type="LineEdit" parent="v_box_container/debug_panel_view_controls"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+placeholder_text = "Search..."
+clear_button_enabled = true
+
+[node name="hbox_zoom" type="HBoxContainer" parent="v_box_container/debug_panel_view_controls"]
+visible = false
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="zoom_hslider" type="HSlider" parent="v_box_container/debug_panel_view_controls/hbox_zoom"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 10.0
+max_value = 18.0
+step = 2.0
+value = 12.0
+tick_count = 5
+
+[node name="zoom_reset" type="Button" parent="v_box_container/debug_panel_view_controls/hbox_zoom"]
+layout_mode = 2
+icon = ExtResource("2_1mdob")
+flat = true
+
+[connection signal="item_selected" from="v_box_container/debug_panel_view_controls/sort_type_selector" to="v_box_container/tree" method="set_sort"]
+[connection signal="text_changed" from="v_box_container/debug_panel_view_controls/filter" to="v_box_container/tree" method="set_filter"]
+[connection signal="pressed" from="v_box_container/debug_panel_view_controls/hbox_zoom/zoom_reset" to="v_box_container/debug_panel_view_controls/hbox_zoom/zoom_hslider" method="set_value" binds= [10.0]]

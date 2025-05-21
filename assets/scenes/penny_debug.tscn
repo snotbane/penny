@@ -12,8 +12,8 @@
 [ext_resource type="Texture2D" uid="uid://yrrj3kgg2n2g" path="res://addons/penny_godot/assets/textures/icons/PackedScene.svg" id="10_q5msf"]
 [ext_resource type="Texture2D" uid="uid://brecacl0mws63" path="res://addons/penny_godot/assets/textures/icons/Array.svg" id="11_baclu"]
 [ext_resource type="PackedScene" uid="uid://jumi8ea6vo4f" path="res://addons/penny_godot/assets/scenes/debug_panel_view_controls.tscn" id="11_n03pg"]
-[ext_resource type="PackedScene" uid="uid://b22t2f84jaety" path="res://addons/penny_godot/assets/scenes/debug_labels_panel.tscn" id="14_0uwmn"]
 [ext_resource type="PackedScene" uid="uid://ckwmom7w0dvh1" path="res://addons/penny_godot/assets/scenes/penny_history_box.tscn" id="14_elw5r"]
+[ext_resource type="PackedScene" uid="uid://dmbg70yn4283k" path="res://addons/penny_godot/assets/scenes/debug_tree_labels.tscn" id="14_rcy12"]
 [ext_resource type="Texture2D" uid="uid://xpmyo52daraf" path="res://addons/penny_godot/assets/textures/icons/Back.svg" id="15_mpfsm"]
 [ext_resource type="PackedScene" uid="uid://b1vfx4lulfl6h" path="res://addons/penny_godot/assets/scenes/debug_host_selector.tscn" id="15_xs3rt"]
 [ext_resource type="Texture2D" uid="uid://dw74g8fttffmq" path="res://addons/penny_godot/assets/textures/icons/Reload.svg" id="20_3765o"]
@@ -546,8 +546,9 @@ popup/item_7/id = 63
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Labels" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container" instance=ExtResource("14_0uwmn")]
+[node name="Labels" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container" instance=ExtResource("14_rcy12")]
 layout_mode = 2
+metadata/_tab_index = 1
 
 [node name="control" type="Control" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu"]
 layout_mode = 2
@@ -679,7 +680,7 @@ fit_content = true
 
 [node name="animation_player" type="AnimationPlayer" parent="reload_notify"]
 libraries = {
-"": SubResource("AnimationLibrary_aybwd")
+&"": SubResource("AnimationLibrary_aybwd")
 }
 script = SubResource("GDScript_jk4x3")
 

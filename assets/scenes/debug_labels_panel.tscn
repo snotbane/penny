@@ -12,7 +12,6 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 tooltip_text = "Navigation tools."
-script = ExtResource("1_5pfnu")
 metadata/_tab_index = 1
 
 [node name="panel_container" type="PanelContainer" parent="."]
@@ -32,6 +31,12 @@ horizontal_scroll_mode = 0
 [node name="tree" type="Tree" parent="panel_container/margin_container/scroll_container"]
 layout_mode = 2
 size_flags_horizontal = 3
+columns = 2
+hide_root = true
+select_mode = 1
+scroll_horizontal_enabled = false
+auto_tooltip = false
+script = ExtResource("1_5pfnu")
 
 [node name="label_listing_container" type="VBoxContainer" parent="panel_container/margin_container/scroll_container"]
 visible = false
@@ -41,4 +46,5 @@ size_flags_horizontal = 3
 [node name="debug_panel_view_controls" parent="." instance=ExtResource("1_ee1ew")]
 layout_mode = 2
 
+[connection signal="button_clicked" from="panel_container/margin_container/scroll_container/tree" to="panel_container/margin_container/scroll_container/tree" method="_on_button_clicked"]
 [connection signal="search_query_changed" from="debug_panel_view_controls" to="." method="_search_query_changed"]

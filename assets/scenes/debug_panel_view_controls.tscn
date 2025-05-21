@@ -28,6 +28,7 @@ tooltip_text = "Sort order."
 selected = 0
 item_count = 3
 popup/item_0/text = "Default"
+popup/item_0/id = 0
 popup/item_1/text = "A to Z"
 popup/item_1/id = 1
 popup/item_2/text = "Recent"
@@ -75,6 +76,6 @@ layout_mode = 2
 icon = ExtResource("2_g63wf")
 flat = true
 
-[connection signal="pressed" from="search_query_textedit/search_query_clear" to="search_query_textedit" method="clear"]
 [connection signal="pressed" from="search_query_textedit/search_query_clear" to="search_query_textedit" method="release_focus"]
+[connection signal="pressed" from="search_query_textedit/search_query_clear" to="search_query_textedit" method="clear"]
 [connection signal="pressed" from="hbox_zoom/zoom_reset" to="hbox_zoom/zoom_hslider" method="set_value" binds= [10.0]]
