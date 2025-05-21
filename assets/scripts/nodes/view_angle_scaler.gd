@@ -7,7 +7,10 @@
 
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
-		self.scale.z = EditorInterface.get_editor_viewport_3d().get_camera_3d().global_basis.z.dot(get_parent().global_basis.z)
+		## Commenting this out because EditorInterface does not work in packaged builds, best to not touch it.
+		## Some preprocessor directives sure would be nice here.
+		# self.scale.z = EditorInterface.get_editor_viewport_3d().get_camera_3d().global_basis.z.dot(get_parent().global_basis.z)
+		return
 	else:
 		self.scale.z = self.get_viewport().get_camera_3d().global_basis.z.dot(get_parent().global_basis.z)
 	self.scale.x = self.scale.z
