@@ -163,6 +163,6 @@ layout_mode = 2
 [connection signal="visibility_changed" from="overlay_panel" to="overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/penny_history_box" method="scroll_to_end"]
 [connection signal="item_selected" from="overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls/verbosity_selector" to="overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/penny_history_box" method="_update_verbosity"]
 [connection signal="pressed" from="overlay_panel/margin_container/h_split_container/host_tabs/host_menu/control/return_to_hosts_button" to="overlay_panel/margin_container/h_split_container/host_tabs" method="set_current_tab" binds= [1]]
-[connection signal="on_selected_any" from="overlay_panel/margin_container/h_split_container/host_tabs/host_selector" to="overlay_panel/margin_container/h_split_container/host_tabs" method="set_current_tab" binds= [1]]
+[connection signal="on_selected_any" from="overlay_panel/margin_container/h_split_container/host_tabs/host_selector" to="overlay_panel/margin_container/h_split_container/host_tabs" method="set_current_tab" binds= [0]]
 
 [editable path="overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls"]

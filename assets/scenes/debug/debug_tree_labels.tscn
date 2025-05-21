@@ -9,3 +9,5 @@
 focus_mode = 0
 columns = 2
 script = ExtResource("2_2ryc6")
+
+[connection signal="button_clicked" from="v_box_container/tree" to="v_box_container/tree" method="_on_button_clicked"]
