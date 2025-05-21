@@ -9,9 +9,9 @@ const RECOGNIZED_EXTENSIONS : PackedStringArray = [ "pen", "penny" ]
 const STAGE_GROUP_NAME := &"penny_stage"
 
 
-static var SCRIPT_RESOURCE_LOADER := preload("res://addons/penny_godot/assets/scripts/objects/penny_script_format_loader.gd").new()
-static var PENNY_DEBUG_SCENE := preload("res://addons/penny_godot/assets/scenes/penny_debug.tscn")
-static var DECORATION_REGISTRY_DEFAULT : DecorationRegistry = preload("res://addons/penny_godot/assets/decorations/decoration_registry_default.tres")
+static var SCRIPT_RESOURCE_LOADER := preload("uid://0mqljw2t364x").new()
+static var PENNY_DEBUG_SCENE := preload("uid://cfkhtume00g5e")
+static var DECORATION_REGISTRY_DEFAULT : DecorationRegistry = preload("uid://drmpmcuvh657f")
 
 
 static var inst : Penny

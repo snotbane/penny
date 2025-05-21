@@ -1,31 +1,20 @@
-[gd_scene load_steps=29 format=3 uid="uid://cfkhtume00g5e"]
+[gd_scene load_steps=16 format=3 uid="uid://cfkhtume00g5e"]
 
-[ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_hv265"]
-[ext_resource type="Script" uid="uid://b738ne6tpjblc" path="res://addons/penny_godot/assets/scripts/nodes/penny_debug.gd" id="2_07hpy"]
-[ext_resource type="Texture2D" uid="uid://5dmiewmbmtxq" path="res://addons/penny_godot/assets/textures/overlay.png" id="2_7s783"]
-[ext_resource type="Texture2D" uid="uid://cqkyoh7pijbha" path="res://addons/penny_godot/assets/textures/icons/Code.svg" id="5_ufwun"]
-[ext_resource type="Script" uid="uid://3c4o4hpqwdbn" path="res://addons/penny_godot/assets/scripts/utils/tabs_with_icons.gd" id="5_uv7g7"]
-[ext_resource type="Texture2D" uid="uid://c3g6mc5ihxqvj" path="res://addons/penny_godot/assets/textures/icons/Label.svg" id="6_6v586"]
-[ext_resource type="Texture2D" uid="uid://dfir03166e6r2" path="res://addons/penny_godot/assets/textures/icons/Object.svg" id="7_44hdu"]
-[ext_resource type="PackedScene" uid="uid://c7yh1rwq1ctx" path="res://addons/penny_godot/assets/scenes/cell_viewer.tscn" id="7_sffmw"]
-[ext_resource type="Texture2D" uid="uid://casyj4t5bxxe2" path="res://addons/penny_godot/assets/textures/icons/History.svg" id="8_506l5"]
-[ext_resource type="Texture2D" uid="uid://yrrj3kgg2n2g" path="res://addons/penny_godot/assets/textures/icons/PackedScene.svg" id="10_q5msf"]
-[ext_resource type="Texture2D" uid="uid://brecacl0mws63" path="res://addons/penny_godot/assets/textures/icons/Array.svg" id="11_baclu"]
-[ext_resource type="PackedScene" uid="uid://jumi8ea6vo4f" path="res://addons/penny_godot/assets/scenes/debug_panel_view_controls.tscn" id="11_n03pg"]
-[ext_resource type="PackedScene" uid="uid://ckwmom7w0dvh1" path="res://addons/penny_godot/assets/scenes/penny_history_box.tscn" id="14_elw5r"]
-[ext_resource type="PackedScene" uid="uid://dmbg70yn4283k" path="res://addons/penny_godot/assets/scenes/debug_tree_labels.tscn" id="14_rcy12"]
-[ext_resource type="Texture2D" uid="uid://xpmyo52daraf" path="res://addons/penny_godot/assets/textures/icons/Back.svg" id="15_mpfsm"]
-[ext_resource type="PackedScene" uid="uid://b1vfx4lulfl6h" path="res://addons/penny_godot/assets/scenes/debug_host_selector.tscn" id="15_xs3rt"]
-[ext_resource type="Texture2D" uid="uid://dw74g8fttffmq" path="res://addons/penny_godot/assets/textures/icons/Reload.svg" id="20_3765o"]
-[ext_resource type="FontFile" uid="uid://dwidsc5m3kiw" path="res://addons/penny_godot/assets/fonts/IBMPlexSans-BoldItalic.ttf" id="21_nb1sm"]
-[ext_resource type="Texture2D" uid="uid://cb8qfgw6tykev" path="res://addons/penny_godot/assets/textures/icons/CheckBox.svg" id="21_nfjft"]
-[ext_resource type="Texture2D" uid="uid://cifrouur0xbp" path="res://addons/penny_godot/assets/textures/icons/Close.svg" id="22_o11uj"]
+[ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_wnmh5"]
+[ext_resource type="Script" uid="uid://b738ne6tpjblc" path="res://addons/penny_godot/assets/scripts/nodes/penny_debug.gd" id="2_vh75p"]
+[ext_resource type="PackedScene" uid="uid://c8yr1nrnrh2jh" path="res://addons/penny_godot/assets/scenes/debug/debug_panel.tscn" id="3_sytt2"]
+[ext_resource type="Texture2D" uid="uid://sk0o8qo2fdjw" path="res://addons/penny_godot/assets/textures/icons/Failure.svg" id="6_qhd4w"]
+[ext_resource type="Texture2D" uid="uid://dw74g8fttffmq" path="res://addons/penny_godot/assets/textures/icons/Reload.svg" id="17_kdqm8"]
+[ext_resource type="Texture2D" uid="uid://cb8qfgw6tykev" path="res://addons/penny_godot/assets/textures/icons/CheckBox.svg" id="18_2dire"]
+[ext_resource type="FontFile" uid="uid://dwidsc5m3kiw" path="res://addons/penny_godot/assets/fonts/IBMPlexSans-BoldItalic.ttf" id="20_asy2r"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_337gi"]
-texture = ExtResource("2_7s783")
-axis_stretch_horizontal = 2
-axis_stretch_vertical = 2
-modulate_color = Color(0.5, 0.46875, 0.125, 0.784314)
+[sub_resource type="GDScript" id="GDScript_bo025"]
+script/source = "extends Window
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed(&\"penny_debug\"):
+		self.hide()
+"
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1mrjq"]
 bg_color = Color(0, 0, 0, 0.847059)
@@ -423,7 +412,7 @@ func cancel() -> void:
 	self.play(\"RESET\")
 "
 
-[node name="penny_debug" type="Control"]
+[node name="penny_debug_overlay" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -431,156 +420,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme = ExtResource("1_hv265")
-script = ExtResource("2_07hpy")
+theme = ExtResource("1_wnmh5")
+script = ExtResource("2_vh75p")
 
-[node name="overlay" type="Control" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="overlay_panel" type="PanelContainer" parent="overlay"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_337gi")
-
-[node name="margin_container" type="MarginContainer" parent="overlay/overlay_panel"]
-layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
-
-[node name="h_split_container" type="HSplitContainer" parent="overlay/overlay_panel/margin_container"]
-layout_mode = 2
-split_offset = -300
-
-[node name="static_tabs" type="TabContainer" parent="overlay/overlay_panel/margin_container/h_split_container"]
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-tab_alignment = 2
-current_tab = 0
-script = ExtResource("5_uv7g7")
-tab_icons = Array[Texture2D]([ExtResource("7_44hdu"), ExtResource("5_ufwun")])
-
-[node name="Data" parent="overlay/overlay_panel/margin_container/h_split_container/static_tabs" instance=ExtResource("7_sffmw")]
-layout_mode = 2
-metadata/_tab_index = 0
-
-[node name="host_tabs" type="TabContainer" parent="overlay/overlay_panel/margin_container/h_split_container"]
-layout_mode = 2
-size_flags_horizontal = 3
-current_tab = 0
-tabs_visible = false
-
-[node name="host_menu" type="MarginContainer" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs"]
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-metadata/_tab_index = 0
-
-[node name="tab_container" type="TabContainer" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu"]
-layout_mode = 2
-tab_alignment = 2
-current_tab = 1
-tab_focus_mode = 1
-script = ExtResource("5_uv7g7")
-tab_icons = Array[Texture2D]([ExtResource("8_506l5"), ExtResource("6_6v586")])
-
-[node name="History" type="VBoxContainer" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container"]
+[node name="debug_panel_window" type="Window" parent="."]
+title = "Penny Debug"
+initial_position = 2
+size = Vector2i(960, 540)
 visible = false
-layout_mode = 2
-tooltip_text = "Detailed history view with customizable verbosity settings."
-metadata/_tab_index = 0
+script = SubResource("GDScript_bo025")
 
-[node name="penny_history_box" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History" instance=ExtResource("14_elw5r")]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="debug_panel_view_controls" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History" instance=ExtResource("11_n03pg")]
-layout_mode = 2
-
-[node name="sort_type_selector" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls" index="0"]
-visible = false
-
-[node name="search_query_textedit" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls" index="1"]
-visible = false
-
-[node name="verbosity_selector" type="OptionButton" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls"]
-layout_mode = 2
-selected = 7
-item_count = 8
-popup/item_0/text = "Story"
-popup/item_0/icon = ExtResource("10_q5msf")
-popup/item_0/id = 1
-popup/item_1/id = 1
-popup/item_1/disabled = true
-popup/item_1/separator = true
-popup/item_2/text = "+ Print Msgs"
-popup/item_2/id = 3
-popup/item_3/text = "+ Flow Activity"
-popup/item_3/id = 7
-popup/item_4/text = "+ Data Activity"
-popup/item_4/id = 15
-popup/item_5/text = "+ Node Activity"
-popup/item_5/id = 31
-popup/item_6/id = 6
-popup/item_6/disabled = true
-popup/item_6/separator = true
-popup/item_7/text = "ALL"
-popup/item_7/icon = ExtResource("11_baclu")
-popup/item_7/id = 63
-
-[node name="control" type="Control" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Labels" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container" instance=ExtResource("14_rcy12")]
-layout_mode = 2
-metadata/_tab_index = 1
-
-[node name="control" type="Control" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-
-[node name="return_to_hosts_button" type="Button" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/control"]
-layout_mode = 2
-offset_left = 6.0
-offset_top = 4.0
-offset_right = 22.0
-offset_bottom = 28.0
-size_flags_horizontal = 0
-size_flags_vertical = 0
-tooltip_text = "Back to PennyHost list"
-icon = ExtResource("15_mpfsm")
-flat = true
-
-[node name="host_selector" parent="overlay/overlay_panel/margin_container/h_split_container/host_tabs" instance=ExtResource("15_xs3rt")]
-visible = false
-layout_mode = 2
-
-[node name="close_button" type="Button" parent="overlay"]
-layout_mode = 2
-offset_left = 16.0
-offset_top = 6.0
-offset_right = 56.0
-offset_bottom = 46.0
-size_flags_horizontal = 0
-size_flags_vertical = 0
-icon = ExtResource("22_o11uj")
-flat = true
+[node name="debug_panel" parent="debug_panel_window" instance=ExtResource("3_sytt2")]
 
 [node name="reload_notify" type="Control" parent="."]
 custom_minimum_size = Vector2(0, 80)
@@ -637,7 +487,7 @@ offset_right = 80.0
 offset_bottom = 80.0
 pivot_offset = Vector2(36, 40)
 mouse_filter = 2
-texture = ExtResource("20_3765o")
+texture = ExtResource("17_kdqm8")
 expand_mode = 2
 stretch_mode = 3
 
@@ -650,7 +500,7 @@ offset_right = 80.0
 offset_bottom = 78.0
 pivot_offset = Vector2(36, 40)
 mouse_filter = 2
-texture = ExtResource("21_nfjft")
+texture = ExtResource("18_2dire")
 expand_mode = 2
 stretch_mode = 3
 
@@ -662,7 +512,7 @@ offset_right = 80.0
 offset_bottom = 80.0
 pivot_offset = Vector2(36, 40)
 mouse_filter = 2
-texture = ExtResource("22_o11uj")
+texture = ExtResource("6_qhd4w")
 expand_mode = 2
 stretch_mode = 3
 
@@ -672,7 +522,7 @@ layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 4
 mouse_filter = 2
-theme_override_fonts/normal_font = ExtResource("21_nb1sm")
+theme_override_fonts/normal_font = ExtResource("20_asy2r")
 theme_override_font_sizes/normal_font_size = 32
 bbcode_enabled = true
 text = "[center]RESET / CANCEL"
@@ -684,15 +534,7 @@ libraries = {
 }
 script = SubResource("GDScript_jk4x3")
 
-[connection signal="host_changed" from="." to="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/penny_history_box" method="_update_host"]
-[connection signal="host_changed_unbound" from="." to="overlay/overlay_panel/margin_container/h_split_container/host_tabs" method="set_current_tab" binds= [0]]
 [connection signal="on_reload_cancel" from="." to="reload_notify/animation_player" method="cancel"]
 [connection signal="on_reload_finish" from="." to="reload_notify/animation_player" method="finish"]
 [connection signal="on_reload_start" from="." to="reload_notify/animation_player" method="start"]
-[connection signal="visibility_changed" from="overlay/overlay_panel" to="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/penny_history_box" method="scroll_to_end"]
-[connection signal="item_selected" from="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls/verbosity_selector" to="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/penny_history_box" method="_update_verbosity"]
-[connection signal="pressed" from="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/control/return_to_hosts_button" to="overlay/overlay_panel/margin_container/h_split_container/host_tabs" method="set_current_tab" binds= [1]]
-[connection signal="on_selected" from="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_selector" to="." method="set_active_host"]
-[connection signal="pressed" from="overlay/close_button" to="overlay" method="set_visible" binds= [false]]
-
-[editable path="overlay/overlay_panel/margin_container/h_split_container/host_tabs/host_menu/tab_container/History/debug_panel_view_controls"]
+[connection signal="close_requested" from="debug_panel_window" to="debug_panel_window" method="hide"]

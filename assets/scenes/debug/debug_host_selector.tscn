@@ -5,6 +5,7 @@ script/source = "
 extends Control
 
 signal on_selected(host: PennyHost)
+signal on_selected_any
 
 @onready var none_available_node : Control = $no_hosts
 @onready var host_listing_container := $v_box_container/host_list
@@ -24,6 +25,7 @@ func refresh() -> void:
 		var button := Button.new()
 		button.text = host.name
 		button.pressed.connect(self.on_selected.emit.bind(host))
+		button.pressed.connect(self.on_selected_any.emit)
 		host_listing_container.add_child.call_deferred(button)
 "
 
@@ -31,6 +33,11 @@ func refresh() -> void:
 font_size = 40
 
 [node name="host_selector" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = SubResource("GDScript_scf20")
 metadata/_tab_index = 1
 

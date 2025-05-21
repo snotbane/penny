@@ -13,16 +13,17 @@ signal on_reload_cancel
 
 func _ready() -> void:
 	inst = self
-	$overlay.visible = false
 
 	if PennyHost.insts:
 		set_active_host(PennyHost.insts.front())
 
 
 func _input(event: InputEvent) -> void:
-	# if not OS.is_debug_build(): return
 	if event.is_action_pressed("penny_debug"):
-		$overlay.visible = not $overlay.visible
+		if $debug_panel_window.visible:
+			$debug_panel_window.hide()
+		else:
+			$debug_panel_window.popup()
 
 
 func set_active_host(_host: PennyHost) -> void:

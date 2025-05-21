@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://c7yh1rwq1ctx"]
 
 [ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_4hgau"]
-[ext_resource type="PackedScene" uid="uid://jumi8ea6vo4f" path="res://addons/penny_godot/assets/scenes/debug_panel_view_controls.tscn" id="2_p05sg"]
+[ext_resource type="PackedScene" uid="uid://jumi8ea6vo4f" path="res://addons/penny_godot/assets/scenes/debug/debug_tree_view_controls.tscn" id="2_p05sg"]
 
 [sub_resource type="GDScript" id="GDScript_ioyna"]
 script/source = "

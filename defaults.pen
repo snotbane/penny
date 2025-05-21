@@ -9,17 +9,17 @@ object
 	# .stage = "default"
 
 dialog = new object
-	.res = "res://addons/penny_godot/assets/scenes/dialog_default.tscn"
+	.res = "uid://b8sp6ey8fsgt7"
 	.stage = "dialog"
 	.filters = [PARAGRAPH_DEFAULT, PIPE_TO_DELAY, SLASH_TO_WAIT]
 
 prompt = new object
-	.res = "res://addons/penny_godot/assets/scenes/prompt_default.tscn"
+	.res = "uid://cuu7puh0nnyug"
 	.stage = "prompt"
 	.options = []
 
 option = new object
-	.res = "res://addons/penny_godot/assets/scenes/prompt_button_default.tscn"
+	.res = "uid://cqv2gnjjkdh6c"
 	.stage = null
 	.enabled = true
 	.visible = true
@@ -40,7 +40,7 @@ character = new object
 	.dfl_name = "@.prefix@.d_name @.f_name @.l_name</>"
 	.prefix = "<b;color=@.color>"
 	.color = #ffffff
-	.res = "res://addons/penny_godot/assets/scenes/actor3d_placeholder.tscn"
+	.res = "uid://3tbms65op2ht"
 	.stage = "default"
 
 unknown = new character

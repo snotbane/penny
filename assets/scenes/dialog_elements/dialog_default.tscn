@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://b8sp6ey8fsgt7"]
 
 [ext_resource type="Script" uid="uid://drwhjiuoinitd" path="res://addons/penny_godot/assets/scripts/nodes/dialog_node.gd" id="2_44j7f"]
-[ext_resource type="PackedScene" uid="uid://byamam888n7fp" path="res://addons/penny_godot/assets/scenes/roger.tscn" id="3_bfsyc"]
+[ext_resource type="PackedScene" uid="uid://byamam888n7fp" path="res://addons/penny_godot/assets/scenes/dialog_elements/roger.tscn" id="3_bfsyc"]
 [ext_resource type="Script" uid="uid://cdrs673e0hg62" path="res://addons/penny_godot/assets/scripts/nodes/dialog_typewriter.gd" id="3_q7721"]
 
 [sub_resource type="Animation" id="Animation_th5j2"]
