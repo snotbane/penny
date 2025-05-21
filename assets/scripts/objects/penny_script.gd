@@ -153,6 +153,7 @@ func parse_tokens_to_stmts(tokens: Array[Token], context_file: FileAccess = null
 	stmts.clear()
 	stmts.resize(token_groups.size())
 	var offset := 0
+	var error_count := 0
 	for i in token_groups.size():
 		var j := i - offset
 		var stmt_temp := Stmt.new()
@@ -162,6 +163,8 @@ func parse_tokens_to_stmts(tokens: Array[Token], context_file: FileAccess = null
 			stmts[j].populate_from_other(stmt_temp, token_groups[i])
 		else:
 			offset += 1
+			error_count += 1
+	stmts.resize(stmts.size() - error_count)
 
 
 static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: FileAccess = null) -> Stmt:
