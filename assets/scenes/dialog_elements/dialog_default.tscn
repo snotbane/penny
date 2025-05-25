@@ -147,6 +147,7 @@ audio_player = NodePath("nondirectional_audio_stream_player")
 roger = NodePath("../roger")
 
 [node name="nondirectional_audio_stream_player" type="AudioStreamPlayer" parent="typewriter"]
+bus = &"Voice"
 
 [node name="name_label" type="RichTextLabel" parent="."]
 clip_contents = false

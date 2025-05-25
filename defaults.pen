@@ -29,7 +29,7 @@ filter = new object
 	.pattern = ".+"
 	.replace = "default_filter_replace"
 
-character = new object
+actor = new object
 	.unknown = new unknown
 	.name = "@.f_name"
 	.d_name = "Mx."
@@ -42,7 +42,7 @@ character = new object
 	.res = "uid://3tbms65op2ht"
 	.stage = "default"
 
-unknown = new character
+unknown = new actor
 	.name = "???"
 
 PARAGRAPH_DEFAULT = new filter
