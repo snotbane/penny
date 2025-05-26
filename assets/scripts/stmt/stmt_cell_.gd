@@ -45,7 +45,7 @@ func _populate(tokens: Array) -> void:
 func _execute(host: PennyHost) :
 	if subject_node is SpriteActor:
 		for flag in flags:
-			subject_node.sprite_flags.set_current_flag(flag)
+			subject_node.sprite_flags.push_flag(flag)
 
 	return create_record(host, { &"flags_before": [] })
 

@@ -11,15 +11,15 @@ signal talking_changed(value : bool)
 @export var sprite_blink_anim : Node
 
 
-@export var current_flags : Array[StringName] :
+@export var flags : PackedStringArray :
 	get:
-		var result : Array[StringName]
-		if sprite_flags: result = sprite_flags.current_flags
+		var result : PackedStringArray
+		if sprite_flags: result = sprite_flags.flags
 		else: result = []
 		return result
 	set(value):
 		if not sprite_flags: return
-		sprite_flags.current_flags = value
+		sprite_flags.flags = value
 
 
 @export var is_blinking : bool :
@@ -31,10 +31,10 @@ signal talking_changed(value : bool)
 
 
 @export var is_talking : bool :
-	get: return sprite_flags.has_current_flag(&"talk") if sprite_flags else false
+	get: return sprite_flags.flags.has(&"talk") if sprite_flags else false
 	set(value):
 		if not sprite_flags: return
-		sprite_flags.set_current_flag(&"talk" if value else &"silent")
+		sprite_flags.push_flag(&"talk" if value else &"silent")
 		talking_changed.emit(value)
 
 
@@ -42,8 +42,8 @@ signal talking_changed(value : bool)
 func _ready() -> void:
 	super._ready()
 
-	# if not self.flag_changed.is_connected(sprite_flags.set_current_flag):
-	# 	self.flag_changed.connect(sprite_flags.set_current_flag)
+	# if not self.flag_changed.is_connected(sprite_flags.push_flag):
+	# 	self.flag_changed.connect(sprite_flags.push_flag)
 	# 	self.talking_changed.connect(sprite_flags.set_talking_flag)
 
 
