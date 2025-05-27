@@ -1,0 +1,12 @@
+
+label test
+
+print("Hello, world!")
+
+
+# print(
+# 	"Hello, world!"
+# )
+# rubin.open("left", false)
+
+return

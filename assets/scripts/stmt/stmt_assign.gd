@@ -13,7 +13,7 @@ enum Type {
 }
 
 var type : Type
-var expr: Expr
+var expr : Expr
 
 func _get_verbosity() -> Verbosity:
 	return Verbosity.DATA_ACTIVITY
@@ -29,9 +29,7 @@ func _populate(tokens: Array) -> void:
 				"-=": 	type = Type.SUBTRACT
 				"*=": 	type = Type.MULTIPLY
 				"/=": 	type = Type.DIVIDE
-				_:
-					type = Type.INVALID
-					printerr("Invalid assignment type '%s'" % tokens[i].value)
+				_:		type = Type.INVALID; printerr("Invalid assignment type '%s'" % tokens[i].value)
 			op_index = i
 			break
 

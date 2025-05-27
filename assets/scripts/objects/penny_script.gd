@@ -132,6 +132,7 @@ func update_from_file(file: FileAccess) -> void:
 		old_stmts = stmts.duplicate()
 
 	parse_tokens_to_stmts(tokens, file)
+	print_stmts(stmts)
 
 	if not Engine.is_editor_hint():
 		diff = Diff.new(old_stmts, stmts)
@@ -167,6 +168,10 @@ func parse_tokens_to_stmts(tokens: Array[Token], context_file: FileAccess = null
 	stmts.resize(stmts.size() - error_count)
 
 
+static func print_stmts(arr: Array[Stmt]) -> void:
+	for i in arr: print("%s (%s)" % [i, i.get_script().get_global_name()])
+
+
 static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: FileAccess = null) -> Stmt:
 	if tokens[0].type == Token.Type.INDENTATION:
 		tokens.pop_front()
@@ -179,7 +184,7 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 		match keyword:
 			&"await":	return StmtAwait.new()
 			&"call": 	return StmtJumpCall.new()
-			&"close": 	return StmtClose.new()
+			# &"close": 	return StmtClose.new()
 			&"else": 	return StmtConditionalElse.new()
 			&"elif": 	return StmtConditionalElif.new()
 			&"if": 		return StmtConditionalIf.new()
@@ -188,9 +193,9 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 			&"label": 	return StmtLabel.new()
 			&"match": 	return StmtMatch.new()
 			&"menu": 	return StmtMenu.new()
-			&"open": 	return StmtOpen.new()
+			# &"open": 	return StmtOpen.new()
 			&"pass": 	return StmtPass.new()
-			&"print": 	return StmtPrint.new()
+			# &"print": 	return StmtPrint.new()
 			&"return":	return StmtReturn.new()
 		printerr("The keyword '%s' was found, but it isn't assigned to any Stmt." % keyword)
 		return null
@@ -202,8 +207,12 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 		elif block_header is StmtMenu:
 			return StmtConditionalMenu.new()
 
-	if tokens.back().type == Token.Type.VALUE_STRING:
-		return StmtDialog.new()
+	match tokens.back().type:
+		Token.Type.VALUE_STRING:
+			return StmtDialog.new()
+		Token.Type.OPERATOR:
+			if tokens.back().value.type == Expr.Op.GROUP_CLOSE:
+				return StmtFunc.new()
 
 	match tokens.front().type:
 		Token.Type.IDENTIFIER:
@@ -287,7 +296,7 @@ class Token extends RefCounted:
 	static var TYPE_PATTERNS : Dictionary[Type, RegEx] = {
 		Token.Type.INDENTATION: 			RegEx.create_from_string(r"(?m)^\t+"),
 		Token.Type.VALUE_STRING: 			RegEx.create_from_string(r"(?s)([`'\"]).*?\1"),
-		Token.Type.KEYWORD: 				RegEx.create_from_string(r"\b(await|call|close|else|elif|if|init|jump|label|match|menu|open|pass|print|return)\b"),
+		Token.Type.KEYWORD: 				RegEx.create_from_string(r"\b(await|call|else|elif|if|init|jump|label|match|menu|pass|return)\b"),
 		Token.Type.VALUE_BOOLEAN: 			RegEx.create_from_string(r"\b([Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
 		Token.Type.VALUE_COLOR: 			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
 		Token.Type.ASSIGNMENT: 				RegEx.create_from_string(r"=>|([+\-*/]?)=(?!=)"),

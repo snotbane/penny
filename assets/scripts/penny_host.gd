@@ -365,3 +365,7 @@ func get_save_data() -> Variant:
 func emit_roll_events() -> void:
 	on_roll_ahead_disabled.emit(not can_roll_ahead)
 	on_roll_back_disabled.emit(not can_roll_back)
+
+
+func print(s: String) -> void:
+	prints(s)
