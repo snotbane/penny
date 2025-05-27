@@ -43,7 +43,7 @@ var next_in_higher_depth : Stmt
 
 var index_in_same_depth_chain : int = -1
 
-var context_ref : Cell.Ref
+var context_ref : Path
 var context : Cell :
 	get: return context_ref.evaluate()
 
@@ -286,7 +286,7 @@ func get_index_in_same_depth_chain() -> int:
 	return cursor.index_in_same_depth_chain + 1 if cursor else 0
 
 
-func get_context_ref() -> Cell.Ref:
+func get_context_ref() -> Path:
 	var cursor := self.get_prev_in_lower_depth()
 	var _ids : PackedStringArray
 	while cursor:
@@ -296,7 +296,7 @@ func get_context_ref() -> Cell.Ref:
 			# _ids = cursor.subject_ref.ids.duplicate()
 			# break
 		cursor = cursor.get_prev_in_lower_depth()
-	return Cell.Ref.new(_ids, false)
+	return Path.new(_ids, false)
 
 
 func get_nested_stmts_single_depth() -> Array[Stmt] :

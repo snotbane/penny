@@ -43,7 +43,7 @@ func _populate(tokens: Array) -> void:
 		return
 
 	var left := tokens.slice(0, op_index)
-	local_subject_ref = Cell.Ref.new_from_tokens(left)
+	local_subject_ref = Path.new_from_tokens(left)
 
 	var right := tokens.slice(expr_index)
 	expr = Expr.new_from_tokens(right, self)
@@ -65,7 +65,7 @@ func _execute(host: PennyHost) :
 		if after.key_name == Cell.NEW_OBJECT_KEY_NAME:
 			after.key_name = subject_ref.ids[subject_ref.ids.size() - 1]
 		else:
-			after = Cell.Ref.to(after)
+			after = Path.to(after)
 	subject_ref.set_local_value_in_cell(self.context, after)
 
 	# print({ &"ref": subject_ref.globalize(self.context), &"prior": prior, &"after": after })

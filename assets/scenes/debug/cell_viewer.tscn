@@ -106,8 +106,8 @@ func create_tree_item_for_any(parent: TreeItem, key: StringName, value: Variant,
 		result.collapsed = true
 		for i in value.size():
 			create_tree_item_for_any(result, str(i), value[i], Sort.NONE)
-	elif value is Cell.Ref:
-		result.set_custom_color(Column.VALUE, Cell.Ref.COLOR)
+	elif value is Path:
+		result.set_custom_color(Column.VALUE, Path.COLOR)
 	elif value is Color:
 		result.set_custom_color(Column.VALUE, value)
 
@@ -122,7 +122,7 @@ static func get_icon(value: Variant) -> Texture2D:
 		return preload(\"res://addons/penny_godot/assets/textures/icons/Array.svg\")
 	if value is	Color:
 		return preload(\"res://addons/penny_godot/assets/textures/icons/Color.svg\")
-	if value is Cell.Ref:
+	if value is Path:
 		return preload(\"res://addons/penny_godot/assets/textures/icons/Ref.svg\")
 	if value is Expr:
 		return preload(\"res://addons/penny_godot/assets/textures/icons/PrismMesh.svg\")
@@ -140,7 +140,7 @@ static func get_icon_tooltip(value: Variant) -> String:
 		return \"array\"
 	if value is Color:
 		return \"color\"
-	if value is Cell.Ref:
+	if value is Path:
 		return \"ref\"
 	if value is Expr:
 		return \"expression\"

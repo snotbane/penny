@@ -22,7 +22,7 @@ func _populate(tokens: Array) -> void:
 	if is_simple_timer_delay:
 		expr = float(tokens[0].value)
 	else:
-		expr = Cell.Ref.new_from_tokens(tokens)
+		expr = Path.new_from_tokens(tokens)
 
 
 func _execute(host: PennyHost) :

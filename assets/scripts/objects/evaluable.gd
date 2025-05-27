@@ -1,5 +1,5 @@
 
-## Base class for [Expr]s and [Cell.Ref]s. These are objects that can be softly stored or hardly evaluated using the '@value' notation
+## Base class for [Expr]s and [Path]s. These are objects that can be softly stored or hardly evaluated using the '@value' notation
 class_name Evaluable extends RefCounted
 
 
@@ -11,7 +11,7 @@ func evaluate(context := Cell.ROOT) -> Variant:
 	return result
 
 
-## Evaluate, but change the context whenever a [Cell.Ref] is encountered.
+## Evaluate, but change the context whenever a [Path] is encountered.
 func evaluate_adaptive(context := Cell.ROOT) -> Dictionary:
 	var evals_seen : Array[Evaluable]
 	var result : Variant = self
@@ -21,8 +21,8 @@ func evaluate_adaptive(context := Cell.ROOT) -> Dictionary:
 			break
 		evals_seen.push_back(result)
 		result = result._evaluate(context)
-		if result is Cell.Ref and not result.rel:
-			var new_context_ref : Cell.Ref = result.duplicate()
+		if result is Path and not result.rel:
+			var new_context_ref : Path = result.duplicate()
 			new_context_ref.ids.remove_at(new_context_ref.ids.size() - 1)
 			context = new_context_ref.evaluate(context)
 	return {

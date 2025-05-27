@@ -27,121 +27,10 @@ const K_ENABLED := &"enabled"
 const K_CONSUMED := &"consumed"
 const K_TEXT := &"text"
 
-class Ref extends Evaluable:
-	const COLOR := Color8(65, 122, 236)
-
-	static var ROOT := Ref.new([], false)
-	static var DEFAULT_BASE := Ref.new([Cell.K_OBJECT], false)
-	static var NEW : Ref :
-		get: return ROOT.duplicate()
-
-	var ids : PackedStringArray
-	var rel : bool
-
-	func _init(_ids: PackedStringArray, _rel: bool) -> void:
-		self.ids = _ids
-		self.rel = _rel
-
-
-	static func to(cell: Cell, _rel: bool = false) -> Ref:
-		var _ids : PackedStringArray
-		var cursor := cell
-		while cursor and cursor != Cell.ROOT:
-			_ids.insert(0, cursor.key_name)
-			cursor = cursor.parent
-		return Ref.new(_ids, _rel)
-
-
-	## Creates a new [Ref] from tokens. Mainly used when parsing scripts. Removes used tokens from the passed array.
-	static func new_from_tokens(tokens: Array) -> Ref:
-		if not tokens: return Ref.ROOT
-		var _rel : bool = tokens[0].type == PennyScript.Token.Type.OPERATOR and tokens[0].value.type == Expr.Op.DOT
-		if _rel: tokens.pop_front()
-
-		var _ids : PackedStringArray
-		var expect_dot := false
-		while tokens:
-			if expect_dot:
-				if tokens.front().type == PennyScript.Token.Type.OPERATOR and tokens.front().value.type == Expr.Op.DOT:
-					tokens.pop_front()
-					expect_dot = false
-					continue
-				else: break
-			else:
-				_ids.push_back(tokens.pop_front().value)
-				expect_dot = true
-				continue
-
-		return Ref.new(_ids, _rel)
-
-
-	## Creates a new [Ref] from a string. Mainly used via manual access.
-	static func new_from_string(s : String) -> Ref:
-		if s.is_empty(): return
-		var _rel := s[0] == "."
-		s = s.substr(1 if _rel else 0)
-		var _ids := s.split(".", false)
-		return Ref.new(_ids, _rel)
-
-
-	## Creates a new [Ref] from a json string. Mainly used in saving/loading data.
-	static func new_from_load_json(json: String) -> Ref:
-		return Ref.new_from_string(json.substr(Save.REF_PREFIX.length() + 1))
-	func get_save_data() -> Variant:
-		return Save.REF_PREFIX + self.to_string()
-
-
-	func _to_string() -> String:
-		var result := "." if self.rel else ""
-		for id in self.ids:
-			result += id + "."
-		return "@" + result.substr(0, result.length() - 1)
-
-
-	func duplicate() -> Ref:
-		return Ref.new(self.ids.duplicate(), self.rel)
-
-
-	func globalize(context: Cell) -> Ref:
-		var result := self.duplicate()
-		if not self.rel: return result
-		while context and context != Cell.ROOT:
-			result.ids.insert(0, context.key_name)
-			context = context.parent
-		result.rel = false
-		return result
-
-
-	func append(other: Ref) -> Ref:
-		var result := self.duplicate()
-		result.ids.append_array(other.ids)
-		return result
-
-
-	func set_local_value_in_cell(context: Cell, value: Variant) -> void:
-		if not rel: context = Cell.ROOT
-		for i in ids.size() - 1: context = context.get_value(ids[i])
-		context.set_local_value(ids[ids.size() - 1], value)
-
-
-	func _evaluate(context: Cell) -> Variant:
-		if not rel: context = Cell.ROOT
-		var result : Variant = context
-		for id in ids:
-			result = result.get_value(id)
-		return result
-
-
-	func evaluate_local(context := Cell.ROOT) -> Variant:
-		if not rel: context = Cell.ROOT
-		var result : Variant = context
-		for id in ids:
-			result = result.get_local_value(id)
-		return result
-
 
 static var ROOT := Cell.new(&"", null, {})
 static var OBJECT := Cell.new(Cell.K_OBJECT, ROOT, {})
+
 
 var _key_name : StringName
 var key_name : StringName :
@@ -201,7 +90,7 @@ func get_value_evaluated(key: StringName, default: Variant = null) -> Variant:
 
 func get_base_value(key: StringName) -> Variant:
 	if self.data.has(Cell.K_BASE):
-		var base_ref : Ref = self.data[Cell.K_BASE].duplicate()
+		var base_ref : Path = self.data[Cell.K_BASE].duplicate()
 		base_ref.ids.push_back(key)
 		return base_ref.evaluate()
 	else: return null
@@ -216,7 +105,7 @@ func set_local_value(key: StringName, value: Variant) -> void:
 	else: data[key] = value
 
 
-func add_cell(key: StringName, base: Ref = null) -> Cell:
+func add_cell(key: StringName, base: Path = null) -> Cell:
 	var initial_data : Dictionary[StringName, Variant] = {}
 	if base: initial_data[Cell.K_BASE] = base
 
@@ -270,7 +159,7 @@ func get_save_data() -> Variant:
 	return Save.any(data)
 
 func get_save_ref() -> Variant:
-	return (Cell.Ref.to(self)).get_save_data()
+	return (Path.to(self)).get_save_data()
 
 
 func load_data(host: PennyHost, json: Dictionary) -> void:

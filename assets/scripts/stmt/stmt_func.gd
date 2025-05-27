@@ -36,7 +36,7 @@ func _execute(host: PennyHost) :
 	for arg in arguments:
 		evaluated_arguments.push_back(arg.evaluate() if arg is Expr else arg)
 
-	await call_function(subject_node if subject_ref else host, execute_name, evaluated_arguments)
+	await call_function(subject_node if subject_node else host, execute_name, evaluated_arguments)
 
 	return create_record(host, { &"args": evaluated_arguments })
 
@@ -45,11 +45,11 @@ func _undo(record: Record) -> void :
 	call_function(subject_node if subject_ref else record.host, undo_name, record.data[&"args"], false)
 
 
-static func call_function(obj: Object, fun: StringName, args: Array, warn := true) :
-	if obj == null: printerr("Attempted to call function '%s' on a null object." % [fun, obj]); return
-	if warn and not obj.has_method(fun): printerr("Attempted to call function '%s' on object '%s', but no method exists." % [fun, obj]); return
+static func call_function(obj: Object, function: StringName, args: Array, warn := true) :
+	if obj == null: printerr("Attempted to call function '%s' on a null object." % [function]); return
+	if warn and not obj.has_method(function): printerr("Attempted to call function '%s' on object '%s', but no method exists." % [function, obj]); return
 
-	obj.callv(fun, args)
+	obj.callv(function, args)
 
 
 ## Separates tokens by iterator.

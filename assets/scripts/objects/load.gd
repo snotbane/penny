@@ -26,6 +26,6 @@ static func array(json: Array) -> Array:
 
 static func string(json: String) -> Variant:
 	if json.is_empty(): return String()
-	if json.begins_with(Save.REF_PREFIX)	: return Cell.Ref.new_from_load_json(json)
+	if json.begins_with(Save.REF_PREFIX)	: return Path.new_from_load_json(json)
 	if json.begins_with(Save.COLOR_PREFIX)	: return Color.html(json.substr(Save.COLOR_PREFIX.length()))
 	return json

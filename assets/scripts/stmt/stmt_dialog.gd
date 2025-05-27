@@ -6,7 +6,7 @@ static var REGEX_WORD_COUNT := RegEx.create_from_string(r"\b\S+\b")
 static var REGEX_CHAR_COUNT := RegEx.create_from_string(r"\S")
 
 
-var subject_dialog_path : Cell.Ref
+var subject_dialog_path : Path
 var pure_text : String
 
 

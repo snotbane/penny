@@ -45,7 +45,7 @@ static func new_from_tokens(tokens: Array, _stmt: Stmt = null) -> Expr:
 	for i in _symbols.size():
 		var element = _symbols[i]
 		if element is StringName:
-			_symbols[i] = Cell.Ref.new([element], false)
+			_symbols[i] = Path.new([element], false)
 
 	return Expr.new(_stmt, _symbols)
 
@@ -241,27 +241,27 @@ class Op extends RefCounted:
 				while stack:
 					var pop = stack.pop_back()
 					if pop is StringName:
-						pop = Cell.Ref.new([pop], false)
+						pop = Path.new([pop], false)
 					arr.push_front(pop)
 				stack.push_back(arr)
 				return
 			DOT:
 				match stack.size():
 					0:
-						stack.push_back(Cell.Ref.NEW)
+						stack.push_back(Path.NEW)
 					1:
-						stack.push_back(Cell.Ref.new([stack.pop_back()], true))
+						stack.push_back(Path.new([stack.pop_back()], true))
 					_:
 						var b = stack.pop_back()
 						var a = stack.pop_back()
-						if a is Cell.Ref:
+						if a is Path:
 							a.ids.push_back(b)
 							stack.push_back(a)
 						elif a is StringName:
-							stack.push_back(Cell.Ref.new([a, b], false))
+							stack.push_back(Path.new([a, b], false))
 						else:
 							stack.push_back(a)
-							stack.push_back(Cell.Ref.new([b], true))
+							stack.push_back(Path.new([b], true))
 
 
 	func apply(stack: Array[Variant], context: Cell, force_paths := false) -> void:
@@ -271,7 +271,7 @@ class Op extends RefCounted:
 				if stack:
 					data[Cell.K_BASE] = stack.pop_back()
 				else:
-					data[Cell.K_BASE] = Cell.Ref.DEFAULT_BASE
+					data[Cell.K_BASE] = Path.DEFAULT_BASE
 				stack.push_back(Cell.new(Cell.NEW_OBJECT_KEY_NAME, context, data))
 				return
 

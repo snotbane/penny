@@ -2,18 +2,18 @@
 ## Generic statement for referring to a [Cell].
 class_name StmtCell extends Stmt
 
-static var DEFAULT_CELL_REF := Cell.Ref.to(Cell.OBJECT)
+static var DEFAULT_CELL_REF := Path.to(Cell.OBJECT)
 
-var _local_subject_ref : Cell.Ref
-var local_subject_ref : Cell.Ref :
+var _local_subject_ref : Path
+var local_subject_ref : Path :
 	get: return _local_subject_ref
 	set(value):
 		_local_subject_ref = value
 		_subject_ref = context_ref.append(local_subject_ref) if _local_subject_ref.rel else _local_subject_ref
 
 
-var _subject_ref : Cell.Ref
-var subject_ref : Cell.Ref :
+var _subject_ref : Path
+var subject_ref : Path :
 	get: return _subject_ref
 
 var subject : Variant :
@@ -32,7 +32,7 @@ func _get_verbosity() -> Verbosity:
 func _populate(tokens: Array) -> void:
 	var tokens_error_string := str(tokens)
 
-	local_subject_ref = Cell.Ref.new_from_tokens(tokens)
+	local_subject_ref = Path.new_from_tokens(tokens)
 
 	if subject_ref == null:
 		printerr("subject_ref evaluated to null from tokens: %s" % tokens_error_string)

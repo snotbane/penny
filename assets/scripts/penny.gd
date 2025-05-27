@@ -186,7 +186,7 @@ func _notification(what: int) -> void:
 static func retrieve_all_paths() -> PackedStringArray :
 	var result := PackedStringArray()
 	for ext in Penny.RECOGNIZED_EXTENSIONS:
-		result.append_array(PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(r"test\.pen$")))
+		result.append_array(PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(r"^_.*\.pen$")))
 		# result.append_array(PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(ext + "$")))
 	return result
 

@@ -31,7 +31,7 @@ func _get_is_skippable() -> bool:
 func _populate(tokens: Array) -> void:
 	super._populate(tokens)
 	if tokens.is_empty():
-		local_subject_ref = Cell.Ref.new([ Cell.K_PROMPT ], false)
+		local_subject_ref = Path.new([ Cell.K_PROMPT ], false)
 
 
 func _reload() -> void:
@@ -56,14 +56,14 @@ func _execute(host: PennyHost) :
 				if stmt.is_raw_text_option:
 					key = "_" + str(i)
 					option = Cell.new(key, Cell.ROOT, {
-						Cell.K_BASE: Cell.Ref.new([Cell.K_OPTION], false),
+						Cell.K_BASE: Path.new([Cell.K_OPTION], false),
 						Cell.K_TEXT: stmt.expr.evaluate()
 					})
 				else:
 					option = stmt.expr.evaluate()
 					key = option.key_name
 				Cell.ROOT.set_value(key, option)
-				prompt_option_refs.push_back(Cell.Ref.new([key], false))
+				prompt_option_refs.push_back(Path.new([key], false))
 			subject.set_value(Cell.K_OPTIONS, prompt_option_refs)
 
 
@@ -105,8 +105,8 @@ func _next(record: Record) -> Stmt:
 
 
 
-func _get_default_subject() -> Cell.Ref:
-	return Cell.Ref.new([Cell.K_PROMPT], false)
+func _get_default_subject() -> Path:
+	return Path.new([Cell.K_PROMPT], false)
 
 
 func _get_record_message(record: Record) -> String:

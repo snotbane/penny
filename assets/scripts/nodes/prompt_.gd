@@ -25,9 +25,9 @@ func receive_options(_host: PennyHost, _options: Array) -> void:
 func _receive_options(_host: PennyHost, _options: Array) -> void:	pass
 
 
-func receive_response(option: Cell.Ref) -> void:
+func receive_response(option: Path) -> void:
 	cell.set_value(Cell.K_RESPONSE, option)
 	self.close()
 	self.advanced.emit()
 	_receive_response(option)
-func _receive_response(option: Cell.Ref) -> void: pass
+func _receive_response(option: Path) -> void: pass
