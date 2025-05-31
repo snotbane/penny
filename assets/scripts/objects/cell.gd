@@ -83,6 +83,17 @@ func get_value(key: StringName, default : Variant = null) -> Variant:
 	return default if result == null else result
 
 
+func _get(property: StringName) -> Variant: return get_value(property)
+func _set(property: StringName, value: Variant) -> bool: set_value(property, value); return true
+func _get_property_list() -> Array[Dictionary]:
+	var result : Array[Dictionary] = []
+	for k in data.keys():
+		result.push_back({
+
+		})
+	return result
+
+
 func get_value_evaluated(key: StringName, default: Variant = null) -> Variant:
 	var result : Variant = self.get_value(key, default)
 	return result.evaluate(self) if result is Evaluable else result

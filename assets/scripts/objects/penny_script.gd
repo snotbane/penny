@@ -125,14 +125,14 @@ func update_from_file(file: FileAccess) -> void:
 	errors.clear()
 
 	var tokens := parse_code_to_tokens(file.get_as_text(true), file)
-	# print(tokens)
+	print(tokens)
 
 	var old_stmts : Array[Stmt]
 	if not Engine.is_editor_hint():
 		old_stmts = stmts.duplicate()
 
 	parse_tokens_to_stmts(tokens, file)
-	print_stmts(stmts)
+	# print_stmts(stmts)
 
 	if not Engine.is_editor_hint():
 		diff = Diff.new(old_stmts, stmts)
@@ -224,44 +224,34 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 	printerr("No Stmt recycled from tokens: %s" % str(tokens))
 	return null
 
+
 static func parse_code_to_tokens(raw: String, context_file: FileAccess = null) -> Array[Token]:
 	var result : Array[Token] = []
 
-	## If this gets stuck in a loop, Token.TYPE_PATTERNS has a regex pattern that matches with something of 0 length, e.g. ".*"
 	var cursor := 0
 	while cursor < raw.length():
-		var rx_found = false
-		var i := -1
+		var token_found = false
 		for k in Token.TYPE_PATTERNS.keys():
-			i += 1
-			var rx = Token.TYPE_PATTERNS[k].search(raw, cursor)
-			if rx == null or rx.get_start() != cursor:
-				continue
-			rx_found = true
+			var token_match = Token.TYPE_PATTERNS[k].search(raw, cursor)
+			if token_match == null or token_match.get_start() != cursor: continue
+			token_found = true
 
-			match i:
+			match k:
 				Token.Type.WHITESPACE, Token.Type.COMMENT:
 					pass
 				_:
-					cursor = rx.get_start()
+					if result.size() != 0 and k == Token.Type.TERMINATOR and result.back().type == Token.Type.TERMINATOR:
+						result.back().value += token_match.get_string()
+					else:
+						result.push_back(Token.new(k, token_match.get_string()))
 
-					var value : Variant = rx.get_string()
-					match i:
-						Token.Type.VALUE_STRING:
-							value = rx.get_string()
-
-					var token = Token.new(i, value)
-					result.push_back(token)
-
-			cursor = rx.get_end()
+			cursor = token_match.get_end() if token_match.get_end() != cursor else cursor + 1
 			break
 
-		if not rx_found:
+		if not token_found:
 			var address_numbers := get_line_and_column_numbers(cursor, raw)
-			if context_file:
-				printerr("%s (ln %s, cl %s): Unrecognized token '%s'." % [context_file.get_path(), raw[cursor], address_numbers[0], address_numbers[1]])
-			else:
-				printerr("Unrecognized token '%s' at (ln %s, cl %s)." % [raw[cursor], address_numbers[0], address_numbers[1]])
+			if context_file:	printerr("%s (ln %s, cl %s): Unrecognized token '%s'." % [context_file.get_path(), raw[cursor], address_numbers[0], address_numbers[1]])
+			else:				printerr("Unrecognized token '%s' at (ln %s, cl %s)." % [raw[cursor], address_numbers[0], address_numbers[1]])
 			break
 
 	return result
@@ -304,7 +294,7 @@ class Token extends RefCounted:
 		Token.Type.COMMENT: 				RegEx.create_from_string(r"(?ms)(([#/])\*.*?(\*\2))|((#|\/{2}).*?$)"),
 		Token.Type.IDENTIFIER: 				RegEx.create_from_string(r"[a-zA-Z_]\w*"),
 		Token.Type.VALUE_NUMBER: 			RegEx.create_from_string(r"\d+\.\d*|\.?\d+"),
-		Token.Type.TERMINATOR: 				RegEx.create_from_string(r"(?m)[:;]|((?<!\[)(?<=[^\n:;])$\n(?!\]))"),
+		Token.Type.TERMINATOR: 				RegEx.create_from_string(r"(?m)(?<!\[)[:;\n]+(?!\])"),
 		Token.Type.WHITESPACE: 				RegEx.create_from_string(r"(?m)[ \n]+|(?<!^|\t)\t+"),
 	}
 

@@ -93,23 +93,23 @@ func append(other: Path) -> Path:
 	return result
 
 
-func set_local_value_in_cell(context: Cell, value: Variant) -> void:
+func set_local_value_in_cell(context: Variant, value: Variant) -> void:
 	if not rel: context = Cell.ROOT
-	for i in ids.size() - 1: context = context.get_value(ids[i])
-	context.set_local_value(ids[ids.size() - 1], value)
+	for i in ids.size() - 1: context = context.get_value(ids[i]) if context is Cell else context.get(ids[i])
+	# if context is Cell:	context.set_local_value(ids[ids.size() - 1], value)
+	# else:				context.set(ids[ids.size() - 1], value)
+	context.set(ids[ids.size() - 1], value)
 
 
 func _evaluate(context: Cell) -> Variant:
 	if not rel: context = Cell.ROOT
 	var result : Variant = context
-	for id in ids:
-		result = result.get_value(id)
+	for id in ids: result = result.get_value(id) if result is Cell else result.get(id)
 	return result
 
 
 func evaluate_local(context := Cell.ROOT) -> Variant:
 	if not rel: context = Cell.ROOT
 	var result : Variant = context
-	for id in ids:
-		result = result.get_local_value(id)
+	for id in ids: result = result.get_local_value(id) if result is Cell else result.get(id)
 	return result

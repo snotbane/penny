@@ -4,9 +4,10 @@ class_name StmtFunc extends StmtCell
 
 const UNDO_SUFFIX := &"_undo"
 
-var execute_name : StringName
-var undo_name : StringName :
-	get: return execute_name + UNDO_SUFFIX
+var execute_callable : Callable :
+	get: return subject
+var undo_func : Callable :
+	get: return Callable(execute_callable.get_object(), execute_callable.get_method() + UNDO_SUFFIX)
 
 var arguments : Array
 
@@ -18,15 +19,12 @@ func _populate(tokens: Array) -> void:
 		break
 	if group_index == -1: printerr("Function start not found."); return
 
-	if tokens[group_index - 1].type != PennyScript.Token.Type.IDENTIFIER: printerr("Expected function identifier, found '%s' instead." % tokens[group_index - 1]); return
-	execute_name = tokens[group_index - 1].value
-
-	var left := tokens.slice(0, max(0, group_index - 2))
+	var left := tokens.slice(0, group_index)
 
 	var right := tokens.slice(group_index + 1, -1)
 	arguments = new_args_from_tokens(right)
 
-	print("Call: %s, Subject: %s Arguments %s" % [execute_name, subject_ref, arguments])
+
 
 	super._populate(left)
 
@@ -36,20 +34,13 @@ func _execute(host: PennyHost) :
 	for arg in arguments:
 		evaluated_arguments.push_back(arg.evaluate() if arg is Expr else arg)
 
-	await call_function(subject_node if subject_node else host, execute_name, evaluated_arguments)
+	await execute_callable.callv(evaluated_arguments)
 
 	return create_record(host, { &"args": evaluated_arguments })
 
 
 func _undo(record: Record) -> void :
-	call_function(subject_node if subject_ref else record.host, undo_name, record.data[&"args"], false)
-
-
-static func call_function(obj: Object, function: StringName, args: Array, warn := true) :
-	if obj == null: printerr("Attempted to call function '%s' on a null object." % [function]); return
-	if warn and not obj.has_method(function): printerr("Attempted to call function '%s' on object '%s', but no method exists." % [function, obj]); return
-
-	obj.callv(function, args)
+	undo_func.callv(record.data[&"args"])
 
 
 ## Separates tokens by iterator.
