@@ -269,9 +269,9 @@ class Op extends RefCounted:
 			NEW:
 				var data : Dictionary[StringName, Variant] = {}
 				if stack:
-					data[Cell.K_BASE] = stack.pop_back()
+					data[Cell.K_PROTOTYPE] = stack.pop_back()
 				else:
-					data[Cell.K_BASE] = Path.DEFAULT_BASE
+					data[Cell.K_PROTOTYPE] = Path.DEFAULT_BASE
 				stack.push_back(Cell.new(Cell.NEW_OBJECT_KEY_NAME, context, data))
 				return
 

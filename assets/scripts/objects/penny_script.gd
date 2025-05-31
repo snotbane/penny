@@ -125,7 +125,7 @@ func update_from_file(file: FileAccess) -> void:
 	errors.clear()
 
 	var tokens := parse_code_to_tokens(file.get_as_text(true), file)
-	print(tokens)
+	# print(tokens)
 
 	var old_stmts : Array[Stmt]
 	if not Engine.is_editor_hint():
@@ -133,10 +133,24 @@ func update_from_file(file: FileAccess) -> void:
 
 	parse_tokens_to_stmts(tokens, file)
 	# print_stmts(stmts)
+	# print_dialog_metrics(file.get_path())
 
 	if not Engine.is_editor_hint():
 		diff = Diff.new(old_stmts, stmts)
 		if diff.changes: print(diff)
+
+
+func print_dialog_metrics(known_path: String = "") -> void:
+	var total_word_count := 0
+	var total_letter_count := 0
+	var total_dialogs := 0
+	for stmt in stmts:
+		if stmt is not StmtDialog: continue
+		var metrics : Dictionary = stmt.get_metrics()
+		total_word_count += metrics[&"word_count"]
+		total_letter_count += metrics[&"letter_count"]
+		total_dialogs += 1
+	print("%s: %s dialogs, %s words, %s chars, %s cpw" % [known_path, total_dialogs, total_word_count, total_letter_count, (float(total_letter_count) / float(total_word_count))])
 
 
 func parse_tokens_to_stmts(tokens: Array[Token], context_file: FileAccess = null) -> void:

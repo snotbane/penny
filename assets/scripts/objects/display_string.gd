@@ -4,8 +4,8 @@ class_name DisplayString extends RefCounted
 
 const DECO_DELIMITER = ";"
 static var INTERJECTION_PATTERN := RegEx.create_from_string(r"(?<!\\)\{(.*?)(?<!\\)\}")
-static var INTERPOLATION_PATTERN := RegEx.create_from_string(r"(?<!\\)@((?:\.?[A-Za-z_]\w*)+)|(?<!\\)\[(.*?)(?<!\\)\]")
-static var DECO_TAG_PATTERN := RegEx.create_from_string(r"(?<!\\)<(.*?)(?<!\\)>")
+static var INTERPOLATION_PATTERN := RegEx.create_from_string(r"(?<!\\)@((?:\.?[A-Za-z_]\w*)+)|s(?<!\\)\[(.*?)(?<!\\)\]")
+static var DECO_TAG_PATTERN := RegEx.create_from_string(r"(?<!\\)<([^<>]*?)(?<!\\)>")
 # static var DECO_SPAN_PATTERN := RegEx.create_from_string("(?s)<(.*?)>(.*)(?:<\\/>)")
 static var ESCAPE_PATTERN := RegEx.create_from_string(r"\\(.)")
 static var ESCAPE_SUBSITUTIONS : Dictionary[String, String] = {
@@ -14,6 +14,8 @@ static var ESCAPE_SUBSITUTIONS : Dictionary[String, String] = {
 	"[": "[lb]",
 	"]": "[rb]"
 }
+static var REGEX_WORD_COUNT := RegEx.create_from_string(r"\b[\w']+\b")
+static var REGEX_LETTER_COUNT := RegEx.create_from_string(r"\w")
 
 var text : String
 var decos : Array[DecoInst]
@@ -27,6 +29,13 @@ func _to_string() -> String:
 	return "`%s`" % text
 
 
+func get_metrics() -> Dictionary:
+	return {
+		&"word_count":		REGEX_WORD_COUNT.search_all(self.text).size(),
+		&"letter_count":	REGEX_LETTER_COUNT.search_all(self.text).size(),
+	}
+
+
 static func new_as_is(_text : String = "") -> DisplayString:
 	return DisplayString.new(_text)
 
@@ -34,13 +43,14 @@ static func new_as_is(_text : String = "") -> DisplayString:
 static func new_from_pure(pure: String = "", context := Cell.ROOT, filter_context := context) -> DisplayString:
 	var result := pure
 
-	result = DisplayString.interpolate(result, context)
-	result = DisplayString.filter_from_context(result, filter_context)
+	if context != null:
+		result = DisplayString.interpolate(result, context)
+		result = DisplayString.filter_from_context(result, filter_context)
 
 	return DisplayString.new_from_filtered(result, context)
 
 
-static func new_from_filtered(string: String, context: Cell) -> DisplayString:
+static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplayString:
 	var result := DisplayString.new()
 	var tags_needing_end_stack : Array[int]
 	var deco_stack : Array[DecoInst]
@@ -153,3 +163,12 @@ static func escape(string: String) -> String:
 
 static func replace_match(match: RegExMatch, sub: String) -> String:
 	return match.subject.substr(0, match.get_start()) + sub + match.subject.substr(match.get_end(), match.subject.length() - match.get_end())
+
+
+static func get_metrics_from_pure(pure: String) -> Dictionary:
+	for match in DECO_TAG_PATTERN.search_all(pure):
+		pure = replace_match(match, "")
+	return {
+		&"word_count":		REGEX_WORD_COUNT.search_all(pure).size(),
+		&"letter_count":	REGEX_LETTER_COUNT.search_all(pure).size(),
+	}

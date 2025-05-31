@@ -2,7 +2,7 @@
 class_name StmtDialog extends StmtNode
 
 const DEPTH_REMOVAL_PATTERN := r"\n\t{0,%s}"
-static var REGEX_WORD_COUNT := RegEx.create_from_string(r"\b\S+\b")
+static var REGEX_WORD_COUNT := RegEx.create_from_string(r"\b\w+\b")
 static var REGEX_CHAR_COUNT := RegEx.create_from_string(r"\S")
 
 
@@ -79,3 +79,6 @@ func _create_history_listing(record: Record) -> HistoryListing:
 
 func _get_record_message(record: Record) -> String:
 	return record.data[&"what"].text
+
+func get_metrics() -> Dictionary:
+	return DisplayString.get_metrics_from_pure(pure_text)

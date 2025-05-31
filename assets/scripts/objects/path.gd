@@ -104,12 +104,16 @@ func set_local_value_in_cell(context: Variant, value: Variant) -> void:
 func _evaluate(context: Cell) -> Variant:
 	if not rel: context = Cell.ROOT
 	var result : Variant = context
-	for id in ids: result = result.get_value(id) if result is Cell else result.get(id)
+	for id in ids:
+		if result == null: printerr("Attempted to evaluate path '%s', but resulted to null." % [self]); return null
+		result = result.get(id) if result.has_method(id) or result is not Cell else result.get_value(id)
 	return result
 
 
 func evaluate_local(context := Cell.ROOT) -> Variant:
 	if not rel: context = Cell.ROOT
 	var result : Variant = context
-	for id in ids: result = result.get_local_value(id) if result is Cell else result.get(id)
+	for id in ids:
+		if result == null: printerr("Attempted to evaluate path '%s', but resulted to null." % [self]); return null
+		result = result.get(id) if result.has_method(id) or result is not Cell else result.get_local_value(id)
 	return result

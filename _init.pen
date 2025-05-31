@@ -8,18 +8,17 @@ object
 	.prefix = "<>"
 
 dialog = new object
-	.res = "uid://b8sp6ey8fsgt7"
-	.stage = "dialog"
+	.res = 'uid://b8sp6ey8fsgt7'
+	.mark = "dialog"
 	.filters = [PARAGRAPH_DEFAULT, PIPE_TO_DELAY, SLASH_TO_WAIT]
 
 prompt = new object
-	.res = "uid://cuu7puh0nnyug"
-	.stage = "prompt"
+	.res = 'uid://cuu7puh0nnyug'
+	.mark = "prompt"
 	.options = []
 
 option = new object
-	.res = "uid://cqv2gnjjkdh6c"
-	.stage = null
+	.res = 'uid://cqv2gnjjkdh6c'
 	.enabled = true
 	.visible = true
 	.consumed = false
@@ -39,8 +38,7 @@ actor = new object
 	.dfl_name = "@.prefix@.d_name @.f_name @.l_name</>"
 	.prefix = "<b;color=@.color>"
 	.color = #ffffff
-	.res = "uid://3tbms65op2ht"
-	.stage = "default"
+	.res = 'uid://3tbms65op2ht'
 
 unknown = new actor
 	.name = "???"

@@ -56,7 +56,7 @@ func _execute(host: PennyHost) :
 				if stmt.is_raw_text_option:
 					key = "_" + str(i)
 					option = Cell.new(key, Cell.ROOT, {
-						Cell.K_BASE: Path.new([Cell.K_OPTION], false),
+						Cell.K_PROTOTYPE: Path.new([Cell.K_OPTION], false),
 						Cell.K_TEXT: stmt.expr.evaluate()
 					})
 				else:

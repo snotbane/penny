@@ -1,12 +1,14 @@
 
-## Statement that calls a function (and undoes it, if available)
+## Statement that calls a function (and undoes it, if available).
+## A called function's parameters must start with a [PennyHost].
+## An undo function is not required, but if it exists, it must start with a [Record] parameter.
 class_name StmtFunc extends StmtCell
 
 const UNDO_SUFFIX := &"_undo"
 
 var execute_callable : Callable :
 	get: return subject
-var undo_func : Callable :
+var undo_callable : Callable :
 	get: return Callable(execute_callable.get_object(), execute_callable.get_method() + UNDO_SUFFIX)
 
 var arguments : Array
@@ -20,17 +22,16 @@ func _populate(tokens: Array) -> void:
 	if group_index == -1: printerr("Function start not found."); return
 
 	var left := tokens.slice(0, group_index)
+	print(left)
 
 	var right := tokens.slice(group_index + 1, -1)
 	arguments = new_args_from_tokens(right)
-
-
 
 	super._populate(left)
 
 
 func _execute(host: PennyHost) :
-	var evaluated_arguments : Array
+	var evaluated_arguments : Array = [host]
 	for arg in arguments:
 		evaluated_arguments.push_back(arg.evaluate() if arg is Expr else arg)
 
@@ -40,7 +41,9 @@ func _execute(host: PennyHost) :
 
 
 func _undo(record: Record) -> void :
-	undo_func.callv(record.data[&"args"])
+	var evaluated_arguments : Array = [record]
+	evaluated_arguments.append_array(record.data[&"args"])
+	undo_callable.callv(evaluated_arguments)
 
 
 ## Separates tokens by iterator.
