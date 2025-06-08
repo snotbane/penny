@@ -9,12 +9,12 @@ object
 
 dialog = new object
 	.res = 'uid://b8sp6ey8fsgt7'
-	.mark = "dialog"
+	.marker = "dialog"
 	.filters = [PARAGRAPH_DEFAULT, PIPE_TO_DELAY, SLASH_TO_WAIT]
 
 prompt = new object
 	.res = 'uid://cuu7puh0nnyug'
-	.mark = "prompt"
+	.marker = "prompt"
 	.options = []
 
 option = new object

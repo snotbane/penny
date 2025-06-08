@@ -7,6 +7,7 @@ signal on_root_cell_modified
 
 const RECOGNIZED_EXTENSIONS : PackedStringArray = [ "pen", "penny" ]
 const STAGE_GROUP_NAME := &"penny_stage"
+const DEFAULT_MARKER_NAME := &"default_marker"
 
 
 static var SCRIPT_RESOURCE_LOADER := preload("uid://0mqljw2t364x").new()
@@ -186,8 +187,8 @@ func _notification(what: int) -> void:
 static func retrieve_all_paths() -> PackedStringArray :
 	var result := PackedStringArray()
 	for ext in Penny.RECOGNIZED_EXTENSIONS:
-		result.append_array(PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(r"^_.*\.pen$")))
-		# result.append_array(PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(ext + "$")))
+		# result.append_array(PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(r"^_.*\.pen$")))
+		result.append_array(PennyUtils.get_paths_in_folder("res://", RegEx.create_from_string(ext + "$")))
 	return result
 
 

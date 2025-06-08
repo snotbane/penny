@@ -24,7 +24,7 @@ const K_FILTER_REPLACE := &"replace"
 ## Path to the scene which is instantiated for this object.
 const K_RES := &"res"
 ## The name of the node which this object's instance wants to be located at. (Term comes from theater terminology.)
-const K_MARK := &"mark"
+const K_MARKER := &"marker"
 ## Unformatted name used to represent this object.
 const K_NAME := &"name"
 ## Appears before the display name.
@@ -143,15 +143,13 @@ func add_cell(key: StringName, base: Path = null) -> Cell:
 	return result
 
 
-func get_stage_node(host: PennyHost) -> Node:
-	var stage = self.get_value(Cell.K_MARK)
-	print(stage)
-	if stage == null: return null
+func get_marker_node(host: PennyHost, marker_name: StringName = self.get_value(Cell.K_MARKER, Penny.DEFAULT_MARKER_NAME)) -> Node:
 	for node in host.get_tree().get_nodes_in_group(Penny.STAGE_GROUP_NAME):
-		if stage == node.name: return node
+		if marker_name == node.name: return node
 	return host.get_tree().root
 
 
+## Creates and assigns an instance but does not add it to any parent Node.
 func instantiate(host: PennyHost) -> Node:
 	if self.get_value(Cell.K_RES) == null:
 		printerr("Attempted to instantiate cell '%s', but it does not have a '%s' attribute." % [self, Cell.K_RES])
@@ -159,9 +157,9 @@ func instantiate(host: PennyHost) -> Node:
 
 	self.close_instance()
 	var result : Node = load(get_value(Cell.K_RES)).instantiate()
-	var stage : Node = self.get_stage_node(host)
-	if stage != null:
-		stage.add_child(result)
+	# var stage : Node = self.get_marker_node(host)
+	# if stage != null:
+	# 	stage.add_child(result)
 
 	if result is Actor:
 		result.populate(host, self)
@@ -220,8 +218,60 @@ func load_data(host: PennyHost, json: Dictionary) -> void:
 				node.load_data(inst_data)
 
 
-func open(host: PennyHost, mark: StringName = &""):
-	print("%s: Open says-a-me!" % self.key_name)
+## [member instantiate]s a [Cell] (if it doesn't already exist), adds it to the appropriate parent [Node]. If the instance already exists, it doesn't reparent unless explicitly specified.
+func enter(host: PennyHost, parent_name: StringName = self.get_value(K_MARKER)):
+	var parent_node : Node = self.get_marker_node(host, parent_name if parent_name else self.get_value(K_MARKER))
 
-func open_undo(record: Record) -> void:
-	print("%s: Open undo." % self.key_name)
+	var inst : Node = self.instance
+	if inst:
+		if inst.get_parent(): inst.get_parent().remove_child(inst)
+	else:
+		inst = self.instantiate(host)
+
+	parent_node.add_child(inst)
+	inst.global_position = parent_node.global_position
+
+	print(inst)
+	if inst is Actor: await inst.open()
+
+	return inst
+
+func enter_undo(record: Record) -> void:
+	print("%s: Enter undo." % self.key_name)
+
+
+## Closes and queues free a Cell's instance (if it exists).
+func exit(host: PennyHost, despawn: bool = true):
+	var inst := self.instance
+	if inst == null: print("Attempted to exit %s, but its instance is null." % self.key_name); return
+
+	if inst is Actor: await inst.close()
+	if despawn: inst.queue_free()
+
+
+func exit_undo(record: Record) -> void:
+	print("%s: Exit undo." % self.key_name)
+
+
+## Moves (crosses) a Node from one position to another. Can be a marker or a literal position.
+func cross(host: PennyHost, to: Variant, curve: Variant):
+	print("%s: cross (to: %s, curve: %s)" % [self.key_name, str(to), curve])
+
+
+func cross_undo(record: Record) -> void:
+	print("%s: cross undo." % self.key_name)
+
+
+func reparent(host: PennyHost, parent_name: StringName):
+	var parent_node : Node = get_marker_node(host, parent_name)
+
+	var inst : Node = self.instance
+	if not inst: return
+
+	var global_position_before = inst.global_position
+	inst.get_parent().remove_child(inst)
+	parent_node.add_child(host)
+	inst.global_position = global_position_before
+
+func reparent_undo(record: Record) -> void:
+	print("%s: reparent undo." % self.key_name)

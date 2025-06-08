@@ -26,3 +26,20 @@ static func get_git_commit_id(dir: String = "res://") -> String:
 	var output := []
 	var code = OS.execute("git", args, output)
 	return output[0].strip_edges() if code == OK else "Unknown Commit!"
+
+
+static func get_tab_string(string: String, minimum_length := 0, tab_size := 4) -> String:
+	return "\t".repeat(floori((minimum_length - string.length()) / tab_size) + 1)
+
+static func print_vars(dict: Dictionary) -> void:
+	var longest_string_length := 0
+	for k in dict.keys(): longest_string_length = maxi(longest_string_length, k.length())
+	var string := ""
+	for k in dict.keys(): string += "\t%s:%s%s" % [str(k), get_tab_string(str(k), longest_string_length), str(dict[k])]
+	print("{\n%s\n}" % string)
+
+
+static func print_vars_context(context: Object, vars: PackedStringArray = []) -> void:
+	var dict : Dictionary = {}
+	for v in vars: dict[v] = context.get(v)
+	print_vars(dict)

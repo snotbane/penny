@@ -51,7 +51,8 @@ func _execute(host: PennyHost) :
 	if incoming_needs_creation:
 		if previous_dialog_node != null:
 			await previous_dialog_node.close(true)
-		incoming_dialog_node = incoming_dialog.instantiate(host)
+		# incoming_dialog_node = incoming_dialog.instantiate(host)
+		incoming_dialog_node = await incoming_dialog.enter(host)
 		await incoming_dialog_node.open(true)
 	else:
 		incoming_dialog_node = previous_dialog_node
