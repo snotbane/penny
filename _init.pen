@@ -9,12 +9,12 @@ object
 
 dialog = new object
 	.res = 'uid://b8sp6ey8fsgt7'
-	.marker = "dialog"
+	.marker = 'dialog'
 	.filters = [PARAGRAPH_DEFAULT, PIPE_TO_DELAY, SLASH_TO_WAIT]
 
 prompt = new object
 	.res = 'uid://cuu7puh0nnyug'
-	.marker = "prompt"
+	.marker = 'prompt'
 	.options = []
 
 option = new object
@@ -25,18 +25,19 @@ option = new object
 	.filters = [PARAGRAPH_CENTERED, PIPE_TO_DELAY, SLASH_TO_WAIT]
 
 filter = new object
-	.pattern = ".+"
-	.replace = "default_filter_replace"
+	.pattern = '.+'
+	.replace = 'default_filter_replace'
 
 actor = new object
 	.unknown = new unknown
-	.name = "@.f_name"
-	.d_name = "Mx."
-	.fl_name = "@.prefix@.f_name @.l_name</>"
-	.dl_name = "@.prefix@.d_name @.l_name</>"
-	.fml_name = "@.prefix@.f_name @.m_name @.l_name</>"
-	.dfl_name = "@.prefix@.d_name @.f_name @.l_name</>"
-	.prefix = "<b;color=@.color>"
+	.name = `@.f_name`
+	.d_name = `Mx.`
+	.fl_name = `@.prefix@.f_name @.l_name</>`
+	.df_name = `@.prefix@.d_name @.f_name</>`
+	.dl_name = `@.prefix@.d_name @.l_name</>`
+	.fml_name = `@.prefix@.f_name @.m_name @.l_name</>`
+	.dfl_name = `@.prefix@.d_name @.f_name @.l_name</>`
+	.prefix = `<b;color=@.color>`
 	.color = #ffffff
 	.res = 'uid://3tbms65op2ht'
 

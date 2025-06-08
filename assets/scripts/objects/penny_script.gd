@@ -137,7 +137,7 @@ func update_from_file(file: FileAccess) -> void:
 
 	if not Engine.is_editor_hint():
 		diff = Diff.new(old_stmts, stmts)
-		if diff.changes: print(diff)
+		# if diff.changes: print(diff)
 
 
 func print_dialog_metrics(known_path: String = "") -> void:

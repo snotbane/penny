@@ -102,18 +102,22 @@ func set_local_value_in_cell(context: Variant, value: Variant) -> void:
 
 
 func _evaluate(context: Cell) -> Variant:
-	if not rel: context = Cell.ROOT
-	var result : Variant = context
-	for id in ids:
-		if result == null: printerr("Attempted to evaluate path '%s', but resulted to null." % [self]); return null
-		result = result.get(id) if result.has_method(id) or result is not Cell else result.get_value(id)
-	return result
+	return evaluate_dynamic(context, &"get_value", &"has_value")
 
 
 func evaluate_local(context := Cell.ROOT) -> Variant:
+	return evaluate_dynamic(context, &"get_local_value", &"has_local_value")
+
+
+func evaluate_dynamic(context: Cell, get_func: StringName, has_func: StringName) -> Variant:
 	if not rel: context = Cell.ROOT
 	var result : Variant = context
 	for id in ids:
 		if result == null: printerr("Attempted to evaluate path '%s', but resulted to null." % [self]); return null
-		result = result.get(id) if result.has_method(id) or result is not Cell else result.get_local_value(id)
+		if result is Cell:
+			if result.call(has_func, id): result = result.call(get_func, id); continue
+			var inst : Node = result.instance
+			if inst and inst.get(id): result = inst.get(id); continue
+		# else:
+		result = result.get(id)
 	return result

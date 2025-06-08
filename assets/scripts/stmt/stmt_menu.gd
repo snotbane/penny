@@ -1,6 +1,6 @@
 
 ## No description
-class_name StmtMenu extends StmtOpen
+class_name StmtMenu extends StmtNode
 
 enum Mode {
 	## Use this type if any [member nested_option_stmts] are found. This will use the supplied prompt cell to display the options, but the actual options used will be populated from [member nested_option_stmts].
@@ -69,7 +69,8 @@ func _execute(host: PennyHost) :
 
 	var data : Dictionary[StringName, Variant] = { &"prior": subject.get_value(Cell.K_RESPONSE) }
 
-	await super._execute(host)
+	# super._execute(host)
+	await subject.enter(host)
 	await subject_node.advanced
 
 	data[&"after"] = subject.get_value(Cell.K_RESPONSE)

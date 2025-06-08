@@ -16,9 +16,7 @@ func evaluate_adaptive(context := Cell.ROOT) -> Dictionary:
 	var evals_seen : Array[Evaluable]
 	var result : Variant = self
 	while result is Evaluable:
-		if evals_seen.has(result):
-			printerr("Cyclical evaluation '%s' for object '%s'" % [result, context])
-			break
+		if evals_seen.has(result): printerr("Cyclical evaluation '%s' for object '%s'" % [result, context]); break
 		evals_seen.push_back(result)
 		result = result._evaluate(context)
 		if result is Path and not result.rel:

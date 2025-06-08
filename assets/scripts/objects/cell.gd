@@ -43,7 +43,7 @@ const K_VISIBLE := &"visible"
 const K_ENABLED := &"enabled"
 ## Whether or not an option has been selected previously.
 const K_CONSUMED := &"consumed"
-## Display text used to represent this object.
+## Display key_text used to represent this object.
 const K_TEXT := &"text"
 
 
@@ -68,10 +68,15 @@ var key_name : StringName :
 var parent : Cell
 var data : Dictionary[StringName, Variant]
 
-var text : String :
-	get: return get_value(Cell.K_TEXT, key_name)
+var prototype : Cell :
+	get:
+		var result_path : Path = self.get_local_value(K_PROTOTYPE)
+		return result_path.duplicate().evaluate() if result_path else null
+
+var key_text : String :
+	get: return self.get_value(Cell.K_TEXT, key_name)
 var text_as_display_string : DisplayString :
-	get: return DisplayString.new_from_pure(text, self)
+	get: return DisplayString.new_from_pure(key_text, self)
 
 var node_name : String :
 	get: return key_name
@@ -89,18 +94,25 @@ func _init(__key_name : StringName, _parent : Cell, _data : Dictionary[StringNam
 
 
 func _to_string() -> String:
-	return "&" + key_name
+	return "*%s" % key_name
 
 
 func get_local_value(key: StringName, default: Variant = null) -> Variant:
-	var result : Variant = data[key] if data.has(key) else null
+	var result : Variant = data[key] if self.has_local_value(key) else null
 	return default if result == null else result
 
 
 func get_value(key: StringName, default : Variant = null) -> Variant:
-	var result : Variant = data[key] if data.has(key) else get_base_value(key)
+	var result : Variant = data[key] if self.has_local_value(key) else self.get_base_value(key)
 	return default if result == null else result
 
+
+func has_local_value(key: StringName) -> bool:
+	return data.has(key)
+
+
+func has_value(key: StringName) -> bool:
+	return self.has_local_value(key) or (self.prototype.has_value(key) if self.prototype else false)
 
 func _get(property: StringName) -> Variant: return get_value(property)
 func _set(property: StringName, value: Variant) -> bool: set_value(property, value); return true
@@ -124,7 +136,6 @@ func get_base_value(key: StringName) -> Variant:
 		base_ref.ids.push_back(key)
 		return base_ref.evaluate()
 	else: return null
-
 
 func set_value(key: StringName, value: Variant) -> void:
 	self.set_local_value(key, value)
@@ -151,12 +162,12 @@ func get_marker_node(host: PennyHost, marker_name: StringName = self.get_value(C
 
 ## Loads, creates, and assigns an instance to this [Cell] (but does not add it to any parent Node).
 func instantiate(host: PennyHost) -> Node:
-	if self.get_value(Cell.K_RES) == null:
+	if not self.has_value(Cell.K_RES):
 		printerr("Attempted to instantiate cell '%s', but it does not have a [%s] attribute." % [self, Cell.K_RES])
 		return null
 
 	var path : String = get_value(Cell.K_RES)
-	if not FileAccess.file_exists(path):
+	if not ResourceLoader.exists(path):
 		printerr("Attempted to instantiate cell '%s', but its [%s] attribute does not point to a valid file path ('%s')." % [self, Cell.K_RES, path])
 		return null
 

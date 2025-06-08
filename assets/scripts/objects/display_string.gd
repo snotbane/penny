@@ -101,23 +101,26 @@ static func interpolate(string: String, context: Cell) -> String:
 	while true:
 		var pattern_match : RegExMatch = INTERPOLATION_PATTERN.search(string)
 		if not pattern_match: break
-
+		# print("Found interpolation match: %s" % pattern_match.get_string())
 		var interp_expr := Expr.new_from_string(pattern_match.get_string(1) + pattern_match.get_string(2))
 		var evaluation := interp_expr.evaluate_adaptive(context)
 		var interp_context : Cell = evaluation[&"context"]
 		var interp_value : Variant = evaluation[&"value"]
+		# print("Interp context: %s, value: %s" % [interp_context, interp_value])
 		var interp_string : String
 		if interp_value == null:
 			interp_string = "NULL"
 		elif interp_value is Cell:
 			interp_context = interp_value
-			interp_string = interp_value.text
+			interp_string = interp_value.key_text
+			# print("Interp string: %s" % interp_string)
 		elif interp_value is Color:
 			interp_string = "#" + interp_value.to_html()
 		else:
 			interp_string = str(interp_value)
 
 		string = replace_match(pattern_match, DisplayString.interpolate(interp_string, interp_context))
+	# print("interpolation result: %s" % string)
 	return string
 
 
