@@ -149,17 +149,19 @@ func get_marker_node(host: PennyHost, marker_name: StringName = self.get_value(C
 	return host.get_tree().root
 
 
-## Creates and assigns an instance but does not add it to any parent Node.
+## Loads, creates, and assigns an instance to this [Cell] (but does not add it to any parent Node).
 func instantiate(host: PennyHost) -> Node:
 	if self.get_value(Cell.K_RES) == null:
-		printerr("Attempted to instantiate cell '%s', but it does not have a '%s' attribute." % [self, Cell.K_RES])
+		printerr("Attempted to instantiate cell '%s', but it does not have a [%s] attribute." % [self, Cell.K_RES])
+		return null
+
+	var path : String = get_value(Cell.K_RES)
+	if not FileAccess.file_exists(path):
+		printerr("Attempted to instantiate cell '%s', but its [%s] attribute does not point to a valid file path ('%s')." % [self, Cell.K_RES, path])
 		return null
 
 	self.close_instance()
 	var result : Node = load(get_value(Cell.K_RES)).instantiate()
-	# var stage : Node = self.get_marker_node(host)
-	# if stage != null:
-	# 	stage.add_child(result)
 
 	if result is Actor:
 		result.populate(host, self)

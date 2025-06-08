@@ -194,25 +194,29 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 	for token in tokens: if token.type == Token.Type.ASSIGNMENT: return StmtAssign.new()
 
 	if tokens.front().type == Token.Type.KEYWORD:
-		var keyword : StringName = tokens.pop_front().value
+		var keyword_token : Token = tokens.pop_front()
+		var keyword : StringName = keyword_token.value
 		match keyword:
-			&"await":	return StmtAwait.new()
-			&"call": 	return StmtJumpCall.new()
-			# &"close": 	return StmtClose.new()
-			&"else": 	return StmtConditionalElse.new()
-			&"elif": 	return StmtConditionalElif.new()
-			&"if": 		return StmtConditionalIf.new()
-			&"init":	return StmtInit.new()
-			&"jump": 	return StmtJump.new()
-			&"label": 	return StmtLabel.new()
-			&"match": 	return StmtMatch.new()
-			&"menu": 	return StmtMenu.new()
-			# &"open": 	return StmtOpen.new()
-			&"pass": 	return StmtPass.new()
-			# &"print": 	return StmtPrint.new()
-			&"return":	return StmtReturn.new()
-		printerr("The keyword '%s' was found, but it isn't assigned to any Stmt." % keyword)
-		return null
+			&"await":
+				if tokens.front().type == Token.Type.VALUE_NUMBER:
+					return StmtAwait.new()
+				else:
+					tokens.push_front(keyword_token)
+			_:
+				match keyword:
+					&"call": 	return StmtJumpCall.new()
+					&"else": 	return StmtConditionalElse.new()
+					&"elif": 	return StmtConditionalElif.new()
+					&"if": 		return StmtConditionalIf.new()
+					&"init":	return StmtInit.new()
+					&"jump": 	return StmtJump.new()
+					&"label": 	return StmtLabel.new()
+					&"match": 	return StmtMatch.new()
+					&"menu": 	return StmtMenu.new()
+					&"pass": 	return StmtPass.new()
+					&"return":	return StmtReturn.new()
+				printerr("The keyword '%s' was found, but it isn't assigned to any Stmt." % keyword)
+				return null
 
 	var block_header := stmt.get_prev_in_lower_depth()
 	if block_header:
