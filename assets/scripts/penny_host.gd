@@ -169,7 +169,7 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if Engine.is_editor_hint() : return
 	if event.is_action_pressed("penny_skip"):
-		self.skip_to_next()
+		skip_to_next()
 	elif event.is_action_pressed("penny_roll_back"):
 		roll_back()
 	elif event.is_action_pressed("penny_roll_ahead"):
@@ -244,6 +244,8 @@ func abort(response : Record.Response) -> void:
 
 
 func skip_to_next() -> void:
+	if cursor and not cursor.is_skippable: return
+
 	if history_cursor != null:
 		self.roll_ahead()
 	else:
