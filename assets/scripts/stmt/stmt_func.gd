@@ -26,7 +26,7 @@ func _populate(tokens: Array) -> void:
 	if group_index == -1: printerr("Function start not found."); return
 
 	var left := tokens.slice(0, group_index)
-	print(left)
+	# print(left)
 
 	var right := tokens.slice(group_index + 1, -1)
 	arguments = new_args_from_tokens(right)
