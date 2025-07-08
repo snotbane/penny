@@ -1,12 +1,15 @@
 ## Abstract base class for displaying some element(s) from the global Penny History.
 class_name HistoryUser extends Node
 
+signal record_added(record: Record)
+
 var _history : History
 var history : History :
 	get: return _history
 	set(value):
 		if _history == value: return
 		_history = value
+		_history.record_added.connect(record_added.emit)
 
 var _history_index : int
 var history_index : int :

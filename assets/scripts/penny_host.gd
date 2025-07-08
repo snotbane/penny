@@ -167,11 +167,17 @@ func execute(stmt : Stmt) :
 	if cursor == null: return
 	last_valid_cursor = cursor
 
-	var record : Record = await cursor.execute(self)
+	print("Calling %s" % cursor._debug_string_do_not_use_for_anything_else_seriously_i_mean_it)
+
+	var record : Record = cursor.pre_execute(self)
+
 	if record.is_recorded:
 		reset_history_in_place()
 		history.add(record)
 
+	await cursor.execute(record)
+
+	if record.is_recorded:
 		if record.is_advanced:
 			cursor = self.next(record)
 			last_valid_cursor = cursor
@@ -184,7 +190,7 @@ func execute(stmt : Stmt) :
 
 func abort(response : Record.Response) -> void:
 	if cursor == null: return
-	cursor.abort(self, response)
+	cursor.abort(history.most_recent, response)
 
 
 func skip_to_next() -> void:

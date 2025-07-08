@@ -42,12 +42,15 @@ func _populate(tokens: Array) -> void:
 		flags.push_back(token.value)
 
 
-func _execute(host: PennyHost) :
+func _pre_execute(record: Record) -> void:
 	if subject_node is SpriteActor:
 		for flag in flags:
 			subject_node.sprite_flags.push_flag(flag)
 
-	return create_record(host, { &"flags_before": [] })
+	record.data.merge({
+		&"flags_before": [],
+		&"flags_after": [],
+	})
 
 
 func _get_record_message(record: Record) -> String:

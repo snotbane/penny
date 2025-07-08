@@ -49,7 +49,9 @@ func _populate(tokens: Array) -> void:
 	expr = Expr.new_from_tokens(right, self)
 
 
-func _execute(host: PennyHost) :
+func _pre_execute(record: Record) -> void:
+	super._pre_execute(record)
+
 	var prior : Variant = local_subject_ref.evaluate_local(context)
 	var after : Variant
 
@@ -70,7 +72,10 @@ func _execute(host: PennyHost) :
 
 	# print({ &"ref": subject_ref.globalize(self.context), &"prior": prior, &"after": after })
 
-	return create_record(host, { &"prior": prior, &"after": after })
+	record.data.merge({
+		&"prior": prior,
+		&"after": after
+	})
 
 
 func _get_record_message(record: Record) -> String:

@@ -42,8 +42,8 @@ func _reload() -> void:
 	mode = Mode.CELL if nested_option_stmts.is_empty() else Mode.EXPLICIT
 
 
-func _execute(host: PennyHost) :
-	host.expecting_conditional = true
+func _pre_execute(record: Record) -> void:
+	record.host.expecting_conditional = true
 
 	match mode:
 		Mode.EXPLICIT:
@@ -66,20 +66,20 @@ func _execute(host: PennyHost) :
 				prompt_option_refs.push_back(Path.new([key], false))
 			subject.set_value(Cell.K_OPTIONS, prompt_option_refs)
 
+	record.data.merge({
+		&"prior": subject.get_value(Cell.K_RESPONSE),
+	})
 
-	var data : Dictionary[StringName, Variant] = { &"prior": subject.get_value(Cell.K_RESPONSE) }
 
-	# super._execute(host)
-	await subject.enter(host)
+func _execute(record: Record) :
+	await subject.enter(record.host)
 	await subject_node.advanced
 
-	data[&"after"] = subject.get_value(Cell.K_RESPONSE)
+	record.data[&"after"] = subject.get_value(Cell.K_RESPONSE)
 
 	match mode:
 		Mode.CELL:
-			host.call_stack.push_back(next_in_order)
-
-	return self.create_record(host, data)
+			record.host.call_stack.push_back(next_in_order)
 
 
 func _undo(record: Record) -> void:

@@ -243,7 +243,9 @@ func load_data(host: PennyHost, json: Dictionary) -> void:
 func enter(host: PennyHost, parent_name: StringName = self.get_value(K_MARKER)):
 	var parent_node : Node = self.get_marker_node(host, parent_name if parent_name else self.get_value(K_MARKER))
 
+
 	var inst : Node = self.instance
+	print("Instance: %s" % inst)
 	if inst:
 		if inst.get_parent(): inst.get_parent().remove_child(inst)
 	else:

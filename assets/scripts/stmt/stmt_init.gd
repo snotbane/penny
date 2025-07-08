@@ -21,8 +21,8 @@ func _reload() -> void:
 	Penny.inits.push_back(self)
 
 
-func _execute(host: PennyHost) :
-	return super._execute(host)
+# func _execute(record: Record) :
+# 	super._execute(record)
 
 
 # func _next(record: Record) -> Stmt:

@@ -28,15 +28,23 @@ func _populate(tokens: Array) -> void:
 	subject_dialog_path.ids.push_back(Cell.K_DIALOG)
 
 
-func _execute(host: PennyHost) :
-	super._execute(host)
+func _pre_execute(record: Record) -> void:
+	var incoming_dialog : Cell = subject_dialog_path.evaluate()
 
-	var incoming_dialog : Cell = self.subject_dialog_path.evaluate()
+	record.data.merge({
+		&"who": subject,
+		&"what": DisplayString.new_from_pure(pure_text, Cell.ROOT, incoming_dialog),
+		&"dialog": incoming_dialog
+	})
+
+
+func _execute(record: Record) :
+	var incoming_dialog : Cell = record.data[&"dialog"]
 	if not incoming_dialog:
 		printerr("Attempted to create dialog box for '%s', but no such object exists" % self.subject_dialog_path)
-		return create_record(host)
+		return
 	var incoming_dialog_node : DialogNode
-	var previous_dialog : Cell = host.last_dialog_object
+	var previous_dialog : Cell = record.host.last_dialog_object
 
 	var previous_dialog_node : DialogNode
 	var incoming_needs_creation : bool
@@ -45,31 +53,19 @@ func _execute(host: PennyHost) :
 		previous_dialog_node = previous_dialog.instance
 		incoming_needs_creation = previous_dialog_node == null or previous_dialog != incoming_dialog
 	else:
-		previous_dialog_node = null
 		incoming_needs_creation = true
 
 	if incoming_needs_creation:
 		if previous_dialog_node != null:
 			await previous_dialog_node.close(true)
 		# incoming_dialog_node = incoming_dialog.instantiate(host)
-		incoming_dialog_node = await incoming_dialog.enter(host)
+		incoming_dialog_node = await incoming_dialog.enter(record.host)
 		await incoming_dialog_node.open(true)
 	else:
 		incoming_dialog_node = previous_dialog_node
 
-	var what := DisplayString.new_from_pure(pure_text, Cell.ROOT, incoming_dialog)
-	var result := create_record(host, { "who": subject, "what": what })
-	incoming_dialog_node.receive(result)
-
+	incoming_dialog_node.receive(record)
 	await incoming_dialog_node.advanced
-
-	return result
-
-
-func _abort(host: PennyHost) -> Record:
-	var what := DisplayString.new_from_pure(pure_text)
-	var result := create_record(host, { "who": subject, "what": what })
-	return result
 
 
 func _create_history_listing(record: Record) -> HistoryListing:

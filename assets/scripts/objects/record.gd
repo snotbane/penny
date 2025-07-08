@@ -11,7 +11,7 @@ enum Response {
 var host : PennyHost
 var stamp : int
 var stmt : Stmt
-var data : Variant
+var data : Dictionary
 var response : Response
 
 var verbosity : int :
@@ -31,7 +31,7 @@ var is_advanced : bool :
 	get: return response == Response.RECORD_AND_ADVANCE
 
 
-func _init(_host: PennyHost, _stmt: Stmt, _data: Variant = null, _response := Response.RECORD_AND_ADVANCE) -> void:
+func _init(_host: PennyHost, _stmt: Stmt, _data: Dictionary = {}, _response := Response.RECORD_AND_ADVANCE) -> void:
 	host = _host
 	stamp = host.history.records.size()
 	stmt = _stmt

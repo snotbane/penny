@@ -29,6 +29,9 @@ var is_open : bool = false
 
 func _ready() -> void: pass
 
+func _exit_tree() -> void:
+	cell.disconnect_instance(self)
+
 
 ## Called immediately after instantiation. Use to "populate" the node with specific, one-time information it may need.
 func populate(_host: PennyHost, _cell: Cell = null) -> void:
@@ -51,14 +54,16 @@ func open_finish() -> void:
 
 
 func close(wait : bool = false) :
+	cell.disconnect_instance(self)
 	is_open = false
 	closing.emit()
 	if immediate_close: close_finish()
 	elif wait: await closed
 
 func close_finish() -> void:
-	closed.emit()
+	cell.disconnect_instance(self)
 	queue_free()
+	closed.emit()
 
 
 func get_save_data() -> Variant:

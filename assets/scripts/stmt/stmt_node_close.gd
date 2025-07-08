@@ -2,9 +2,8 @@
 ## No description
 class_name StmtClose extends StmtNode
 
-func _execute(host: PennyHost) :
-	await self.close_subject(host)
-	return super._execute(host)
+func _execute(record: Record) :
+	await self.close_subject(record.host)
 
 
 func _undo(record: Record) -> void:

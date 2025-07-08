@@ -25,9 +25,9 @@ func _populate(tokens: Array) -> void:
 		expr = Path.new_from_tokens(tokens)
 
 
-func _execute(host: PennyHost) :
+func _execute(record: Record) :
 	if is_simple_timer_delay:
-		await host.get_tree().create_timer(expr, false, false, false).timeout
+		await record.host.get_tree().create_timer(expr, false, false, false).timeout
 	else:
 		var object : Cell = expr.evaluate()
 		if object != null:
@@ -38,7 +38,6 @@ func _execute(host: PennyHost) :
 				printerr("Attempted to await the node of %s, but the node isn't an Actor." % object)
 		else:
 			printerr("Attempted to await the node of %s, but the object is null." % object)
-	return super._execute(host)
 
 
 # func _undo(record: Record) -> void:

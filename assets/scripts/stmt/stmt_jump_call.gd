@@ -2,9 +2,9 @@
 class_name StmtJumpCall extends StmtJump
 
 
-func _execute(host: PennyHost) :
-	host.call_stack.push_back(next_in_order)
-	return super._execute(host)
+func _pre_execute(record: Record) -> void:
+	super._pre_execute(record)
+	record.host.call_stack.push_back(next_in_order)
 
 
 func _undo(record: Record) -> void:

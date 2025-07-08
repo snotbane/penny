@@ -13,12 +13,14 @@ func _populate(tokens: Array) -> void:
 	label_name = tokens[0].value
 
 
-func _execute(host: PennyHost) :
-	return self.create_record(host, label_name)
+func _pre_execute(record: Record) -> void:
+	record.data.merge({
+		&"label": label_name
+	})
 
 
 func _next(record: Record) -> Stmt:
-	return Penny.get_stmt_from_label(record.data)
+	return Penny.get_stmt_from_label(record.data[&"label"])
 
 
 func _get_record_message(record: Record) -> String:

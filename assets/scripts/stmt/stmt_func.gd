@@ -34,16 +34,34 @@ func _populate(tokens: Array) -> void:
 	super._populate(left)
 
 
-func _execute(host: PennyHost) :
-	var evaluated_arguments : Array = [host]
+# func _execute(host: PennyHost) :
+# 	var evaluated_arguments : Array = [host]
+# 	for arg in arguments:
+# 		evaluated_arguments.push_back(arg.evaluate() if arg is Expr else arg)
+
+# 	var result : Variant
+# 	if is_awaited:	result = await	execute_callable.callv(evaluated_arguments)
+# 	else: 			result =		execute_callable.callv(evaluated_arguments)
+
+# 	return create_pre_execute(host, { &"args": evaluated_arguments, &"result": result })
+
+
+func _pre_execute(record: Record) -> void:
+	var evaluated_arguments : Array = [record.host]
 	for arg in arguments:
 		evaluated_arguments.push_back(arg.evaluate() if arg is Expr else arg)
 
-	var result : Variant
-	if is_awaited:	result = await	execute_callable.callv(evaluated_arguments)
-	else: 			result =		execute_callable.callv(evaluated_arguments)
+	record.data.merge({
+		&"args": evaluated_arguments
+	})
 
-	return create_record(host, { &"args": evaluated_arguments, &"result": result })
+
+func _execute(record: Record) :
+	var result : Variant
+	if is_awaited:	result = await	execute_callable.callv(record.data[&"args"])
+	else: 			result =		execute_callable.callv(record.data[&"args"])
+
+	record.data[&"result"] = result
 
 
 func _undo(record: Record) -> void :

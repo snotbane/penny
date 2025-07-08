@@ -22,7 +22,7 @@ const VERBOSITY_NAMES : PackedStringArray = [
 	"Ignored:32"
 ]
 
-signal aborted(record: Record)
+signal aborted
 
 var owner : PennyScript
 var index : int
@@ -125,20 +125,21 @@ func reload() -> void:
 func _reload() -> void: pass
 
 
-## Occurs when it is reached as a [PennyController] encounters it.
-func execute(host: PennyHost) :
-	return await Async.any([self._execute.bind(host), self.aborted])
-func _execute(host: PennyHost) :
-	return self.create_record(host)
+## Given a record, waits for something to complete BEFORE calling the next [Stmt]
+func execute(record: Record) :
+	return await Async.any([
+		self._execute.bind(record),
+		self.aborted,
+	])
+func _execute(record: Record) : pass
 
 
 ## Occurs when something interrupts this [Stmt] in the middle of execution.
-func abort(host : PennyHost, response : Record.Response) -> void:
-	var record := self._abort(host)
+func abort(record: Record, response : Record.Response) -> void:
+	_abort(record)
 	record.response = response
-	self.aborted.emit(record)
-func _abort(host : PennyHost) -> Record :
-	return self.create_record(host, null)
+	self.aborted.emit()
+func _abort(record: Record) -> void : pass
 
 
 ## Occurs when the user rewinds through history to undo this action.
@@ -148,7 +149,7 @@ func _undo(record: Record) -> void:	pass
 
 ## Occurs when the user fast-forwards through history to redo this action.
 func redo(record: Record) -> void: _redo(record)
-func _redo(record: Record) -> void: _execute(record.host)
+func _redo(record: Record) -> void: _execute(record)
 
 
 ## Returns the address of the next statement to go to, based on what happened.
@@ -157,8 +158,11 @@ func _next(record: Record) -> Stmt:
 	return next_in_order
 
 
-func create_record(host: PennyHost, data: Variant = null) -> Record:
-	return Record.new(host, self, data)
+func pre_execute(host: PennyHost, data: Dictionary = {}) -> Record:
+	var result := Record.new(host, self, data)
+	_pre_execute(result)
+	return result
+func _pre_execute(record: Record) -> void: pass
 
 
 func create_history_listing(record: Record) -> HistoryListing: return _create_history_listing(record)
@@ -184,6 +188,7 @@ func get_save_data() -> Variant:
 	# 	})
 	return result
 
+#region Addresses
 
 func get_next_in_order() -> Stmt :
 	var i := self.index + 1
@@ -306,3 +311,5 @@ func get_nested_stmts_single_depth() -> Array[Stmt] :
 		result.push_back(cursor)
 		cursor = cursor.get_next_in_same_depth()
 	return result
+
+#endregion

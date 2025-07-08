@@ -6,12 +6,14 @@ func _get_verbosity() -> Verbosity:
 	return Verbosity.FLOW_ACTIVITY
 
 
-func _execute(host: PennyHost) :
-	return self.create_record(host, _evaluate_self(host))
+func _pre_execute(record: Record) -> void:
+	record.data.merge({
+		&"result": _evaluate_self(record.host)
+	})
 
 
 func _next(record: Record) -> Stmt:
-	if record.data == null:
+	if record.data[&"result"] == null:
 		record.host.expecting_conditional = false
 		return next_in_same_or_lower_depth
 
