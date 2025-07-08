@@ -1,8 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://b8sp6ey8fsgt7"]
+[gd_scene load_steps=10 format=3 uid="uid://b8sp6ey8fsgt7"]
 
 [ext_resource type="Script" uid="uid://drwhjiuoinitd" path="res://addons/penny_godot/assets/scripts/nodes/dialog_node.gd" id="2_44j7f"]
 [ext_resource type="PackedScene" uid="uid://byamam888n7fp" path="res://addons/penny_godot/assets/scenes/dialog_elements/roger.tscn" id="3_bfsyc"]
 [ext_resource type="Script" uid="uid://cdrs673e0hg62" path="res://addons/penny_godot/assets/scripts/nodes/dialog_typewriter.gd" id="3_q7721"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7rfiq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ni267"]
 
 [sub_resource type="Animation" id="Animation_th5j2"]
 length = 0.001
@@ -147,7 +151,6 @@ audio_player = NodePath("nondirectional_audio_stream_player")
 roger = NodePath("../roger")
 
 [node name="nondirectional_audio_stream_player" type="AudioStreamPlayer" parent="typewriter"]
-bus = &"Voice"
 
 [node name="name_label" type="RichTextLabel" parent="."]
 clip_contents = false
@@ -169,6 +172,7 @@ theme_override_font_sizes/bold_italics_font_size = 36
 theme_override_font_sizes/italics_font_size = 36
 theme_override_font_sizes/normal_font_size = 36
 theme_override_font_sizes/bold_font_size = 36
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7rfiq")
 bbcode_enabled = true
 fit_content = true
 scroll_active = false
@@ -213,6 +217,7 @@ clip_contents = false
 layout_mode = 2
 focus_mode = 2
 mouse_filter = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ni267")
 bbcode_enabled = true
 fit_content = true
 scroll_active = false
