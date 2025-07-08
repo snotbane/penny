@@ -11,6 +11,24 @@ func _enable_plugin():
 	self.add_autoload_singleton(AUTOLOAD_NAME, IMPORTER)
 	# EditorInterface.get_resource_filesystem().resources_reimported.connect(_resources_reimported)
 
+	configure_input()
+
+
+func _disable_plugin():
+	self.remove_autoload_singleton(AUTOLOAD_NAME)
+	# EditorInterface.get_resource_filesystem().resources_reimported.disconnect(_resources_reimported)
+
+
+func _resources_reimported(resources: PackedStringArray) -> void:
+	for path in resources: for ext in Penny.RECOGNIZED_EXTENSIONS:
+		if path.ends_with(ext): _penny_resource_reimported(path); break
+
+
+func _penny_resource_reimported(path: String) -> void:
+	ResourceLoader.load(path)
+
+
+func configure_input() -> void:
 	if ProjectSettings.get_setting(Penny.SETTING_INPUT_DEBUG_WINDOW) == null:
 		var penny_debug_input := InputEventKey.new()
 		penny_debug_input.physical_keycode = KEY_D
@@ -79,17 +97,3 @@ func _enable_plugin():
 				penny_roll_ahead_input_2,
 			]
 		})
-
-
-func _disable_plugin():
-	self.remove_autoload_singleton(AUTOLOAD_NAME)
-	# EditorInterface.get_resource_filesystem().resources_reimported.disconnect(_resources_reimported)
-
-
-func _resources_reimported(resources: PackedStringArray) -> void:
-	for path in resources: for ext in Penny.RECOGNIZED_EXTENSIONS:
-		if path.ends_with(ext): _penny_resource_reimported(path); break
-
-
-func _penny_resource_reimported(path: String) -> void:
-	ResourceLoader.load(path)
