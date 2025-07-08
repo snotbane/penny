@@ -63,8 +63,6 @@ events = [SubResource("InputEventKey_2j54e")]
 
 [node name="penny_host" type="Node"]
 script = ExtResource("1_amygg")
-autostart = true
-start_label = &"test"
 
 [node name="canvas_layer" type="CanvasLayer" parent="."]
 

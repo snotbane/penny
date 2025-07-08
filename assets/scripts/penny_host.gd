@@ -1,76 +1,34 @@
 
 ## Node that actualizes Penny statements. This stores local data_root and records based on what the player chooses to do. Most applications will simply use an autoloaded, global host. For more advanced uses, you can instantiate multiple of these simultaneously for concurrent or even network-replicated instances. The records/state can be saved.
-class_name PennyHost extends Node
+class_name PennyHost extends HistoryUser
 
-class HistoryOld:
+#region Save
 
-	signal record_added(record : Record)
-	signal record_removed(record : Record)
+class SaveData extends JSONFileResource:
+	var host : PennyHost
 
-	var records : Array[Record]
-	var max_size : int = -1
+	func _init(__host: PennyHost, __save_data__: String = generate_save_path()) -> void:
+		host = __host
+		super._init(__save_data__)
 
-	var most_recent : Record :
-		get: return records.front()
+	func _export_json(json: Dictionary) -> void:
+		json.merge({
+			&"git_rev_penny": PennyUtils.get_git_commit_id("res://addons/penny_godot/"),
+			&"git_rev_project": PennyUtils.get_git_commit_id(),
+			&"screenshot": null,
+			&"state": Save.any(Cell.ROOT),
+			&"history": host.history.export_json()
+		})
 
+var save_data : SaveData
 
-	var last_dialog : Record :
-		get:
-			for record in records:
-				if record.stmt is StmtDialog:
-					return record
-			return null
+func create_save_data() -> void:
+	save_data = SaveData.new(self)
 
+func save_changes() -> void:
+	save_data.save_changes()
 
-	func _init(_max_size : int = -1) -> void:
-		max_size = _max_size
-
-
-	func add(record: Record) -> void:
-		if max_size >= 0:
-			while records.size() >= max_size:
-				record_removed.emit(records.pop_back())
-
-		records.push_front(record)
-		record_added.emit(record)
-
-
-	func reset_at(index : int) -> void:
-		index += 1
-		for i in index:
-			record_removed.emit(records.pop_front())
-
-
-	func get_roll_back_point(from: int) -> int:
-		while from < records.size() - 1:
-			from += 1
-			if records[from].stmt.is_rollable: return from
-		return -1
-
-
-	func get_roll_ahead_point(from: int) -> int:
-		while from > 0:
-			from -= 1
-			if records[from].stmt.is_rollable: return from
-		return -1
-
-
-	func get_reverse_index(i: int) -> int:
-		return records.size() - i - 1
-
-
-	func get_save_data() -> Variant:
-		var copy := records.duplicate()
-		copy.reverse()
-		return {
-			"records": Save.any(copy)
-		}
-
-
-	func load_data(host: PennyHost, json: Dictionary) -> void:
-		records.clear()
-		for record in json["records"]:
-			records.push_front(Record.new(host, Penny.get_stmt_from_address(record["stmt"]["script"], record["stmt"]["index"]), Load.any(record["data"]), Record.Response.IGNORE))
+#endregion
 
 signal on_try_advance
 signal on_data_modified
@@ -106,23 +64,15 @@ var last_dialog_object : Cell :
 		if last_dialog: return last_dialog.stmt.subject_dialog_path.evaluate()
 		return null
 
-
-var history : HistoryOld
-var _history_cursor_index : int = -1
-var history_cursor_index : int = -1 :
-	get: return _history_cursor_index
-	set(value):
-		value = clamp(value, -1, history.records.size() - 1)
-		if _history_cursor_index == value: return
-
+func _set_history_index(value: int) -> void:
 		self.abort(Record.Response.IGNORE)
 
-		var increment := signi(value - _history_cursor_index)
-		while _history_cursor_index != value:
+		var increment := signi(value - _history_index)
+		while _history_index != value:
 			if increment > 0 and history_cursor:
 				history_cursor.undo()
 
-			_history_cursor_index += increment
+			_history_index += increment
 
 			if increment < 0 and history_cursor:
 				history_cursor.redo()
@@ -131,24 +81,18 @@ var history_cursor_index : int = -1 :
 		self.emit_roll_events()
 
 
-var history_cursor : Record :
-	get:
-		if history_cursor_index == -1: return null
-		return history.records[history_cursor_index]
-
-
 var can_roll_back : bool :
-	get: return history.get_roll_back_point(history_cursor_index) != -1
+	get: return history.get_roll_back_point(history_index) != -1
 
 
 var can_roll_ahead : bool :
-	get: return history_cursor_index != -1
+	get: return history_index != -1
 
 
 func _init() -> void:
 	insts.push_back(self)
 
-	history = HistoryOld.new()
+	super._init()
 
 
 func _exit_tree() -> void:
@@ -255,27 +199,27 @@ func skip_to_next() -> void:
 func roll_ahead() -> void:
 	if not allow_rolling or not can_roll_ahead: return
 
-	history_cursor_index = history.get_roll_ahead_point(history_cursor_index)
+	history_index = history.get_roll_ahead_point(history_index)
 
 
 func roll_back() -> void:
 	if not allow_rolling or not can_roll_back: return
 
-	history_cursor_index = history.get_roll_back_point(history_cursor_index)
+	history_index = history.get_roll_back_point(history_index)
 
 
 func roll_end() -> void:
-	history_cursor_index = -1
+	history_index = -1
 
 
 func reset_history_in_place() -> void:
-	history.reset_at(history_cursor_index)
-	_history_cursor_index = -1
+	history.reset_at(history_index)
+	_history_index = -1
 
 
 func clear_history() -> void:
 	history.records.clear()
-	_history_cursor_index = -1
+	_history_index = -1
 
 
 func next(record : Record) -> Stmt:
@@ -331,7 +275,7 @@ func load() -> void:
 	Cell.ROOT.load_data(self, load_data["data"])
 
 	history.load_data(self, load_data["history"])
-	_history_cursor_index = history.get_reverse_index(load_data["history_cursor_index"])
+	_history_index = history.get_reverse_index(load_data["history_index"])
 
 	self.abort(Record.Response.IGNORE)
 	self.execute_at_history_cursor()
@@ -360,7 +304,7 @@ func get_save_data() -> Variant:
 		},
 		"data": Save.any(Cell.ROOT),
 		"history": Save.any(history),
-		"history_cursor_index": history.get_reverse_index(history_cursor_index),
+		"history_index": history.get_reverse_index(history_index),
 	}
 
 
