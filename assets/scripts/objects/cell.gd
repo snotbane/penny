@@ -1,5 +1,5 @@
 
-class_name Cell extends RefCounted
+class_name Cell extends JSONResource
 
 ## Default name of any new object.
 const NEW_OBJECT_KEY_NAME := &"_NEW_OBJECT"
@@ -194,6 +194,14 @@ func close_instance() -> void:
 	if inst is Actor:
 		inst.close()
 	inst.queue_free()
+
+
+func _export_json(json: Dictionary) -> void:
+	var keep := {}
+	for k in data.keys():
+		# if str(k)[0] != "$": continue
+		keep[k] = data[k]
+	json.merge(Save.any(keep))
 
 
 func get_save_data() -> Variant:

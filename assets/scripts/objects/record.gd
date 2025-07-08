@@ -1,6 +1,6 @@
 
 ## Record of a stmt that has occurred. Records that share the same stmt are not necessarily equal as they can have occurred at different stamps (times).
-class_name Record extends Object
+class_name Record extends JSONResource
 
 enum Response {
 	IGNORE,

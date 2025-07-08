@@ -32,6 +32,8 @@ actor = new object
 	.unknown = new unknown
 	.name = `@.f_name`
 	.d_name = `Mx.`
+	.f_name = `John`
+	.l_name = `Doe`
 	.fl_name = `@.prefix@.f_name @.l_name</>`
 	.df_name = `@.prefix@.d_name @.f_name</>`
 	.dl_name = `@.prefix@.d_name @.l_name</>`
@@ -42,7 +44,7 @@ actor = new object
 	.res = 'uid://3tbms65op2ht'
 
 unknown = new actor
-	.name = "???"
+	.name = `???`
 
 PARAGRAPH_DEFAULT = new filter
 	.pattern = `^`

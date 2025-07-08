@@ -2,7 +2,7 @@
 ## Node that actualizes Penny statements. This stores local data_root and records based on what the player chooses to do. Most applications will simply use an autoloaded, global host. For more advanced uses, you can instantiate multiple of these simultaneously for concurrent or even network-replicated instances. The records/state can be saved.
 class_name PennyHost extends Node
 
-class History:
+class HistoryOld:
 
 	signal record_added(record : Record)
 	signal record_removed(record : Record)
@@ -107,7 +107,7 @@ var last_dialog_object : Cell :
 		return null
 
 
-var history : History
+var history : HistoryOld
 var _history_cursor_index : int = -1
 var history_cursor_index : int = -1 :
 	get: return _history_cursor_index
@@ -148,7 +148,7 @@ var can_roll_ahead : bool :
 func _init() -> void:
 	insts.push_back(self)
 
-	history = History.new()
+	history = HistoryOld.new()
 
 
 func _exit_tree() -> void:

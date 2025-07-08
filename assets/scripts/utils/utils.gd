@@ -1,6 +1,9 @@
 
 @tool class_name PennyUtils
 
+static var NOW : int :
+	get: return floori(Time.get_unix_time_from_system())
+
 static func get_paths_in_folder(root := "res://", include := RegEx.create_from_string(".*")) -> PackedStringArray:
 	var dir := DirAccess.open(root)
 	if not dir: return []
