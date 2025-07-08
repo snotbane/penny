@@ -244,7 +244,6 @@ func enter(host: PennyHost, parent_name: StringName = self.get_value(K_MARKER)):
 	parent_node.add_child(inst)
 	inst.global_position = parent_node.global_position
 
-	print(inst)
 	if inst is Actor: await inst.open()
 
 	return inst

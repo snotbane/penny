@@ -13,6 +13,8 @@ func _enable_plugin():
 
 	configure_input()
 
+	ProjectSettings.save()
+
 
 func _disable_plugin():
 	self.remove_autoload_singleton(AUTOLOAD_NAME)
@@ -35,14 +37,15 @@ func configure_input() -> void:
 		penny_debug_input.shift_pressed = true
 
 		ProjectSettings.set_setting(Penny.SETTING_INPUT_DEBUG_WINDOW, {
+			"deadzone": 0.2,
 			"events": [
 				penny_debug_input
-			]
+			],
 		})
 
 	if ProjectSettings.get_setting(Penny.SETTING_INPUT_ADVANCE) == null:
-		var penny_advance_input_0 := InputEventMouseButton.new()
-		penny_advance_input_0.button_index = MOUSE_BUTTON_LEFT
+		# var penny_advance_input_0 := InputEventMouseButton.new()
+		# penny_advance_input_0.button_index = MOUSE_BUTTON_LEFT
 
 		var penny_advance_input_1 := InputEventKey.new()
 		penny_advance_input_1.physical_keycode = KEY_SPACE
@@ -50,15 +53,31 @@ func configure_input() -> void:
 		var penny_advance_input_2 := InputEventJoypadButton.new()
 		penny_advance_input_2.button_index = JOY_BUTTON_A
 
-		var penny_advance_input_3 := InputEventJoypadButton.new()
-		penny_advance_input_3.button_index = JOY_BUTTON_B
-
 		ProjectSettings.set_setting(Penny.SETTING_INPUT_ADVANCE, {
+			"deadzone": 0.2,
 			"events": [
-				penny_advance_input_0,
+				# penny_advance_input_0,
 				penny_advance_input_1,
 				penny_advance_input_2,
-				penny_advance_input_3,
+			]
+		})
+
+	if ProjectSettings.get_setting(Penny.SETTING_INPUT_SKIP) == null:
+		# var penny_skip_input_0 := InputEventMouseButton.new()
+		# penny_skip_input_0.button_index = MOUSE_BUTTON_RIGHT
+
+		var penny_skip_input_1 := InputEventKey.new()
+		penny_skip_input_1.physical_keycode = KEY_ENTER
+
+		var penny_skip_input_2 := InputEventJoypadButton.new()
+		penny_skip_input_2.button_index = JOY_BUTTON_B
+
+		ProjectSettings.set_setting(Penny.SETTING_INPUT_SKIP, {
+			"deadzone": 0.2,
+			"events": [
+				# penny_skip_input_0,
+				penny_skip_input_1,
+				penny_skip_input_2,
 			]
 		})
 
@@ -73,6 +92,7 @@ func configure_input() -> void:
 		penny_roll_back_input_2.button_index = JOY_BUTTON_DPAD_UP
 
 		ProjectSettings.set_setting(Penny.SETTING_INPUT_ROLL_BACK, {
+			"deadzone": 0.2,
 			"events": [
 				penny_roll_back_input_0,
 				penny_roll_back_input_1,
@@ -91,6 +111,7 @@ func configure_input() -> void:
 		penny_roll_ahead_input_2.button_index = JOY_BUTTON_DPAD_DOWN
 
 		ProjectSettings.set_setting(Penny.SETTING_INPUT_ROLL_AHEAD, {
+			"deadzone": 0.2,
 			"events": [
 				penny_roll_ahead_input_0,
 				penny_roll_ahead_input_1,
