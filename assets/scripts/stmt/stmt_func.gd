@@ -14,6 +14,9 @@ var undo_callable : Callable :
 var is_awaited : bool
 var arguments : Array
 
+var is_reserved_function : bool :
+	get: return local_subject_ref.ids.size() == 1
+
 func _populate(tokens: Array) -> void:
 	self.is_awaited = tokens.front().type == PennyScript.Token.Type.KEYWORD and tokens.front().value == &"await"
 	if self.is_awaited:	tokens.pop_front()
@@ -32,18 +35,6 @@ func _populate(tokens: Array) -> void:
 	arguments = new_args_from_tokens(right)
 
 	super._populate(left)
-
-
-# func _execute(host: PennyHost) :
-# 	var evaluated_arguments : Array = [host]
-# 	for arg in arguments:
-# 		evaluated_arguments.push_back(arg.evaluate() if arg is Expr else arg)
-
-# 	var result : Variant
-# 	if is_awaited:	result = await	execute_callable.callv(evaluated_arguments)
-# 	else: 			result =		execute_callable.callv(evaluated_arguments)
-
-# 	return create_pre_execute(host, { &"args": evaluated_arguments, &"result": result })
 
 
 func _pre_execute(record: Record) -> void:
@@ -82,4 +73,3 @@ static func new_args_from_tokens(tokens: Array, _stmt: Stmt = null) -> Array:
 		start = i + 1
 	result.push_back(Expr.new_from_tokens(tokens.slice(start, tokens.size())))
 	return result
-

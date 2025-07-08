@@ -13,7 +13,7 @@ func _pre_execute(record: Record) -> void:
 
 
 func _execute(record: Record) :
-	print(record.data[&"message"])
+	print("[Penny] :: ", record.data[&"message"])
 
 
 func _get_record_message(record: Record) -> String:

@@ -214,6 +214,7 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 					&"match": 	return StmtMatch.new()
 					&"menu": 	return StmtMenu.new()
 					&"pass": 	return StmtPass.new()
+					&"print": 	return StmtPrint.new()
 					&"return":	return StmtReturn.new()
 				printerr("The keyword '%s' was found, but it isn't assigned to any Stmt." % keyword)
 				return null
@@ -304,7 +305,7 @@ class Token extends RefCounted:
 	static var TYPE_PATTERNS : Dictionary[Type, RegEx] = {
 		Token.Type.INDENTATION: 			RegEx.create_from_string(r"(?m)^\t+"),
 		Token.Type.VALUE_STRING: 			RegEx.create_from_string(r"(?s)([`'\"]).*?\1"),
-		Token.Type.KEYWORD: 				RegEx.create_from_string(r"\b(await|call|else|elif|if|init|jump|label|match|menu|pass|return)\b"),
+		Token.Type.KEYWORD: 				RegEx.create_from_string(r"\b(await|call|else|elif|if|init|jump|label|match|menu|pass|print|return)\b"),
 		Token.Type.VALUE_BOOLEAN: 			RegEx.create_from_string(r"\b([Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
 		Token.Type.VALUE_COLOR: 			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
 		Token.Type.ASSIGNMENT: 				RegEx.create_from_string(r"=>|([+\-*/]?)=(?!=)"),
