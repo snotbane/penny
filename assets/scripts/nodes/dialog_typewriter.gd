@@ -127,7 +127,6 @@ var cursor : float :
 		visible_characters = floori(_cursor)
 
 
-var expected_characters : int
 var visible_characters : int :
 	get: return rtl.visible_characters
 	set (value):
@@ -158,7 +157,7 @@ var visible_characters : int :
 						is_talking = true
 						unclosed_decos.erase(deco)
 
-		if rtl.visible_characters >= expected_characters:
+		if rtl.visible_characters >= rtl.get_total_character_count():
 			rtl.visible_characters = -1
 
 		if rtl.visible_characters == -1:
@@ -278,7 +277,6 @@ func _exit_tree() -> void:
 func reset() -> void:
 	if scroll_container:
 		fake_rtl.text = rtl.text
-	expected_characters = rtl.get_total_character_count()
 	play_state = PlayState.READY
 	cursor = 0
 
@@ -316,6 +314,7 @@ func _receive(record: Record) -> void:
 	rtl.text = message.text
 	unencountered_decos = message.decos.duplicate()
 	unclosed_decos.clear()
+	# for deco in unencountered_decos:
 	for deco in message.decos:
 		deco.create_remap_for(self)
 
