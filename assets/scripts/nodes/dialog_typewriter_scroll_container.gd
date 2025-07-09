@@ -1,6 +1,6 @@
 extends ScrollContainer
 
-@export var scroll_speed : float = 10.0
+@export var autoscroll_speed : float = 10.0
 
 @export var minimum_size : Vector2
 @export var maximum_size : Vector2
@@ -43,11 +43,11 @@ func _process(delta: float) -> void:
 		custom_minimum_size = lerp(
 			custom_minimum_size,
 			target_size,
-			scroll_speed * delta
+			autoscroll_speed * delta
 		)
 		v_scroll_bar.value = lerp(
 			v_scroll_bar.value,
 			max_scroll_y,
-			(scroll_speed * delta) if maximum_size_y_reached else 1.0
+			(autoscroll_speed * delta) if maximum_size_y_reached else 1.0
 		)
 		last_scroll_value = v_scroll_bar.value

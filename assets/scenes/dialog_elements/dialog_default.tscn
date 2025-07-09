@@ -3,8 +3,8 @@
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="1_uxamp"]
 [ext_resource type="Script" uid="uid://drwhjiuoinitd" path="res://addons/penny_godot/assets/scripts/nodes/dialog_node.gd" id="2_44j7f"]
 [ext_resource type="PackedScene" uid="uid://byamam888n7fp" path="res://addons/penny_godot/assets/scenes/dialog_elements/roger.tscn" id="3_bfsyc"]
-[ext_resource type="Script" uid="uid://ddir6oopjb0tj" path="res://addons/penny_godot/assets/scenes/dialog_elements/rich_text_scroll_container.gd" id="3_ni267"]
 [ext_resource type="Script" uid="uid://cdrs673e0hg62" path="res://addons/penny_godot/assets/scripts/nodes/dialog_typewriter.gd" id="3_q7721"]
+[ext_resource type="AudioStream" uid="uid://bvaimbcs1j77n" path="res://addons/penny_godot/assets/audio/sfx_typewriter_sans.ogg" id="4_a8dr1"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7rfiq"]
 
@@ -147,14 +147,18 @@ immediate_close = false
 save_spawn = false
 save_transform = false
 
-[node name="typewriter" type="Node" parent="." node_paths=PackedStringArray("rtl", "scroll_container", "audio_player", "roger")]
+[node name="typewriter" type="Node" parent="." node_paths=PackedStringArray("rtl", "audio_player", "scroll_container", "roger")]
 script = ExtResource("3_q7721")
 rtl = NodePath("../panel/margin_container/scroll_container/margin_container/text_label")
-scroll_container = NodePath("../panel/margin_container/scroll_container")
 audio_player = NodePath("nondirectional_audio_stream_player")
+minimum_audio_delay = 0.0345
+scroll_container = NodePath("../panel/margin_container/scroll_container")
+scrollbox_max_height = 128.0
+scrollbox_add_height = 32.0
 roger = NodePath("../roger")
 
 [node name="nondirectional_audio_stream_player" type="AudioStreamPlayer" parent="typewriter"]
+stream = ExtResource("4_a8dr1")
 
 [node name="name_label" type="RichTextLabel" parent="."]
 clip_contents = false
@@ -206,15 +210,11 @@ theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
 [node name="scroll_container" type="ScrollContainer" parent="panel/margin_container"]
-custom_minimum_size = Vector2(0, 128)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 follow_focus = true
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 3
-script = ExtResource("3_ni267")
-minimum_size = Vector2(0, 128)
-maximum_size = Vector2(0, 256)
-add_size = Vector2(0, 32)
 
 [node name="margin_container" type="MarginContainer" parent="panel/margin_container/scroll_container"]
 custom_minimum_size = Vector2(0, 128)
@@ -264,4 +264,3 @@ libraries = {
 [connection signal="opened" from="." to="typewriter" method="present"]
 [connection signal="opening" from="." to="animation_player" method="play" binds= [&"open"]]
 [connection signal="completed" from="typewriter" to="." method="prevent_skip"]
-[connection signal="fake_rtl_created" from="typewriter" to="panel/margin_container/scroll_container" method="set_driver"]

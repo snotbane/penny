@@ -10,67 +10,86 @@ enum PlayState {
 	COMPLETED
 }
 
-signal fake_rtl_created(rtl: RichTextLabel)
 signal completed
 signal prodded
 
+@export var rtl : RichTextLabel
 
-var speed_stack : Array[float] = [ 40.0 ]
+@export_subgroup("Character Printout")
+
+## If enabled, delays will be treated like wait tags in that when we try to prod the typewriter to continue, we will stop at both delays and waits. (This mimics Ren'Py behavior.)
+@export var treat_delay_as_wait : bool = false
+
+var speed_stack : Array[float] = [ 50.0 ]
 ## How many characters per second to print out. For specific speeds mid-printout, use the <speed=x> decoration.
-@export var print_speed : float = 40.0 :
+@export var print_speed : float = 50.0 :
 	get: return speed_stack[0]
 	set(value):
 		speed_stack[0] = value
-
 
 ## Dictionary of RegEx patterns with an assigned value. Must match one single character. By default, this is used to determine if a character should or should not make a sound.
 @export var character_values : Dictionary[String, Variant] = {
 	r"[\S]": true
 }
 
-## If enabled, delays will be treated like wait tags in that when we try to prod the typewriter to continue, we will stop at both delays and waits. (This mimics Ren'Py behavior.)
-@export var treat_delay_as_wait : bool = false
-
-
-@export var lock_scroll_while_printing : bool = true
-
-
-@export var rtl : RichTextLabel
-
-## (optional) controls scroll behavior.
-@export var scroll_container : ScrollContainer
-
+@export_subgroup("Audio")
 
 @export var audio_player : AudioStreamPlayer
 
 var audio_timer := Timer.new()
 ## Length of time (seconds) that must pass before a new typewriter sound can be played.
 var _minimum_audio_delay : float = 0.033
-@export_range(0.01, 0.1, 0.001, "or_greater") var minimum_audio_delay : float = 0.033 :
+@export_range(0.01, 0.1, 0.0001, "or_greater") var minimum_audio_delay : float = 0.033 :
 	get: return _minimum_audio_delay
 	set(value):
 		_minimum_audio_delay = value
 		audio_timer.wait_time = value
 
-## Default audio stream to play while printing non-whitespace characters. Leave blank if using voice acting, probably.
-@export var audio_sample : AudioStream
+@export_subgroup("Autoscroll")
+
+## (optional) Controls scroll behavior.
+@export var scroll_container : ScrollContainer
+
+var user_scroll_enabled : bool = true :
+	get:
+		if not scroll_container: return false
+		return scroll_container.mouse_filter != Control.MOUSE_FILTER_IGNORE
+	set(value):
+		if not scroll_container: return
+		if user_scroll_enabled == value: return
+		scroll_container.mouse_filter = Control.MOUSE_FILTER_PASS if value else Control.MOUSE_FILTER_IGNORE
+		v_scroll_bar.mouse_filter = scroll_container.mouse_filter
+
+		user_scroll_override = false
+
+## Speed at which [member scroll_container] scrolls/grows automatically.
+@export var autoscroll_speed : float = 12.0
+
+## The maximum height (pixels)
+@export_range(0.0, 1080.0, 1.0, "or_greater") var scrollbox_max_height : float
+var scrollbox_min_height : float
+
+@export_range(0.0, 1080.0, 1.0, "or_greater") var scrollbox_add_height : float
 
 
-@export_category("Roger")
+@export_subgroup("Roger")
 
+## Also known as "click to continue" or "CTC". This is the [CanvasItem] which represents that.
 @export var roger : CanvasItem
+
+## If enabled, the roger will always appear when the user must prod the dialog. Otherwise, it will appear only when all text is completed.
 @export var roger_appears_on_paused := false
 
 ## Fake label used to calculate appropriate scroll amount.
 var fake_rtl : RichTextLabel
-var scrollbar : VScrollBar
+var v_scroll_bar : VScrollBar
 
 var is_ready : bool = false
 var is_locked : bool = false
 var is_typing : bool :
 	get: return play_state == PlayState.PLAYING
 var is_playing : bool :
-	get: return play_state == PlayState.PLAYING || play_state == PlayState.DELAYED
+	get: return play_state == PlayState.PLAYING or play_state == PlayState.DELAYED
 
 var _play_state := PlayState.READY
 var play_state : PlayState :
@@ -79,9 +98,12 @@ var play_state : PlayState :
 		if _play_state == value: return
 		_play_state = value
 
+		user_scroll_enabled = _play_state == PlayState.PAUSED or _play_state == PlayState.COMPLETED
+
 		match _play_state:
 			PlayState.READY, PlayState.COMPLETED:
 				is_locked = false
+				user_scroll_override = false
 
 		if roger:
 			match _play_state:
@@ -111,6 +133,10 @@ var visible_characters : int :
 	set (value):
 		if rtl.visible_characters == value: return
 		rtl.visible_characters = value
+		fake_rtl.visible_characters = rtl.visible_characters
+
+		# var last_visible_character_bounds : Rect2 = rtl.last_visible_character_bounds
+		# roger.position = last_visible_character_bounds.position
 
 		if is_playing:
 			if unencountered_decos:
@@ -141,18 +167,10 @@ var visible_characters : int :
 			for deco in unclosed_decos:
 				deco.encounter_end(self)
 			unclosed_decos.clear()
-			if scroll_container:
-				scroll_container.mouse_filter = Control.MOUSE_FILTER_PASS
-				scrollbar.mouse_filter = Control.MOUSE_FILTER_PASS
 			completed.emit()
 		elif rtl.visible_characters > 0:
 			is_talking = true
 			self.character_encountered(rtl.text[rtl.visible_characters - 1])
-
-		# var last_visible_character_bounds : Rect2 = rtl.last_visible_character_bounds
-		# roger.position = last_visible_character_bounds.position
-
-		fake_rtl.visible_characters = rtl.visible_characters
 
 
 var speed : float :
@@ -188,7 +206,8 @@ var next_prod_stop : int :
 
 func _ready() -> void:
 	if scroll_container:
-		scrollbar = scroll_container.get_v_scroll_bar()
+		v_scroll_bar = scroll_container.get_v_scroll_bar()
+		scrollbox_min_height = scroll_container.custom_minimum_size.y
 
 	## Set up the fake rtl to ensure proper scrolling
 	fake_rtl = rtl.duplicate()
@@ -198,22 +217,58 @@ func _ready() -> void:
 	fake_rtl.focus_mode = Control.FOCUS_NONE
 
 	rtl.add_sibling.call_deferred(fake_rtl)
-	fake_rtl_created.emit(fake_rtl)
 
 	minimum_audio_delay = minimum_audio_delay
 	audio_timer.autostart = false
 	audio_timer.one_shot = true
 	self.add_child(audio_timer)
-	audio_player.stream = audio_sample
 	reset()
 	is_ready = true
 
 
 func _process(delta: float) -> void:
+	_process_cursor(delta)
+	_process_autoscroll(delta)
+
+func _process_cursor(delta: float) -> void:
 	if not is_working: return
 
 	if is_typing:
 		cursor += speed * delta
+
+var user_scroll_override : bool
+var last_scroll_y : float
+func _process_autoscroll(delta: float) -> void:
+	if not scroll_container: return
+
+	var target_height := fake_rtl.get_content_height() + scrollbox_add_height
+	target_height = maxf(target_height, scrollbox_min_height)
+	if scrollbox_max_height > 0.0:
+		target_height = minf(target_height, scrollbox_max_height)
+
+	var maximum_height_reached := target_height == scrollbox_max_height
+	var max_scroll_y := (fake_rtl.get_content_height() - scroll_container.size.y) + (scrollbox_add_height / (1.0 if maximum_height_reached else 2.0))
+
+	scroll_container.custom_minimum_size = lerp(
+		scroll_container.custom_minimum_size,
+		Vector2(
+			scroll_container.custom_minimum_size.x,
+			target_height
+		),
+		autoscroll_speed * delta
+	)
+
+	v_scroll_bar.value = minf(v_scroll_bar.value, max_scroll_y)
+
+	user_scroll_override = v_scroll_bar.value < (max_scroll_y if user_scroll_override else last_scroll_y)
+
+	if not user_scroll_override:
+		v_scroll_bar.value = lerp(
+			v_scroll_bar.value,
+			max_scroll_y,
+			(autoscroll_speed * delta) if maximum_height_reached else 1.0
+		)
+		last_scroll_y = v_scroll_bar.value
 
 
 func _exit_tree() -> void:
@@ -223,9 +278,6 @@ func _exit_tree() -> void:
 func reset() -> void:
 	if scroll_container:
 		fake_rtl.text = rtl.text
-		if lock_scroll_while_printing:
-			scroll_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			scrollbar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	expected_characters = rtl.get_total_character_count()
 	play_state = PlayState.READY
 	cursor = 0
@@ -286,21 +338,16 @@ func get_character_value(c: String) -> Variant:
 
 
 func delay(seconds: float):
-	var new_state : PlayState
-	if self.treat_delay_as_wait:
-		new_state = PlayState.PAUSED
-	else:
-		new_state = PlayState.DELAYED
-	self.play_state = new_state
-	await self.get_tree().create_timer(seconds).timeout
-	if self.play_state == new_state:
-		self.play_state = PlayState.PLAYING
+	var new_state : PlayState = PlayState.PAUSED if treat_delay_as_wait else PlayState.DELAYED
+	play_state = new_state
+	await get_tree().create_timer(seconds).timeout
+	if play_state == new_state: play_state = PlayState.PLAYING
 
 
 func wait():
-	self.play_state = PlayState.PAUSED
-	await self.prodded
-	self.play_state = PlayState.PLAYING
+	play_state = PlayState.PAUSED
+	await prodded
+	play_state = PlayState.PLAYING
 
 
 func push_speed_tag(characters_per_second: float) -> void:

@@ -10,7 +10,7 @@ object
 dialog = new object
 	.res = 'uid://b8sp6ey8fsgt7'
 	.marker = 'dialog'
-	.filters = [PARAGRAPH_DEFAULT, PIPE_TO_DELAY, SLASH_TO_WAIT]
+	.filters = [PARAGRAPH_DEFAULT, PUNCTUATION_TO_PIPE, PIPE_TO_DELAY, SLASH_TO_WAIT]
 	.reusable = true
 
 prompt = new object
