@@ -1,7 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://b8sp6ey8fsgt7"]
+[gd_scene load_steps=12 format=3 uid="uid://b8sp6ey8fsgt7"]
 
+[ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="1_uxamp"]
 [ext_resource type="Script" uid="uid://drwhjiuoinitd" path="res://addons/penny_godot/assets/scripts/nodes/dialog_node.gd" id="2_44j7f"]
 [ext_resource type="PackedScene" uid="uid://byamam888n7fp" path="res://addons/penny_godot/assets/scenes/dialog_elements/roger.tscn" id="3_bfsyc"]
+[ext_resource type="Script" uid="uid://ddir6oopjb0tj" path="res://addons/penny_godot/assets/scenes/dialog_elements/rich_text_scroll_container.gd" id="3_ni267"]
 [ext_resource type="Script" uid="uid://cdrs673e0hg62" path="res://addons/penny_godot/assets/scripts/nodes/dialog_typewriter.gd" id="3_q7721"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7rfiq"]
@@ -129,11 +131,13 @@ _data = {
 [node name="dialog_default" type="Control" node_paths=PackedStringArray("name_label", "text_label", "typewriter")]
 visible = false
 layout_mode = 3
-anchors_preset = 15
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
+theme = ExtResource("1_uxamp")
 script = ExtResource("2_44j7f")
 name_label = NodePath("name_label")
 text_label = NodePath("panel/margin_container/scroll_container/margin_container/text_label")
@@ -183,11 +187,12 @@ visible_characters_behavior = 1
 [node name="panel" type="PanelContainer" parent="."]
 self_modulate = Color(1, 1, 1, 0.878431)
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
@@ -201,12 +206,18 @@ theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
 [node name="scroll_container" type="ScrollContainer" parent="panel/margin_container"]
+custom_minimum_size = Vector2(0, 128)
 layout_mode = 2
 follow_focus = true
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 3
+script = ExtResource("3_ni267")
+minimum_size = Vector2(0, 128)
+maximum_size = Vector2(0, 256)
+add_size = Vector2(0, 32)
 
 [node name="margin_container" type="MarginContainer" parent="panel/margin_container/scroll_container"]
+custom_minimum_size = Vector2(0, 128)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 2
@@ -215,10 +226,13 @@ mouse_filter = 2
 [node name="text_label" type="RichTextLabel" parent="panel/margin_container/scroll_container/margin_container"]
 clip_contents = false
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
 focus_mode = 2
 mouse_filter = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_ni267")
 bbcode_enabled = true
+text = "In this world, everything can be happy. You can create anything that makes you happy. Let's build a happy little cloud. In this world, everything can be happy. If what you're doing doesn't make you happy, you're doing the wrong thing. The secret to doing anything is believing that you can do it. You need the dark in order to show the light. I think there's an artist hidden in the bottom of every single one of us. Any time you learn, you gain. Gotta give him a friend. Everyone needs a friend. I like to beat the brush—just beat it a little bit. Look around. Look at what we have. Beauty is everywhere—you only have to look to see it."
 fit_content = true
 scroll_active = false
 shortcut_keys_enabled = false
@@ -250,3 +264,4 @@ libraries = {
 [connection signal="opened" from="." to="typewriter" method="present"]
 [connection signal="opening" from="." to="animation_player" method="play" binds= [&"open"]]
 [connection signal="completed" from="typewriter" to="." method="prevent_skip"]
+[connection signal="fake_rtl_created" from="typewriter" to="panel/margin_container/scroll_container" method="set_driver"]

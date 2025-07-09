@@ -199,6 +199,7 @@ layout_mode = 2
 [node name="dialog" type="Control" parent="canvas_layer/ui/main_container/v_box_container/hbox" groups=["penny_stage"]]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 8
 mouse_filter = 2
 
 [node name="roll_panel" type="PanelContainer" parent="canvas_layer/ui/main_container/v_box_container/hbox"]

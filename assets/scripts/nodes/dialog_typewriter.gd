@@ -10,6 +10,7 @@ enum PlayState {
 	COMPLETED
 }
 
+signal fake_rtl_created(rtl: RichTextLabel)
 signal completed
 signal prodded
 
@@ -29,6 +30,9 @@ var speed_stack : Array[float] = [ 40.0 ]
 
 ## If enabled, delays will be treated like wait tags in that when we try to prod the typewriter to continue, we will stop at both delays and waits. (This mimics Ren'Py behavior.)
 @export var treat_delay_as_wait : bool = false
+
+
+@export var lock_scroll_while_printing : bool = true
 
 
 @export var rtl : RichTextLabel
@@ -186,14 +190,15 @@ func _ready() -> void:
 	if scroll_container:
 		scrollbar = scroll_container.get_v_scroll_bar()
 
-		## Set up the fake rtl to ensure proper scrolling
-		fake_rtl = rtl.duplicate()
-		fake_rtl.name = "%s (fake)" % rtl.name
-		fake_rtl.visible_characters_behavior = TextServer.VC_CHARS_BEFORE_SHAPING
-		fake_rtl.self_modulate = Color(0,0,0,0)
-		fake_rtl.focus_mode = Control.FOCUS_NONE
+	## Set up the fake rtl to ensure proper scrolling
+	fake_rtl = rtl.duplicate()
+	fake_rtl.name = "%s (fake)" % rtl.name
+	fake_rtl.visible_characters_behavior = TextServer.VC_CHARS_BEFORE_SHAPING
+	fake_rtl.self_modulate = Color(0,0,0,0)
+	fake_rtl.focus_mode = Control.FOCUS_NONE
 
-		rtl.add_sibling.call_deferred(fake_rtl)
+	rtl.add_sibling.call_deferred(fake_rtl)
+	fake_rtl_created.emit(fake_rtl)
 
 	minimum_audio_delay = minimum_audio_delay
 	audio_timer.autostart = false
@@ -210,9 +215,6 @@ func _process(delta: float) -> void:
 	if is_typing:
 		cursor += speed * delta
 
-	if scroll_container:
-		scrollbar.value = fake_rtl.get_content_height() - scroll_container.size.y
-
 
 func _exit_tree() -> void:
 	self.complete()
@@ -221,8 +223,9 @@ func _exit_tree() -> void:
 func reset() -> void:
 	if scroll_container:
 		fake_rtl.text = rtl.text
-		scroll_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		scrollbar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		if lock_scroll_while_printing:
+			scroll_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			scrollbar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	expected_characters = rtl.get_total_character_count()
 	play_state = PlayState.READY
 	cursor = 0
