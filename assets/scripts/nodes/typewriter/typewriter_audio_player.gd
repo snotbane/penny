@@ -30,6 +30,7 @@ func receive_character(char: String) -> void:
 
 	_receive_character(char)
 func _receive_character(char: String) -> void:
+	char = char.to_lower()
 	stream = default_audio_stream
 
 	if char_map.has(char):

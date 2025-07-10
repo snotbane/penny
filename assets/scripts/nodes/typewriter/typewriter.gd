@@ -149,6 +149,7 @@ var visible_characters : int :
 
 		if message and rtl.visible_characters > 0:
 			character_arrived.emit(message.visible_text[rtl.visible_characters - 1])
+			# print(message.visible_text[rtl.visible_characters - 1])
 
 		if rtl.visible_characters == rtl.get_total_character_count():
 			rtl.visible_characters = -1

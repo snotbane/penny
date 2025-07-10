@@ -186,7 +186,7 @@ static func get_visible_text(string: String) -> String:
 		if not pattern_match: break
 		var substitution := VISCHAR_SUBSTITUTIONS.get(pattern_match.get_string(1), "")
 		string = replace_match(pattern_match, substitution)
-		cursor = pattern_match.get_start() + substitution.length() + 1
+		cursor = pattern_match.get_start() + maxi(1, substitution.length())
 	return string
 
 
