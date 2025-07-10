@@ -14,10 +14,23 @@ static var ESCAPE_SUBSITUTIONS : Dictionary[String, String] = {
 	"[": "[lb]",
 	"]": "[rb]"
 }
+static var VISIBLE_SUBSTITUTIONS : Dictionary[String, String] = {
+	"[lb]": "[",
+	"[rb]": "]"
+}
+static var VISIBLE_PATTERN := RegEx.create_from_string(r"\[.*?\]")
 static var REGEX_WORD_COUNT := RegEx.create_from_string(r"\b[\w']+\b")
 static var REGEX_LETTER_COUNT := RegEx.create_from_string(r"\w")
 
-var text : String
+var _text : String
+var text : String :
+	get: return _text
+	set(value):
+		if _text == value: return
+		_text = value
+		visible_text = get_visible_text(_text)
+
+var visible_text : String
 var decos : Array[DecoInst]
 
 func _init(_text : String = "", _decos: Array[DecoInst] = []) -> void:
@@ -157,10 +170,18 @@ static func escape(string: String) -> String:
 	while true:
 		var pattern_match := ESCAPE_PATTERN.search(string)
 		if not pattern_match: break
-		if ESCAPE_SUBSITUTIONS.has(pattern_match.get_string(1)):
-			string = replace_match(pattern_match, ESCAPE_SUBSITUTIONS[pattern_match.get_string(1)])
-		else:
-			string = replace_match(pattern_match, pattern_match.get_string(1))
+		string = replace_match(pattern_match, ESCAPE_SUBSITUTIONS.get(pattern_match.get_string(1), pattern_match.get_string(1)))
+	return string
+
+
+static func get_visible_text(string: String) -> String:
+	var cursor := 0
+	while cursor < string.length():
+		var pattern_match := VISIBLE_PATTERN.search(string, cursor)
+		if not pattern_match: break
+		var substitution := VISIBLE_SUBSTITUTIONS.get(pattern_match.get_string(), "")
+		string = replace_match(pattern_match, substitution)
+		cursor = pattern_match.get_start() + substitution.length() + 1
 	return string
 
 

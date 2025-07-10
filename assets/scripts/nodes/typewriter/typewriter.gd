@@ -10,6 +10,7 @@ enum PlayState {
 	COMPLETED
 }
 
+signal character_arrived(char: String)
 signal completed
 signal prodded
 
@@ -20,30 +21,29 @@ signal prodded
 ## If enabled, delays will be treated like wait tags in that when we try to prod the typewriter to continue, we will stop at both delays and waits. (This mimics Ren'Py behavior.)
 @export var treat_delay_as_wait : bool = false
 
-var speed_stack : Array[float] = [ 50.0 ]
+var speed_stack : Array[float] = [ 40.0 ]
 ## How many characters per second to print out. For specific speeds mid-printout, use the <speed=x> decoration.
-@export var print_speed : float = 50.0 :
+@export var print_speed : float = 40.0 :
 	get: return speed_stack[0]
 	set(value):
 		speed_stack[0] = value
 
-## Dictionary of RegEx patterns with an assigned value. Must match one single character. By default, this is used to determine if a character should or should not make a sound.
-@export var character_values : Dictionary[String, Variant] = {
-	r"[\S]": true
-}
-
 @export_subgroup("Audio")
 
-@export var audio_player : AudioStreamPlayer
-
-var audio_timer := Timer.new()
-## Length of time (seconds) that must pass before a new typewriter sound can be played.
-var _minimum_audio_delay : float = 0.033
-@export_range(0.01, 0.1, 0.0001, "or_greater") var minimum_audio_delay : float = 0.033 :
-	get: return _minimum_audio_delay
+var _audio_player : TypewriterAudioStreamPlayer
+@export var audio_player : TypewriterAudioStreamPlayer :
+	get: return _audio_player
 	set(value):
-		_minimum_audio_delay = value
-		audio_timer.wait_time = value
+		if _audio_player == value: return
+
+		if _audio_player:
+			character_arrived.disconnect(_audio_player.receive_character)
+
+		_audio_player = value
+
+		if _audio_player:
+			character_arrived.connect(_audio_player.receive_character)
+
 
 @export_subgroup("Autoscroll")
 
@@ -128,12 +128,12 @@ var visible_characters_partial : float :
 var visible_characters : int :
 	get: return rtl.visible_characters
 	set (value):
-		if value == -1:	value = rtl.get_total_character_count()
-		value = clampi(value, 0, rtl.get_total_character_count())
+		value = clampi(value, -1, rtl.get_total_character_count())
 		if rtl.visible_characters == value: return
 
-		var increment := signi(value - rtl.visible_characters)
-		while rtl.visible_characters != value:
+		var increment := 1 if value == -1 else signi(value - rtl.visible_characters)
+		var target := rtl.get_total_character_count() if value == -1 else value
+		while rtl.visible_characters != target:
 			rtl.visible_characters += increment
 			shape_rtl.visible_characters = rtl.visible_characters
 
@@ -148,6 +148,9 @@ var visible_characters : int :
 		# var last_visible_character_bounds : Rect2 = rtl.last_visible_character_bounds
 		# roger.position = last_visible_character_bounds.position
 
+		if message and rtl.visible_characters > 0:
+			character_arrived.emit(message.visible_text[rtl.visible_characters - 1])
+
 		if rtl.visible_characters == rtl.get_total_character_count():
 			rtl.visible_characters = -1
 		else:
@@ -156,8 +159,6 @@ var visible_characters : int :
 		if rtl.visible_characters == -1:
 			play_state = PlayState.COMPLETED
 			completed.emit()
-		elif rtl.visible_characters > 0:
-			character_encountered(rtl.text[rtl.visible_characters - 1])
 
 var speed : float :
 	get: return self.speed_stack.back()
@@ -201,11 +202,6 @@ func _ready() -> void:
 	shape_rtl.focus_mode = Control.FOCUS_NONE
 
 	rtl.add_sibling.call_deferred(shape_rtl)
-
-	minimum_audio_delay = minimum_audio_delay
-	audio_timer.autostart = false
-	audio_timer.one_shot = true
-	add_child(audio_timer)
 
 	reset()
 	is_initialized = true
@@ -276,14 +272,6 @@ func complete() -> void:
 	visible_characters = -1
 
 
-func character_encountered(c: String) -> void: _character_encountered(c, get_character_value(c))
-func _character_encountered(c: String, value: Variant) -> void:
-	if not value: return
-	if audio_timer.is_stopped():
-		audio_timer.start()
-		audio_player.play()
-
-
 func receive(record: Record) -> void: _receive(record)
 func _receive(record: Record) -> void:
 	complete()
@@ -321,14 +309,6 @@ func prod() -> void:
 func deco_is_prod_stop(deco: DecoInst) -> bool:
 	return deco.template is DecoWait or deco.template is DecoLock or (treat_delay_as_wait and deco.template is DecoDelay)
 
-
-var character_value_regex := RegEx.new()
-func get_character_value(c: String) -> Variant:
-	for k in character_values.keys():
-		character_value_regex.compile(k)
-		if character_value_regex.search(c):
-			return character_values[k]
-	return null
 
 
 func delay(seconds: float):
