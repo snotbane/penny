@@ -12,13 +12,13 @@ static var ESCAPE_SUBSITUTIONS : Dictionary[String, String] = {
 	"n": "\n",
 	"t": "\t",
 	"[": "[lb]",
-	"]": "[rb]"
+	"]": "[rb]",
 }
-static var VISIBLE_SUBSTITUTIONS : Dictionary[String, String] = {
-	"[lb]": "[",
-	"[rb]": "]"
+static var VISCHAR_PATTERN := RegEx.create_from_string(r"\[(.*?)\]")
+static var VISCHAR_SUBSTITUTIONS : Dictionary[String, String] = {
+	"lb": "[",
+	"rb": "]",
 }
-static var VISIBLE_PATTERN := RegEx.create_from_string(r"\[.*?\]")
 static var REGEX_WORD_COUNT := RegEx.create_from_string(r"\b[\w']+\b")
 static var REGEX_LETTER_COUNT := RegEx.create_from_string(r"\w")
 
@@ -67,42 +67,47 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 	var result := DisplayString.new()
 	var tags_needing_end_stack : Array[int]
 	var deco_stack : Array[DecoInst]
-	while true:
-		var tag_match := DECO_TAG_PATTERN.search(string)
-		if not tag_match: break
 
-		if tag_match.get_string() == "</>":
-			if not tags_needing_end_stack:
-				string = replace_match(tag_match, "")
-				continue
-			var start_tag_deco_count : int = tags_needing_end_stack.pop_back()
-			var bbcode_end_tags_string := ""
-			while start_tag_deco_count > 0:
-				var deco : DecoInst = deco_stack.pop_back()
-				deco.register_end(result, tag_match.get_start())
-				bbcode_end_tags_string += deco.bbcode_tag_end
-				start_tag_deco_count -= 1
-			string = replace_match(tag_match, bbcode_end_tags_string)
-		else:
-			var bbcode_start_tags_string := ""
-			tags_needing_end_stack.push_back(0)
-			var deco_strings := tag_match.get_string(1).split(DECO_DELIMITER, false)
-			for deco_string in deco_strings:
-				var deco := DecoInst.new(deco_string, context)
-				result.decos.push_back(deco)
-				deco.register_start(result, tag_match.get_start())
-				bbcode_start_tags_string += deco.bbcode_tag_start
-				if deco.template and deco.template.is_span:
-					deco_stack.push_back(deco)
-					tags_needing_end_stack.push_back(tags_needing_end_stack.pop_back() + 1)
-			if tags_needing_end_stack.back() == 0:
-				tags_needing_end_stack.pop_back()
-			string = replace_match(tag_match, bbcode_start_tags_string)
+	while true:
+		var esc_match := ESCAPE_PATTERN.search(string)
+		var tag_match := DECO_TAG_PATTERN.search(string)
+
+		if not esc_match and not tag_match: break
+
+		if esc_match and (not tag_match or esc_match.get_start() < tag_match.get_start()):
+			string = replace_match(esc_match, ESCAPE_SUBSITUTIONS.get(esc_match.get_string(1), esc_match.get_string(1)))
+		elif tag_match:
+			if tag_match.get_string() == "</>":
+				if not tags_needing_end_stack:
+					string = replace_match(tag_match, "")
+					continue
+				var start_tag_deco_count : int = tags_needing_end_stack.pop_back()
+				var bbcode_end_tags_string := ""
+				while start_tag_deco_count > 0:
+					var deco : DecoInst = deco_stack.pop_back()
+					deco.register_end(result, tag_match.get_start())
+					bbcode_end_tags_string += deco.bbcode_tag_end
+					start_tag_deco_count -= 1
+				string = replace_match(tag_match, bbcode_end_tags_string)
+			else:
+				var bbcode_start_tags_string := ""
+				tags_needing_end_stack.push_back(0)
+				var deco_strings := tag_match.get_string(1).split(DECO_DELIMITER, false)
+				for deco_string in deco_strings:
+					var deco := DecoInst.new(deco_string, context)
+					result.decos.push_back(deco)
+					deco.register_start(result, tag_match.get_start())
+					bbcode_start_tags_string += deco.bbcode_tag_start
+					if deco.template and deco.template.is_span:
+						deco_stack.push_back(deco)
+						tags_needing_end_stack.push_back(tags_needing_end_stack.pop_back() + 1)
+				if tags_needing_end_stack.back() == 0:
+					tags_needing_end_stack.pop_back()
+				string = replace_match(tag_match, bbcode_start_tags_string)
+
 	while deco_stack:
 		var deco : DecoInst = deco_stack.pop_back()
 		deco.register_end(result, string.length() - 1)
-
-	string = DisplayString.escape(string)
 
 	result.text = string
 
@@ -177,9 +182,9 @@ static func escape(string: String) -> String:
 static func get_visible_text(string: String) -> String:
 	var cursor := 0
 	while cursor < string.length():
-		var pattern_match := VISIBLE_PATTERN.search(string, cursor)
+		var pattern_match := VISCHAR_PATTERN.search(string, cursor)
 		if not pattern_match: break
-		var substitution := VISIBLE_SUBSTITUTIONS.get(pattern_match.get_string(), "")
+		var substitution := VISCHAR_SUBSTITUTIONS.get(pattern_match.get_string(1), "")
 		string = replace_match(pattern_match, substitution)
 		cursor = pattern_match.get_start() + substitution.length() + 1
 	return string

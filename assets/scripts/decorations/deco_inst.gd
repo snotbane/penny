@@ -2,9 +2,8 @@
 ## An actual instance of a [Deco] written out with specific arguments.
 class_name DecoInst extends RefCounted
 
-static var ID_PATTERN := RegEx.create_from_string("^\\s*(\\w+)")
-static var ARG_PATTERN := RegEx.create_from_string("([^=\\s]+)\\s*=\\s*([^=\\s]+)")
-static var STRIP_BBCODE_PATTERN := RegEx.create_from_string("\\[.+?\\]")
+static var ID_PATTERN := RegEx.create_from_string(r"^\s*(\w+)")
+static var ARG_PATTERN := RegEx.create_from_string(r"([^=\s]+)\s*=\s*([^=\s]+)")
 
 var id : StringName
 var args : Dictionary[StringName, Variant]
@@ -94,8 +93,9 @@ func create_remap_for(typewriter: Typewriter) -> void:
 
 	start_remapped = start_index
 	end_remapped = end_index
-	for strip_match in STRIP_BBCODE_PATTERN.search_all(original):
-		if strip_match.get_start() < start_index:
-			start_remapped -= strip_match.get_end() - strip_match.get_start()
-		if strip_match.get_start() < end_index:
-			end_remapped -= strip_match.get_end() - strip_match.get_start()
+	for match in DisplayString.VISCHAR_PATTERN.search_all(original):
+		var offset : int = DisplayString.VISCHAR_SUBSTITUTIONS.get(match.get_string(1), String()).length()
+		if match.get_start() < start_index:
+			start_remapped -= match.get_end() - match.get_start() - offset
+		if match.get_start() < end_index:
+			end_remapped -= match.get_end() - match.get_start() - offset

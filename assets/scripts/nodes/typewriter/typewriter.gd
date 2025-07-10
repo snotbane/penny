@@ -47,7 +47,6 @@ var _audio_player : TypewriterAudioStreamPlayer
 
 @export_subgroup("Autoscroll")
 
-## (optional) Controls scroll behavior.
 @export var scroll_container : ScrollContainer
 
 var user_scroll_enabled : bool = true :

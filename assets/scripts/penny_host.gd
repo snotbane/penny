@@ -167,7 +167,7 @@ func execute(stmt : Stmt) :
 	if cursor == null: return
 	last_valid_cursor = cursor
 
-	print("Calling %s" % cursor._debug_string_do_not_use_for_anything_else_seriously_i_mean_it)
+	# print("Calling %s" % cursor._debug_string_do_not_use_for_anything_else_seriously_i_mean_it)
 
 	var record : Record = cursor.pre_execute(self)
 
