@@ -237,7 +237,9 @@ fit_content = true
 scroll_active = false
 shortcut_keys_enabled = false
 selection_enabled = true
+visible_characters = 89
 visible_characters_behavior = 1
+visible_ratio = 0.139717
 
 [node name="roger" parent="." instance=ExtResource("3_bfsyc")]
 layout_mode = 1

@@ -77,19 +77,8 @@ var scrollbox_min_height : float
 ## Also known as "click to continue" or "CTC". This is the [CanvasItem] which represents that.
 @export var roger : CanvasItem
 
-## If enabled, the roger will always appear when the user must prod the dialog. Otherwise, it will appear only when all text is completed.
+## If enabled, the roger will always appear when the user must prod the dialog to continue. Otherwise, it will appear only when the entire text printout is completed.
 @export var roger_appears_on_paused := false
-
-## Fake label used to calculate appropriate scroll amount.
-var fake_rtl : RichTextLabel
-var v_scroll_bar : VScrollBar
-
-var is_ready : bool = false
-var is_locked : bool = false
-var is_typing : bool :
-	get: return play_state == PlayState.PLAYING
-var is_playing : bool :
-	get: return play_state == PlayState.PLAYING or play_state == PlayState.DELAYED
 
 var _play_state := PlayState.READY
 var play_state : PlayState :
@@ -99,9 +88,11 @@ var play_state : PlayState :
 		_play_state = value
 
 		user_scroll_enabled = _play_state == PlayState.PAUSED or _play_state == PlayState.COMPLETED
+		is_talking = _play_state == PlayState.PLAYING
 
 		match _play_state:
 			PlayState.READY, PlayState.COMPLETED:
+				_visible_characters_partial = 0
 				is_locked = false
 				user_scroll_override = false
 
@@ -111,66 +102,62 @@ var play_state : PlayState :
 				PlayState.COMPLETED:	roger.visible = true
 				_:						roger.visible = false
 
+var is_locked : bool = false
+var is_typing : bool :
+	get: return play_state == PlayState.PLAYING
+var is_playing : bool :
+	get: return play_state == PlayState.PLAYING or play_state == PlayState.DELAYED
+
+var shape_rtl : RichTextLabel
+var v_scroll_bar : VScrollBar
+
 var subject : Cell
 var message : DisplayString
 
-var unencountered_decos : Array[DecoInst]
-var unclosed_decos : Array[DecoInst]
+var deco_starts : Dictionary[int, Array]
+var deco_ends : Dictionary[int, Array]
 
-var character_value_regex := RegEx.new()
-
-var _cursor : float
-var cursor : float :
-	get: return _cursor
+var _visible_characters_partial : float
+var visible_characters_partial : float :
+	get: return _visible_characters_partial
 	set(value):
-		_cursor = value
-		visible_characters = floori(_cursor)
+		_visible_characters_partial = value
+		visible_characters = floori(value)
 
 
 var visible_characters : int :
 	get: return rtl.visible_characters
 	set (value):
+		if value == -1:	value = rtl.get_total_character_count()
+		value = clampi(value, 0, rtl.get_total_character_count())
 		if rtl.visible_characters == value: return
-		rtl.visible_characters = value
-		fake_rtl.visible_characters = rtl.visible_characters
+
+		var increment := signi(value - rtl.visible_characters)
+		while rtl.visible_characters != value:
+			rtl.visible_characters += increment
+			shape_rtl.visible_characters = rtl.visible_characters
+
+			if deco_starts.has(rtl.visible_characters):
+				for deco_start in deco_starts[rtl.visible_characters]:
+					deco_start.encounter_start(self)
+
+			if deco_ends.has(rtl.visible_characters):
+				for deco_end in deco_ends[rtl.visible_characters]:
+					deco_end.encounter_end(self)
 
 		# var last_visible_character_bounds : Rect2 = rtl.last_visible_character_bounds
 		# roger.position = last_visible_character_bounds.position
 
-		if is_playing:
-			if unencountered_decos:
-				while rtl.visible_characters >= unencountered_decos.front().start_remapped:
-					var deco : DecoInst = unencountered_decos.pop_front()
-					is_talking = false
-					await deco.encounter_start(self)
-					is_talking = true
-					if deco.template.is_span:
-						unclosed_decos.push_back(deco)
-					if not unencountered_decos:
-						break
-
-			if unclosed_decos:
-				for deco in unclosed_decos:
-					if rtl.visible_characters >= deco.end_remapped:
-						is_talking = false
-						await deco.encounter_end(self)
-						is_talking = true
-						unclosed_decos.erase(deco)
-
-		if rtl.visible_characters >= rtl.get_total_character_count():
+		if rtl.visible_characters == rtl.get_total_character_count():
 			rtl.visible_characters = -1
+		else:
+			_visible_characters_partial = rtl.visible_characters + fmod(_visible_characters_partial, 1.0)
 
 		if rtl.visible_characters == -1:
 			play_state = PlayState.COMPLETED
-			is_talking = false
-			for deco in unclosed_decos:
-				deco.encounter_end(self)
-			unclosed_decos.clear()
 			completed.emit()
 		elif rtl.visible_characters > 0:
-			is_talking = true
-			self.character_encountered(rtl.text[rtl.visible_characters - 1])
-
+			character_encountered(rtl.text[rtl.visible_characters - 1])
 
 var speed : float :
 	get: return self.speed_stack.back()
@@ -188,41 +175,40 @@ var is_talking : bool :
 		if _is_talking == value: return
 		_is_talking = value
 
-		if subject == null or subject.instance == null or not subject.instance.has_method("set_is_talking"): return
+		if subject == null or subject.instance == null or not subject.instance.has_method(&"set_is_talking"): return
 
 		subject.instance.set_is_talking(_is_talking)
 
 
 var next_prod_stop : int :
 	get:
-		for deco in unencountered_decos:
-			if self.visible_characters >= deco.start_remapped:
-				continue
-			if deco_is_prod_stop(deco):
-				return deco.start_remapped
+		for k in deco_starts.keys():
+			if visible_characters >= k: continue
+			for deco in deco_starts[k]:	if deco_is_prod_stop(deco):	return k
 		return -1
 
 
+var is_initialized : bool = false
 func _ready() -> void:
-	if scroll_container:
-		v_scroll_bar = scroll_container.get_v_scroll_bar()
-		scrollbox_min_height = scroll_container.custom_minimum_size.y
+	v_scroll_bar = scroll_container.get_v_scroll_bar()
+	scrollbox_min_height = scroll_container.custom_minimum_size.y
 
-	## Set up the fake rtl to ensure proper scrolling
-	fake_rtl = rtl.duplicate()
-	fake_rtl.name = "%s (fake)" % rtl.name
-	fake_rtl.visible_characters_behavior = TextServer.VC_CHARS_BEFORE_SHAPING
-	fake_rtl.self_modulate = Color(0,0,0,0)
-	fake_rtl.focus_mode = Control.FOCUS_NONE
+	## Set up the fake rtl to ensure proper scrolling limits
+	shape_rtl = rtl.duplicate()
+	shape_rtl.name = "%s (shape)" % rtl.name
+	shape_rtl.visible_characters_behavior = TextServer.VC_CHARS_BEFORE_SHAPING
+	shape_rtl.visibility_layer = 0
+	shape_rtl.focus_mode = Control.FOCUS_NONE
 
-	rtl.add_sibling.call_deferred(fake_rtl)
+	rtl.add_sibling.call_deferred(shape_rtl)
 
 	minimum_audio_delay = minimum_audio_delay
 	audio_timer.autostart = false
 	audio_timer.one_shot = true
-	self.add_child(audio_timer)
+	add_child(audio_timer)
+
 	reset()
-	is_ready = true
+	is_initialized = true
 
 
 func _process(delta: float) -> void:
@@ -233,20 +219,20 @@ func _process_cursor(delta: float) -> void:
 	if not is_working: return
 
 	if is_typing:
-		cursor += speed * delta
+		visible_characters_partial += speed * delta
 
 var user_scroll_override : bool
 var last_scroll_y : float
 func _process_autoscroll(delta: float) -> void:
 	if not scroll_container: return
 
-	var target_height := fake_rtl.get_content_height() + scrollbox_add_height
+	var target_height := shape_rtl.get_content_height() + scrollbox_add_height
 	target_height = maxf(target_height, scrollbox_min_height)
 	if scrollbox_max_height > 0.0:
 		target_height = minf(target_height, scrollbox_max_height)
 
 	var maximum_height_reached := target_height == scrollbox_max_height
-	var max_scroll_y := (fake_rtl.get_content_height() - scroll_container.size.y) + (scrollbox_add_height / (1.0 if maximum_height_reached else 2.0))
+	var max_scroll_y := (shape_rtl.get_content_height() - scroll_container.size.y) + (scrollbox_add_height / (1.0 if maximum_height_reached else 2.0))
 
 	scroll_container.custom_minimum_size = lerp(
 		scroll_container.custom_minimum_size,
@@ -259,7 +245,7 @@ func _process_autoscroll(delta: float) -> void:
 
 	v_scroll_bar.value = minf(v_scroll_bar.value, max_scroll_y)
 
-	user_scroll_override = v_scroll_bar.value < (max_scroll_y if user_scroll_override else last_scroll_y)
+	user_scroll_override = user_scroll_enabled and v_scroll_bar.value < (max_scroll_y if user_scroll_override else last_scroll_y)
 
 	if not user_scroll_override:
 		v_scroll_bar.value = lerp(
@@ -271,27 +257,19 @@ func _process_autoscroll(delta: float) -> void:
 
 
 func _exit_tree() -> void:
-	self.complete()
+	complete()
 
 
 func reset() -> void:
-	if scroll_container:
-		fake_rtl.text = rtl.text
+	shape_rtl.text = rtl.text
 	play_state = PlayState.READY
-	cursor = 0
+	visible_characters_partial = 0
 
 
 func present() -> void:
-	cursor = 0
+	visible_characters_partial = 0
 	await get_tree().create_timer(0.5).timeout
 	play_state = PlayState.PLAYING
-
-
-func prod() -> void:
-	if is_playing and not is_locked:
-		cursor = next_prod_stop
-
-	prodded.emit()
 
 
 func complete() -> void:
@@ -308,26 +286,43 @@ func _character_encountered(c: String, value: Variant) -> void:
 
 func receive(record: Record) -> void: _receive(record)
 func _receive(record: Record) -> void:
-	self.complete()
+	complete()
+
 	subject = record.data["who"]
 	message = record.data["what"]
+
 	rtl.text = message.text
-	unencountered_decos = message.decos.duplicate()
-	unclosed_decos.clear()
-	# for deco in unencountered_decos:
+	shape_rtl.text = String()
+
+	deco_starts.clear()
+	deco_ends.clear()
 	for deco in message.decos:
 		deco.create_remap_for(self)
 
-	if not is_ready: return
+		if not deco_starts.has(deco.start_remapped): deco_starts[deco.start_remapped] = []
+		deco_starts[deco.start_remapped].push_back(deco)
+
+		if not deco_ends.has(deco.end_remapped): deco_ends[deco.end_remapped] = []
+		deco_ends[deco.end_remapped].push_back(deco)
+
+	if not is_initialized: return
 
 	reset()
 	present()
+
+
+func prod() -> void:
+	var is_playing_and_unlocked = is_playing and not is_locked
+	prodded.emit()
+	if is_playing_and_unlocked:
+		visible_characters_partial = next_prod_stop
 
 
 func deco_is_prod_stop(deco: DecoInst) -> bool:
 	return deco.template is DecoWait or deco.template is DecoLock or (treat_delay_as_wait and deco.template is DecoDelay)
 
 
+var character_value_regex := RegEx.new()
 func get_character_value(c: String) -> Variant:
 	for k in character_values.keys():
 		character_value_regex.compile(k)
