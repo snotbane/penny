@@ -49,6 +49,14 @@ var _audio_player : TypewriterAudioStreamPlayer
 
 @export var scroll_container : ScrollContainer
 
+## The maximum height (pixels)
+@export_range(0.0, 1080.0, 1.0, "or_greater") var scrollbox_max_height : float
+var scrollbox_min_height : float
+
+@export_range(0.0, 1080.0, 1.0, "or_greater") var scrollbox_add_height : float
+
+@export var autoscroll_curve : Curve
+
 var user_scroll_enabled : bool = true :
 	get:
 		if not scroll_container: return false
@@ -62,14 +70,7 @@ var user_scroll_enabled : bool = true :
 		user_scroll_override = false
 
 ## Speed at which [member scroll_container] scrolls/grows automatically.
-@export var autoscroll_speed : float = 12.0
-
-## The maximum height (pixels)
-@export_range(0.0, 1080.0, 1.0, "or_greater") var scrollbox_max_height : float
-var scrollbox_min_height : float
-
-@export_range(0.0, 1080.0, 1.0, "or_greater") var scrollbox_add_height : float
-
+@export var autoscroll_multiplier : float = 1.0
 
 @export_subgroup("Roger")
 
@@ -220,34 +221,32 @@ func _process_cursor(delta: float) -> void:
 var user_scroll_override : bool
 var last_scroll_y : float
 func _process_autoscroll(delta: float) -> void:
-	if not scroll_container: return
+	var is_maximum_height_reached := scroll_container.custom_minimum_size.y >= scrollbox_max_height if scrollbox_max_height > 0.0 else false
 
 	var target_height := shape_rtl.get_content_height() + scrollbox_add_height
 	target_height = maxf(target_height, scrollbox_min_height)
 	if scrollbox_max_height > 0.0:
 		target_height = minf(target_height, scrollbox_max_height)
 
-	var maximum_height_reached := target_height == scrollbox_max_height
-	var max_scroll_y := (shape_rtl.get_content_height() - scroll_container.size.y) + (scrollbox_add_height / (1.0 if maximum_height_reached else 2.0))
+	var max_scroll_y := (shape_rtl.get_content_height() - target_height) + (scrollbox_add_height / (1.0 if is_maximum_height_reached else 2.0))
 
-	scroll_container.custom_minimum_size = lerp(
-		scroll_container.custom_minimum_size,
-		Vector2(
-			scroll_container.custom_minimum_size.x,
-			target_height
-		),
-		autoscroll_speed * delta
+	var motion := (target_height - scroll_container.custom_minimum_size.y) + maxf(max_scroll_y - v_scroll_bar.value, 0.0)
+	var alpha := autoscroll_curve.sample(motion) * autoscroll_multiplier * delta
+
+	scroll_container.custom_minimum_size.y = move_toward(
+		scroll_container.custom_minimum_size.y,
+		target_height,
+		alpha
 	)
 
 	v_scroll_bar.value = minf(v_scroll_bar.value, max_scroll_y)
+	# user_scroll_override = user_scroll_enabled and v_scroll_bar.value < (max_scroll_y if user_scroll_override else last_scroll_y)
 
-	user_scroll_override = user_scroll_enabled and v_scroll_bar.value < (max_scroll_y if user_scroll_override else last_scroll_y)
-
-	if not user_scroll_override:
-		v_scroll_bar.value = lerp(
+	if is_maximum_height_reached and not user_scroll_override:
+		v_scroll_bar.value = move_toward(
 			v_scroll_bar.value,
 			max_scroll_y,
-			(autoscroll_speed * delta) if maximum_height_reached else 1.0
+			alpha
 		)
 		last_scroll_y = v_scroll_bar.value
 
