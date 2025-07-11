@@ -207,6 +207,13 @@ func _ready() -> void:
 	reset()
 	is_initialized = true
 
+var user_did_input : bool = false
+func _input(event: InputEvent) -> void:
+	if event is InputEventPanGesture:
+		user_did_input = event.delta.y != 0.0
+	elif Input.get_axis(&"penny_scroll_up", &"penny_scroll_down") != 0.0:
+		user_did_input = true
+
 
 func _process(delta: float) -> void:
 	_process_cursor(delta)
@@ -240,7 +247,7 @@ func _process_autoscroll(delta: float) -> void:
 	)
 
 	v_scroll_bar.value = minf(v_scroll_bar.value, max_scroll_y)
-	# user_scroll_override = user_scroll_enabled and v_scroll_bar.value < (max_scroll_y if user_scroll_override else last_scroll_y)
+	user_scroll_override = user_scroll_enabled and v_scroll_bar.value < (max_scroll_y if user_scroll_override else last_scroll_y) and (user_scroll_override or user_did_input)
 
 	if is_maximum_height_reached and not user_scroll_override:
 		v_scroll_bar.value = move_toward(

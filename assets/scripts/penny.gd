@@ -9,17 +9,23 @@ const RECOGNIZED_EXTENSIONS : PackedStringArray = [ "pen", "penny" ]
 const STAGE_GROUP_NAME := &"penny_stage"
 const DEFAULT_MARKER_NAME := &"default_marker"
 
+const INPUT_DEADZONE_DEFAULT := 0.2
+
 const INPUT_DEBUG_WINDOW := &"penny_debug"
 const INPUT_ADVANCE := &"penny_advance"
 const INPUT_SKIP := &"penny_skip"
 const INPUT_ROLL_BACK := &"penny_roll_back"
 const INPUT_ROLL_AHEAD := &"penny_roll_ahead"
+const INPUT_SCROLL_UP := &"penny_scroll_up"
+const INPUT_SCROLL_DOWN := &"penny_scroll_down"
 
 const SETTING_INPUT_DEBUG_WINDOW := "input/" + INPUT_DEBUG_WINDOW
 const SETTING_INPUT_ADVANCE := "input/" + INPUT_ADVANCE
 const SETTING_INPUT_SKIP := "input/" + INPUT_SKIP
 const SETTING_INPUT_ROLL_BACK := "input/" + INPUT_ROLL_BACK
 const SETTING_INPUT_ROLL_AHEAD := "input/" + INPUT_ROLL_AHEAD
+const SETTING_INPUT_SCROLL_UP := "input/" + INPUT_SCROLL_UP
+const SETTING_INPUT_SCROLL_DOWN := "input/" + INPUT_SCROLL_DOWN
 
 static var SCRIPT_RESOURCE_LOADER := preload("uid://0mqljw2t364x").new()
 static var PENNY_DEBUG_SCENE := preload("uid://cfkhtume00g5e")
