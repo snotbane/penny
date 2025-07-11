@@ -10,6 +10,8 @@ enum PlayState {
 	COMPLETED
 }
 
+static var REGEX_SHAPE_MARKER := RegEx.create_from_string(r"$|(?<=\s)\S")
+
 signal character_arrived(char: String)
 signal completed
 signal prodded
@@ -20,6 +22,8 @@ signal prodded
 
 ## If enabled, delays will be treated like wait tags in that when we try to prod the typewriter to continue, we will stop at both delays and waits. (This mimics Ren'Py behavior.)
 @export var treat_delay_as_wait : bool = false
+
+@export var debug_show_shaping_rtl : bool = false
 
 var speed_stack : Array[float] = [ 40.0 ]
 ## How many characters per second to print out. For specific speeds mid-printout, use the <speed=x> decoration.
@@ -124,7 +128,6 @@ var visible_characters_partial : float :
 		_visible_characters_partial = value
 		visible_characters = floori(value)
 
-
 var visible_characters : int :
 	get: return rtl.visible_characters
 	set (value):
@@ -135,7 +138,8 @@ var visible_characters : int :
 		var target := rtl.get_total_character_count() if value == -1 else value
 		while rtl.visible_characters != target:
 			rtl.visible_characters += increment
-			shape_rtl.visible_characters = rtl.visible_characters
+
+			if increment <= 0: continue
 
 			if deco_starts.has(rtl.visible_characters):
 				for deco_start in deco_starts[rtl.visible_characters]:
@@ -148,9 +152,12 @@ var visible_characters : int :
 		# var last_visible_character_bounds : Rect2 = rtl.last_visible_character_bounds
 		# roger.position = last_visible_character_bounds.position
 
-		if message and rtl.visible_characters > 0:
-			character_arrived.emit(message.visible_text[rtl.visible_characters - 1])
+		if message:
 			# print(message.visible_text[rtl.visible_characters - 1])
+			var shape_marker_match := REGEX_SHAPE_MARKER.search(message.visible_text, rtl.visible_characters)
+			shape_rtl.visible_characters = shape_marker_match.get_start() if shape_marker_match else rtl.visible_characters
+			if rtl.visible_characters > 0:
+				character_arrived.emit(message.visible_text[rtl.visible_characters - 1])
 
 		if rtl.visible_characters == rtl.get_total_character_count():
 			rtl.visible_characters = -1
@@ -199,20 +206,29 @@ func _ready() -> void:
 	shape_rtl = rtl.duplicate()
 	shape_rtl.name = "%s (shape)" % rtl.name
 	shape_rtl.visible_characters_behavior = TextServer.VC_CHARS_BEFORE_SHAPING
-	shape_rtl.visibility_layer = 0
+	shape_rtl.visibility_layer = 1 if debug_show_shaping_rtl and OS.is_debug_build() else 0
+	shape_rtl.self_modulate = Color(1, 0, 0)
 	shape_rtl.focus_mode = Control.FOCUS_NONE
 
 	rtl.add_sibling.call_deferred(shape_rtl)
+	rtl.get_parent().move_child.call_deferred(shape_rtl, 0)
 
 	reset()
 	is_initialized = true
 
-var user_did_input : bool = false
+
+var user_did_scroll_input : bool = false
 func _input(event: InputEvent) -> void:
 	if event is InputEventPanGesture:
-		user_did_input = event.delta.y != 0.0
+		user_did_scroll_input = event.delta.y != 0.0
 	elif Input.get_axis(&"penny_scroll_up", &"penny_scroll_down") != 0.0:
-		user_did_input = true
+		user_did_scroll_input = true
+	elif OS.is_debug_build() and event is InputEventKey:
+		if not event.is_pressed(): return
+		if event.physical_keycode == KEY_PERIOD:
+			visible_characters += 1
+		elif event.physical_keycode == KEY_COMMA:
+			visible_characters -= 1
 
 
 func _process(delta: float) -> void:
@@ -247,7 +263,7 @@ func _process_autoscroll(delta: float) -> void:
 	)
 
 	v_scroll_bar.value = minf(v_scroll_bar.value, max_scroll_y)
-	user_scroll_override = user_scroll_enabled and v_scroll_bar.value < (max_scroll_y if user_scroll_override else last_scroll_y) and (user_scroll_override or user_did_input)
+	user_scroll_override = user_scroll_enabled and v_scroll_bar.value < (max_scroll_y if user_scroll_override else last_scroll_y) and (user_scroll_override or user_did_scroll_input)
 
 	if is_maximum_height_reached and not user_scroll_override:
 		v_scroll_bar.value = move_toward(
