@@ -4,5 +4,5 @@
 
 [resource]
 script = ExtResource("1_jv7eu")
-argument_defaults = {}
+argument_defaults = Dictionary[StringName, Variant]({})
 id = &"lock"

@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_3rvk1")
-argument_defaults = {
-"align": &"fill",
-"jst": PackedStringArray("w", "k", "sl")
-}
+argument_defaults = Dictionary[StringName, Variant]({
+&"align": &"fill",
+&"jst": PackedStringArray("w", "k", "sl")
+})
 id = &"p"

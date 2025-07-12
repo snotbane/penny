@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="Decoration" load_steps=2 format=3 uid="uid://cs8k2ddrk1a2s"]
+
+[ext_resource type="Script" uid="uid://w7bl3g20knuq" path="res://addons/penny_godot/assets/scripts/tags/decoration_.gd" id="1_cihtb"]
+
+[resource]
+script = ExtResource("1_cihtb")
+id = &"p"
+args = Dictionary[StringName, Variant]({
+&"align": &"fill",
+&"jst": "w,k,sl"
+})
+is_closable = true
+is_bbcode = true
+is_prod_stop = false
+metadata/_custom_type_script = "uid://w7bl3g20knuq"

@@ -22,7 +22,6 @@ var decoration : Decoration :
 var open_index : int = -1
 var close_index : int = -1
 
-var owner : Typewriter
 var open_remap : int = -1
 var close_remap : int = -1
 
@@ -124,11 +123,9 @@ func encounter_close(typewriter: Typewriter) -> void :
 
 
 func register(typewriter: Typewriter) -> void:
-	owner = typewriter
-	var original : String = typewriter.rtl.text
 	open_remap = open_index
 	close_remap = close_index
-	for match in DisplayString.VISCHAR_PATTERN.search_all(original):
+	for match in DisplayString.VISCHAR_PATTERN.search_all(typewriter.rtl.text):
 		var offset : int = DisplayString.VISCHAR_SUBSTITUTIONS.get(match.get_string(1), String()).length()
 		if match.get_start() < open_index:
 			open_remap -= match.get_end() - match.get_start() - offset

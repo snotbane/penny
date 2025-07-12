@@ -38,5 +38,6 @@ func _get_bbcode_close(tag: Tag) -> String:
 func register_on_creation(tag: Tag) -> void: pass
 func register_tag(tag: Tag, typewriter: Typewriter) -> void: pass
 
-func encounter_open(tag: Tag, typewriter: Typewriter) -> void : pass
-func encounter_close(tag: Tag, typewriter: Typewriter) -> void : pass
+## Hidden for efficiency. Tag encounters are only registerd if their decoration possesses these methods.
+# func encounter_open(tag: Tag, typewriter: Typewriter) -> void : pass
+# func encounter_close(tag: Tag, typewriter: Typewriter) -> void : pass
