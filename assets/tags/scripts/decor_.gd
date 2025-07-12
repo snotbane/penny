@@ -1,12 +1,12 @@
 ## Templates for special tags that interface with [Typewriter].
-class_name Decoration extends Resource
+class_name Decor extends Resource
 
-static var MASTER_REGISTRY : Dictionary[StringName, Decoration]
+static var MASTER_REGISTRY : Dictionary[StringName, Decor]
 
-static func from_id(_id: StringName) -> Decoration:
+static func from_id(_id: StringName) -> Decor:
 	return MASTER_REGISTRY.get(_id)
 
-static func register(dec: Decoration) -> void:
+static func register(dec: Decor) -> void:
 	MASTER_REGISTRY[dec.id] = dec
 
 @export var id : StringName
@@ -35,9 +35,8 @@ func get_bbcode_close(tag: Tag) -> String:
 func _get_bbcode_close(tag: Tag) -> String:
 	return tag.get_bbcode_close()
 
-func register_on_creation(tag: Tag) -> void: pass
-func register_tag(tag: Tag, typewriter: Typewriter) -> void: pass
+func populate(tag: Tag) -> void: pass
 
-## Hidden for efficiency. Tag encounters are only registerd if their decoration possesses these methods.
+## Hidden for efficiency. Tag encounters are only registerd if their decor possesses these methods.
 # func encounter_open(tag: Tag, typewriter: Typewriter) -> void : pass
 # func encounter_close(tag: Tag, typewriter: Typewriter) -> void : pass

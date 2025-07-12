@@ -20,13 +20,13 @@ signal prodded
 
 @export_subgroup("Character Printout")
 
-## If enabled, user prodding will stop at all tags with a prod stop level of [Decoration.EProdStop.SOFT] or higher. (This mimics Ren'Py delay tag behavior.)
+## If enabled, user prodding will stop at all tags with a prod stop level of [Decor.EProdStop.SOFT] or higher. (This mimics Ren'Py delay tag behavior.)
 @export var soft_prod : bool = false
 
 @export var debug_show_shaping_rtl : bool = false
 
 var speed_stack : Array[float] = [ 40.0 ]
-## How many characters per second to print out. For specific speeds mid-printout, use the <speed=x> decoration.
+## How many characters per second to print out. For specific speeds mid-printout, use the <speed=x> decor.
 @export var print_speed : float = 40.0 :
 	get: return speed_stack[0]
 	set(value):
@@ -324,13 +324,13 @@ func _receive(record: Record) -> void:
 func register_tag(tag: Tag) -> void:
 	tag.register(self)
 
-	if not tag.decoration: return
+	if not tag.decor: return
 
-	if tag.decoration.has_method(&"encounter_open"):
+	if tag.decor.has_method(&"encounter_open"):
 		if not tag_opens.has(tag.open_remap): tag_opens[tag.open_remap] = []
 		tag_opens[tag.open_remap].push_back(tag)
 
-	if tag.decoration.has_method(&"encounter_close"):
+	if tag.decor.has_method(&"encounter_close"):
 		if not tag_closes.has(tag.close_remap): tag_closes[tag.close_remap] = []
 		tag_closes[tag.close_remap].push_back(tag)
 

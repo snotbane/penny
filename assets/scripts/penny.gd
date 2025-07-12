@@ -29,7 +29,7 @@ const SETTING_INPUT_SCROLL_DOWN := "input/" + INPUT_SCROLL_DOWN
 
 static var SCRIPT_RESOURCE_LOADER := preload("uid://0mqljw2t364x").new()
 static var PENNY_DEBUG_SCENE := preload("uid://cfkhtume00g5e")
-static var DECORATION_REGISTRY_DEFAULT : DecorationRegistry = preload("uid://drmpmcuvh657f")
+static var DECOR_REGISTRY_DEFAULT : DecorRegistry = preload("uid://drmpmcuvh657f")
 
 
 static var inst : Penny
@@ -55,7 +55,7 @@ static var reload_cache_mode : ResourceLoader.CacheMode :
 
 static func _static_init() -> void:
 	if not Engine.is_editor_hint():
-		DECORATION_REGISTRY_DEFAULT.register_decos()
+		DECOR_REGISTRY_DEFAULT.register_all_decors()
 
 
 static func register_formats() -> void:

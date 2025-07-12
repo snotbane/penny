@@ -1,11 +1,11 @@
-class_name DecorationCombination extends Decoration
+class_name DecorCombo extends Decor
 
 @export var ids : Array[StringName]
 
 @export var subtags : Dictionary[StringName, Dictionary]
 
 
-func register_on_creation(tag: Tag) -> void:
+func populate(tag: Tag) -> void:
 	var result : Array[Tag] = []
 	for id in subtags.keys():
 		var typed_args : Dictionary[StringName, Variant] = {}
