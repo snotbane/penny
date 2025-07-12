@@ -4,9 +4,9 @@
 
 [resource]
 script = ExtResource("1_rnijs")
-argument_defaults = {
-"color": Color(1, 1, 1, 0.25098),
-"ease": -2.0,
-"freq": 1.0
-}
+argument_defaults = Dictionary[StringName, Variant]({
+&"color": Color(1, 1, 1, 0.25098),
+&"ease": -2.0,
+&"freq": 1.0
+})
 id = &"pulse"

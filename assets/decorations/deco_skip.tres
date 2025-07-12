@@ -4,5 +4,5 @@
 
 [resource]
 script = ExtResource("1_fbrer")
-argument_defaults = {}
+argument_defaults = Dictionary[StringName, Variant]({})
 id = &"skip"

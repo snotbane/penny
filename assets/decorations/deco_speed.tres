@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_j6pqn")
-argument_defaults = {
-"speed": null
-}
+argument_defaults = Dictionary[StringName, Variant]({
+&"speed": null
+})
 id = &"speed"

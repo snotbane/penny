@@ -1,19 +1,19 @@
 [gd_resource type="Resource" script_class="DecorationCombination" load_steps=2 format=3 uid="uid://0cxs2uf7ey8k"]
 
-[ext_resource type="Script" uid="uid://c2fhfd5aw0syl" path="res://addons/penny_godot/assets/scripts/decorations/rich_text_effects/decoration_combination.gd" id="1_mt6ni"]
+[ext_resource type="Script" uid="uid://c2fhfd5aw0syl" path="res://addons/penny_godot/assets/scripts/decorations/rich_text_effects/decoration_combination.gd" id="1_j4fq0"]
 
 [resource]
-script = ExtResource("1_mt6ni")
-ids = Array[StringName]([&"b", &"i", &"u", &"color"])
+script = ExtResource("1_j4fq0")
+ids = Array[StringName]([&"i", &"u", &"color"])
 subtags = Dictionary[StringName, Dictionary]({
 &"b": {},
 &"color": {
-&"color": Color(0.68352, 0.0384, 0.96, 1)
+&"color": Color(1, 0, 1, 1)
 },
 &"i": {},
 &"u": {}
 })
-id = &"biu"
+id = &"temp"
 args = Dictionary[StringName, Variant]({})
 is_closable = true
 is_bbcode = true

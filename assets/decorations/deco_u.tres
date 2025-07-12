@@ -4,5 +4,5 @@
 
 [resource]
 script = ExtResource("1_e445u")
-argument_defaults = {}
+argument_defaults = Dictionary[StringName, Variant]({})
 id = &"u"
