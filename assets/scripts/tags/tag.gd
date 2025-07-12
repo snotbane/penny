@@ -1,6 +1,6 @@
 
 ## An instance of a decoration. Exclusively bbcode tags will be processed and then removed.
-class_name Tag extends Resource
+class_name Tag extends RefCounted
 
 enum {
 	ARG_KEY = 1,
@@ -12,8 +12,9 @@ static var CONTENTS_PATTERN := RegEx.create_from_string(r"(^\s*\/\s*$)|(\w+)\s*\
 static var ID_PATTERN := RegEx.create_from_string(r"^\s*(\w*)")
 static var ARG_PATTERN := RegEx.create_from_string(r"([^=\s]+)\s*=\s*([^=\s]+)")
 
-@export var id : StringName
-@export var args : Dictionary[StringName, Variant] = {}
+
+var id : StringName
+var args : Dictionary[StringName, Variant] = {}
 
 var decoration : Decoration :
 	get: return Decoration.from_id(id)
@@ -21,6 +22,7 @@ var decoration : Decoration :
 var open_index : int = -1
 var close_index : int = -1
 
+var owner : Typewriter
 var open_remap : int = -1
 var close_remap : int = -1
 
@@ -35,6 +37,11 @@ var is_closable : bool :
 
 var is_prod_stop : bool :
 	get: return decoration.is_prod_stop if decoration else false
+
+## Use meta to reduce array instancing.
+var subtags : Array[Tag] :
+	get: return get_meta(&"subtags") if has_meta(&"subtags") else []
+	set(value): set_meta(&"subtags", value)
 
 var bbcode_open : String :
 	get: return decoration.get_bbcode_open(self) if decoration else get_bbcode_open()
@@ -59,17 +66,22 @@ func get_bbcode_close() -> String:
 func _to_string() -> String:
 	return "<%s>" % id
 
-func _init(contents: String, index: int, context: Cell) -> void:
+
+static func new_from_string(contents: String, index: int, context: Cell) -> Tag:
+	var result := Tag.new()
+
 	var id_match := ID_PATTERN.search(contents)
 	if id_match:
-		id = ID_PATTERN.search(contents).get_string(1)
+		result.id = ID_PATTERN.search(contents).get_string(1)
 	else:
 		printerr("Invalid id in tag contents: %s" % contents)
+
+
 
 	var arg_matches := ARG_PATTERN.search_all(contents)
 	for arg_match in arg_matches:
 		var arg_key : StringName = arg_match.get_string(ARG_KEY)
-		if args.has(arg_key):
+		if result.args.has(arg_key):
 			printerr("Tag argument '%s' already exists in the tag declaration. This will be ignored.")
 			continue
 
@@ -79,12 +91,28 @@ func _init(contents: String, index: int, context: Cell) -> void:
 			printerr("Tag argument '%s' evaluated to null in string: `%s`." % [arg_key, contents])
 			continue
 
-		args[arg_key] = arg_value
+		result.args[arg_key] = arg_value
 
-	open_index = index
-	if not is_closable: register_end(open_index)
+	result.open_index = index
+	if not result.is_closable: result.register_end()
 
-func register_end(index: int) -> void:
+	if result.decoration:
+		result.decoration.register_on_creation(result)
+
+	return result
+
+static func new_from_other(other: Tag, id: StringName = other.id, args: Dictionary[StringName, Variant] = other.args) -> Tag:
+	var result := Tag.new()
+
+	result.id = id
+	result.args = args
+	result.open_index = other.open_index
+	result.close_index = other.close_index
+
+	return result
+
+
+func register_end(index: int = open_index) -> void:
 	close_index = index
 
 
@@ -96,7 +124,8 @@ func encounter_close(typewriter: Typewriter) -> void :
 	decoration.encounter_close(self, typewriter)
 
 
-func remap_for(typewriter: Typewriter) -> void:
+func register(typewriter: Typewriter) -> void:
+	owner = typewriter
 	var original : String = typewriter.rtl.text
 	open_remap = open_index
 	close_remap = close_index
@@ -106,6 +135,10 @@ func remap_for(typewriter: Typewriter) -> void:
 			open_remap -= match.get_end() - match.get_start() - offset
 		if match.get_start() < close_index:
 			close_remap -= match.get_end() - match.get_start() - offset
+
+	if not decoration: return
+
+	decoration.register_tag(self, typewriter)
 
 
 static func variant_to_bbcode(value: Variant) -> String:

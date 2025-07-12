@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_jg4rf")
-argument_defaults = {
-"length": 14,
-"start": 4
-}
+argument_defaults = Dictionary[StringName, Variant]({
+&"length": 14,
+&"start": 4
+})
 id = &"fade"

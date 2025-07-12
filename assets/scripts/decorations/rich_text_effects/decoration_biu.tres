@@ -4,9 +4,18 @@
 
 [resource]
 script = ExtResource("1_mt6ni")
-ids = Array[StringName]([])
+ids = Array[StringName]([&"b", &"i", &"u", &"color"])
+subtags = Dictionary[StringName, Dictionary]({
+&"b": {},
+&"color": {
+&"color": Color(0.68352, 0.0384, 0.96, 1)
+},
+&"i": {},
+&"u": {}
+})
 id = &"biu"
 args = Dictionary[StringName, Variant]({})
 is_closable = true
 is_bbcode = true
+is_prod_stop = false
 metadata/_custom_type_script = "uid://w7bl3g20knuq"

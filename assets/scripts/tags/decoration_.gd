@@ -27,13 +27,16 @@ func get_bbcode_open(tag: Tag) -> String:
 	if not is_bbcode: return ""
 	return _get_bbcode_open(tag)
 func _get_bbcode_open(tag: Tag) -> String:
-	return tag.bbcode_open_raw
+	return tag.get_bbcode_open(tag.args.merged(args))
 
 func get_bbcode_close(tag: Tag) -> String:
 	if not is_bbcode: return ""
-	return _get_bbcode_open(tag)
+	return _get_bbcode_close(tag)
 func _get_bbcode_close(tag: Tag) -> String:
-	return tag.bbcode_close_raw
+	return tag.get_bbcode_close()
+
+func register_on_creation(tag: Tag) -> void: pass
+func register_tag(tag: Tag, typewriter: Typewriter) -> void: pass
 
 func encounter_open(tag: Tag, typewriter: Typewriter) -> void : pass
 func encounter_close(tag: Tag, typewriter: Typewriter) -> void : pass

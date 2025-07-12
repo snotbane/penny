@@ -313,25 +313,26 @@ func _receive(record: Record) -> void:
 	tag_opens.clear()
 	tag_closes.clear()
 	for tag in message.tags:
-		tag.remap_for(self)
-
-		if not tag.decoration: continue
-
-		if tag.decoration.has_method(&"encounter_open"):
-			if not tag_opens.has(tag.open_remap): tag_opens[tag.open_remap] = []
-			tag_opens[tag.open_remap].push_back(tag)
-
-		if tag.decoration.has_method(&"encounter_close"):
-			if not tag_closes.has(tag.close_remap): tag_closes[tag.close_remap] = []
-			tag_closes[tag.close_remap].push_back(tag)
-
-	print(tag_opens)
+		register_tag(tag)
 
 	if not is_initialized: return
 
 	reset()
 	present()
 
+
+func register_tag(tag: Tag) -> void:
+	tag.register(self)
+
+	if not tag.decoration: return
+
+	if tag.decoration.has_method(&"encounter_open"):
+		if not tag_opens.has(tag.open_remap): tag_opens[tag.open_remap] = []
+		tag_opens[tag.open_remap].push_back(tag)
+
+	if tag.decoration.has_method(&"encounter_close"):
+		if not tag_closes.has(tag.close_remap): tag_closes[tag.close_remap] = []
+		tag_closes[tag.close_remap].push_back(tag)
 
 func prod() -> void:
 	var is_playing_and_unlocked = is_playing and not is_locked

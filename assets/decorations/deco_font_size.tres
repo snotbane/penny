@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_0p4ho")
-argument_defaults = {
-"font_size": null
-}
+argument_defaults = Dictionary[StringName, Variant]({
+&"font_size": null
+})
 id = &"font_size"

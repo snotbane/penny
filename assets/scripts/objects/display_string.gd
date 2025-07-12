@@ -71,41 +71,39 @@ static func new_from_pure(pure: String = "", context := Cell.ROOT, filter_contex
 
 
 static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplayString:
-	var result := DisplayString.new()
+	var result := DisplayString.new(string)
 	var tags_needing_end_stack : Array[int]
 	var deco_stack : Array[DecoInst]
 
 	var unclosed_tag_stack : Array[Tag]
 
 	while true:
-		var esc_match := ESCAPE_PATTERN.search(string)
-		# var tag_match := DECO_TAG_PATTERN.search(string)
-		# tag_match = null
-		var tag_match := Tag.INSTANCE_PATTERN.search(string)
+		var esc_match := ESCAPE_PATTERN.search(result.text)
+		var tag_match := Tag.INSTANCE_PATTERN.search(result.text)
 
 		if not esc_match and not tag_match: break
 
 		if esc_match and (not tag_match or esc_match.get_start() < tag_match.get_start()):
-			string = replace_match(esc_match, ESCAPE_SUBSITUTIONS.get(esc_match.get_string(1), esc_match.get_string(1)))
+			result.text = replace_match(esc_match, ESCAPE_SUBSITUTIONS.get(esc_match.get_string(1), esc_match.get_string(1)))
 		elif tag_match:
 			if tag_match.get_string(1) != "/":
-				var tag := Tag.new(tag_match.get_string(1), tag_match.get_start(), context)
+				var tag := Tag.new_from_string(tag_match.get_string(1), tag_match.get_start(), context)
 				if tag.is_closable: unclosed_tag_stack.push_back(tag)
 				result.tags.push_back(tag)
-				string = replace_match(tag_match, tag.bbcode_open)
+				result.text = replace_match(tag_match, tag.bbcode_open)
 			else:
 				if unclosed_tag_stack:
 					var tag := unclosed_tag_stack.pop_back()
-					string = replace_match(tag_match, tag.bbcode_close)
+					result.text = replace_match(tag_match, tag.bbcode_close)
 				else:
-					string = replace_match(tag_match, "")
+					result.text = replace_match(tag_match, "")
 
 			continue
 
 			if tag_match.get_string() == "</>":
 				pass
 				if not tags_needing_end_stack:
-					string = replace_match(tag_match, "")
+					result.text = replace_match(tag_match, "")
 					continue
 				var start_tag_deco_count : int = tags_needing_end_stack.pop_back()
 				var bbcode_end_tags_string := ""
@@ -114,7 +112,7 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 					deco.register_end(result, tag_match.get_start())
 					bbcode_end_tags_string += deco.bbcode_tag_end
 					start_tag_deco_count -= 1
-				string = replace_match(tag_match, bbcode_end_tags_string)
+				result.text = replace_match(tag_match, bbcode_end_tags_string)
 			else:
 				var bbcode_start_tags_string := ""
 				tags_needing_end_stack.push_back(0)
@@ -129,13 +127,13 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 						tags_needing_end_stack.push_back(tags_needing_end_stack.pop_back() + 1)
 				if tags_needing_end_stack.back() == 0:
 					tags_needing_end_stack.pop_back()
-				string = replace_match(tag_match, bbcode_start_tags_string)
+				result.text = replace_match(tag_match, bbcode_start_tags_string)
 
 	# while deco_stack:
 	# 	var deco : DecoInst = deco_stack.pop_back()
 	# 	deco.register_end(result, string.length() - 1)
 
-	result.text = string
+	# print(result.tags)
 
 	return result
 

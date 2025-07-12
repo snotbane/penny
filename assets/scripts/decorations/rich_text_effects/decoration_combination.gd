@@ -2,21 +2,34 @@ class_name DecorationCombination extends Decoration
 
 @export var ids : Array[StringName]
 
-# func _get_bbcode_open(tag: Tag) -> String:
-# 	return tags.reduce( func(t, result) -> String:
-# 		return result + t.get_bbcode_open(tag.args)
-# 		, "")
-
-# func _get_bbcode_close(tag: Tag) -> String:
-# 	return tags.reduce( func(t, result) -> String:
-# 		return t.get_bbcode_close() + result
-# 		, "")
+@export var subtags : Dictionary[StringName, Dictionary]
 
 
-# func encounter_open(tag: Tag, typewriter: Typewriter) :
-# 	for t in tags:
-# 		await t.encounter_open(typewriter)
+func register_on_creation(tag: Tag) -> void:
+	var result : Array[Tag] = []
+	for id in subtags.keys():
+		var typed_args : Dictionary[StringName, Variant] = {}
+		result.push_back(Tag.new_from_other(tag, id, typed_args.merged(subtags[id])))
+	tag.subtags = result
 
-# func encounter_close(tag: Tag, typewriter: Typewriter) :
-# 	for t in tags:
-# 		await t.encounter_close(typewriter)
+
+func _get_bbcode_open(tag: Tag) -> String:
+	var result := ""
+	for subtag in tag.subtags:
+		result += subtag.get_bbcode_open()
+	return result
+
+func _get_bbcode_close(tag: Tag) -> String:
+	var result := ""
+	for subtag in tag.subtags:
+		result = subtag.get_bbcode_close() + result
+	return result
+
+
+func encounter_open(tag: Tag, typewriter: Typewriter) -> void:
+	for subtag in tag.subtags:
+		subtag.encounter_open(typewriter)
+
+func encounter_close(tag: Tag, typewriter: Typewriter) -> void:
+	for subtag in tag.subtags:
+		subtag.encounter_close(typewriter)
