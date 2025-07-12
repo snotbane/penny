@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://b8sp6ey8fsgt7"]
+[gd_scene load_steps=15 format=3 uid="uid://b8sp6ey8fsgt7"]
 
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="1_uxamp"]
 [ext_resource type="Script" uid="uid://drwhjiuoinitd" path="res://addons/penny_godot/assets/scripts/nodes/dialog_node.gd" id="2_44j7f"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://cdrs673e0hg62" path="res://addons/penny_godot/assets/scripts/nodes/typewriter/typewriter.gd" id="3_q7721"]
 [ext_resource type="AudioStream" uid="uid://bvaimbcs1j77n" path="res://addons/penny_godot/assets/audio/sfx_typewriter_sans.ogg" id="4_a8dr1"]
 [ext_resource type="Script" uid="uid://cmfsxei24xrjq" path="res://addons/penny_godot/assets/scripts/nodes/typewriter/typewriter_audio_player.gd" id="5_a8dr1"]
+[ext_resource type="RichTextEffect" uid="uid://cn0vkcpj88rh8" path="res://addons/penny_godot/assets/scripts/decorations/rich_text_effects/fade_in_on_visible.tres" id="6_mpiio"]
 
 [sub_resource type="Curve" id="Curve_a8dr1"]
 _limits = [0.0, 300.0, -100.0, 100.0]
@@ -240,13 +241,13 @@ focus_mode = 2
 mouse_filter = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_ni267")
 bbcode_enabled = true
-text = "In this world, everything can be happy. You can create anything that makes you happy. Let's build a happy little cloud. In this world, everything can be happy. If what you're doing doesn't make you happy, you're doing the wrong thing. The secret to doing anything is believing that you can do it. You need the dark in order to show the light. I think there's an artist hidden in the bottom of every single one of us. Any time you learn, you gain. Gotta give him a friend. Everyone needs a friend. I like to beat the brush—just beat it a little bit. Look around. Look at what we have. Beauty is everywhere—you only have to look to see it."
+text = "In this world, [example]everything[/example] can be happy. You can create anything that makes you happy. Let's build a happy little cloud. In this world, everything can be happy. If what you're doing doesn't make you happy, you're doing the wrong thing. The secret to doing anything is believing that you can do it. You need the dark in order to show the light. I think there's an artist hidden in the bottom of every single one of us. Any time you learn, you gain. Gotta give him a friend. Everyone needs a friend. I like to beat the brush—just beat it a little bit. Look around. Look at what we have. Beauty is everywhere—you only have to look to see it."
 fit_content = true
 scroll_active = false
-scroll_following = true
 shortcut_keys_enabled = false
+custom_effects = [ExtResource("6_mpiio")]
 selection_enabled = true
-visible_characters = 88
+visible_characters = 91
 visible_characters_behavior = 1
 visible_ratio = 0.139717
 

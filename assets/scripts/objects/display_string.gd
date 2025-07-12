@@ -9,6 +9,7 @@ static var DECO_TAG_PATTERN := RegEx.create_from_string(r"(?<!\\)<([^<>]*?)(?<!\
 # static var DECO_SPAN_PATTERN := RegEx.create_from_string("(?s)<(.*?)>(.*)(?:<\\/>)")
 static var ESCAPE_PATTERN := RegEx.create_from_string(r"\\(.)")
 static var ESCAPE_SUBSITUTIONS : Dictionary[String, String] = {
+	"\\": "\\",
 	"n": "\n",
 	"t": "\t",
 	"[": "[lb]",
@@ -32,6 +33,12 @@ var text : String :
 
 var visible_text : String
 var decos : Array[DecoInst]
+var tags : Array[Tag]
+
+var interfacing_tags : Array[Tag] :
+	get: return tags.filter( func(tag: Tag) -> bool:
+		return tag.is_typewriter_interfacing
+		)
 
 func _init(_text : String = "", _decos: Array[DecoInst] = []) -> void:
 	text = _text
@@ -68,16 +75,35 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 	var tags_needing_end_stack : Array[int]
 	var deco_stack : Array[DecoInst]
 
+	var unclosed_tag_stack : Array[Tag]
+
 	while true:
 		var esc_match := ESCAPE_PATTERN.search(string)
-		var tag_match := DECO_TAG_PATTERN.search(string)
+		# var tag_match := DECO_TAG_PATTERN.search(string)
+		# tag_match = null
+		var tag_match := Tag.INSTANCE_PATTERN.search(string)
 
 		if not esc_match and not tag_match: break
 
 		if esc_match and (not tag_match or esc_match.get_start() < tag_match.get_start()):
 			string = replace_match(esc_match, ESCAPE_SUBSITUTIONS.get(esc_match.get_string(1), esc_match.get_string(1)))
 		elif tag_match:
+			if tag_match.get_string(1) != "/":
+				var tag := Tag.new(tag_match.get_string(1), tag_match.get_start(), context)
+				if tag.is_closable: unclosed_tag_stack.push_back(tag)
+				result.tags.push_back(tag)
+				string = replace_match(tag_match, tag.bbcode_open)
+			else:
+				if unclosed_tag_stack:
+					var tag := unclosed_tag_stack.pop_back()
+					string = replace_match(tag_match, tag.bbcode_close)
+				else:
+					string = replace_match(tag_match, "")
+
+			continue
+
 			if tag_match.get_string() == "</>":
+				pass
 				if not tags_needing_end_stack:
 					string = replace_match(tag_match, "")
 					continue
@@ -105,9 +131,9 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 					tags_needing_end_stack.pop_back()
 				string = replace_match(tag_match, bbcode_start_tags_string)
 
-	while deco_stack:
-		var deco : DecoInst = deco_stack.pop_back()
-		deco.register_end(result, string.length() - 1)
+	# while deco_stack:
+	# 	var deco : DecoInst = deco_stack.pop_back()
+	# 	deco.register_end(result, string.length() - 1)
 
 	result.text = string
 

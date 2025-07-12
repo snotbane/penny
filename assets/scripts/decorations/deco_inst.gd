@@ -19,16 +19,13 @@ var template : Deco :
 
 var bbcode_tag_start : String :
 	get:
-		if template:
-			return self.template._get_bbcode_tag_start(self)
-		return String()
+		return template._get_bbcode_tag_start(self) if template else \
+			("[%s]" % id if id else String())
 
 var bbcode_tag_end : String :
 	get:
-		if template:
-			return self.template._get_bbcode_tag_end(self)
-		return String()
-
+		return template._get_bbcode_tag_end(self) if template else \
+			("[/%s]" % id if id else String())
 
 func _init(string: String, context: Cell) -> void:
 	var arg_matches := ARG_PATTERN.search_all(string)
@@ -67,11 +64,13 @@ func register_end(message: DisplayString, index: int) -> void:
 
 
 func encounter_start(typewriter: Typewriter) -> void:
-	await self.template._on_encounter_start(typewriter, self)
+	if not template: return
+	await template._on_encounter_start(typewriter, self)
 
 
 func encounter_end(typewriter: Typewriter) -> void:
-	await self.template._on_encounter_end(typewriter, self)
+	if not template: return
+	await template._on_encounter_end(typewriter, self)
 
 
 func get_argument(key: StringName) -> Variant:

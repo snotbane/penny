@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DecorationCombination" load_steps=2 format=3 uid="uid://0cxs2uf7ey8k"]
+
+[ext_resource type="Script" uid="uid://c2fhfd5aw0syl" path="res://addons/penny_godot/assets/scripts/decorations/rich_text_effects/decoration_combination.gd" id="1_mt6ni"]
+
+[resource]
+script = ExtResource("1_mt6ni")
+ids = Array[StringName]([])
+id = &"biu"
+args = Dictionary[StringName, Variant]({})
+is_closable = true
+is_bbcode = true
+metadata/_custom_type_script = "uid://w7bl3g20knuq"

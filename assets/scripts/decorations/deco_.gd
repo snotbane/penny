@@ -1,4 +1,5 @@
 
+## Prototype class for a decoration. Used when bbcode is not sufficient.
 class_name Deco extends Resource
 
 static var MASTER_REGISTRY : Dictionary[StringName, Deco]
@@ -19,12 +20,12 @@ func _to_string() -> String:
 
 func _get_bbcode_tag_start(inst: DecoInst) -> String:
 	if self.id.is_empty(): return String()
-	return "[%s]" % self.id
+	return "[%s]" % id
 
 
 func _get_bbcode_tag_end(inst: DecoInst) -> String:
 	if self.id.is_empty() or not is_span: return String()
-	return "[/%s]" % self.id
+	return "[/%s]" % id
 
 
 func _on_register_start(message: DisplayString, inst: DecoInst) -> void: pass

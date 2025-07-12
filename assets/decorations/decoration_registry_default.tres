@@ -1,8 +1,12 @@
-[gd_resource type="Resource" script_class="DecorationRegistry" load_steps=27 format=3 uid="uid://drmpmcuvh657f"]
+[gd_resource type="Resource" script_class="DecorationRegistry" load_steps=31 format=3 uid="uid://drmpmcuvh657f"]
 
 [ext_resource type="Script" uid="uid://b1lnjoj3hk6qj" path="res://addons/penny_godot/assets/scripts/decorations/deco_.gd" id="1_p62ro"]
+[ext_resource type="Resource" uid="uid://wms4vq8i3jqi" path="res://addons/penny_godot/assets/scripts/decorations/rich_text_effects/decoration_wait.tres" id="1_qc7t3"]
+[ext_resource type="Resource" uid="uid://cn7h0j1al143o" path="res://addons/penny_godot/assets/scripts/decorations/rich_text_effects/decoration_delay.tres" id="1_rqsyf"]
 [ext_resource type="Script" uid="uid://cr3lmmfkuc6cm" path="res://addons/penny_godot/assets/scripts/decorations/decoration_registry.gd" id="2_0rjbu"]
+[ext_resource type="Resource" uid="uid://dkaw4qatk8ucd" path="res://addons/penny_godot/assets/scripts/decorations/rich_text_effects/decoration_empty.tres" id="2_c8qhl"]
 [ext_resource type="Resource" uid="uid://db3vyvqvl2a84" path="res://addons/penny_godot/assets/decorations/deco_null.tres" id="2_e78fn"]
+[ext_resource type="Resource" uid="uid://dv3j3qhq802lm" path="res://addons/penny_godot/assets/scripts/decorations/rich_text_effects/decoration_prod.tres" id="3_c8qhl"]
 [ext_resource type="Resource" uid="uid://3enqono67neh" path="res://addons/penny_godot/assets/decorations/deco_empty.tres" id="3_tmanw"]
 [ext_resource type="Resource" uid="uid://me6j8h0b81v6" path="res://addons/penny_godot/assets/decorations/deco_b.tres" id="4_8ss4u"]
 [ext_resource type="Resource" uid="uid://bumy7ng4mpmjm" path="res://addons/penny_godot/assets/decorations/deco_color.tres" id="5_w7ima"]
@@ -30,3 +34,4 @@
 [resource]
 script = ExtResource("2_0rjbu")
 decos = Array[ExtResource("1_p62ro")]([ExtResource("2_e78fn"), ExtResource("3_tmanw"), ExtResource("4_8ss4u"), ExtResource("5_w7ima"), ExtResource("6_rxvet"), ExtResource("7_jwbma"), ExtResource("8_6kd8g"), ExtResource("9_2k73o"), ExtResource("10_8dfb2"), ExtResource("11_nev2j"), ExtResource("12_ld6c1"), ExtResource("13_d1srt"), ExtResource("14_gxqge"), ExtResource("15_75rlr"), ExtResource("16_d678a"), ExtResource("17_1t5y4"), ExtResource("18_7vpnx"), ExtResource("19_mte6b"), ExtResource("20_ka883"), ExtResource("21_h4bei"), ExtResource("22_b3xr6"), ExtResource("23_67ru3"), ExtResource("24_df5ki"), ExtResource("25_7la06")])
+decorations = [ExtResource("1_rqsyf"), ExtResource("2_c8qhl"), ExtResource("3_c8qhl"), ExtResource("1_qc7t3")]

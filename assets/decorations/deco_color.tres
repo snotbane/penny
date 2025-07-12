@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_c8rvc")
-argument_defaults = {
-"color": Color(1, 1, 1, 1)
-}
+argument_defaults = Dictionary[StringName, Variant]({
+&"color": Color(1, 1, 1, 1)
+})
 id = &"color"

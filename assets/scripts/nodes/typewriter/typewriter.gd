@@ -20,8 +20,8 @@ signal prodded
 
 @export_subgroup("Character Printout")
 
-## If enabled, delays will be treated like wait tags in that when we try to prod the typewriter to continue, we will stop at both delays and waits. (This mimics Ren'Py behavior.)
-@export var treat_delay_as_wait : bool = false
+## If enabled, user prodding will stop at all tags with a prod stop level of [Decoration.EProdStop.SOFT] or higher. (This mimics Ren'Py delay tag behavior.)
+@export var soft_prod : bool = false
 
 @export var debug_show_shaping_rtl : bool = false
 
@@ -121,6 +121,9 @@ var message : DisplayString
 var deco_starts : Dictionary[int, Array]
 var deco_ends : Dictionary[int, Array]
 
+var tag_opens : Dictionary[int, Array]
+var tag_closes : Dictionary[int, Array]
+
 var _visible_characters_partial : float
 var visible_characters_partial : float :
 	get: return _visible_characters_partial
@@ -141,13 +144,14 @@ var visible_characters : int :
 
 			if increment <= 0: continue
 
-			if deco_starts.has(rtl.visible_characters):
-				for deco_start in deco_starts[rtl.visible_characters]:
-					deco_start.encounter_start(self)
+			if tag_opens.has(rtl.visible_characters):
+				for tag in tag_opens[rtl.visible_characters]:
+					tag.encounter_open(self)
 
-			if deco_ends.has(rtl.visible_characters):
-				for deco_end in deco_ends[rtl.visible_characters]:
-					deco_end.encounter_end(self)
+			if tag_closes.has(rtl.visible_characters):
+				for tag in tag_closes[rtl.visible_characters]:
+					tag.encounter_close(self)
+
 
 		# var last_visible_character_bounds : Rect2 = rtl.last_visible_character_bounds
 		# roger.position = last_visible_character_bounds.position
@@ -157,7 +161,7 @@ var visible_characters : int :
 			var shape_marker_match := REGEX_SHAPE_MARKER.search(message.visible_text, rtl.visible_characters)
 			shape_rtl.visible_characters = shape_marker_match.get_start() if shape_marker_match else rtl.visible_characters
 			if rtl.visible_characters > 0:
-				character_arrived.emit(message.visible_text[rtl.visible_characters - 1])
+				character_arrived.emit(message.visible_text[mini(rtl.visible_characters, message.visible_text.length()) - 1])
 
 		if rtl.visible_characters == rtl.get_total_character_count():
 			rtl.visible_characters = -1
@@ -191,14 +195,16 @@ var is_talking : bool :
 
 var next_prod_stop : int :
 	get:
-		for k in deco_starts.keys():
+		for k in tag_opens.keys():
 			if visible_characters >= k: continue
-			for deco in deco_starts[k]:	if deco_is_prod_stop(deco):	return k
+			for tag in tag_opens[k]: if tag.is_prod_stop: return k
 		return -1
 
 
 var is_initialized : bool = false
 func _ready() -> void:
+	install_available_custom_effects()
+
 	v_scroll_bar = scroll_container.get_v_scroll_bar()
 	scrollbox_min_height = scroll_container.custom_minimum_size.y
 
@@ -304,16 +310,22 @@ func _receive(record: Record) -> void:
 	rtl.text = message.text
 	shape_rtl.text = String()
 
-	deco_starts.clear()
-	deco_ends.clear()
-	for deco in message.decos:
-		deco.create_remap_for(self)
+	tag_opens.clear()
+	tag_closes.clear()
+	for tag in message.tags:
+		tag.remap_for(self)
 
-		if not deco_starts.has(deco.start_remapped): deco_starts[deco.start_remapped] = []
-		deco_starts[deco.start_remapped].push_back(deco)
+		if not tag.decoration: continue
 
-		if not deco_ends.has(deco.end_remapped): deco_ends[deco.end_remapped] = []
-		deco_ends[deco.end_remapped].push_back(deco)
+		if tag.decoration.has_method(&"encounter_open"):
+			if not tag_opens.has(tag.open_remap): tag_opens[tag.open_remap] = []
+			tag_opens[tag.open_remap].push_back(tag)
+
+		if tag.decoration.has_method(&"encounter_close"):
+			if not tag_closes.has(tag.close_remap): tag_closes[tag.close_remap] = []
+			tag_closes[tag.close_remap].push_back(tag)
+
+	print(tag_opens)
 
 	if not is_initialized: return
 
@@ -328,13 +340,7 @@ func prod() -> void:
 		visible_characters_partial = next_prod_stop
 
 
-func deco_is_prod_stop(deco: DecoInst) -> bool:
-	return deco.template is DecoWait or deco.template is DecoLock or (treat_delay_as_wait and deco.template is DecoDelay)
-
-
-
-func delay(seconds: float):
-	var new_state : PlayState = PlayState.PAUSED if treat_delay_as_wait else PlayState.DELAYED
+func delay(seconds: float, new_state: PlayState = PlayState.DELAYED):
 	play_state = new_state
 	await get_tree().create_timer(seconds).timeout
 	if play_state == new_state: play_state = PlayState.PLAYING
@@ -352,3 +358,9 @@ func push_speed_tag(characters_per_second: float) -> void:
 func pop_speed_tag() -> void:
 	if speed_stack.size() <= 1: return
 	speed_stack.pop_back()
+
+
+func install_available_custom_effects() -> void:
+	# rtl.install_effect(null)
+	# shape_rtl.install_effect(null)
+	pass
