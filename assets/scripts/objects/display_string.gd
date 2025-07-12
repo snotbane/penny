@@ -32,7 +32,6 @@ var text : String :
 		visible_text = get_visible_text(_text)
 
 var visible_text : String
-var decos : Array[DecoInst]
 var tags : Array[Tag] = []
 
 var interfacing_tags : Array[Tag] :
@@ -71,9 +70,6 @@ static func new_from_pure(pure: String = "", context := Cell.ROOT, filter_contex
 
 static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplayString:
 	var result := DisplayString.new(string)
-	var tags_needing_end_stack : Array[int]
-	var deco_stack : Array[DecoInst]
-
 	var unclosed_tag_stack : Array[Tag]
 
 	while true:
@@ -90,50 +86,12 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 				if tag.is_closable: unclosed_tag_stack.push_back(tag)
 				result.tags.push_back(tag)
 				result.text = replace_match(tag_match, tag.bbcode_open)
+			elif unclosed_tag_stack:
+				var tag := unclosed_tag_stack.pop_back()
+				tag.register_end(tag_match.get_start())
+				result.text = replace_match(tag_match, tag.bbcode_close)
 			else:
-				if unclosed_tag_stack:
-					var tag := unclosed_tag_stack.pop_back()
-					tag.register_end(tag_match.get_start())
-					result.text = replace_match(tag_match, tag.bbcode_close)
-				else:
-					result.text = replace_match(tag_match, "")
-
-			continue
-
-			if tag_match.get_string() == "</>":
-				pass
-				if not tags_needing_end_stack:
-					result.text = replace_match(tag_match, "")
-					continue
-				var start_tag_deco_count : int = tags_needing_end_stack.pop_back()
-				var bbcode_end_tags_string := ""
-				while start_tag_deco_count > 0:
-					var deco : DecoInst = deco_stack.pop_back()
-					deco.register_end(result, tag_match.get_start())
-					bbcode_end_tags_string += deco.bbcode_tag_end
-					start_tag_deco_count -= 1
-				result.text = replace_match(tag_match, bbcode_end_tags_string)
-			else:
-				var bbcode_start_tags_string := ""
-				tags_needing_end_stack.push_back(0)
-				var deco_strings := tag_match.get_string(1).split(DECO_DELIMITER, false)
-				for deco_string in deco_strings:
-					var deco := DecoInst.new(deco_string, context)
-					result.decos.push_back(deco)
-					deco.register_start(result, tag_match.get_start())
-					bbcode_start_tags_string += deco.bbcode_tag_start
-					if deco.template and deco.template.is_span:
-						deco_stack.push_back(deco)
-						tags_needing_end_stack.push_back(tags_needing_end_stack.pop_back() + 1)
-				if tags_needing_end_stack.back() == 0:
-					tags_needing_end_stack.pop_back()
-				result.text = replace_match(tag_match, bbcode_start_tags_string)
-
-	# while deco_stack:
-	# 	var deco : DecoInst = deco_stack.pop_back()
-	# 	deco.register_end(result, string.length() - 1)
-
-	# print(result.tags)
+				result.text = replace_match(tag_match, "")
 
 	return result
 

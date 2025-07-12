@@ -1,8 +1,0 @@
-[gd_resource type="Resource" script_class="DecoWait" load_steps=2 format=3 uid="uid://b7ci351kwck68"]
-
-[ext_resource type="Script" uid="uid://hmb0q4w7gqdf" path="res://addons/penny_godot/assets/scripts/decorations/deco_wait.gd" id="1_to78e"]
-
-[resource]
-script = ExtResource("1_to78e")
-argument_defaults = {}
-id = &"wait"
