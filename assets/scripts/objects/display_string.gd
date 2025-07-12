@@ -4,7 +4,7 @@ class_name DisplayString extends RefCounted
 
 const DECO_DELIMITER = ";"
 static var INTERJECTION_PATTERN := RegEx.create_from_string(r"(?<!\\)\{(.*?)(?<!\\)\}")
-static var INTERPOLATION_PATTERN := RegEx.create_from_string(r"(?<!\\)@((?:\.?[A-Za-z_]\w*)+)|s(?<!\\)\[(.*?)(?<!\\)\]")
+static var INTERPOLATION_PATTERN := RegEx.create_from_string(r"(?<![\\=])(?:@((?:\.?[A-Za-z_]\w*)+)|\[(.*?)(?<!\\)\])")
 static var DECO_TAG_PATTERN := RegEx.create_from_string(r"(?<!\\)<([^<>]*?)(?<!\\)>")
 # static var DECO_SPAN_PATTERN := RegEx.create_from_string("(?s)<(.*?)>(.*)(?:<\\/>)")
 static var ESCAPE_PATTERN := RegEx.create_from_string(r"\\(.)")
@@ -33,16 +33,15 @@ var text : String :
 
 var visible_text : String
 var decos : Array[DecoInst]
-var tags : Array[Tag]
+var tags : Array[Tag] = []
 
 var interfacing_tags : Array[Tag] :
 	get: return tags.filter( func(tag: Tag) -> bool:
 		return tag.is_typewriter_interfacing
 		)
 
-func _init(_text : String = "", _decos: Array[DecoInst] = []) -> void:
+func _init(_text : String = "") -> void:
 	text = _text
-	decos = _decos
 
 
 func _to_string() -> String:
@@ -140,6 +139,7 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 
 static func interpolate(string: String, context: Cell) -> String:
 	# print("interpolating: %s, context: %s" % [string, context])
+
 	while true:
 		var pattern_match : RegExMatch = INTERPOLATION_PATTERN.search(string)
 		if not pattern_match: break
@@ -162,6 +162,7 @@ static func interpolate(string: String, context: Cell) -> String:
 			interp_string = str(interp_value)
 
 		string = replace_match(pattern_match, DisplayString.interpolate(interp_string, interp_context))
+
 	# print("interpolation result: %s" % string)
 	return string
 

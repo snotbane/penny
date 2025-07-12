@@ -76,8 +76,6 @@ static func new_from_string(contents: String, index: int, context: Cell) -> Tag:
 	else:
 		printerr("Invalid id in tag contents: %s" % contents)
 
-
-
 	var arg_matches := ARG_PATTERN.search_all(contents)
 	for arg_match in arg_matches:
 		var arg_key : StringName = arg_match.get_string(ARG_KEY)
@@ -87,6 +85,7 @@ static func new_from_string(contents: String, index: int, context: Cell) -> Tag:
 
 		var expr := Expr.new_from_string(arg_match.get_string(ARG_VALUE))
 		var arg_value : Variant = expr.evaluate(context)
+		prints(arg_key, arg_value)
 		if arg_value == null:
 			printerr("Tag argument '%s' evaluated to null in string: `%s`." % [arg_key, contents])
 			continue

@@ -40,8 +40,8 @@ actor = new object
 	.dl_name = `@.prefix@.d_name @.l_name</>`
 	.fml_name = `@.prefix@.f_name @.m_name @.l_name</>`
 	.dfl_name = `@.prefix@.d_name @.f_name @.l_name</>`
-	.prefix = `<b;color=@.color>`
-	.color = #ffffff
+	.prefix = `<color=#ff0000>`
+	.color = #ff0000
 	.res = 'uid://3tbms65op2ht'
 
 unknown = new actor

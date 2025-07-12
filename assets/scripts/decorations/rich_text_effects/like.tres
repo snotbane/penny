@@ -1,0 +1,20 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://ccmbmssxcqv56"]
+
+[sub_resource type="GDScript" id="GDScript_xhxg8"]
+script/source = "extends DecorationCombination
+
+func register_on_creation(tag: Tag) -> void:
+	var context : Cell = tag.args[&\"like\"]
+	tag.subtags = DisplayString.new_from_pure(context.get_value(Cell.K_PREFIX), context).tags
+"
+
+[resource]
+script = SubResource("GDScript_xhxg8")
+ids = Array[StringName]([])
+subtags = Dictionary[StringName, Dictionary]({})
+id = &"like"
+args = Dictionary[StringName, Variant]({})
+is_closable = true
+is_bbcode = true
+is_prod_stop = false
+metadata/_custom_type_script = "uid://w7bl3g20knuq"
