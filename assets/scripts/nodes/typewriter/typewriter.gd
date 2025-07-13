@@ -316,16 +316,18 @@ func receive(record: Record) -> void: _receive(record)
 func _receive(record: Record) -> void:
 	complete()
 
-	subject = record.data["who"]
-	message = record.data["what"]
-
-	rtl.text = message.text
-	shape_rtl.text = String()
+	subject = record.data[&"who"]
+	message = record.data[&"what"]
 
 	tag_opens.clear()
 	tag_closes.clear()
 	for tag in message.tags:
 		register_tag(tag)
+
+
+
+	rtl.text = message.text
+	shape_rtl.text = String()
 
 	char_times.resize(rtl.get_total_character_count())
 	char_times.fill(INF)
