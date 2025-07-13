@@ -12,6 +12,11 @@ enum PlayState {
 
 static var REGEX_SHAPE_MARKER := RegEx.create_from_string(r"$|(?<=\s)\S")
 
+static var NOW_USEC_FLOAT : float :
+	get: return float(Time.get_ticks_usec()) * 0.00_000_1
+
+static var inst : Typewriter
+
 signal character_arrived(char: String)
 signal completed
 signal prodded
@@ -118,8 +123,9 @@ var v_scroll_bar : VScrollBar
 var subject : Cell
 var message : DisplayString
 
-var deco_starts : Dictionary[int, Array]
-var deco_ends : Dictionary[int, Array]
+var time_ready : float
+var time_present_started : float
+var char_times : PackedFloat32Array
 
 var tag_opens : Dictionary[int, Array]
 var tag_closes : Dictionary[int, Array]
@@ -140,6 +146,7 @@ var visible_characters : int :
 		var increment := 1 if value == -1 else signi(value - rtl.visible_characters)
 		var target := rtl.get_total_character_count() if value == -1 else value
 		while rtl.visible_characters != target:
+			char_times[rtl.visible_characters] = NOW_USEC_FLOAT - time_present_started
 			rtl.visible_characters += increment
 
 			if increment <= 0: continue
@@ -203,6 +210,8 @@ var next_prod_stop : int :
 
 var is_initialized : bool = false
 func _ready() -> void:
+	inst = self
+
 	install_available_custom_effects()
 
 	v_scroll_bar = scroll_container.get_v_scroll_bar()
@@ -218,6 +227,8 @@ func _ready() -> void:
 
 	rtl.add_sibling.call_deferred(shape_rtl)
 	rtl.get_parent().move_child.call_deferred(shape_rtl, 0)
+
+	char_times.resize(rtl.get_total_character_count())
 
 	reset()
 	is_initialized = true
@@ -292,6 +303,7 @@ func reset() -> void:
 
 func present() -> void:
 	visible_characters_partial = 0
+	time_present_started = NOW_USEC_FLOAT
 	await get_tree().create_timer(0.5).timeout
 	play_state = PlayState.PLAYING
 
@@ -314,6 +326,9 @@ func _receive(record: Record) -> void:
 	tag_closes.clear()
 	for tag in message.tags:
 		register_tag(tag)
+
+	char_times.resize(rtl.get_total_character_count())
+	char_times.fill(INF)
 
 	if not is_initialized: return
 

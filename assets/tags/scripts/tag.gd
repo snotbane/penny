@@ -123,6 +123,7 @@ func encounter_close(typewriter: Typewriter) -> void :
 
 
 func register(typewriter: Typewriter) -> void:
+
 	open_remap = open_index
 	close_remap = close_index
 	for match in DisplayString.VISCHAR_PATTERN.search_all(typewriter.rtl.text):
@@ -131,6 +132,10 @@ func register(typewriter: Typewriter) -> void:
 			open_remap -= match.get_end() - match.get_start() - offset
 		if match.get_start() < close_index:
 			close_remap -= match.get_end() - match.get_start() - offset
+
+	if id == &"example":
+		# args[&"tid"] = hash(typewriter)
+		args[&"_open"] = open_remap
 
 
 static func variant_to_bbcode(value: Variant) -> String:

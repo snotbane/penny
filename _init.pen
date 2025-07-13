@@ -49,7 +49,7 @@ unknown = new actor
 
 PARAGRAPH_DEFAULT = new filter
 	.pattern = `^`
-	.replace = `<p>`
+	.replace = `<p><dropin>`
 
 PARAGRAPH_CENTERED = new filter
 	.pattern = `^`
