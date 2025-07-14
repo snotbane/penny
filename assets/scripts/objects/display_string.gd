@@ -23,6 +23,13 @@ static var VISCHAR_SUBSTITUTIONS : Dictionary[String, String] = {
 static var REGEX_WORD_COUNT := RegEx.create_from_string(r"\b[\w']+\b")
 static var REGEX_LETTER_COUNT := RegEx.create_from_string(r"\w")
 
+class Block:
+	var tag : Tag
+	var is_start : bool
+	func _init(_tag: Tag, _is_start: bool) -> void:
+		tag = _tag
+		is_start = _is_start
+
 var _text : String
 var text : String :
 	get: return _text
@@ -32,7 +39,8 @@ var text : String :
 		visible_text = get_visible_text(_text)
 
 var visible_text : String
-var tags : Array[Tag] = []
+var tags : Array[Tag]
+var tag_blocks : Array[Block]
 
 var interfacing_tags : Array[Tag] :
 	get: return tags.filter( func(tag: Tag) -> bool:
@@ -52,6 +60,20 @@ func get_metrics() -> Dictionary:
 		&"word_count":		REGEX_WORD_COUNT.search_all(self.text).size(),
 		&"letter_count":	REGEX_LETTER_COUNT.search_all(self.text).size(),
 	}
+
+
+func compile_for_typewriter(tw: Typewriter) -> String:
+	var result := text
+	var offset := 0
+	for block in tag_blocks:
+		var block_index := (block.tag.open_index if block.is_start else block.tag.close_index) + offset
+		if block.tag.id == &"dropin":
+			block.tag.args[&"_open"] = block.tag.open_index
+		var block_text := block.tag.bbcode_open if block.is_start else block.tag.bbcode_close
+		offset += block_text.length()
+		result = result.insert(block_index, block_text)
+		# print("%s %s" % [block.tag.open_index if block.is_start else block.tag.close_index, block.tag.bbcode_open if block.is_start else block.tag.bbcode_close])
+	return result
 
 
 static func new_as_is(_text : String = "") -> DisplayString:
@@ -85,13 +107,12 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 				var tag := Tag.new_from_string(tag_match.get_string(1), tag_match.get_start(), context)
 				if tag.is_closable: unclosed_tag_stack.push_back(tag)
 				result.tags.push_back(tag)
-				result.text = replace_match(tag_match, tag.bbcode_open)
+				result.tag_blocks.push_back(Block.new(tag, true))
 			elif unclosed_tag_stack:
 				var tag := unclosed_tag_stack.pop_back()
 				tag.register_end(tag_match.get_start())
-				result.text = replace_match(tag_match, tag.bbcode_close)
-			else:
-				result.text = replace_match(tag_match, "")
+				result.tag_blocks.push_back(Block.new(tag, false))
+			result.text = replace_match(tag_match, "")
 
 	return result
 

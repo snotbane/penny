@@ -17,4 +17,5 @@ args = Dictionary[StringName, Variant]({})
 is_closable = true
 is_bbcode = false
 is_prod_stop = false
+is_positional = false
 metadata/_custom_type_script = "uid://w7bl3g20knuq"

@@ -25,6 +25,9 @@ var close_index : int = -1
 var open_remap : int = -1
 var close_remap : int = -1
 
+var open_length : int = 0
+var close_length : int = 0
+
 var is_typewriter_interfacing : bool :
 	get: return true
 
@@ -114,27 +117,26 @@ func register_end(index: int = open_index) -> void:
 	close_index = index
 
 
-func encounter_open(typewriter: Typewriter) -> void :
+func register(tw: Typewriter) -> void:
 	if not decor: return
-	decor.encounter_open(self, typewriter)
-func encounter_close(typewriter: Typewriter) -> void :
+	decor.register(self, tw)
+func encounter_open(tw: Typewriter) -> void :
 	if not decor: return
-	decor.encounter_close(self, typewriter)
+	decor.encounter_open(self, tw)
+func encounter_close(tw: Typewriter) -> void :
+	if not decor: return
+	decor.encounter_close(self, tw)
 
 
-func register(typewriter: Typewriter) -> void:
-	open_remap = open_index
-	close_remap = close_index
-	for match in DisplayString.VISCHAR_PATTERN.search_all(typewriter.rtl.text):
+func get_remaps(tw: Typewriter) -> Vector2i:
+	var result := Vector2i(open_index, close_index)
+	for match in DisplayString.VISCHAR_PATTERN.search_all(tw.rtl.text):
 		var offset : int = DisplayString.VISCHAR_SUBSTITUTIONS.get(match.get_string(1), String()).length()
 		if match.get_start() < open_index:
-			open_remap -= match.get_end() - match.get_start() - offset
+			result.x -= match.get_end() - match.get_start() - offset
 		if match.get_start() < close_index:
-			close_remap -= match.get_end() - match.get_start() - offset
-
-	if id == &"dropin":
-		# args[&"tid"] = hash(typewriter)
-		args[&"_open"] = open_remap
+			result.y -= match.get_end() - match.get_start() - offset
+	return result
 
 
 static func variant_to_bbcode(value: Variant) -> String:

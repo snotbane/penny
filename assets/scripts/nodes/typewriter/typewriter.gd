@@ -124,8 +124,9 @@ var subject : Cell
 var message : DisplayString
 
 var time_ready : float
-var time_present_started : float
-var char_times : PackedFloat32Array
+var time_reset : float
+var time_elapsed : float
+var time_per_char : PackedFloat32Array
 
 var tag_opens : Dictionary[int, Array]
 var tag_closes : Dictionary[int, Array]
@@ -146,7 +147,7 @@ var visible_characters : int :
 		var increment := 1 if value == -1 else signi(value - rtl.visible_characters)
 		var target := rtl.get_total_character_count() if value == -1 else value
 		while rtl.visible_characters != target:
-			char_times[rtl.visible_characters] = NOW_USEC_FLOAT - time_present_started
+			time_per_char[rtl.visible_characters] = NOW_USEC_FLOAT - time_reset
 			rtl.visible_characters += increment
 
 			if increment <= 0: continue
@@ -228,7 +229,7 @@ func _ready() -> void:
 	rtl.add_sibling.call_deferred(shape_rtl)
 	rtl.get_parent().move_child.call_deferred(shape_rtl, 0)
 
-	char_times.resize(rtl.get_total_character_count())
+	time_per_char.resize(rtl.get_total_character_count())
 
 	reset()
 	is_initialized = true
@@ -247,8 +248,8 @@ func _input(event: InputEvent) -> void:
 		elif event.physical_keycode == KEY_COMMA:
 			visible_characters -= 1
 
-
 func _process(delta: float) -> void:
+	time_elapsed = NOW_USEC_FLOAT - time_reset
 	_process_cursor(delta)
 	_process_autoscroll(delta)
 
@@ -297,13 +298,13 @@ func _exit_tree() -> void:
 
 func reset() -> void:
 	shape_rtl.text = rtl.text
+	time_reset = NOW_USEC_FLOAT
 	play_state = PlayState.READY
 	visible_characters_partial = 0
 
 
 func present() -> void:
 	visible_characters_partial = 0
-	time_present_started = NOW_USEC_FLOAT
 	await get_tree().create_timer(0.5).timeout
 	play_state = PlayState.PLAYING
 
@@ -321,16 +322,18 @@ func _receive(record: Record) -> void:
 
 	tag_opens.clear()
 	tag_closes.clear()
+
+	rtl.text = message.compile_for_typewriter(self)
+	shape_rtl.text = String()
+	print(rtl.text)
+
+	time_per_char.resize(rtl.get_total_character_count())
+	time_per_char.fill(INF)
+
 	for tag in message.tags:
 		register_tag(tag)
 
-
-
-	rtl.text = message.text
-	shape_rtl.text = String()
-
-	char_times.resize(rtl.get_total_character_count())
-	char_times.fill(INF)
+	print(tag_opens)
 
 	if not is_initialized: return
 
@@ -344,12 +347,12 @@ func register_tag(tag: Tag) -> void:
 	if not tag.decor: return
 
 	if tag.decor.has_method(&"encounter_open"):
-		if not tag_opens.has(tag.open_remap): tag_opens[tag.open_remap] = []
-		tag_opens[tag.open_remap].push_back(tag)
+		if not tag_opens.has(tag.open_index): tag_opens[tag.open_index] = []
+		tag_opens[tag.open_index].push_back(tag)
 
 	if tag.decor.has_method(&"encounter_close"):
-		if not tag_closes.has(tag.close_remap): tag_closes[tag.close_remap] = []
-		tag_closes[tag.close_remap].push_back(tag)
+		if not tag_closes.has(tag.close_index): tag_closes[tag.close_index] = []
+		tag_closes[tag.close_index].push_back(tag)
 
 func prod() -> void:
 	var is_playing_and_unlocked = is_playing and not is_locked

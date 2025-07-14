@@ -7,4 +7,4 @@ class_name DecorRegistry extends Resource
 
 func register_all_decors() -> void:
 	for decor in decors:
-		Decor.register(decor)
+		Decor.register_in_master(decor)
