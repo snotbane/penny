@@ -2,6 +2,8 @@
 ## Decorator class for a [RichTextLabel]. Prints out text over time in accordance with the Penny script.
 class_name Typewriter extends Node
 
+#region Static
+
 enum PlayState {
 	READY,
 	PLAYING,
@@ -15,18 +17,15 @@ static var REGEX_SHAPE_MARKER := RegEx.create_from_string(r"$|(?<=\s)\S")
 static var NOW_USEC_FLOAT : float :
 	get: return float(Time.get_ticks_usec()) * 0.00_000_1
 
+#endregion
+
+#region Exposures
+
 signal character_arrived(char: String)
 signal completed
 signal prodded
 
 @export var rtl : RichTextLabel
-
-@export_subgroup("Character Printout")
-
-## If enabled, user prodding will stop at all tags with a prod stop level of [Decor.EProdStop.SOFT] or higher. (This mimics Ren'Py delay tag behavior.)
-@export var soft_prod : bool = false
-
-@export var debug_show_shaping_rtl : bool = false
 
 var speed_stack : Array[float] = [ 40.0 ]
 ## How many characters per second to print out. For specific speeds mid-printout, use the <speed=x> decor.
@@ -34,23 +33,6 @@ var speed_stack : Array[float] = [ 40.0 ]
 	get: return speed_stack[0]
 	set(value):
 		speed_stack[0] = value
-
-@export_subgroup("Audio")
-
-var _audio_player : TypewriterAudioStreamPlayer
-@export var audio_player : TypewriterAudioStreamPlayer :
-	get: return _audio_player
-	set(value):
-		if _audio_player == value: return
-
-		if _audio_player:
-			character_arrived.disconnect(_audio_player.receive_character)
-
-		_audio_player = value
-
-		if _audio_player:
-			character_arrived.connect(_audio_player.receive_character)
-
 
 @export_subgroup("Autoscroll")
 
@@ -62,6 +44,7 @@ var scrollbox_min_height : float
 
 @export_range(0.0, 1080.0, 1.0, "or_greater") var scrollbox_add_height : float
 
+## Curve used to define autoscroll speed. X is the distance (positive or negative) that the scrollbox must travel/resize. Y is the speed (positive only) at which it will travel/resize.
 @export var autoscroll_curve : Curve
 
 var user_scroll_enabled : bool = true :
@@ -109,6 +92,29 @@ var play_state : PlayState :
 				PlayState.COMPLETED:	roger.visible = true
 				_:						roger.visible = false
 
+@export_subgroup("Audio")
+
+var _audio_player : TypewriterAudioStreamPlayer
+@export var audio_player : TypewriterAudioStreamPlayer :
+	get: return _audio_player
+	set(value):
+		if _audio_player == value: return
+
+		if _audio_player:
+			character_arrived.disconnect(_audio_player.receive_character)
+
+		_audio_player = value
+
+		if _audio_player:
+			character_arrived.connect(_audio_player.receive_character)
+
+@export_subgroup("Debug")
+
+@export var debug_show_shaping_rtl : bool = false
+
+#endregion
+#region Pinions
+
 var is_locked : bool = false
 var is_typing : bool :
 	get: return play_state == PlayState.PLAYING
@@ -128,6 +134,30 @@ var time_per_char : PackedFloat32Array
 
 var tag_opens : Dictionary[int, Array]
 var tag_closes : Dictionary[int, Array]
+
+#endregion
+#region Properties
+
+var speed : float :
+	get: return self.speed_stack.back()
+
+var _is_talking : bool
+var is_talking : bool :
+	get: return _is_talking
+	set(value):
+		if _is_talking == value: return
+		_is_talking = value
+
+		if subject == null or subject.instance == null or not subject.instance.has_method(&"set_is_talking"): return
+
+		subject.instance.set_is_talking(_is_talking)
+
+var next_prod_stop : int :
+	get:
+		for k in tag_opens.keys():
+			if visible_characters >= k: continue
+			for tag in tag_opens[k]: if tag.is_prod_stop: return k
+		return -1
 
 var _visible_characters_partial : float
 var visible_characters_partial : float :
@@ -178,34 +208,12 @@ var visible_characters : int :
 			play_state = PlayState.COMPLETED
 			completed.emit()
 
-var speed : float :
-	get: return self.speed_stack.back()
-
-
 var is_working : bool :
 	get: return visible_characters != -1
 
+#endregion
 
-var _is_talking : bool
-##
-var is_talking : bool :
-	get: return _is_talking
-	set(value):
-		if _is_talking == value: return
-		_is_talking = value
-
-		if subject == null or subject.instance == null or not subject.instance.has_method(&"set_is_talking"): return
-
-		subject.instance.set_is_talking(_is_talking)
-
-
-var next_prod_stop : int :
-	get:
-		for k in tag_opens.keys():
-			if visible_characters >= k: continue
-			for tag in tag_opens[k]: if tag.is_prod_stop: return k
-		return -1
-
+#region _ready(), _exit_tree()
 
 var is_initialized : bool = false
 func _ready() -> void:
@@ -231,6 +239,18 @@ func _ready() -> void:
 	is_initialized = true
 
 
+func install_available_custom_effects() -> void:
+	# rtl.install_effect(null)
+	# shape_rtl.install_effect(null)
+	pass
+
+
+func _exit_tree() -> void:
+	complete()
+
+#endregion
+#region _input()
+
 var user_did_scroll_input : bool = false
 func _input(event: InputEvent) -> void:
 	if event is InputEventPanGesture:
@@ -243,6 +263,9 @@ func _input(event: InputEvent) -> void:
 			visible_characters += 1
 		elif event.physical_keycode == KEY_COMMA:
 			visible_characters -= 1
+
+#endregion
+#region _process()
 
 func _process(delta: float) -> void:
 	time_elapsed = NOW_USEC_FLOAT - time_reset
@@ -287,10 +310,9 @@ func _process_autoscroll(delta: float) -> void:
 		)
 		last_scroll_y = v_scroll_bar.value
 
+#endregion
 
-func _exit_tree() -> void:
-	complete()
-
+#region Script Functions
 
 func reset() -> void:
 	shape_rtl.text = rtl.text
@@ -321,7 +343,6 @@ func _receive(record: Record) -> void:
 
 	rtl.text = message.compile_for_typewriter(self)
 	shape_rtl.text = String()
-	print(rtl.text)
 
 	time_per_char.resize(rtl.get_total_character_count())
 	time_per_char.fill(INF)
@@ -329,12 +350,30 @@ func _receive(record: Record) -> void:
 	for tag in message.tags:
 		register_tag(tag)
 
-	print(tag_opens)
-
 	if not is_initialized: return
 
 	reset()
 	present()
+
+
+func prod() -> void:
+	var is_playing_and_unlocked = is_playing and not is_locked
+	prodded.emit()
+	if is_playing_and_unlocked:
+		visible_characters_partial = next_prod_stop
+
+#endregion
+#region Tag Functions
+
+func delay(seconds: float, new_state: PlayState = PlayState.DELAYED):
+	play_state = new_state
+	await get_tree().create_timer(seconds).timeout
+	if play_state == new_state: play_state = PlayState.PLAYING
+
+func wait():
+	play_state = PlayState.PAUSED
+	await prodded
+	play_state = PlayState.PLAYING
 
 
 func register_tag(tag: Tag) -> void:
@@ -350,24 +389,6 @@ func register_tag(tag: Tag) -> void:
 		if not tag_closes.has(tag.close_index): tag_closes[tag.close_index] = []
 		tag_closes[tag.close_index].push_back(tag)
 
-func prod() -> void:
-	var is_playing_and_unlocked = is_playing and not is_locked
-	prodded.emit()
-	if is_playing_and_unlocked:
-		visible_characters_partial = next_prod_stop
-
-
-func delay(seconds: float, new_state: PlayState = PlayState.DELAYED):
-	play_state = new_state
-	await get_tree().create_timer(seconds).timeout
-	if play_state == new_state: play_state = PlayState.PLAYING
-
-
-func wait():
-	play_state = PlayState.PAUSED
-	await prodded
-	play_state = PlayState.PLAYING
-
 
 func push_speed_tag(characters_per_second: float) -> void:
 	speed_stack.push_back(characters_per_second)
@@ -376,8 +397,4 @@ func pop_speed_tag() -> void:
 	if speed_stack.size() <= 1: return
 	speed_stack.pop_back()
 
-
-func install_available_custom_effects() -> void:
-	# rtl.install_effect(null)
-	# shape_rtl.install_effect(null)
-	pass
+#endregion

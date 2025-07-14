@@ -1,0 +1,14 @@
+[gd_resource type="RichTextEffect" load_steps=2 format=3 uid="uid://bijdywtugyu5a"]
+
+[sub_resource type="GDScript" id="GDScript_htca2"]
+script/source = "extends TypewriterTextEffect
+
+func _process_custom_typewriter_fx(char_fx: CharFXTransform, tw: Typewriter, time_visible: float) -> bool:
+	
+	
+	return true
+"
+
+[resource]
+script = SubResource("GDScript_htca2")
+metadata/_custom_type_script = "uid://b13a40c80p07f"
