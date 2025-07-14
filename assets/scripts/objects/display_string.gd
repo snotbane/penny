@@ -67,8 +67,8 @@ func compile_for_typewriter(tw: Typewriter) -> String:
 	var offset := 0
 	for block in tag_blocks:
 		var block_index := (block.tag.open_index if block.is_start else block.tag.close_index) + offset
-		if block.tag.id == &"dropin":
-			block.tag.args[&"_open"] = block.tag.open_index
+		if block.is_start:
+			block.tag.compile_for_typewriter(tw)
 		var block_text := block.tag.bbcode_open if block.is_start else block.tag.bbcode_close
 		offset += block_text.length()
 		result = result.insert(block_index, block_text)

@@ -23,8 +23,8 @@ static func register_in_master(dec: Decor) -> void:
 ## If enabled, a user prod will stop at this tag (even if there is more text in the [Typewriter]).
 @export var is_prod_stop : bool = false
 
-## If enabled, this will pass the tag's open and close position as bbcode arguments. Use with [RichTextEffects] that require such information.
-@export var is_positional : bool = false
+## If enabled, this will pass the owner [Typewriter]'s instance id, as well as the tag's open and close indeces, as bbcode arguments. Use with [TypewriterTextEffect]s or other [RichTextEffect]s that require such information.
+@export var is_typewriter_dependent : bool = false
 
 func get_bbcode_open(tag: Tag) -> String:
 	if not is_bbcode: return ""
@@ -39,10 +39,15 @@ func _get_bbcode_close(tag: Tag) -> String:
 	return tag.get_bbcode_close()
 
 func populate(tag: Tag) -> void: pass
-func register(tag: Tag, tw: Typewriter) -> void:
-	var remap := tag.get_remaps(tw)
-	tag.args[&"_open"] = remap.x
-	tag.args[&"_close"] = remap.y
+func compile_for_typewriter(tag: Tag, tw: Typewriter) -> void:
+	_compile_for_typewriter(tag, tw)
+
+	if not is_typewriter_dependent: return
+
+	tag.args[&"_tw"] = tw.get_instance_id()
+	tag.args[&"_open"] = tag.open_index
+	tag.args[&"_close"] = tag.close_index
+func _compile_for_typewriter(tag: Tag, tw: Typewriter) -> void: pass
 
 ## Hidden for efficiency. Tag encounters are only registerd if their decor possesses these methods.
 # func encounter_open(tag: Tag, tw: Typewriter) -> void : pass

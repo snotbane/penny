@@ -117,26 +117,15 @@ func register_end(index: int = open_index) -> void:
 	close_index = index
 
 
-func register(tw: Typewriter) -> void:
+func compile_for_typewriter(tw: Typewriter) -> void:
 	if not decor: return
-	decor.register(self, tw)
+	decor.compile_for_typewriter(self, tw)
 func encounter_open(tw: Typewriter) -> void :
 	if not decor: return
 	decor.encounter_open(self, tw)
 func encounter_close(tw: Typewriter) -> void :
 	if not decor: return
 	decor.encounter_close(self, tw)
-
-
-func get_remaps(tw: Typewriter) -> Vector2i:
-	var result := Vector2i(open_index, close_index)
-	for match in DisplayString.VISCHAR_PATTERN.search_all(tw.rtl.text):
-		var offset : int = DisplayString.VISCHAR_SUBSTITUTIONS.get(match.get_string(1), String()).length()
-		if match.get_start() < open_index:
-			result.x -= match.get_end() - match.get_start() - offset
-		if match.get_start() < close_index:
-			result.y -= match.get_end() - match.get_start() - offset
-	return result
 
 
 static func variant_to_bbcode(value: Variant) -> String:

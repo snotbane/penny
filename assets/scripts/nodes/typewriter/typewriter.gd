@@ -15,8 +15,6 @@ static var REGEX_SHAPE_MARKER := RegEx.create_from_string(r"$|(?<=\s)\S")
 static var NOW_USEC_FLOAT : float :
 	get: return float(Time.get_ticks_usec()) * 0.00_000_1
 
-static var inst : Typewriter
-
 signal character_arrived(char: String)
 signal completed
 signal prodded
@@ -211,8 +209,6 @@ var next_prod_stop : int :
 
 var is_initialized : bool = false
 func _ready() -> void:
-	inst = self
-
 	install_available_custom_effects()
 
 	v_scroll_bar = scroll_container.get_v_scroll_bar()
@@ -342,7 +338,7 @@ func _receive(record: Record) -> void:
 
 
 func register_tag(tag: Tag) -> void:
-	tag.register(self)
+	tag.compile_for_typewriter(self)
 
 	if not tag.decor: return
 

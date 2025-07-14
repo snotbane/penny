@@ -1,14 +1,14 @@
 [gd_resource type="RichTextEffect" load_steps=2 format=3 uid="uid://cn0vkcpj88rh8"]
 
 [sub_resource type="GDScript" id="GDScript_365wd"]
-script/source = "extends RichTextEffectPerChar
+script/source = "extends TypewriterTextEffect
 
 const DEFAULT_SPEED := 10.0
 
 var bbcode = \"dropin\"
 
-func _process_custom_fx_per_char(char_fx: CharFXTransform, relative_time: float) -> bool:
-	var alpha : float = relative_time * char_fx.env.get(&\"speed\", DEFAULT_SPEED)
+func _process_custom_typewriter_fx(char_fx: CharFXTransform, tw: Typewriter, time_visible: float) -> bool:
+	var alpha : float = time_visible * char_fx.env.get(&\"speed\", DEFAULT_SPEED)
 	alpha = clampf(alpha, 0.0, 1.0)
 	char_fx.color = lerp(
 		Color(char_fx.color.r, char_fx.color.g, char_fx.color.b, 0.0),
