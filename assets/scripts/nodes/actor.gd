@@ -30,7 +30,8 @@ var is_open : bool = false
 func _ready() -> void: pass
 
 func _exit_tree() -> void:
-	cell.disconnect_instance(self)
+	if cell:
+		cell.disconnect_instance(self)
 
 
 ## Called immediately after instantiation. Use to "populate" the node with specific, one-time information it may need.
