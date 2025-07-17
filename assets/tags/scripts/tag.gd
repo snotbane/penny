@@ -1,10 +1,18 @@
 
 ## An instance of a decor. Exclusively bbcode tags will be processed and then removed.
-class_name Tag extends RefCounted
+class_name Tag extends Object
 
 enum {
 	ARG_KEY = 1,
 	ARG_VALUE = 2,
+}
+
+enum {
+	UNENCOUNTERED,
+	OPENING,
+	OPENED,
+	CLOSING,
+	CLOSED,
 }
 
 static var INSTANCE_PATTERN := RegEx.create_from_string(r"(?<!\\)<\s*([^<>]*?)\s*(?<!\\)>")
@@ -12,6 +20,7 @@ static var CONTENTS_PATTERN := RegEx.create_from_string(r"(^\s*\/\s*$)|(\w+)\s*\
 static var ID_PATTERN := RegEx.create_from_string(r"^\s*(\w*)")
 static var ARG_PATTERN := RegEx.create_from_string(r"([^=\s]+)\s*=\s*([^=\s]+)")
 
+var owner : Typewriter
 
 var id : StringName
 var args : Dictionary[StringName, Variant] = {}
@@ -22,22 +31,18 @@ var decor : Decor :
 var open_index : int = -1
 var close_index : int = -1
 
-var open_remap : int = -1
-var close_remap : int = -1
+var open_time : float = INF
+var close_time : float = INF
 
-var open_length : int = 0
-var close_length : int = 0
+var encounter_state : int = UNENCOUNTERED
 
-var is_typewriter_interfacing : bool :
-	get: return true
-
-var is_bbcode : bool :
+var bbcode : bool :
 	get: return decor.bbcode if decor else true
 
-var is_closable : bool :
+var closable : bool :
 	get: return decor.closable if decor else true
 
-var is_prod_stop : bool :
+var prod_stop : bool :
 	get: return decor.prod_stop if decor else false
 
 ## Use meta to reduce array instancing.
@@ -48,7 +53,7 @@ var subtags : Array[Tag] :
 var bbcode_open : String :
 	get: return decor.get_bbcode_open(self) if decor else get_bbcode_open()
 func get_bbcode_open(_args: Dictionary[StringName, Variant] = args) -> String:
-	if not is_bbcode: return ""
+	if not bbcode: return ""
 
 	var args_string := ""
 	for k in _args.keys():
@@ -62,7 +67,7 @@ func get_bbcode_open(_args: Dictionary[StringName, Variant] = args) -> String:
 var bbcode_close : String :
 	get: return decor.get_bbcode_close(self) if decor else get_bbcode_close()
 func get_bbcode_close() -> String:
-	if not is_bbcode: return ""
+	if not bbcode: return ""
 	return "[/%s]" % id
 
 func _to_string() -> String:
@@ -95,7 +100,7 @@ static func new_from_string(contents: String, index: int, context: Cell) -> Tag:
 		result.args[arg_key] = arg_value
 
 	result.open_index = index
-	if not result.is_closable: result.register_end()
+	if not result.closable: result.register_end()
 
 	if result.decor:
 		result.decor.populate(result)
@@ -118,14 +123,25 @@ func register_end(index: int = open_index) -> void:
 
 
 func compile_for_typewriter(tw: Typewriter) -> void:
+	owner = tw
 	if not decor: return
-	decor.compile_for_typewriter(self, tw)
-func encounter_open(tw: Typewriter) -> void :
-	if not decor: return
-	decor.encounter_open(self, tw)
-func encounter_close(tw: Typewriter) -> void :
-	if not decor: return
-	decor.encounter_close(self, tw)
+	decor.compile_instance(self)
+
+
+func encounter_open() :
+	open_time = Typewriter.now
+	encounter_state = OPENING
+	if decor:
+		await decor.encounter_open(self)
+	encounter_state = OPENED if closable else CLOSED
+
+
+func encounter_close() :
+	close_time = Typewriter.now if close_time == INF else close_time
+	encounter_state = CLOSING
+	if decor:
+		await decor.encounter_close(self)
+	encounter_state = CLOSED
 
 
 static func variant_to_bbcode(value: Variant) -> String:

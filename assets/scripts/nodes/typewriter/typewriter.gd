@@ -9,10 +9,13 @@ enum PlayState {
 	PLAYING,
 	DELAYED,
 	PAUSED,
-	COMPLETED
+	COMPLETED,
+	RESETTING,
 }
 
 static var REGEX_SHAPE_MARKER := RegEx.create_from_string(r"$|(?<=\s)\S")
+
+static var now : float
 
 static var NOW_USEC_FLOAT : float :
 	get: return float(Time.get_ticks_usec()) * 0.00_000_1
@@ -83,6 +86,10 @@ var play_state : PlayState :
 				is_locked = false
 				user_scroll_override = false
 
+		match _play_state:
+			PlayState.COMPLETED:
+				completed.emit()
+
 @export_subgroup("Audio")
 
 var _audio_player : TypewriterAudioStreamPlayer
@@ -108,9 +115,11 @@ var _audio_player : TypewriterAudioStreamPlayer
 
 var is_locked : bool = false
 var is_typing : bool :
-	get: return play_state == PlayState.PLAYING
+	get: return play_state == PlayState.PLAYING and visible_characters != -1
 var is_playing : bool :
 	get: return play_state == PlayState.PLAYING or play_state == PlayState.DELAYED
+var is_working : bool :
+	get: return play_state != PlayState.COMPLETED
 
 var shape_rtl : RichTextLabel
 var v_scroll_bar : VScrollBar
@@ -125,7 +134,6 @@ var time_per_char : PackedFloat32Array
 
 var tag_opens : Dictionary[int, Array]
 var tag_closes : Dictionary[int, Array]
-var tag_close_times : Dictionary[Tag, float]
 
 #endregion
 #region Properties
@@ -146,9 +154,10 @@ var is_talking : bool :
 
 var next_prod_stop : int :
 	get:
+		if visible_characters == -1: return -1
 		for k in tag_opens.keys():
 			if visible_characters >= k: continue
-			for tag in tag_opens[k]: if tag.is_prod_stop: return k
+			for tag in tag_opens[k]: if tag.prod_stop: return k
 		return -1
 
 var _visible_characters_partial : float
@@ -167,18 +176,12 @@ var visible_characters : int :
 		var increment := 1 if value == -1 else signi(value - rtl.visible_characters)
 		var target := rtl.get_total_character_count() if value == -1 else value
 		while rtl.visible_characters != target:
-			time_per_char[rtl.visible_characters] = NOW_USEC_FLOAT - time_reset
+			time_per_char[rtl.visible_characters] = time_elapsed
 			rtl.visible_characters += increment
 
 			if increment <= 0: continue
 
-			if tag_opens.has(rtl.visible_characters):
-				for tag in tag_opens[rtl.visible_characters]:
-					tag.encounter_open(self)
-
-			if tag_closes.has(rtl.visible_characters):
-				for tag in tag_closes[rtl.visible_characters]:
-					tag.encounter_close(self)
+			handle_tags()
 
 
 		# var last_visible_character_bounds : Rect2 = rtl.last_visible_character_bounds
@@ -186,22 +189,39 @@ var visible_characters : int :
 
 		if message:
 			# print(message.visible_text[rtl.visible_characters - 1])
-			var shape_marker_match := REGEX_SHAPE_MARKER.search(message.visible_text, rtl.visible_characters)
+			var shape_marker_match := REGEX_SHAPE_MARKER.search(message.text, rtl.visible_characters)
 			shape_rtl.visible_characters = shape_marker_match.get_start() if shape_marker_match else rtl.visible_characters
 			if rtl.visible_characters > 0:
-				character_arrived.emit(message.visible_text[mini(rtl.visible_characters, message.visible_text.length()) - 1])
+				character_arrived.emit(message.text[mini(rtl.visible_characters, message.text.length()) - 1])
 
 		if rtl.visible_characters == rtl.get_total_character_count():
 			rtl.visible_characters = -1
 		else:
 			_visible_characters_partial = rtl.visible_characters + fmod(_visible_characters_partial, 1.0)
 
-		if rtl.visible_characters == -1:
-			play_state = PlayState.COMPLETED
-			completed.emit()
+		# if rtl.visible_characters == -1:
+		# 	play_state = PlayState.COMPLETED
 
-var is_working : bool :
-	get: return visible_characters != -1
+var handling_tags : bool
+func handle_tags() -> void:
+	handling_tags = true
+
+	var s = tag_opens.get(rtl.visible_characters)
+
+	if s:
+		print("Handling tags: %s" % str(s))
+	if tag_opens.has(rtl.visible_characters):
+		for tag in tag_opens[rtl.visible_characters]:
+			print("Handling tag: %s" % tag)
+			if tag.prod_stop:	await	tag.encounter_open()
+			else:						tag.encounter_open()
+			print("Handled tag: %s" % tag)
+
+	if tag_closes.has(rtl.visible_characters):
+		for tag in tag_closes[rtl.visible_characters]:
+			if tag.prod_stop:	await	tag.encounter_close()
+			else:						tag.encounter_close()
+	handling_tags = false
 
 #endregion
 
@@ -252,15 +272,19 @@ func _input(event: InputEvent) -> void:
 #region _process()
 
 func _process(delta: float) -> void:
-	time_elapsed = NOW_USEC_FLOAT - time_reset
+	now = float(Time.get_ticks_usec()) * 0.00_000_1
+	time_elapsed = now - time_reset
+
 	_process_cursor(delta)
 	_process_autoscroll(delta)
+	_process_end(delta)
+
 
 func _process_cursor(delta: float) -> void:
-	if not is_working: return
+	if not is_typing: return
 
-	if is_typing:
-		visible_characters_partial += speed * delta
+	visible_characters_partial += speed * delta
+
 
 var user_scroll_override : bool
 var last_scroll_y : float
@@ -294,6 +318,23 @@ func _process_autoscroll(delta: float) -> void:
 		)
 		last_scroll_y = v_scroll_bar.value
 
+
+func _process_end(delta: float) -> void:
+	if play_state == PlayState.COMPLETED or rtl.visible_characters != -1: return
+
+	if handling_tags: return
+
+	# print("ENDED!!!")
+	# play_state = PlayState.COMPLETED
+
+
+	for k in tag_opens: for tag in tag_opens[k]:
+		if tag.encounter_state < Tag.CLOSED: return
+
+	print("ENDED!!!")
+	play_state = PlayState.COMPLETED
+
+
 #endregion
 
 #region Script Functions
@@ -313,6 +354,7 @@ func present() -> void:
 
 func complete() -> void:
 	visible_characters = -1
+	play_state = PlayState.COMPLETED
 
 
 func receive(record: Record) -> void: _receive(record)
@@ -349,13 +391,13 @@ func prod() -> void:
 #endregion
 #region Tag Functions
 
-func delay(seconds: float, new_state: PlayState = PlayState.DELAYED):
+func delay(seconds: float, new_state: PlayState = PlayState.DELAYED) :
 	play_state = new_state
 	await get_tree().create_timer(seconds).timeout
 	if play_state == new_state: play_state = PlayState.PLAYING
 
 
-func wait(show_roger := false):
+func wait(show_roger := false) :
 	play_state = PlayState.PAUSED
 	if roger: roger.visible = show_roger
 	await prodded
@@ -377,10 +419,6 @@ func register_tag(tag: Tag) -> void:
 	if tag.decor.has_method(&"encounter_close"):
 		if not tag_closes.has(tag.close_index): tag_closes[tag.close_index] = []
 		tag_closes[tag.close_index].push_back(tag)
-
-	if tag.decor.effect is not TypewriterTextEffect: return
-
-
 
 
 func install_effect_from_tag(tag: Tag) -> void:

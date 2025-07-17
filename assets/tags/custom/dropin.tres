@@ -6,9 +6,7 @@
 [resource]
 script = ExtResource("1_l2lls")
 id = &"dropin"
-args = Dictionary[StringName, Variant]({
-&"speed": 10.0
-})
+args = Dictionary[StringName, Variant]({})
 effect = ExtResource("1_p6xxr")
 closable = true
 bbcode = true

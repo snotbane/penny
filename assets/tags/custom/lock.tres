@@ -3,11 +3,11 @@
 [sub_resource type="GDScript" id="GDScript_q6elq"]
 script/source = "extends Decor
 
-func encounter_open(tag: Tag, typewriter: Typewriter) -> void:
-	typewriter.is_locked = true
+func encounter_open(tag: Tag) -> void:
+	tag.owner.is_locked = true
 
-func encounter_close(tag: Tag, typewriter: Typewriter) -> void:
-	typewriter.is_locked = false
+func encounter_close(tag: Tag) -> void:
+	tag.owner.is_locked = false
 "
 
 [resource]

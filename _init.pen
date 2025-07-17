@@ -11,7 +11,6 @@ dialog = new object
 	.res = 'uid://b8sp6ey8fsgt7'
 	.marker = 'dialog'
 	.filters = [PARAGRAPH_START, PUNCTUATION_TO_PIPE, PIPE_TO_DELAY, SLASH_TO_WAIT]
-	# .filters = [PARAGRAPH_START, PARAGRAPH_END, PUNCTUATION_TO_PIPE, PIPE_TO_DELAY, SLASH_TO_WAIT]
 	.reusable = true
 
 prompt = new object
@@ -52,10 +51,6 @@ PARAGRAPH_START = new filter
 	.pattern = `^`
 	.replace = `<p><dropin><dropout>`
 	# .replace = `<delay=0.5><p><dropin><dropout>`
-
-# PARAGRAPH_END = new filter
-# 	.pattern = `$`
-# 	.replace = `<wait roger=true></><delay=0.5>`
 
 PARAGRAPH_START_CENTERED = new filter
 	.pattern = `^`

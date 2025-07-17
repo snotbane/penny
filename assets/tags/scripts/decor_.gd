@@ -15,7 +15,7 @@ static func register_in_master(dec: Decor) -> void:
 @export var args : Dictionary[StringName, Variant] = {}
 
 ## This [RichTextEffect] will be installed to each [RichTextLabel] that requires this [Decor].
-## Also, if this effect is a [TypewriterTextEffect], it will be handled accordingly.
+## Also, if this effect is a [TagTextEffect], it will be handled accordingly.
 @export var effect : RichTextEffect
 
 ## If enabled, the tag may be closed using `</>` (closing tag). Otherwise, the tag will be treated as a standalone.
@@ -27,8 +27,8 @@ static func register_in_master(dec: Decor) -> void:
 ## If enabled, a user prod will stop at this tag (even if there is more text in the [Typewriter]).
 @export var prod_stop : bool = false
 
-var typewriter_dependent : bool :
-	get: return effect is TypewriterTextEffect
+var tag_dependent : bool :
+	get: return effect is TagTextEffect
 
 func get_bbcode_open(tag: Tag) -> String:
 	if not bbcode: return ""
@@ -43,16 +43,14 @@ func _get_bbcode_close(tag: Tag) -> String:
 	return tag.get_bbcode_close()
 
 func populate(tag: Tag) -> void: pass
-func compile_for_typewriter(tag: Tag, tw: Typewriter) -> void:
-	_compile_for_typewriter(tag, tw)
+func compile_instance(tag: Tag) -> void:
+	_compile_instance(tag)
 
-	if not typewriter_dependent: return
+	if not tag_dependent: return
 
-	tag.args[&"_tw"] = tw.get_instance_id()
-	tag.args[&"_open"] = tag.open_index
-	tag.args[&"_close"] = tag.close_index
-func _compile_for_typewriter(tag: Tag, tw: Typewriter) -> void: pass
+	tag.args[&"_tag"] = tag.get_instance_id()
+func _compile_instance(tag: Tag) -> void: pass
 
 ## Hidden for efficiency. Tag encounters are only registered if their decor possesses these methods.
-# func encounter_open(tag: Tag, tw: Typewriter) -> void : pass
-# func encounter_close(tag: Tag, tw: Typewriter) -> void : pass
+# func encounter_open(tag: Tag) : pass
+# func encounter_close(tag: Tag) : pass

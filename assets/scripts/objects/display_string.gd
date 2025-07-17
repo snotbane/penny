@@ -23,33 +23,40 @@ static var VISCHAR_SUBSTITUTIONS : Dictionary[String, String] = {
 static var REGEX_WORD_COUNT := RegEx.create_from_string(r"\b[\w']+\b")
 static var REGEX_LETTER_COUNT := RegEx.create_from_string(r"\w")
 
-class Block:
+class Block extends RefCounted:
 	var tag : Tag
 	var is_start : bool
 	func _init(_tag: Tag, _is_start: bool) -> void:
 		tag = _tag
 		is_start = _is_start
 
-var _text : String
-var text : String :
-	get: return _text
-	set(value):
-		if _text == value: return
-		_text = value
-		visible_text = get_visible_text(_text)
+var text : String
+# var _text : String
+# var text : String :
+# 	get: return _text
+# 	set(value):
+# 		if _text == value: return
+# 		_text = value
+		# visible_text = get_visible_text(_text)
 
-var visible_text : String
+# var visible_text : String
 var tags : Array[Tag]
 var tag_blocks : Array[Block]
 
 var interfacing_tags : Array[Tag] :
 	get: return tags.filter( func(tag: Tag) -> bool:
-		return tag.is_typewriter_interfacing
+		return tag.decor != null
 		)
 
 func _init(_text : String = "") -> void:
 	text = _text
 
+
+func _notification(what: int) -> void:
+	match what:
+		NOTIFICATION_PREDELETE:
+			for tag in tags:
+				tag.free()
 
 func _to_string() -> String:
 	return "`%s`" % text
@@ -91,7 +98,7 @@ static func new_from_pure(pure: String = "", context := Cell.ROOT, filter_contex
 
 
 static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplayString:
-	# print("Raw: `%s`" % string)
+	print("Raw: `%s`" % string)
 
 	var result := DisplayString.new(string)
 	var unclosed_tag_stack : Array[Tag]
@@ -107,7 +114,7 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 		elif tag_match:
 			if tag_match.get_string(1) != "/":
 				var tag := Tag.new_from_string(tag_match.get_string(1), tag_match.get_start(), context)
-				if tag.is_closable: unclosed_tag_stack.push_back(tag)
+				if tag.closable: unclosed_tag_stack.push_back(tag)
 				result.tags.push_back(tag)
 				result.tag_blocks.push_back(Block.new(tag, true))
 			elif unclosed_tag_stack:
@@ -116,7 +123,8 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 				result.tag_blocks.push_back(Block.new(tag, false))
 			result.text = replace_match(tag_match, "")
 
-	# print("Decorated: `%s`" % result.text)
+	print("Decorated: `%s`" % result.text)
+	print("Tags: %s" % str(result.tags))
 	return result
 
 

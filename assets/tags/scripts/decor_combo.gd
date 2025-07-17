@@ -26,10 +26,10 @@ func _get_bbcode_close(tag: Tag) -> String:
 	return result
 
 
-func encounter_open(tag: Tag, tw: Typewriter) -> void:
+func encounter_open(tag: Tag) -> void:
 	for subtag in tag.subtags:
-		subtag.encounter_open(tw)
+		subtag.encounter_open()
 
-func encounter_close(tag: Tag, tw: Typewriter) -> void:
+func encounter_close(tag: Tag) -> void:
 	for subtag in tag.subtags:
-		subtag.encounter_close(tw)
+		subtag.encounter_close()
