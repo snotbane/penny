@@ -1,13 +1,16 @@
-[gd_resource type="Resource" script_class="Decor" load_steps=2 format=3 uid="uid://r7l0c7yddrae"]
+[gd_resource type="Resource" script_class="Decor" load_steps=3 format=3 uid="uid://r7l0c7yddrae"]
 
 [ext_resource type="Script" uid="uid://w7bl3g20knuq" path="res://addons/penny_godot/assets/tags/scripts/decor_.gd" id="1_l2lls"]
+[ext_resource type="RichTextEffect" uid="uid://cn0vkcpj88rh8" path="res://addons/penny_godot/assets/tags/rich_text_effects/dropin.tres" id="1_p6xxr"]
 
 [resource]
 script = ExtResource("1_l2lls")
 id = &"dropin"
-args = Dictionary[StringName, Variant]({})
-is_closable = true
-is_bbcode = true
-is_prod_stop = false
-is_typewriter_dependent = true
+args = Dictionary[StringName, Variant]({
+&"speed": 10.0
+})
+effect = ExtResource("1_p6xxr")
+closable = true
+bbcode = true
+prod_stop = false
 metadata/_custom_type_script = "uid://w7bl3g20knuq"

@@ -4,14 +4,16 @@
 script/source = "extends Decor
 
 func encounter_open(tag: Tag, typewriter: Typewriter) -> void :
-	typewriter.wait()
+	typewriter.wait(tag.args.get(&\"roger\", false))
 "
 
 [resource]
 script = SubResource("GDScript_nkqrf")
 id = &"wait"
-args = Dictionary[StringName, Variant]({})
-is_closable = false
-is_bbcode = false
-is_prod_stop = true
+args = Dictionary[StringName, Variant]({
+&"roger": false
+})
+closable = false
+bbcode = false
+prod_stop = true
 metadata/_custom_type_script = "uid://w7bl3g20knuq"

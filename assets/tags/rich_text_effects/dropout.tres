@@ -3,9 +3,30 @@
 [sub_resource type="GDScript" id="GDScript_htca2"]
 script/source = "extends TypewriterTextEffect
 
+const DEFAULT_SPEED := 10.0
+const DEFAULT_X := 0.0
+const DEFAULT_Y := 6.0
+
+const bbcode := \"dropout\"
+
 func _process_custom_typewriter_fx(char_fx: CharFXTransform, tw: Typewriter, time_visible: float) -> bool:
-	
-	
+	var alpha : float = 0.0
+	alpha = clampf(alpha, 0.0, 1.0)
+	char_fx.color = lerp(
+		char_fx.color,
+		Color(char_fx.color.r, char_fx.color.g, char_fx.color.b, 0.0),
+		alpha
+	)
+	var scale = 1.0
+	var offset := Vector2(
+		char_fx.env.get(&\"x\", DEFAULT_X),
+		char_fx.env.get(&\"y\", DEFAULT_Y)
+	)
+	char_fx.transform.origin = lerp(
+		char_fx.transform.origin,
+		char_fx.transform.origin + offset / scale,
+		alpha
+	)
 	return true
 "
 

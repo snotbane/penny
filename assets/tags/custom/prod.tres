@@ -6,7 +6,7 @@
 script = ExtResource("1_g14a0")
 id = &"prod"
 args = Dictionary[StringName, Variant]({})
-is_closable = false
-is_bbcode = false
-is_prod_stop = true
+closable = false
+bbcode = false
+prod_stop = true
 metadata/_custom_type_script = "uid://w7bl3g20knuq"

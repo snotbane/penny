@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DecorRegistry" load_steps=12 format=3 uid="uid://drmpmcuvh657f"]
+[gd_resource type="Resource" script_class="DecorRegistry" load_steps=13 format=3 uid="uid://drmpmcuvh657f"]
 
 [ext_resource type="Resource" uid="uid://wms4vq8i3jqi" path="res://addons/penny_godot/assets/tags/custom/wait.tres" id="1_qc7t3"]
 [ext_resource type="Resource" uid="uid://cn7h0j1al143o" path="res://addons/penny_godot/assets/tags/custom/delay.tres" id="1_rqsyf"]
@@ -7,6 +7,7 @@
 [ext_resource type="Resource" uid="uid://dkaw4qatk8ucd" path="res://addons/penny_godot/assets/tags/custom/empty.tres" id="2_c8qhl"]
 [ext_resource type="Resource" uid="uid://0cxs2uf7ey8k" path="res://addons/penny_godot/assets/tags/custom/temp.tres" id="3_0pjna"]
 [ext_resource type="Resource" uid="uid://dv3j3qhq802lm" path="res://addons/penny_godot/assets/tags/custom/prod.tres" id="3_c8qhl"]
+[ext_resource type="Resource" uid="uid://c1xc2o4abn5p6" path="res://addons/penny_godot/assets/tags/custom/dropout.tres" id="3_lu0ds"]
 [ext_resource type="Resource" uid="uid://ccmbmssxcqv56" path="res://addons/penny_godot/assets/tags/custom/like.tres" id="4_jape2"]
 [ext_resource type="Resource" uid="uid://i0pokkhvrmgk" path="res://addons/penny_godot/assets/tags/custom/lock.tres" id="5_b1yxd"]
 [ext_resource type="Resource" uid="uid://cs8k2ddrk1a2s" path="res://addons/penny_godot/assets/tags/custom/p.tres" id="6_byov7"]
@@ -14,4 +15,4 @@
 
 [resource]
 script = ExtResource("2_0rjbu")
-decors = [ExtResource("1_rqsyf"), ExtResource("2_7s0p7"), ExtResource("2_c8qhl"), ExtResource("4_jape2"), ExtResource("5_b1yxd"), ExtResource("6_byov7"), ExtResource("3_c8qhl"), ExtResource("8_lu0ds"), ExtResource("3_0pjna"), ExtResource("1_qc7t3")]
+decors = [ExtResource("1_rqsyf"), ExtResource("2_7s0p7"), ExtResource("3_lu0ds"), ExtResource("2_c8qhl"), ExtResource("4_jape2"), ExtResource("5_b1yxd"), ExtResource("6_byov7"), ExtResource("3_c8qhl"), ExtResource("8_lu0ds"), ExtResource("3_0pjna"), ExtResource("1_qc7t3")]

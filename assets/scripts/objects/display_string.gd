@@ -91,6 +91,8 @@ static func new_from_pure(pure: String = "", context := Cell.ROOT, filter_contex
 
 
 static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplayString:
+	# print("Raw: `%s`" % string)
+
 	var result := DisplayString.new(string)
 	var unclosed_tag_stack : Array[Tag]
 
@@ -114,6 +116,7 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 				result.tag_blocks.push_back(Block.new(tag, false))
 			result.text = replace_match(tag_match, "")
 
+	# print("Decorated: `%s`" % result.text)
 	return result
 
 

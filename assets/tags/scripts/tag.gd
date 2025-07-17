@@ -32,13 +32,13 @@ var is_typewriter_interfacing : bool :
 	get: return true
 
 var is_bbcode : bool :
-	get: return decor.is_bbcode if decor else true
+	get: return decor.bbcode if decor else true
 
 var is_closable : bool :
-	get: return decor.is_closable if decor else true
+	get: return decor.closable if decor else true
 
 var is_prod_stop : bool :
-	get: return decor.is_prod_stop if decor else false
+	get: return decor.prod_stop if decor else false
 
 ## Use meta to reduce array instancing.
 var subtags : Array[Tag] :

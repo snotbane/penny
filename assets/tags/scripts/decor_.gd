@@ -14,26 +14,30 @@ static func register_in_master(dec: Decor) -> void:
 ## Defines the default values for each argument.
 @export var args : Dictionary[StringName, Variant] = {}
 
+## This [RichTextEffect] will be installed to each [RichTextLabel] that requires this [Decor].
+## Also, if this effect is a [TypewriterTextEffect], it will be handled accordingly.
+@export var effect : RichTextEffect
+
 ## If enabled, the tag may be closed using `</>` (closing tag). Otherwise, the tag will be treated as a standalone.
-@export var is_closable : bool = true
+@export var closable : bool = true
 
 ## If enabled, the tag will produce bbcode tag(s) in the [RichTextLabel]. Otherwise, the tag will be completely invisible and be processed only by the [Typewriter].
-@export var is_bbcode : bool = true
+@export var bbcode : bool = true
 
 ## If enabled, a user prod will stop at this tag (even if there is more text in the [Typewriter]).
-@export var is_prod_stop : bool = false
+@export var prod_stop : bool = false
 
-## If enabled, this will pass the owner [Typewriter]'s instance id, as well as the tag's open and close indeces, as bbcode arguments. Use with [TypewriterTextEffect]s or other [RichTextEffect]s that require such information.
-@export var is_typewriter_dependent : bool = false
+var typewriter_dependent : bool :
+	get: return effect is TypewriterTextEffect
 
 func get_bbcode_open(tag: Tag) -> String:
-	if not is_bbcode: return ""
+	if not bbcode: return ""
 	return _get_bbcode_open(tag)
 func _get_bbcode_open(tag: Tag) -> String:
 	return tag.get_bbcode_open(tag.args.merged(args))
 
 func get_bbcode_close(tag: Tag) -> String:
-	if not is_bbcode: return ""
+	if not bbcode: return ""
 	return _get_bbcode_close(tag)
 func _get_bbcode_close(tag: Tag) -> String:
 	return tag.get_bbcode_close()
@@ -42,13 +46,13 @@ func populate(tag: Tag) -> void: pass
 func compile_for_typewriter(tag: Tag, tw: Typewriter) -> void:
 	_compile_for_typewriter(tag, tw)
 
-	if not is_typewriter_dependent: return
+	if not typewriter_dependent: return
 
 	tag.args[&"_tw"] = tw.get_instance_id()
 	tag.args[&"_open"] = tag.open_index
 	tag.args[&"_close"] = tag.close_index
 func _compile_for_typewriter(tag: Tag, tw: Typewriter) -> void: pass
 
-## Hidden for efficiency. Tag encounters are only registerd if their decor possesses these methods.
+## Hidden for efficiency. Tag encounters are only registered if their decor possesses these methods.
 # func encounter_open(tag: Tag, tw: Typewriter) -> void : pass
 # func encounter_close(tag: Tag, tw: Typewriter) -> void : pass

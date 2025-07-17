@@ -6,7 +6,7 @@ script/source = "extends Decor
 func encounter_open(tag: Tag, typewriter: Typewriter) -> void:
 	typewriter.delay(
 		tag.args.get(&\"delay\", args[&\"delay\"]),
-		Typewriter.PlayState.PAUSED if is_prod_stop else Typewriter.PlayState.DELAYED
+		Typewriter.PlayState.PAUSED if prod_stop else Typewriter.PlayState.DELAYED
 	)
 "
 
@@ -16,7 +16,7 @@ id = &"delay"
 args = Dictionary[StringName, Variant]({
 &"delay": 0.667
 })
-is_closable = false
-is_bbcode = false
-is_prod_stop = false
+closable = false
+bbcode = false
+prod_stop = false
 metadata/_custom_type_script = "uid://w7bl3g20knuq"

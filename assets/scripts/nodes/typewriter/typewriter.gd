@@ -67,9 +67,6 @@ var user_scroll_enabled : bool = true :
 ## Also known as "click to continue" or "CTC". This is the [CanvasItem] which represents that.
 @export var roger : CanvasItem
 
-## If enabled, the roger will always appear when the user must prod the dialog to continue. Otherwise, it will appear only when the entire text printout is completed.
-@export var roger_appears_on_paused := false
-
 var _play_state := PlayState.READY
 var play_state : PlayState :
 	get: return _play_state
@@ -85,12 +82,6 @@ var play_state : PlayState :
 				_visible_characters_partial = 0
 				is_locked = false
 				user_scroll_override = false
-
-		if roger:
-			match _play_state:
-				PlayState.PAUSED:		roger.visible = roger_appears_on_paused
-				PlayState.COMPLETED:	roger.visible = true
-				_:						roger.visible = false
 
 @export_subgroup("Audio")
 
@@ -134,6 +125,7 @@ var time_per_char : PackedFloat32Array
 
 var tag_opens : Dictionary[int, Array]
 var tag_closes : Dictionary[int, Array]
+var tag_close_times : Dictionary[Tag, float]
 
 #endregion
 #region Properties
@@ -217,8 +209,6 @@ var is_working : bool :
 
 var is_initialized : bool = false
 func _ready() -> void:
-	install_available_custom_effects()
-
 	v_scroll_bar = scroll_container.get_v_scroll_bar()
 	scrollbox_min_height = scroll_container.custom_minimum_size.y
 
@@ -237,12 +227,6 @@ func _ready() -> void:
 
 	reset()
 	is_initialized = true
-
-
-func install_available_custom_effects() -> void:
-	# rtl.install_effect(null)
-	# shape_rtl.install_effect(null)
-	pass
 
 
 func _exit_tree() -> void:
@@ -370,16 +354,21 @@ func delay(seconds: float, new_state: PlayState = PlayState.DELAYED):
 	await get_tree().create_timer(seconds).timeout
 	if play_state == new_state: play_state = PlayState.PLAYING
 
-func wait():
+
+func wait(show_roger := false):
 	play_state = PlayState.PAUSED
+	if roger: roger.visible = show_roger
 	await prodded
 	play_state = PlayState.PLAYING
+	if roger: roger.visible = false
 
 
 func register_tag(tag: Tag) -> void:
 	tag.compile_for_typewriter(self)
 
 	if not tag.decor: return
+
+	install_effect_from_tag(tag)
 
 	if tag.decor.has_method(&"encounter_open"):
 		if not tag_opens.has(tag.open_index): tag_opens[tag.open_index] = []
@@ -388,6 +377,20 @@ func register_tag(tag: Tag) -> void:
 	if tag.decor.has_method(&"encounter_close"):
 		if not tag_closes.has(tag.close_index): tag_closes[tag.close_index] = []
 		tag_closes[tag.close_index].push_back(tag)
+
+	if tag.decor.effect is not TypewriterTextEffect: return
+
+
+
+
+func install_effect_from_tag(tag: Tag) -> void:
+	if not tag.decor.effect: return
+	if rtl.custom_effects.has(tag.decor.effect): return
+
+	rtl.install_effect(tag.decor.effect)
+
+	# ## Not needed as far as I know, so leaving this out to reduce processing time.
+	# shape_rtl.install_effect(tag.decor.effect)
 
 
 func push_speed_tag(characters_per_second: float) -> void:

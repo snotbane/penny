@@ -4,8 +4,10 @@
 script/source = "extends TypewriterTextEffect
 
 const DEFAULT_SPEED := 10.0
+const DEFAULT_X := 0.0
+const DEFAULT_Y := 6.0
 
-var bbcode = \"dropin\"
+const bbcode := \"dropin\"
 
 func _process_custom_typewriter_fx(char_fx: CharFXTransform, tw: Typewriter, time_visible: float) -> bool:
 	var alpha : float = time_visible * char_fx.env.get(&\"speed\", DEFAULT_SPEED)
@@ -16,17 +18,15 @@ func _process_custom_typewriter_fx(char_fx: CharFXTransform, tw: Typewriter, tim
 		alpha
 	)
 	var scale = 1.0
-	char_fx.transform.origin.x = lerp(
-		char_fx.transform.origin.x - char_fx.env.get(&\"x\", 0.0) / scale,
-		char_fx.transform.origin.x,
+	var offset := Vector2(
+		char_fx.env.get(&\"x\", DEFAULT_X),
+		char_fx.env.get(&\"y\", DEFAULT_Y)
+	)
+	char_fx.transform.origin = lerp(
+		char_fx.transform.origin - offset / scale,
+		char_fx.transform.origin,
 		alpha
 	)
-	char_fx.transform.origin.y = lerp(
-		char_fx.transform.origin.y - char_fx.env.get(&\"y\", 6.0) / scale,
-		char_fx.transform.origin.y,
-		alpha
-	)
-
 	return true
 "
 

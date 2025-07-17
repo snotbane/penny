@@ -10,7 +10,8 @@ object
 dialog = new object
 	.res = 'uid://b8sp6ey8fsgt7'
 	.marker = 'dialog'
-	.filters = [PARAGRAPH_DEFAULT, PUNCTUATION_TO_PIPE, PIPE_TO_DELAY, SLASH_TO_WAIT]
+	.filters = [PARAGRAPH_START, PUNCTUATION_TO_PIPE, PIPE_TO_DELAY, SLASH_TO_WAIT]
+	# .filters = [PARAGRAPH_START, PARAGRAPH_END, PUNCTUATION_TO_PIPE, PIPE_TO_DELAY, SLASH_TO_WAIT]
 	.reusable = true
 
 prompt = new object
@@ -23,7 +24,7 @@ option = new object
 	.enabled = true
 	.visible = true
 	.consumed = false
-	.filters = [PARAGRAPH_CENTERED, PIPE_TO_DELAY, SLASH_TO_WAIT]
+	.filters = [PARAGRAPH_START_CENTERED, PIPE_TO_DELAY, SLASH_TO_WAIT]
 
 filter = new object
 	.pattern = '.+'
@@ -47,13 +48,19 @@ actor = new object
 unknown = new actor
 	.name = `???`
 
-PARAGRAPH_DEFAULT = new filter
+PARAGRAPH_START = new filter
 	.pattern = `^`
-	.replace = `<p>`
+	.replace = `<p><dropin><dropout>`
+	# .replace = `<delay=0.5><p><dropin><dropout>`
 
-PARAGRAPH_CENTERED = new filter
+# PARAGRAPH_END = new filter
+# 	.pattern = `$`
+# 	.replace = `<wait roger=true></><delay=0.5>`
+
+PARAGRAPH_START_CENTERED = new filter
 	.pattern = `^`
-	.replace = `<p align="center">`
+	.replace = `<p align="center"><dropin><dropout>`
+	# .replace = `<delay=0.5><p align="center"><dropin><dropout>`
 
 PUNCTUATION_TO_PIPE = new filter
 	.pattern = `(?<!(?:Mx|Mr|Dr|Prof)s?)((?:[.,?!:;](?!\S))|-{2,})+['")\]]?`
