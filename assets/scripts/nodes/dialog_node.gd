@@ -16,9 +16,10 @@ var message : DisplayString
 
 
 func _enter_tree() -> void:
-	if self.has_signal("mouse_entered") and self.has_signal("mouse_exited"):
-		self.mouse_entered.connect(self.set.bind("is_mouse_inside", true))
-		self.mouse_exited.connect(self.set.bind("is_mouse_inside", false))
+	if self.has_signal(&"mouse_entered") and self.has_signal(&"mouse_exited"):
+		self.mouse_entered.connect(self.set.bind(&"is_mouse_inside", true))
+		self.mouse_exited.connect(self.set.bind(&"is_mouse_inside", false))
+	typewriter.reseted.connect(advanced.emit)
 
 
 func _populate() -> void:
@@ -59,4 +60,4 @@ func try_advance() -> void:
 		typewriter.prod()
 		return
 	if is_preventing_skip: return
-	self.advanced.emit()
+	typewriter.reset()

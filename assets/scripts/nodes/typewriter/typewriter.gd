@@ -5,12 +5,12 @@ class_name Typewriter extends Node
 #region Static
 
 enum PlayState {
+	RESETTING,
 	READY,
 	PLAYING,
 	DELAYED,
 	PAUSED,
 	COMPLETED,
-	RESETTING,
 }
 
 static var REGEX_SHAPE_MARKER := RegEx.create_from_string(r"$|(?<=\s)\S")
@@ -26,6 +26,7 @@ static var NOW_USEC_FLOAT : float :
 
 signal character_arrived(char: String)
 signal completed
+signal reseted
 signal prodded
 
 @export var rtl : RichTextLabel
@@ -70,26 +71,6 @@ var user_scroll_enabled : bool = true :
 ## Also known as "click to continue" or "CTC". This is the [CanvasItem] which represents that.
 @export var roger : CanvasItem
 
-var _play_state := PlayState.READY
-var play_state : PlayState :
-	get: return _play_state
-	set(value):
-		if _play_state == value: return
-		_play_state = value
-
-		user_scroll_enabled = _play_state == PlayState.PAUSED or _play_state == PlayState.COMPLETED
-		is_talking = _play_state == PlayState.PLAYING
-
-		match _play_state:
-			PlayState.READY, PlayState.COMPLETED:
-				_visible_characters_partial = 0
-				is_locked = false
-				user_scroll_override = false
-
-		match _play_state:
-			PlayState.COMPLETED:
-				completed.emit()
-
 @export_subgroup("Audio")
 
 var _audio_player : TypewriterAudioStreamPlayer
@@ -127,8 +108,8 @@ var v_scroll_bar : VScrollBar
 var subject : Cell
 var message : DisplayString
 
-var time_ready : float
-var time_reset : float
+var time_reseted : float = INF
+var time_prepped : float
 var time_elapsed : float
 var time_per_char : PackedFloat32Array
 
@@ -137,6 +118,28 @@ var tag_closes : Dictionary[int, Array]
 
 #endregion
 #region Properties
+
+var _play_state := PlayState.READY
+var play_state := PlayState.READY :
+	get: return _play_state
+	set(value):
+		if _play_state == value: return
+		_play_state = value
+
+		user_scroll_enabled = _play_state == PlayState.PAUSED or _play_state == PlayState.COMPLETED
+		is_talking = _play_state == PlayState.PLAYING
+
+		match _play_state:
+			PlayState.READY, PlayState.COMPLETED:
+				_visible_characters_partial = 0
+				is_locked = false
+				user_scroll_override = false
+
+		match _play_state:
+			PlayState.RESETTING:
+				time_reseted = Typewriter.now
+			PlayState.COMPLETED:
+				completed.emit()
 
 var speed : float :
 	get: return self.speed_stack.back()
@@ -245,7 +248,7 @@ func _ready() -> void:
 
 	time_per_char.resize(rtl.get_total_character_count())
 
-	reset()
+	prep()
 	is_initialized = true
 
 
@@ -273,7 +276,7 @@ func _input(event: InputEvent) -> void:
 
 func _process(delta: float) -> void:
 	now = float(Time.get_ticks_usec()) * 0.00_000_1
-	time_elapsed = now - time_reset
+	time_elapsed = now - time_prepped
 
 	_process_cursor(delta)
 	_process_autoscroll(delta)
@@ -339,26 +342,33 @@ func _process_end(delta: float) -> void:
 
 #region Script Functions
 
-func reset() -> void:
+## Preps the dialog for printout, but doesn't start.
+func prep() -> void:
 	shape_rtl.text = rtl.text
-	time_reset = NOW_USEC_FLOAT
+	time_prepped = NOW_USEC_FLOAT
 	play_state = PlayState.READY
 	visible_characters_partial = 0
 
-
+## Begins printout.
 func present() -> void:
 	visible_characters_partial = 0
 	await get_tree().create_timer(0.5).timeout
 	play_state = PlayState.PLAYING
 
-
+## Skips to the very end, but doesn't reset.
 func complete() -> void:
 	visible_characters = -1
 	play_state = PlayState.COMPLETED
 
+## Resets the dialog to be used again.
+func reset():
+	play_state = PlayState.RESETTING
+	await get_tree().create_timer(0.5).timeout
+	reseted.emit()
 
-func receive(record: Record) -> void: _receive(record)
-func _receive(record: Record) -> void:
+
+func receive(record: Record) : _receive(record)
+func _receive(record: Record) :
 	complete()
 
 	subject = record.data[&"who"]
@@ -378,7 +388,7 @@ func _receive(record: Record) -> void:
 
 	if not is_initialized: return
 
-	reset()
+	prep()
 	present()
 
 
