@@ -31,15 +31,7 @@ class Block extends RefCounted:
 		is_start = _is_start
 
 var text : String
-# var _text : String
-# var text : String :
-# 	get: return _text
-# 	set(value):
-# 		if _text == value: return
-# 		_text = value
-		# visible_text = get_visible_text(_text)
 
-# var visible_text : String
 var tags : Array[Tag]
 var tag_blocks : Array[Block]
 
@@ -200,7 +192,7 @@ static func get_visible_text(string: String) -> String:
 	while cursor < string.length():
 		var pattern_match := VISCHAR_PATTERN.search(string, cursor)
 		if not pattern_match: break
-		var substitution : RegExMatch = VISCHAR_SUBSTITUTIONS.get(pattern_match.get_string(1), "")
+		var substitution : String = VISCHAR_SUBSTITUTIONS.get(pattern_match.get_string(1), "")
 		string = replace_match(pattern_match, substitution)
 		cursor = pattern_match.get_start() + maxi(1, substitution.length())
 	return string
