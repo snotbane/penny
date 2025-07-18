@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://cdrs673e0hg62" path="res://addons/penny_godot/assets/scripts/nodes/typewriter/typewriter.gd" id="3_q7721"]
 [ext_resource type="AudioStream" uid="uid://bvaimbcs1j77n" path="res://addons/penny_godot/assets/audio/sfx_typewriter_sans.ogg" id="4_a8dr1"]
 [ext_resource type="Script" uid="uid://cmfsxei24xrjq" path="res://addons/penny_godot/assets/scripts/nodes/typewriter/typewriter_audio_player.gd" id="5_a8dr1"]
-[ext_resource type="RichTextEffect" uid="uid://cn0vkcpj88rh8" path="res://addons/penny_godot/assets/tags/rich_text_effects/dropin.tres" id="6_mpiio"]
+[ext_resource type="RichTextEffect" uid="uid://cn0vkcpj88rh8" path="res://addons/penny_godot/assets/decor/builtin/dropin_fx.tres" id="6_mpiio"]
 
 [sub_resource type="Curve" id="Curve_a8dr1"]
 _limits = [0.0, 300.0, -100.0, 100.0]

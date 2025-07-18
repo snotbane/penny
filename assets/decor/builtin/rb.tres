@@ -3,7 +3,7 @@
 [sub_resource type="GDScript" id="GDScript_yyug8"]
 script/source = "extends Decor
 
-func _compile_instance(tag: Tag) -> String:
+func _compile(element: DecorElement) -> String:
 	return \"]\"
 "
 

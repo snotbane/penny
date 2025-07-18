@@ -1,7 +1,7 @@
 [gd_resource type="RichTextEffect" load_steps=2 format=3 uid="uid://cn0vkcpj88rh8"]
 
 [sub_resource type="GDScript" id="GDScript_365wd"]
-script/source = "extends TagTextEffect
+script/source = "extends DecorTextEffect
 
 const DEFAULT_SPEED := 10.0
 const DEFAULT_X := 0.0
@@ -9,7 +9,7 @@ const DEFAULT_Y := 6.0
 
 const bbcode := \"dropin\"
 
-func _process_custom_tag_fx(char_fx: CharFXTransform, tag: Tag, time_visible: float) -> bool:
+func _process_custom_element_fx(char_fx: CharFXTransform, element: DecorElement, time_visible: float) -> bool:
 	var alpha : float = time_visible * char_fx.env.get(&\"speed\", DEFAULT_SPEED)
 	alpha = clampf(alpha, 0.0, 1.0)
 	char_fx.color = lerp(

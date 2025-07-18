@@ -3,15 +3,15 @@
 [sub_resource type="GDScript" id="GDScript_xhxg8"]
 script/source = "extends DecorCombo
 
-func populate(tag: Tag) -> void:
-	var context : Cell = tag.args[&\"like\"]
-	tag.subtags = DisplayString.new_from_pure(context.get_value(Cell.K_PREFIX), context).tags
+func populate(element: DecorElement) -> void:
+	var context : Cell = element.args[&\"like\"]
+	element.subelements = DisplayString.new_from_pure(context.get_value(Cell.K_PREFIX), context).elements
 "
 
 [resource]
 script = SubResource("GDScript_xhxg8")
 ids = Array[StringName]([])
-subtags = Dictionary[StringName, Dictionary]({})
+subelements = Dictionary[StringName, Dictionary]({})
 id = &"like"
 args = Dictionary[StringName, Variant]({})
 closable = true

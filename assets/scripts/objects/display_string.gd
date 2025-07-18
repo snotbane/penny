@@ -23,11 +23,11 @@ static var VISCHAR_SUBSTITUTIONS : Dictionary[String, String] = {
 static var REGEX_WORD_COUNT := RegEx.create_from_string(r"\b[\w']+\b")
 static var REGEX_LETTER_COUNT := RegEx.create_from_string(r"\w")
 
-class Block extends RefCounted:
-	var tag : Tag
+class Tag extends RefCounted:
+	var element : DecorElement
 	var is_start : bool
-	func _init(_tag: Tag, _is_start: bool) -> void:
-		tag = _tag
+	func _init(_element: DecorElement, _is_start: bool) -> void:
+		element = _element
 		is_start = _is_start
 
 # var text : String
@@ -40,12 +40,12 @@ var text : String :
 		visible_text = get_visible_text(_text)
 var visible_text : String
 
+var elements : Array[DecorElement]
 var tags : Array[Tag]
-var tag_blocks : Array[Block]
 
-var interfacing_tags : Array[Tag] :
-	get: return tags.filter( func(tag: Tag) -> bool:
-		return tag.decor != null
+var interfacing_elements : Array[DecorElement] :
+	get: return elements.filter( func(element: DecorElement) -> bool:
+		return element.decor != null
 		)
 
 func _init(_text : String = "") -> void:
@@ -55,8 +55,8 @@ func _init(_text : String = "") -> void:
 func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_PREDELETE:
-			for tag in tags:
-				tag.free()
+			for element in elements:
+				element.free()
 
 func _to_string() -> String:
 	return "`%s`" % text
@@ -72,14 +72,14 @@ func get_metrics() -> Dictionary:
 func compile_for_typewriter(tw: Typewriter) -> String:
 	var result := text
 	var offset := 0
-	for block in tag_blocks:
-		var block_index := (block.tag.open_index if block.is_start else block.tag.close_index) + offset
-		if block.is_start:
-			block.tag.compile_for_typewriter(tw)
-		var block_text := block.tag.bbcode_open if block.is_start else block.tag.bbcode_close
-		offset += block_text.length()
-		result = result.insert(block_index, block_text)
-		# print("%s %s" % [block.tag.open_index if block.is_start else block.tag.close_index, block.tag.bbcode_open if block.is_start else block.tag.bbcode_close])
+	for tag in tags:
+		var tag_index := (tag.element.open_index if tag.is_start else tag.element.close_index) + offset
+		if tag.is_start:
+			tag.element.compile_for_typewriter(tw)
+		var tag_text := tag.element.bbcode_open if tag.is_start else tag.element.bbcode_close
+		offset += tag_text.length()
+		result = result.insert(tag_index, tag_text)
+		# print("%s %s" % [tag.element.open_index if tag.is_start else tag.element.close_index, tag.element.bbcode_open if tag.is_start else tag.element.bbcode_close])
 	return result
 
 
@@ -101,30 +101,30 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 	# print("Raw: `%s`" % string)
 
 	var result := DisplayString.new(string)
-	var unclosed_tag_stack : Array[Tag]
+	var unclosed_element_stack : Array[DecorElement]
 
 	while true:
 		var esc_match := ESCAPE_PATTERN.search(result.text)
-		var tag_match := Tag.INSTANCE_PATTERN.search(result.text)
+		var element_match := DecorElement.INSTANCE_PATTERN.search(result.text)
 
-		if not esc_match and not tag_match: break
+		if not esc_match and not element_match: break
 
-		if esc_match and (not tag_match or esc_match.get_start() < tag_match.get_start()):
+		if esc_match and (not element_match or esc_match.get_start() < element_match.get_start()):
 			result.text = replace_match(esc_match, ESCAPE_SUBSITUTIONS.get(esc_match.get_string(1), esc_match.get_string(1)))
-		elif tag_match:
-			if tag_match.get_string(1) != "/":
-				var tag := Tag.new_from_string(tag_match.get_string(1), tag_match.get_start(), context)
-				if tag.closable: unclosed_tag_stack.push_back(tag)
-				result.tags.push_back(tag)
-				result.tag_blocks.push_back(Block.new(tag, true))
-			elif unclosed_tag_stack:
-				var tag : Tag = unclosed_tag_stack.pop_back()
-				tag.register_end(tag_match.get_start())
-				result.tag_blocks.push_back(Block.new(tag, false))
-			result.text = replace_match(tag_match, "")
+		elif element_match:
+			if element_match.get_string(1) != "/":
+				var element := DecorElement.new_from_string(element_match.get_string(1), element_match.get_start(), context)
+				if element.closable: unclosed_element_stack.push_back(element)
+				result.elements.push_back(element)
+				result.tags.push_back(Tag.new(element, true))
+			elif unclosed_element_stack:
+				var element : DecorElement = unclosed_element_stack.pop_back()
+				element.register_end(element_match.get_start())
+				result.tags.push_back(Tag.new(element, false))
+			result.text = replace_match(element_match, "")
 
 	# print("Decorated: `%s`" % result.text)
-	# print("Tags: %s" % str(result.tags))
+	# print("Tags: %s" % str(result.elements))
 	return result
 
 
@@ -173,14 +173,14 @@ static func filter(string: String, pattern: String, replace: String) -> String:
 		var pattern_match := regex.search(string, start)
 		if not pattern_match: break
 
-		var tag_match_found := false
-		var tag_matches := DECO_TAG_PATTERN.search_all(string, start)
-		for tag_match in tag_matches:
-			if pattern_match.get_start() > tag_match.get_start() and pattern_match.get_start() <= tag_match.get_end():
-				start = tag_match.get_end()
-				tag_match_found = true
+		var elememt_match_found := false
+		var element_matches := DECO_TAG_PATTERN.search_all(string, start)
+		for element_match in element_matches:
+			if pattern_match.get_start() > element_match.get_start() and pattern_match.get_start() <= element_match.get_end():
+				start = element_match.get_end()
+				elememt_match_found = true
 				break
-		if tag_match_found: continue
+		if elememt_match_found: continue
 
 		string = regex.sub(string, replace, false, start)
 		start = pattern_match.get_start() + replace.length()

@@ -3,9 +3,9 @@
 [sub_resource type="GDScript" id="GDScript_hjcn3"]
 script/source = "extends Decor
 
-func encounter_open(tag: Tag) :
-	await tag.owner.delay(
-		tag.args.get(&\"delay\", args[&\"delay\"]),
+func encounter_open(element: DecorElement) :
+	await element.owner.delay(
+		element.args.get(&\"delay\", args[&\"delay\"]),
 		Typewriter.PlayState.PAUSED if prod_stop else Typewriter.PlayState.DELAYED
 	)
 "

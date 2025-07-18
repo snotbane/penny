@@ -1,6 +1,6 @@
 
-## An instance of a decor. Exclusively bbcode tags will be processed and then removed.
-class_name Tag extends Object
+## An instance of a decor.
+class_name DecorElement extends Object
 
 enum {
 	ARG_KEY = 1,
@@ -46,9 +46,9 @@ var prod_stop : bool :
 	get: return decor.prod_stop if decor else false
 
 ## Use meta to reduce array instancing.
-var subtags : Array[Tag] :
-	get: return get_meta(&"subtags") if has_meta(&"subtags") else []
-	set(value): set_meta(&"subtags", value)
+var subelements : Array[DecorElement] :
+	get: return get_meta(&"subelements") if has_meta(&"subelements") else []
+	set(value): set_meta(&"subelements", value)
 
 var bbcode_open : String :
 	get: return decor.get_bbcode_open(self) if decor else get_bbcode_open()
@@ -74,27 +74,27 @@ func _to_string() -> String:
 	return "<%s>" % id
 
 
-static func new_from_string(contents: String, index: int, context: Cell) -> Tag:
-	var result := Tag.new()
+static func new_from_string(contents: String, index: int, context: Cell) -> DecorElement:
+	var result := DecorElement.new()
 
 	var id_match := ID_PATTERN.search(contents)
 	if id_match:
 		result.id = ID_PATTERN.search(contents).get_string(1)
 	else:
-		printerr("Invalid id in tag contents: %s" % contents)
+		printerr("Invalid id in element contents: %s" % contents)
 
 	var arg_matches := ARG_PATTERN.search_all(contents)
 	for arg_match in arg_matches:
 		var arg_key : StringName = arg_match.get_string(ARG_KEY)
 		if result.args.has(arg_key):
-			printerr("Tag argument '%s' already exists in the tag declaration. This will be ignored.")
+			printerr("DecorElement argument '%s' already exists in the element declaration. This will be ignored.")
 			continue
 
 		var expr := Expr.new_from_string(arg_match.get_string(ARG_VALUE))
 		var arg_value : Variant = expr.evaluate(context)
 		prints(arg_key, arg_value)
 		if arg_value == null:
-			printerr("Tag argument '%s' evaluated to null in string: `%s`." % [arg_key, contents])
+			printerr("DecorElement argument '%s' evaluated to null in string: `%s`." % [arg_key, contents])
 			continue
 
 		result.args[arg_key] = arg_value
@@ -107,8 +107,8 @@ static func new_from_string(contents: String, index: int, context: Cell) -> Tag:
 
 	return result
 
-static func new_from_other(other: Tag, _id: StringName = other.id, _args: Dictionary[StringName, Variant] = other.args) -> Tag:
-	var result := Tag.new()
+static func new_from_other(other: DecorElement, _id: StringName = other.id, _args: Dictionary[StringName, Variant] = other.args) -> DecorElement:
+	var result := DecorElement.new()
 
 	result.id = _id
 	result.args = _args
@@ -125,7 +125,7 @@ func register_end(index: int = open_index) -> void:
 func compile_for_typewriter(tw: Typewriter) -> String:
 	owner = tw
 	if not decor: return ""
-	return decor.compile_instance(self)
+	return decor.compile(self)
 
 
 func encounter_open() :

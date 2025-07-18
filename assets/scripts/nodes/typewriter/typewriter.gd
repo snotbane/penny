@@ -118,8 +118,8 @@ var time_prepped : float
 var time_elapsed : float
 var time_per_char : PackedFloat32Array
 
-var tag_opens : Dictionary[int, Array]
-var tag_closes : Dictionary[int, Array]
+var element_opens : Dictionary[int, Array]
+var element_closes : Dictionary[int, Array]
 
 #endregion
 #region Properties
@@ -167,9 +167,9 @@ var is_talking : bool :
 var next_prod_stop : int :
 	get:
 		if visible_characters == -1: return -1
-		for k in tag_opens.keys():
+		for k in element_opens.keys():
 			if visible_characters >= k: continue
-			for tag in tag_opens[k]: if tag.prod_stop: return k
+			for element in element_opens[k]: if element.prod_stop: return k
 		return -1
 
 var _visible_characters_partial : float
@@ -193,7 +193,7 @@ var visible_characters : int :
 
 			if increment <= 0: continue
 
-			handle_tags()
+			handle_elements()
 
 		# var last_visible_character_bounds : Rect2 = rtl.last_visible_character_bounds
 		# roger.position = last_visible_character_bounds.position
@@ -211,21 +211,21 @@ var visible_characters : int :
 			_visible_characters_partial = rtl.visible_characters + fmod(_visible_characters_partial, 1.0)
 
 
-var handling_tags : bool
-func handle_tags() -> void:
-	handling_tags = true
+var handling_elements : bool
+func handle_elements() -> void:
+	handling_elements = true
 
-	if tag_opens.has(rtl.visible_characters):
-		for tag in tag_opens[rtl.visible_characters]:
-			if tag.prod_stop:	await	tag.encounter_open()
-			else:						tag.encounter_open()
+	if element_opens.has(rtl.visible_characters):
+		for element in element_opens[rtl.visible_characters]:
+			if element.prod_stop:	await	element.encounter_open()
+			else:						element.encounter_open()
 
-	if tag_closes.has(rtl.visible_characters):
-		for tag in tag_closes[rtl.visible_characters]:
-			if tag.prod_stop:	await	tag.encounter_close()
-			else:						tag.encounter_close()
+	if element_closes.has(rtl.visible_characters):
+		for element in element_closes[rtl.visible_characters]:
+			if element.prod_stop:	await	element.encounter_close()
+			else:						element.encounter_close()
 
-	handling_tags = false
+	handling_elements = false
 
 #endregion
 
@@ -328,10 +328,10 @@ func _process_autoscroll(delta: float) -> void:
 func _process_end(delta: float) -> void:
 	if play_state == PlayState.COMPLETED or rtl.visible_characters != -1: return
 
-	if handling_tags: return
+	if handling_elements: return
 
-	for k in tag_opens: for tag in tag_opens[k]:
-		if tag.encounter_state < Tag.CLOSED: return
+	for k in element_opens: for element in element_opens[k]:
+		if element.encounter_state < DecorElement.CLOSED: return
 
 	play_state = PlayState.COMPLETED
 
@@ -374,8 +374,8 @@ func _receive(record: Record) :
 	subject = record.data[&"who"]
 	message = record.data[&"what"]
 
-	tag_opens.clear()
-	tag_closes.clear()
+	element_opens.clear()
+	element_closes.clear()
 
 	rtl.text = message.compile_for_typewriter(self)
 	shape_rtl.text = String()
@@ -384,21 +384,21 @@ func _receive(record: Record) :
 	time_per_char.fill(INF)
 
 	var visible_offset := 0
-	for tag in message.tags:
-		var compile_result := tag.compile_for_typewriter(self)
+	for element in message.elements:
+		var compile_result := element.compile_for_typewriter(self)
 		visible_offset += compile_result.length()
 
-		if not tag.decor: continue
+		if not element.decor: continue
 
-		install_effect_from_tag(tag)
+		install_effect_from(element)
 
-		if tag.decor.has_method(&"encounter_open"):
-			if not tag_opens.has(tag.open_index): tag_opens[tag.open_index + visible_offset] = []
-			tag_opens[tag.open_index + visible_offset].push_back(tag)
+		if element.decor.has_method(&"encounter_open"):
+			if not element_opens.has(element.open_index): element_opens[element.open_index + visible_offset] = []
+			element_opens[element.open_index + visible_offset].push_back(element)
 
-		if tag.decor.has_method(&"encounter_close"):
-			if not tag_closes.has(tag.close_index): tag_closes[tag.close_index + visible_offset] = []
-			tag_closes[tag.close_index + visible_offset].push_back(tag)
+		if element.decor.has_method(&"encounter_close"):
+			if not element_closes.has(element.close_index): element_closes[element.close_index + visible_offset] = []
+			element_closes[element.close_index + visible_offset].push_back(element)
 
 	if not is_initialized: return
 
@@ -413,16 +413,16 @@ func prod() -> void:
 		visible_characters_partial = next_prod_stop
 
 #endregion
-#region Tag Functions
+#region DecorElement Functions
 
 
-func install_effect_from_tag(tag: Tag) -> void:
-	if not tag.decor.effect: return
-	if rtl.custom_effects.has(tag.decor.effect): return
+func install_effect_from(element: DecorElement) -> void:
+	if not element.decor.effect: return
+	if rtl.custom_effects.has(element.decor.effect): return
 
-	rtl.install_effect(tag.decor.effect)
+	rtl.install_effect(element.decor.effect)
 	# Definitely necessary even though it's invisible. If disabled, multiple lines/scrolling may be broken.
-	shape_rtl.install_effect(tag.decor.effect)
+	shape_rtl.install_effect(element.decor.effect)
 
 
 func delay(seconds: float, new_state: PlayState = PlayState.DELAYED) :
@@ -439,10 +439,10 @@ func wait(show_roger := false) :
 	roger_shown.emit(false)
 
 
-func push_speed_tag(characters_per_second: float) -> void:
+func push_speed_element(characters_per_second: float) -> void:
 	speed_stack.push_back(characters_per_second)
 
-func pop_speed_tag() -> void:
+func pop_speed_element() -> void:
 	if speed_stack.size() <= 1: return
 	speed_stack.pop_back()
 

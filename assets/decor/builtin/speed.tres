@@ -3,11 +3,11 @@
 [sub_resource type="GDScript" id="GDScript_8wv3k"]
 script/source = "extends Decor
 
-func encounter_open(tag: Tag) -> void:
-	tag.owner.push_speed_tag(float(tag.args[&\"speed\"]))
+func encounter_open(element: DecorElement) -> void:
+	element.owner.push_speed_element(float(element.args[&\"speed\"]))
 
-func encounter_close(tag: Tag) -> void:
-	tag.owner.pop_speed_tag()
+func encounter_close(element: DecorElement) -> void:
+	element.owner.pop_speed_element()
 "
 
 [resource]
