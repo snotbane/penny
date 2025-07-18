@@ -107,11 +107,11 @@ static func new_from_string(contents: String, index: int, context: Cell) -> Tag:
 
 	return result
 
-static func new_from_other(other: Tag, id: StringName = other.id, args: Dictionary[StringName, Variant] = other.args) -> Tag:
+static func new_from_other(other: Tag, _id: StringName = other.id, _args: Dictionary[StringName, Variant] = other.args) -> Tag:
 	var result := Tag.new()
 
-	result.id = id
-	result.args = args
+	result.id = _id
+	result.args = _args
 	result.open_index = other.open_index
 	result.close_index = other.close_index
 

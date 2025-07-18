@@ -24,21 +24,21 @@ func _process(delta: float) -> void:
 	_audio_timer += delta
 
 
-func receive_character(char: String) -> void:
+func receive_character(c: String) -> void:
 	if _audio_timer < minimum_audio_delay: return
 	_audio_timer = 0.0
 
-	_receive_character(char)
-func _receive_character(char: String) -> void:
-	char = char.to_lower()
+	_receive_character(c)
+func _receive_character(c: String) -> void:
+	c = c.to_lower()
 	stream = default_audio_stream
 
-	if char_map.has(char):
-		stream = char_map[char]
+	if char_map.has(c):
+		stream = char_map[c]
 	else:
 		for k in regex_map.keys():
 			regex.compile(k)
-			if not regex.search(char): continue
+			if not regex.search(c): continue
 			stream = regex_map[k]
 			break
 

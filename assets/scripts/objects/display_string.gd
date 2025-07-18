@@ -118,7 +118,7 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 				result.tags.push_back(tag)
 				result.tag_blocks.push_back(Block.new(tag, true))
 			elif unclosed_tag_stack:
-				var tag := unclosed_tag_stack.pop_back()
+				var tag : Tag = unclosed_tag_stack.pop_back()
 				tag.register_end(tag_match.get_start())
 				result.tag_blocks.push_back(Block.new(tag, false))
 			result.text = replace_match(tag_match, "")
@@ -200,7 +200,7 @@ static func get_visible_text(string: String) -> String:
 	while cursor < string.length():
 		var pattern_match := VISCHAR_PATTERN.search(string, cursor)
 		if not pattern_match: break
-		var substitution := VISCHAR_SUBSTITUTIONS.get(pattern_match.get_string(1), "")
+		var substitution : RegExMatch = VISCHAR_SUBSTITUTIONS.get(pattern_match.get_string(1), "")
 		string = replace_match(pattern_match, substitution)
 		cursor = pattern_match.get_start() + maxi(1, substitution.length())
 	return string
