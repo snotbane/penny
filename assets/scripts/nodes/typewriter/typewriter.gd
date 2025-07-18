@@ -26,8 +26,8 @@ static var NOW_USEC_FLOAT : float :
 
 signal character_arrived(char: String)
 signal completed
-signal reseted
 signal prodded
+signal roger_shown(visible: bool)
 
 @export var rtl : RichTextLabel
 
@@ -37,6 +37,11 @@ var speed_stack : Array[float] = [ 40.0 ]
 	get: return speed_stack[0]
 	set(value):
 		speed_stack[0] = value
+
+## Amount of time to wait after receiving a new message, before printing it out.
+@export var start_delay : float = 0.5
+## When a completed message already exists, amount of time to wait before replacing the existing text.
+@export var reset_delay : float = 0.5
 
 @export_subgroup("Autoscroll")
 
@@ -129,6 +134,8 @@ var play_state := PlayState.READY :
 		user_scroll_enabled = _play_state == PlayState.PAUSED or _play_state == PlayState.COMPLETED
 		is_talking = _play_state == PlayState.PLAYING
 
+		roger_shown.emit(play_state == PlayState.COMPLETED)
+
 		match _play_state:
 			PlayState.READY, PlayState.COMPLETED:
 				_visible_characters_partial = 0
@@ -136,6 +143,8 @@ var play_state := PlayState.READY :
 				user_scroll_override = false
 
 		match _play_state:
+			PlayState.READY:
+				time_reseted = INF
 			PlayState.RESETTING:
 				time_reseted = Typewriter.now
 			PlayState.COMPLETED:
@@ -202,28 +211,21 @@ var visible_characters : int :
 		else:
 			_visible_characters_partial = rtl.visible_characters + fmod(_visible_characters_partial, 1.0)
 
-		# if rtl.visible_characters == -1:
-		# 	play_state = PlayState.COMPLETED
 
 var handling_tags : bool
 func handle_tags() -> void:
 	handling_tags = true
 
-	var s = tag_opens.get(rtl.visible_characters)
-
-	if s:
-		print("Handling tags: %s" % str(s))
 	if tag_opens.has(rtl.visible_characters):
 		for tag in tag_opens[rtl.visible_characters]:
-			print("Handling tag: %s" % tag)
 			if tag.prod_stop:	await	tag.encounter_open()
 			else:						tag.encounter_open()
-			print("Handled tag: %s" % tag)
 
 	if tag_closes.has(rtl.visible_characters):
 		for tag in tag_closes[rtl.visible_characters]:
 			if tag.prod_stop:	await	tag.encounter_close()
 			else:						tag.encounter_close()
+
 	handling_tags = false
 
 #endregion
@@ -248,12 +250,14 @@ func _ready() -> void:
 
 	time_per_char.resize(rtl.get_total_character_count())
 
+	roger.set.call_deferred(&"visible", false)
+
 	prep()
 	is_initialized = true
 
 
 func _exit_tree() -> void:
-	complete()
+	reset()
 
 #endregion
 #region _input()
@@ -327,14 +331,9 @@ func _process_end(delta: float) -> void:
 
 	if handling_tags: return
 
-	# print("ENDED!!!")
-	# play_state = PlayState.COMPLETED
-
-
 	for k in tag_opens: for tag in tag_opens[k]:
 		if tag.encounter_state < Tag.CLOSED: return
 
-	print("ENDED!!!")
 	play_state = PlayState.COMPLETED
 
 
@@ -352,7 +351,7 @@ func prep() -> void:
 ## Begins printout.
 func present() -> void:
 	visible_characters_partial = 0
-	await get_tree().create_timer(0.5).timeout
+	await get_tree().create_timer(start_delay).timeout
 	play_state = PlayState.PLAYING
 
 ## Skips to the very end, but doesn't reset.
@@ -362,14 +361,16 @@ func complete() -> void:
 
 ## Resets the dialog to be used again.
 func reset():
+	visible_characters = -1
 	play_state = PlayState.RESETTING
-	await get_tree().create_timer(0.5).timeout
-	reseted.emit()
+	await get_tree().create_timer(reset_delay).timeout
+	play_state = PlayState.READY
 
 
 func receive(record: Record) : _receive(record)
 func _receive(record: Record) :
-	complete()
+	if play_state != PlayState.READY:
+		await reset()
 
 	subject = record.data[&"who"]
 	message = record.data[&"what"]
@@ -409,10 +410,10 @@ func delay(seconds: float, new_state: PlayState = PlayState.DELAYED) :
 
 func wait(show_roger := false) :
 	play_state = PlayState.PAUSED
-	if roger: roger.visible = show_roger
+	roger_shown.emit(show_roger)
 	await prodded
 	play_state = PlayState.PLAYING
-	if roger: roger.visible = false
+	roger_shown.emit(false)
 
 
 func register_tag(tag: Tag) -> void:

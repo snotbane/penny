@@ -10,7 +10,8 @@ const DEFAULT_Y := 6.0
 const bbcode := \"dropout\"
 
 func _process_custom_tag_fx(char_fx: CharFXTransform, tag: Tag, time_visible: float) -> bool:
-	var alpha : float = Typewriter.now - tag.close_time
+	var alpha : float = (Typewriter.now - tag.owner.time_reseted)
+	alpha *= char_fx.env.get(&\"speed\", DEFAULT_SPEED)
 	alpha = clampf(alpha, 0.0, 1.0)
 	char_fx.color = lerp(
 		char_fx.color,

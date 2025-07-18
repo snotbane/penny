@@ -19,7 +19,6 @@ func _enter_tree() -> void:
 	if self.has_signal(&"mouse_entered") and self.has_signal(&"mouse_exited"):
 		self.mouse_entered.connect(self.set.bind(&"is_mouse_inside", true))
 		self.mouse_exited.connect(self.set.bind(&"is_mouse_inside", false))
-	typewriter.reseted.connect(advanced.emit)
 
 
 func _populate() -> void:
@@ -31,10 +30,10 @@ func _notification(what: int) -> void:
 		NOTIFICATION_WM_WINDOW_FOCUS_OUT:
 			focus_left = true
 		NOTIFICATION_WM_WINDOW_FOCUS_IN:
-			self.set_deferred("focus_left", false)
+			self.set_deferred(&"focus_left", false)
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed('penny_advance'):
+	if event.is_action_pressed(&"penny_advance"):
 		self.try_advance()
 
 func _gui_input(event: InputEvent) -> void:
@@ -43,7 +42,7 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func receive(record: Record) -> void:
-	name_label.text = record.data["who"].text_as_display_string.text
+	name_label.text = record.data[&"who"].text_as_display_string.text
 	typewriter.receive(record)
 
 
@@ -60,4 +59,4 @@ func try_advance() -> void:
 		typewriter.prod()
 		return
 	if is_preventing_skip: return
-	typewriter.reset()
+	advanced.emit()

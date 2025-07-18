@@ -157,6 +157,7 @@ save_transform = false
 [node name="typewriter" type="Node" parent="." node_paths=PackedStringArray("rtl", "scroll_container", "roger", "audio_player")]
 script = ExtResource("3_q7721")
 rtl = NodePath("../panel/margin_container/scroll_container/margin_container/text_label")
+reset_delay = 0.333
 scroll_container = NodePath("../panel/margin_container/scroll_container")
 scrollbox_max_height = 128.0
 scrollbox_add_height = 32.0
@@ -276,3 +277,4 @@ libraries = {
 [connection signal="opened" from="." to="typewriter" method="present"]
 [connection signal="opening" from="." to="animation_player" method="play" binds= [&"open"]]
 [connection signal="completed" from="typewriter" to="." method="prevent_skip"]
+[connection signal="roger_shown" from="typewriter" to="roger" method="set_visible"]
