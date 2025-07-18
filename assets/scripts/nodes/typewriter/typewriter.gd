@@ -195,16 +195,15 @@ var visible_characters : int :
 
 			handle_tags()
 
-
 		# var last_visible_character_bounds : Rect2 = rtl.last_visible_character_bounds
 		# roger.position = last_visible_character_bounds.position
 
 		if message:
 			# print(message.visible_text[rtl.visible_characters - 1])
-			var shape_marker_match := REGEX_SHAPE_MARKER.search(message.text, rtl.visible_characters)
+			var shape_marker_match := REGEX_SHAPE_MARKER.search(message.visible_text, rtl.visible_characters)
 			shape_rtl.visible_characters = shape_marker_match.get_start() if shape_marker_match else rtl.visible_characters
 			if rtl.visible_characters > 0:
-				character_arrived.emit(message.text[mini(rtl.visible_characters, message.text.length()) - 1])
+				character_arrived.emit(message.visible_text[mini(rtl.visible_characters, message.visible_text.length()) - 1])
 
 		if rtl.visible_characters == rtl.get_total_character_count():
 			rtl.visible_characters = -1
@@ -384,8 +383,22 @@ func _receive(record: Record) :
 	time_per_char.resize(rtl.get_total_character_count())
 	time_per_char.fill(INF)
 
+	var visible_offset := 0
 	for tag in message.tags:
-		register_tag(tag)
+		var compile_result := tag.compile_for_typewriter(self)
+		visible_offset += compile_result.length()
+
+		if not tag.decor: continue
+
+		install_effect_from_tag(tag)
+
+		if tag.decor.has_method(&"encounter_open"):
+			if not tag_opens.has(tag.open_index): tag_opens[tag.open_index + visible_offset] = []
+			tag_opens[tag.open_index + visible_offset].push_back(tag)
+
+		if tag.decor.has_method(&"encounter_close"):
+			if not tag_closes.has(tag.close_index): tag_closes[tag.close_index + visible_offset] = []
+			tag_closes[tag.close_index + visible_offset].push_back(tag)
 
 	if not is_initialized: return
 
@@ -402,6 +415,16 @@ func prod() -> void:
 #endregion
 #region Tag Functions
 
+
+func install_effect_from_tag(tag: Tag) -> void:
+	if not tag.decor.effect: return
+	if rtl.custom_effects.has(tag.decor.effect): return
+
+	rtl.install_effect(tag.decor.effect)
+	# Definitely necessary even though it's invisible. If disabled, multiple lines/scrolling may be broken.
+	shape_rtl.install_effect(tag.decor.effect)
+
+
 func delay(seconds: float, new_state: PlayState = PlayState.DELAYED) :
 	play_state = new_state
 	await get_tree().create_timer(seconds).timeout
@@ -414,32 +437,6 @@ func wait(show_roger := false) :
 	await prodded
 	play_state = PlayState.PLAYING
 	roger_shown.emit(false)
-
-
-func register_tag(tag: Tag) -> void:
-	tag.compile_for_typewriter(self)
-
-	if not tag.decor: return
-
-	install_effect_from_tag(tag)
-
-	if tag.decor.has_method(&"encounter_open"):
-		if not tag_opens.has(tag.open_index): tag_opens[tag.open_index] = []
-		tag_opens[tag.open_index].push_back(tag)
-
-	if tag.decor.has_method(&"encounter_close"):
-		if not tag_closes.has(tag.close_index): tag_closes[tag.close_index] = []
-		tag_closes[tag.close_index].push_back(tag)
-
-
-func install_effect_from_tag(tag: Tag) -> void:
-	if not tag.decor.effect: return
-	if rtl.custom_effects.has(tag.decor.effect): return
-
-	rtl.install_effect(tag.decor.effect)
-
-	# ## Not needed as far as I know, so leaving this out to reduce processing time.
-	# shape_rtl.install_effect(tag.decor.effect)
 
 
 func push_speed_tag(characters_per_second: float) -> void:

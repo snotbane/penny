@@ -43,13 +43,15 @@ func _get_bbcode_close(tag: Tag) -> String:
 	return tag.get_bbcode_close()
 
 func populate(tag: Tag) -> void: pass
-func compile_instance(tag: Tag) -> void:
-	_compile_instance(tag)
+func compile_instance(tag: Tag) -> String:
+	var result := _compile_instance(tag)
 
-	if not tag_dependent: return
+	if not tag_dependent: return result
 
 	tag.args[&"_tag"] = tag.get_instance_id()
-func _compile_instance(tag: Tag) -> void: pass
+
+	return result
+func _compile_instance(tag: Tag) -> String: return ""
 
 ## Hidden for efficiency. Tag encounters are only registered if their decor possesses these methods.
 # func encounter_open(tag: Tag) : pass

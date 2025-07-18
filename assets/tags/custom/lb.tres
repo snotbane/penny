@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dnn3eqp47gicb"]
+
+[sub_resource type="GDScript" id="GDScript_vvmtx"]
+script/source = "extends Decor
+
+func _compile_instance(tag: Tag) -> String:
+	return \"[\"
+"
+
+[resource]
+script = SubResource("GDScript_vvmtx")
+id = &"lb"
+args = Dictionary[StringName, Variant]({})
+closable = false
+bbcode = true
+prod_stop = false
+metadata/_custom_type_script = "uid://w7bl3g20knuq"

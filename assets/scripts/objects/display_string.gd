@@ -12,8 +12,8 @@ static var ESCAPE_SUBSITUTIONS : Dictionary[String, String] = {
 	"\\": "\\",
 	"n": "\n",
 	"t": "\t",
-	"[": "[lb]",
-	"]": "[rb]",
+	"[": "<lb>",
+	"]": "<rb>",
 }
 static var VISCHAR_PATTERN := RegEx.create_from_string(r"\[(.*?)\]")
 static var VISCHAR_SUBSTITUTIONS : Dictionary[String, String] = {
@@ -30,7 +30,15 @@ class Block extends RefCounted:
 		tag = _tag
 		is_start = _is_start
 
-var text : String
+# var text : String
+var _text : String
+var text : String :
+	get: return _text
+	set(value):
+		if _text == value: return
+		_text = value
+		visible_text = get_visible_text(_text)
+var visible_text : String
 
 var tags : Array[Tag]
 var tag_blocks : Array[Block]
@@ -176,14 +184,6 @@ static func filter(string: String, pattern: String, replace: String) -> String:
 
 		string = regex.sub(string, replace, false, start)
 		start = pattern_match.get_start() + replace.length()
-	return string
-
-
-static func escape(string: String) -> String:
-	while true:
-		var pattern_match := ESCAPE_PATTERN.search(string)
-		if not pattern_match: break
-		string = replace_match(pattern_match, ESCAPE_SUBSITUTIONS.get(pattern_match.get_string(1), pattern_match.get_string(1)))
 	return string
 
 

@@ -9,7 +9,7 @@ func populate(tag: Tag) -> void:
 	var result : Array[Tag] = []
 	for _id in subtags.keys():
 		var typed_args : Dictionary[StringName, Variant] = {}
-		result.push_back(Tag.new_from_other(tag, _id, typed_args.merged(subtags[id])))
+		result.push_back(Tag.new_from_other(tag, _id, typed_args.merged(subtags[_id])))
 	tag.subtags = result
 
 

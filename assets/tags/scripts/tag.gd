@@ -122,10 +122,10 @@ func register_end(index: int = open_index) -> void:
 	close_index = index
 
 
-func compile_for_typewriter(tw: Typewriter) -> void:
+func compile_for_typewriter(tw: Typewriter) -> String:
 	owner = tw
-	if not decor: return
-	decor.compile_instance(self)
+	if not decor: return ""
+	return decor.compile_instance(self)
 
 
 func encounter_open() :
