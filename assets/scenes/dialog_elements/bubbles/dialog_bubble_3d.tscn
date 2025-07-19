@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://dk235a8arrhyf"]
+
+[ext_resource type="Shader" uid="uid://vw54t8axvjbq" path="res://addons/penny_godot/assets/shaders/superegg_test.gdshader" id="1_tr34g"]
+[ext_resource type="Script" uid="uid://b74jd8ytija5r" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/superegg_shader_controller.gd" id="2_33t7b"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tr34g"]
+render_priority = 0
+shader = ExtResource("1_tr34g")
+shader_parameter/proportional = true
+shader_parameter/sss_strength = 0.5
+shader_parameter/sss_color = Color(1, 0.6, 0.5, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_4dujt"]
+material = SubResource("ShaderMaterial_tr34g")
+custom_aabb = AABB(0, 0, 0, 2, 4, 0.2)
+radial_segments = 63
+
+[node name="dialog_bubble_3d" type="Node3D"]
+
+[node name="superegg" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 0, 0, 0)
+instance_shader_parameters/superegg_power = 4.0
+instance_shader_parameters/superegg_size = Vector3(2, 4, 0.2)
+mesh = SubResource("SphereMesh_4dujt")
+script = ExtResource("2_33t7b")
+size = Vector3(2, 4, 0.2)
+super_power = 4.0

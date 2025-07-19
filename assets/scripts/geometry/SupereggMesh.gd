@@ -29,53 +29,39 @@ var _super_power : float
 	set(value):
 		_super_power = value
 		request_update()
-var _proportional_x : bool
-@export var proportional_x : bool = false :
-	get: return _proportional_x
+var _proportional : bool
+@export var proportional : bool = false :
+	get: return _proportional
 	set(value):
-		if _proportional_x == value: return
-		_proportional_x = value
+		if _proportional == value: return
+		_proportional = value
 		request_update()
-var _proportional_z : bool
-@export var proportional_z : bool = false :
-	get: return _proportional_z
+var _flip_normals : bool
+@export var flip_normals : bool :
+	get: return _flip_normals
 	set(value):
-		if _proportional_z == value: return
-		_proportional_z = value
+		if _flip_normals == value: return
+		_flip_normals = value
 		request_update()
 
 func _create_mesh_array() -> Array:
-	var proportional_vector_x : Vector3 = Vector3(
+	var proportional_vector : Vector3 = Vector3(
 		box_size.y / box_size.x if box_size.x > box_size.y else 1.0,
 		box_size.x / box_size.y if box_size.y > box_size.x else 1.0,
-		# 1.0,
-		1.0
-	) if proportional_x else Vector3.ONE
-	var proportional_vector_z : Vector3 = Vector3(
-		1.0,
-		1.0,
-		# box_size.z / box_size.y if box_size.y > box_size.z else 1.0,
-
 		box_size.y / box_size.z if box_size.z > box_size.y else 1.0,
-	) if proportional_z else Vector3.ONE
-	var proportional_vector := proportional_vector_x * proportional_vector_z
-	# var proportional_vector := Vector3(
-	# 	box_size.y / box_size.x if box_size.x > box_size.y else 1.0,
-	# 	(box_size.x / box_size.y if box_size.y > box_size.x else 1.0) * (box_size.z / box_size.y if box_size.y > box_size.z else 1.0),
-	# 	box_size.y / box_size.z if box_size.z > box_size.y else 1.0
-	# )
-
+	) if proportional else Vector3.ONE
 
 	var resolution_reciprocal := Vector2.ONE / Vector2(resolution)
 	var super_power_reciprocal := 2.0 / super_power
+	var normal_scalar := -1.0 if flip_normals else 1.0
+
+	#region Vertices
 
 	var vertices := PackedVector3Array()
-	var normals := PackedVector3Array()
-	var uvs := PackedVector2Array()
-	var indeces := PackedInt32Array()
-
 	vertices.resize((resolution.x + 1) * (resolution.y + 1))
+	var normals := PackedVector3Array()
 	normals.resize(vertices.size())
+	var uvs := PackedVector2Array()
 	uvs.resize(vertices.size())
 
 	for i in resolution.x + 1:
@@ -100,14 +86,9 @@ func _create_mesh_array() -> Array:
 			var y : float = box_size.y * sign(y_val) * pow(abs(y_val), super_power_reciprocal * proportional_vector.y)
 
 			var v := Vector3(x, y, z)
-			var uv := Vector2(
-				float(j) / float(resolution.y),
-				float(i) / float(resolution.x)
-			)
 
 			vertices[idx] = v
-			normals[idx] = v.normalized()
-			uvs[idx] = uv
+			normals[idx] = vertices[idx].normalized() * normal_scalar
 
 		idx += 1
 		vertices[idx] = vertices[i * (resolution.y + 1)]
@@ -120,12 +101,16 @@ func _create_mesh_array() -> Array:
 			vertices[j].y,
 			vertices[j].z,
 		)
-		normals[idx] = vertices[idx].normalized()
+		normals[idx] = vertices[idx].normalized() * normal_scalar
 		uvs[idx] = Vector2(
 			float(j) / float(resolution.y),
 			1.0
 		)
 
+	#endregion
+	#region Indeces
+
+	var indeces := PackedInt32Array()
 	indeces.resize((resolution.x + 1) * (resolution.y + 1) * 6)
 
 	for i in resolution.x:
@@ -142,6 +127,8 @@ func _create_mesh_array() -> Array:
 			indeces[idx + 3] = p1 + 1
 			indeces[idx + 4] = p2
 			indeces[idx + 5] = p2 + 1
+
+	#endregion
 
 	var arrays := Array()
 	arrays.resize(Mesh.ARRAY_MAX)
