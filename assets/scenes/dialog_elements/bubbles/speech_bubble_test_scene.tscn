@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=3 uid="uid://dk0glj02jng6r"]
 
-[ext_resource type="PackedScene" uid="uid://b8w7wdy7jy5vo" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/dialog_bubble_tail_shaped.tscn" id="1_4inls"]
-[ext_resource type="Script" uid="uid://bb13j6jb7ri83" path="res://addons/penny_godot/assets/scripts/geometry/superellipse_3d.gd" id="1_uq4v2"]
-[ext_resource type="Script" uid="uid://by10d1c5kuqkp" path="res://addons/penny_godot/assets/scripts/geometry/superellipse_2d.gd" id="2_vfnae"]
+[ext_resource type="PackedScene" uid="uid://b2tvag171f31p" path="res://assets/scenes/characters/abraham/abraham_actor.tscn" id="1_7bo4u"]
+[ext_resource type="PackedScene" uid="uid://dk235a8arrhyf" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/dialog_bubble_3d.tscn" id="2_tvdih"]
+[ext_resource type="PackedScene" uid="uid://cmkfi1okh7ak5" path="res://assets/scenes/cinema/cinema_camera.tscn" id="3_jg011"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_4inls"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -37,20 +37,8 @@ func _input(event: InputEvent) -> void:
 environment = SubResource("Environment_uq4v2")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+transform = Transform3D(0.918832, 0.269644, -0.288167, -7.45058e-09, 0.730186, 0.683248, 0.394646, -0.627791, 0.67092, 0, 0, 0)
 shadow_enabled = true
-
-[node name="superellipse3d" type="Node3D" parent="."]
-
-[node name="csg_polygon_3d" type="CSGPolygon3D" parent="superellipse3d"]
-polygon = PackedVector2Array(1.5, 0, 1.49725, 0.118203, 1.48896, 0.190234, 1.47493, 0.249791, 1.45485, 0.301099, 1.42819, 0.345705, 1.39415, 0.384297, 1.35151, 0.417201, 1.29827, 0.444566, 1.23099, 0.466452, 1.14296, 0.482876, 1.01798, 0.493833, 0.790362, 0.499315, -0.790362, 0.499315, -1.01798, 0.493833, -1.14296, 0.482876, -1.23099, 0.466452, -1.29827, 0.444566, -1.35151, 0.417201, -1.39415, 0.384297, -1.42819, 0.345705, -1.45485, 0.301099, -1.47493, 0.249791, -1.48896, 0.190234, -1.49725, 0.118203, -1.5, 4.45633e-12, -1.49725, -0.118203, -1.48896, -0.190234, -1.47493, -0.249791, -1.45485, -0.301099, -1.42819, -0.345705, -1.39415, -0.384297, -1.35151, -0.417201, -1.29827, -0.444566, -1.23099, -0.466452, -1.14296, -0.482876, -1.01798, -0.493833, -0.790362, -0.499315, 0.790362, -0.499315, 1.01798, -0.493833, 1.14296, -0.482876, 1.23099, -0.466452, 1.29827, -0.444566, 1.35151, -0.417201, 1.39415, -0.384297, 1.42819, -0.345705, 1.45485, -0.301099, 1.47493, -0.249791, 1.48896, -0.190234, 1.49725, -0.118203)
-depth = 0.01
-smooth_faces = true
-script = ExtResource("1_uq4v2")
-resolution = 5000
-size = Vector2(3, 1)
-super_power = 1.2
-proportional = true
 
 [node name="tail_target" type="Node3D" parent="."]
 script = SubResource("GDScript_4inls")
@@ -58,49 +46,12 @@ script = SubResource("GDScript_4inls")
 [node name="mesh_instance_3d" type="MeshInstance3D" parent="tail_target"]
 visible = false
 mesh = SubResource("SphereMesh_4inls")
-skeleton = NodePath("../../camera_3d")
+skeleton = NodePath("")
 
-[node name="canvas_layer" type="CanvasLayer" parent="."]
+[node name="abraham_actor" parent="." instance=ExtResource("1_7bo4u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.471583, 0, 0)
 
-[node name="control" type="Control" parent="canvas_layer"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="cinema_camera" parent="." instance=ExtResource("3_jg011")]
 
-[node name="bubble" type="CenterContainer" parent="canvas_layer/control"]
-custom_minimum_size = Vector2(0, 400)
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -400.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="control" type="Control" parent="canvas_layer/control/bubble"]
-layout_mode = 2
-
-[node name="body" type="Node2D" parent="canvas_layer/control/bubble/control"]
-
-[node name="superellipse" type="Node2D" parent="canvas_layer/control/bubble/control/body"]
-script = ExtResource("2_vfnae")
-resolution = 50
-size = Vector2(1750, 370)
-super_power = 1.2
-proportional = true
-metadata/_custom_type_script = "uid://by10d1c5kuqkp"
-
-[node name="dialog_bubble_tail_jagged" parent="canvas_layer/control/bubble/control" node_paths=PackedStringArray("world_target") instance=ExtResource("1_4inls")]
-world_target = NodePath("../../../../../tail_target")
-profile_scale = Vector2(3, 1)
-head_tangent_scale = Vector2(0, 0.333)
-head_position_scale = Vector2(0.167, 0)
-damping = 0.97
-
-[node name="camera_3d" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
-current = true
+[node name="dialog_bubble_3d" parent="." instance=ExtResource("2_tvdih")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.353676, 1.49227, 0)

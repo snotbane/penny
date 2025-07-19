@@ -233,8 +233,9 @@ func handle_elements() -> void:
 
 var is_initialized : bool = false
 func _ready() -> void:
-	v_scroll_bar = scroll_container.get_v_scroll_bar()
-	scrollbox_min_height = scroll_container.custom_minimum_size.y
+	if scroll_container:
+		v_scroll_bar = scroll_container.get_v_scroll_bar()
+		scrollbox_min_height = scroll_container.custom_minimum_size.y
 
 	## Set up the fake rtl to ensure proper scrolling limits
 	shape_rtl = rtl.duplicate()
@@ -295,6 +296,8 @@ func _process_cursor(delta: float) -> void:
 var user_scroll_override : bool
 var last_scroll_y : float
 func _process_autoscroll(delta: float) -> void:
+	if not scroll_container: return
+
 	var is_maximum_height_reached := scroll_container.custom_minimum_size.y >= scrollbox_max_height if scrollbox_max_height > 0.0 else false
 
 	var target_height := shape_rtl.get_content_height() + scrollbox_add_height

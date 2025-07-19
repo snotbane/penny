@@ -1,27 +1,62 @@
-[gd_scene load_steps=5 format=3 uid="uid://dk235a8arrhyf"]
+[gd_scene load_steps=10 format=3 uid="uid://dk235a8arrhyf"]
 
 [ext_resource type="Shader" uid="uid://vw54t8axvjbq" path="res://addons/penny_godot/assets/shaders/superegg_test.gdshader" id="1_tr34g"]
 [ext_resource type="Script" uid="uid://b74jd8ytija5r" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/superegg_shader_controller.gd" id="2_33t7b"]
+[ext_resource type="PackedScene" uid="uid://dux7hs8cdribi" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/dialog_bubble_text.tscn" id="3_33t7b"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tr34g"]
 render_priority = 0
 shader = ExtResource("1_tr34g")
 shader_parameter/proportional = true
-shader_parameter/sss_strength = 0.5
-shader_parameter/sss_color = Color(1, 0.6, 0.5, 1)
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/emissive = Color(0.501961, 0.501961, 0.501961, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_4dujt"]
 material = SubResource("ShaderMaterial_tr34g")
 custom_aabb = AABB(0, 0, 0, 2, 4, 0.2)
 radial_segments = 63
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_33t7b"]
+viewport_path = NodePath("text_mesh/sub_viewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tr34g"]
+resource_local_to_scene = true
+transparency = 1
+no_depth_test = true
+albedo_texture = SubResource("ViewportTexture_33t7b")
+
+[sub_resource type="QuadMesh" id="QuadMesh_tr34g"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_tr34g")
+size = Vector2(0.5, 1)
+
+[sub_resource type="GDScript" id="GDScript_33t7b"]
+script/source = "@tool
+extends MeshInstance3D
+
+#func _ready() -> void:
+	#var vp := ViewportTexture.new()
+	#vp.viewport_path = get_parent().get_path_to($sub_viewport)
+	#(mesh.surface_get_material(0) as StandardMaterial3D).albedo_texture = vp
+"
+
 [node name="dialog_bubble_3d" type="Node3D"]
 
 [node name="superegg" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 0, 0, 0)
 instance_shader_parameters/superegg_power = 4.0
-instance_shader_parameters/superegg_size = Vector3(2, 4, 0.2)
+instance_shader_parameters/superegg_size = Vector3(0.5, 1, 0.1)
 mesh = SubResource("SphereMesh_4dujt")
 script = ExtResource("2_33t7b")
-size = Vector3(2, 4, 0.2)
+size = Vector3(0.5, 1, 0.1)
 super_power = 4.0
+
+[node name="text_mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_tr34g")
+script = SubResource("GDScript_33t7b")
+
+[node name="sub_viewport" type="SubViewport" parent="text_mesh"]
+transparent_bg = true
+size = Vector2i(512, 1024)
+
+[node name="dialog_bubble_text" parent="text_mesh/sub_viewport" instance=ExtResource("3_33t7b")]
