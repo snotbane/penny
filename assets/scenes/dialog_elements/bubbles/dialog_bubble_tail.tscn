@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://3hyihavre4f1"]
+
+[ext_resource type="Script" uid="uid://p8hs3j6egfsv" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/dialog_bubble_tail.gd" id="1_2rods"]
+[ext_resource type="Script" uid="uid://bp1v3543dr6oq" path="res://addons/penny_godot/assets/scripts/geometry/pathed_line2d.gd" id="2_10qij"]
+
+[sub_resource type="Curve2D" id="Curve2D_4inls"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 238.645, -261.432, 500, 0)
+}
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_4inls"]
+_data = [Vector2(0, 1), 0.0, 0.0926189, 0, 0, Vector2(1, 0), -0.039885, 0.0, 0, 0]
+point_count = 2
+
+[node name="dialog_bubble_tail" type="Path2D"]
+curve = SubResource("Curve2D_4inls")
+script = ExtResource("1_2rods")
+head_tangent_scale = null
+head_position_scale = null
+
+[node name="line_2d" type="Line2D" parent="."]
+points = PackedVector2Array(0, 0, 500, 0)
+width = 50.0
+width_curve = SubResource("Curve_4inls")
+joint_mode = 2
+end_cap_mode = 2
+script = ExtResource("2_10qij")
+tessellate_tolerance_degrees = 1.0
