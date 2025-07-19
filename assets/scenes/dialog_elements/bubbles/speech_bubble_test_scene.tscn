@@ -49,9 +49,9 @@ mesh = SubResource("SphereMesh_4inls")
 skeleton = NodePath("")
 
 [node name="abraham_actor" parent="." instance=ExtResource("1_7bo4u")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.471583, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
 
 [node name="cinema_camera" parent="." instance=ExtResource("3_jg011")]
 
 [node name="dialog_bubble_3d" parent="." instance=ExtResource("2_tvdih")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.353676, 1.49227, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.716035, 1.12873, -2.38419e-07)

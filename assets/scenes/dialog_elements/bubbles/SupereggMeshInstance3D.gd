@@ -1,5 +1,6 @@
 @tool
 extends MeshInstance3D
+class_name SupereggMeshInstance3D
 
 @export var size := Vector3(2, 1, 1)
 @export var super_power := 2.5
