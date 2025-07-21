@@ -25,6 +25,7 @@ static var NOW_USEC_FLOAT : float :
 #region Exposures
 
 signal character_arrived(char: String)
+signal visible_message_changed
 signal completed
 signal prodded
 signal roger_shown(visible: bool)
@@ -111,7 +112,13 @@ var shape_rtl : RichTextLabel
 var v_scroll_bar : VScrollBar
 
 var subject : Cell
-var message : DisplayString
+var _message : DisplayString
+var message : DisplayString :
+	get: return _message
+	set(value):
+		if _message == value: return
+		_message = value
+		visible_message_changed.emit()
 
 var time_reseted : float = INF
 var time_prepped : float
@@ -209,6 +216,8 @@ var visible_characters : int :
 			rtl.visible_characters = -1
 		else:
 			_visible_characters_partial = rtl.visible_characters + fmod(_visible_characters_partial, 1.0)
+
+		visible_message_changed.emit()
 
 
 var handling_elements : bool

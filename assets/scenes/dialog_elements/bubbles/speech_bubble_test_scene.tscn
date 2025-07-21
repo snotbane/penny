@@ -53,5 +53,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
 
 [node name="cinema_camera" parent="." instance=ExtResource("3_jg011")]
 
-[node name="dialog_bubble_3d" parent="." instance=ExtResource("2_tvdih")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.716035, 1.12873, -2.38419e-07)
+[node name="dialog_bubble_container_3d" type="Node3D" parent="."]
+
+[node name="dialog_bubble_3d" parent="dialog_bubble_container_3d" instance=ExtResource("2_tvdih")]
+
+[node name="dialog_bubble_3d_2" parent="dialog_bubble_container_3d" instance=ExtResource("2_tvdih")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.48602, 0)
+control_text = "SHE WAS GOING TO TELL YOU EVENTUALLY."

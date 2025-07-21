@@ -1,29 +1,22 @@
-[gd_scene load_steps=14 format=3 uid="uid://dk235a8arrhyf"]
+[gd_scene load_steps=15 format=3 uid="uid://dk235a8arrhyf"]
 
 [ext_resource type="Script" uid="uid://e1w7laspqfgt" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/DialogBubble3D.gd" id="1_eb2vv"]
 [ext_resource type="Shader" uid="uid://vw54t8axvjbq" path="res://addons/penny_godot/assets/shaders/superegg_test.gdshader" id="1_tr34g"]
 [ext_resource type="Script" uid="uid://b74jd8ytija5r" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/SupereggMeshInstance3D.gd" id="2_33t7b"]
-[ext_resource type="PackedScene" uid="uid://dux7hs8cdribi" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/dialog_bubble_text.tscn" id="3_33t7b"]
+[ext_resource type="Script" uid="uid://cdrs673e0hg62" path="res://addons/penny_godot/assets/scripts/nodes/typewriter/typewriter.gd" id="4_7qy1j"]
+[ext_resource type="Shader" uid="uid://b81qt0u7887nt" path="res://addons/penny_godot/assets/shaders/bubble_canvas.gdshader" id="4_hkiug"]
+[ext_resource type="FontFile" uid="uid://babgpqcgk1i3m" path="res://addons/penny_godot/assets/fonts/Fuzzy_Bubbles/FuzzyBubbles-Bold.ttf" id="5_hkiug"]
+[ext_resource type="PackedScene" uid="uid://byamam888n7fp" path="res://addons/penny_godot/assets/scenes/dialog_elements/roger.tscn" id="6_cpqc3"]
 
 [sub_resource type="Curve" id="Curve_eb2vv"]
-_limits = [0.0, 2.0, 0.0, 100.0]
-_data = [Vector2(50, 0.333), 0.0, 0.0, 0, 0, Vector2(100, 1.3), 0.0, 0.0, 0, 0]
+_limits = [0.0, 2.0, 0.0, 1.0]
+_data = [Vector2(0, 0.8), 0.0, 0.0, 0, 0, Vector2(1, 1.3), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_l686q"]
-_limits = [0.0, 2.0, 0.0, 10.0]
-_data = [Vector2(0, 0.225), 0.0, 0.0, 0, 0, Vector2(10, 0.8), 0.0, 0.0, 0, 0]
+_limits = [0.0, 1.0, 0.0, 400.0]
+_data = [Vector2(100, 0.25), 0.0, 0.0, 0, 0, Vector2(400, 0.15), 0.0, 0.0, 0, 0]
 point_count = 2
-
-[sub_resource type="Curve" id="Curve_7qy1j"]
-_limits = [0.0, 1.0, 0.0, 100.0]
-_data = [Vector2(0, 0.3), 0.0, 0.0, 0, 0, Vector2(100, 0.15), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="Curve" id="Curve_hkiug"]
-_limits = [0.0, 1.0, 0.0, 10.0]
-_data = [Vector2(0, 0.125), 0.0, 0.0, 0, 0]
-point_count = 1
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tr34g"]
 render_priority = 0
@@ -34,63 +27,130 @@ shader_parameter/emissive = Color(0.501961, 0.501961, 0.501961, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_4dujt"]
 material = SubResource("ShaderMaterial_tr34g")
-custom_aabb = AABB(0, 0, 0, 2, 4, 0.2)
+custom_aabb = AABB(0, -0.7, 0, 1.45, 1.45, 0.1)
 radial_segments = 63
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_33t7b"]
-viewport_path = NodePath("text_mesh/sub_viewport")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tr34g"]
-resource_local_to_scene = true
-transparency = 1
-no_depth_test = true
-albedo_texture = SubResource("ViewportTexture_33t7b")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cpqc3"]
+render_priority = 0
+shader = ExtResource("4_hkiug")
 
 [sub_resource type="QuadMesh" id="QuadMesh_tr34g"]
 resource_local_to_scene = true
-material = SubResource("StandardMaterial3D_tr34g")
-size = Vector2(1.45, 0.925)
+material = SubResource("ShaderMaterial_cpqc3")
+size = Vector2(1.45, 1.45)
 
-[node name="dialog_bubble_3d" type="Node3D" node_paths=PackedStringArray("superegg", "quad", "viewport", "padding_container", "typewriter")]
+[sub_resource type="Curve" id="Curve_06c5m"]
+_limits = [0.0, 300.0, -100.0, 100.0]
+_data = [Vector2(-50, 300), -2.59079, 0.0, 0, 0, Vector2(0, 60), 0.0, 0.0, 0, 0, Vector2(24, 60), 0.0, 0.0, 0, 0, Vector2(80, 300), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[node name="dialog_bubble_3d" type="Node3D" node_paths=PackedStringArray("offset", "superegg", "text_mesh", "viewport", "padding_container", "typewriter")]
 script = ExtResource("1_eb2vv")
 size_curve_x = SubResource("Curve_eb2vv")
-size_curve_y = SubResource("Curve_l686q")
-padding_curve_x = SubResource("Curve_7qy1j")
-padding_curve_y = SubResource("Curve_hkiug")
+size_curve_y = SubResource("Curve_eb2vv")
+padding_curve_x = SubResource("Curve_l686q")
+padding_curve_y = SubResource("Curve_l686q")
 viewport_pixels_per_unit = 800
-superegg = NodePath("superegg")
-quad = NodePath("text_mesh")
-viewport = NodePath("text_mesh/sub_viewport")
-padding_container = NodePath("text_mesh/sub_viewport/dialog_bubble_text/margin_container")
-typewriter = NodePath("text_mesh/sub_viewport/dialog_bubble_text/typewriter")
+offset = NodePath("offset")
+superegg = NodePath("offset/superegg")
+text_mesh = NodePath("offset/text_mesh")
+viewport = NodePath("offset/text_mesh/sub_viewport")
+padding_container = NodePath("offset/text_mesh/sub_viewport/dialog_bubble_text/margin_container")
+typewriter = NodePath("offset/text_mesh/sub_viewport/dialog_bubble_text/typewriter")
+control_text = "SO... I GUESS IT ALL STARTED A FEW MONTHS AFTER I MOVED TO MARS. I HAD A FLAT IN LAKE NOCTIS, BUT IT WAS PRETTY RESTRICTIVE. I HAD NEVER DONE BUBBLE TRAINING GROWING UP, SO I NEVER VISITED THE BEACH OR THE CITY VERY OFTEN. ONLY FOR LIKE, IMPORTANT STUFF. AND WHEN I DID... I HAD TO RENT A BUBBLE HELMET, AND LIKE... THAT WAS SUCH A PAIN. AND I COULDN'T GET ANY GOOD PHOTOS BECAUSE MY EYE WOULDN'T REACH THE LENS."
 
-[node name="superegg" type="MeshInstance3D" parent="."]
+[node name="offset" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.725, 0)
+
+[node name="superegg" type="MeshInstance3D" parent="offset"]
 transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 0, 0, 0)
-instance_shader_parameters/superegg_power = 8.0
-instance_shader_parameters/superegg_size = Vector3(1.45, 0.925, 0.1)
+instance_shader_parameters/superegg_power = 6.0
+instance_shader_parameters/superegg_size = Vector3(1.45, 1.45, 0.1)
 mesh = SubResource("SphereMesh_4dujt")
 script = ExtResource("2_33t7b")
-size = Vector3(1.45, 0.925, 0.1)
-super_power = 8.0
+size = Vector3(1.45, 1.45, 0.1)
+super_power = 6.0
 
-[node name="text_mesh" type="MeshInstance3D" parent="."]
+[node name="text_mesh" type="MeshInstance3D" parent="offset"]
+instance_shader_parameters/bubble_id = 0
+instance_shader_parameters/viewport_ratio = Vector2(0.566406, 0.566406)
 mesh = SubResource("QuadMesh_tr34g")
 
-[node name="sub_viewport" type="SubViewport" parent="text_mesh"]
+[node name="sub_viewport" type="SubViewport" parent="offset/text_mesh"]
 transparent_bg = true
-size = Vector2i(1160, 740)
+size = Vector2i(1160, 1160)
+render_target_update_mode = 4
 
-[node name="dialog_bubble_text" parent="text_mesh/sub_viewport" instance=ExtResource("3_33t7b")]
+[node name="dialog_bubble_text" type="Control" parent="offset/text_mesh/sub_viewport"]
+custom_minimum_size = Vector2(400, 400)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="margin_container" parent="text_mesh/sub_viewport/dialog_bubble_text" index="1"]
+[node name="typewriter" type="Node" parent="offset/text_mesh/sub_viewport/dialog_bubble_text" node_paths=PackedStringArray("rtl", "scroll_container", "roger")]
+script = ExtResource("4_7qy1j")
+rtl = NodePath("../margin_container/scroll_container/rich_text_label")
+scroll_container = NodePath("../margin_container/scroll_container")
+scrollbox_max_height = 128.0
+scrollbox_add_height = 32.0
+autoscroll_curve = SubResource("Curve_06c5m")
+roger = NodePath("../roger")
+metadata/_custom_type_script = "uid://cdrs673e0hg62"
+
+[node name="margin_container" type="MarginContainer" parent="offset/text_mesh/sub_viewport/dialog_bubble_text"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/margin_left = 60
-theme_override_constants/margin_top = 50
+theme_override_constants/margin_top = 60
 theme_override_constants/margin_right = 60
-theme_override_constants/margin_bottom = 50
+theme_override_constants/margin_bottom = 60
 
-[node name="rich_text_label" parent="text_mesh/sub_viewport/dialog_bubble_text/margin_container/scroll_container" index="0"]
+[node name="scroll_container" type="ScrollContainer" parent="offset/text_mesh/sub_viewport/dialog_bubble_text/margin_container"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+
+[node name="rich_text_label" type="RichTextLabel" parent="offset/text_mesh/sub_viewport/dialog_bubble_text/margin_container/scroll_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_constants/line_separation = -24
+theme_override_fonts/normal_font = ExtResource("5_hkiug")
+theme_override_fonts/italics_font = ExtResource("5_hkiug")
+theme_override_fonts/bold_italics_font = ExtResource("5_hkiug")
+theme_override_fonts/bold_font = ExtResource("5_hkiug")
+theme_override_font_sizes/bold_italics_font_size = 32
+theme_override_font_sizes/italics_font_size = 32
+theme_override_font_sizes/mono_font_size = 32
 theme_override_font_sizes/normal_font_size = 64
+theme_override_font_sizes/bold_font_size = 32
+bbcode_enabled = true
 text = "SO... I GUESS IT ALL STARTED A FEW MONTHS AFTER I MOVED TO MARS. I HAD A FLAT IN LAKE NOCTIS, BUT IT WAS PRETTY RESTRICTIVE. I HAD NEVER DONE BUBBLE TRAINING GROWING UP, SO I NEVER VISITED THE BEACH OR THE CITY VERY OFTEN. ONLY FOR LIKE, IMPORTANT STUFF. AND WHEN I DID... I HAD TO RENT A BUBBLE HELMET, AND LIKE... THAT WAS SUCH A PAIN. AND I COULDN'T GET ANY GOOD PHOTOS BECAUSE MY EYE WOULDN'T REACH THE LENS."
+fit_content = true
 autowrap_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[editable path="text_mesh/sub_viewport/dialog_bubble_text"]
+[node name="roger" parent="offset/text_mesh/sub_viewport/dialog_bubble_text" instance=ExtResource("6_cpqc3")]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 8
+size_flags_vertical = 8
