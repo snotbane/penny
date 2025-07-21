@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=3 uid="uid://dk0glj02jng6r"]
 
 [ext_resource type="PackedScene" uid="uid://b2tvag171f31p" path="res://assets/scenes/characters/abraham/abraham_actor.tscn" id="1_7bo4u"]
-[ext_resource type="PackedScene" uid="uid://dk235a8arrhyf" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/dialog_bubble_3d.tscn" id="2_tvdih"]
 [ext_resource type="PackedScene" uid="uid://cmkfi1okh7ak5" path="res://assets/scenes/cinema/cinema_camera.tscn" id="3_jg011"]
+[ext_resource type="PackedScene" uid="uid://b71rr1loowp5k" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubble_container_3d.tscn" id="3_tvdih"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_4inls"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -53,11 +53,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
 
 [node name="cinema_camera" parent="." instance=ExtResource("3_jg011")]
 
-[node name="dialog_bubble_container_3d" type="Node3D" parent="."]
-
-[node name="dialog_bubble_3d" parent="dialog_bubble_container_3d" instance=ExtResource("2_tvdih")]
-control_text = "Sphinx of Black Quartz Judge My Vow"
-
-[node name="dialog_bubble_3d_2" parent="dialog_bubble_container_3d" instance=ExtResource("2_tvdih")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.49561, 0)
-control_text = "Dialog bubbles shown in the editor will all share the same text"
+[node name="bubble_container_3d" parent="." instance=ExtResource("3_tvdih")]

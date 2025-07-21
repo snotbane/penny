@@ -402,8 +402,6 @@ func _receive(record: Record) :
 
 		if not element.decor: continue
 
-		install_effect_from(element)
-
 		if element.decor.has_method(&"encounter_open"):
 			if not element_opens.has(element.open_index): element_opens[element.open_index + visible_offset] = []
 			element_opens[element.open_index + visible_offset].push_back(element)

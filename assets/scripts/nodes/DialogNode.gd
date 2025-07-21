@@ -1,26 +1,26 @@
-
-class_name DialogNode extends Actor
+## Actor suitable for receiving Dialog records and passing input to a [Typewriter].
+extends Actor
+class_name DialogNodeNew
 
 const PREVENT_SKIP_DELAY_SECONDS := 0.125
 
 static var focus_left : bool = false
 
-@export var typewriter : Typewriter
-
 
 var is_mouse_inside : bool
 var is_preventing_skip : bool
-var message : DisplayString
+
+
+var typewriter : Typewriter :
+	get: return _get_typewriter()
+func _get_typewriter() -> Typewriter:
+	return null
 
 
 func _enter_tree() -> void:
-	if self.has_signal(&"mouse_entered") and self.has_signal(&"mouse_exited"):
-		self.mouse_entered.connect(self.set.bind(&"is_mouse_inside", true))
-		self.mouse_exited.connect(self.set.bind(&"is_mouse_inside", false))
-
-
-func _populate() -> void:
-	host.on_try_advance.connect(try_advance)
+	if has_signal(&"mouse_entered") and has_signal(&"mouse_exited"):
+		self.mouse_entered.connect(set.bind(&"is_mouse_inside", true))
+		self.mouse_exited.connect(set.bind(&"is_mouse_inside", false))
 
 
 func _notification(what: int) -> void:
@@ -28,18 +28,24 @@ func _notification(what: int) -> void:
 		NOTIFICATION_WM_WINDOW_FOCUS_OUT:
 			focus_left = true
 		NOTIFICATION_WM_WINDOW_FOCUS_IN:
-			self.set_deferred(&"focus_left", false)
+			set_deferred(&"focus_left", false)
+
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed(Penny.INPUT_ADVANCE):
-		self.try_advance()
+		try_advance()
+
 
 func _gui_input(event: InputEvent) -> void:
-	if self.is_mouse_inside and event is InputEventMouseButton and event.is_released() and event.button_index == MOUSE_BUTTON_LEFT:
-		self.try_advance()
+	if is_mouse_inside and event is InputEventMouseButton and event.is_released() and event.button_index == MOUSE_BUTTON_LEFT:
+		try_advance()
 
 
-func receive(record: Record) -> void:
+func _populate() -> void:
+	host.on_try_advance.connect(try_advance)
+
+
+func receive(record: Record) :
 	typewriter.receive(record)
 
 
@@ -52,8 +58,10 @@ func prevent_skip() -> void:
 func try_advance() -> void:
 	if focus_left: return
 	if not is_open: return
+	if not typewriter: return
 	if typewriter.is_working:
 		typewriter.prod()
 		return
 	if is_preventing_skip: return
 	advanced.emit()
+

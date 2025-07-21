@@ -152,7 +152,6 @@ text = "Sphinx of Black Quartz Judge My Vow
 
 Dialog bubbles shown in the editor will all share the same text."
 fit_content = true
-autowrap_mode = 2
 horizontal_alignment = 1
 vertical_alignment = 1
 

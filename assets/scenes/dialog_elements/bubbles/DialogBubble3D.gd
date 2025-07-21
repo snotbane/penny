@@ -36,6 +36,11 @@ func clone_material() -> void:
 	# (text_mesh.mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter(&"albedo_texture", viewport.get_texture())
 
 
+func receive(record: Record) :
+	await typewriter.receive(record)
+	refresh()
+
+
 func refresh() -> void:
 	var total_characters := typewriter.rtl.get_total_character_count()
 	var size := Vector2(

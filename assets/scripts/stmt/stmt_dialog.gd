@@ -43,10 +43,10 @@ func _execute(record: Record) :
 	if not incoming_dialog:
 		printerr("Attempted to create dialog box for '%s', but no such object exists" % self.subject_dialog_path)
 		return
-	var incoming_dialog_node : DialogNode
+	var incoming_dialog_node : DialogNodeNew
 	var previous_dialog : Cell = record.host.last_dialog_object
 
-	var previous_dialog_node : DialogNode
+	var previous_dialog_node : DialogNodeNew
 	var incoming_needs_creation : bool
 
 	if previous_dialog != null:

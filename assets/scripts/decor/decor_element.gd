@@ -125,6 +125,7 @@ func register_end(index: int = open_index) -> void:
 func compile_for_typewriter(tw: Typewriter) -> String:
 	owner = tw
 	if not decor: return ""
+	owner.install_effect_from(self)
 	return decor.compile(self)
 
 
