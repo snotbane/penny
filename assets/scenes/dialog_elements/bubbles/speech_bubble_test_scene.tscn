@@ -56,9 +56,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
 [node name="dialog_bubble_container_3d" type="Node3D" parent="."]
 
 [node name="dialog_bubble_3d" parent="dialog_bubble_container_3d" instance=ExtResource("2_tvdih")]
-control_text = "Sphinx of Black Quartz Judge My Vow
-
-Dialog bubbles shown in the editor will all share the same text.asdfas"
+control_text = "Sphinx of Black Quartz Judge My Vow"
 
 [node name="dialog_bubble_3d_2" parent="dialog_bubble_container_3d" instance=ExtResource("2_tvdih")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.49561, 0)

@@ -9,7 +9,7 @@
 
 [sub_resource type="Curve" id="Curve_eb2vv"]
 _limits = [0.0, 2.0, 0.0, 400.0]
-_data = [Vector2(100, 0.42), 0.0, 0.0, 0, 0, Vector2(400, 1.3), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0.42), 0.0, 0.0, 0, 0, Vector2(400, 1.3), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_hkiug"]
@@ -36,7 +36,7 @@ shader_parameter/emissive = Color(0.501961, 0.501961, 0.501961, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_4dujt"]
 material = SubResource("ShaderMaterial_tr34g")
-custom_aabb = AABB(0, -0.7, 0, 0.872526, 1.4, 0.1)
+custom_aabb = AABB(0, -0.7, 0, 0.659984, 1.08825, 0.1)
 radial_segments = 63
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_7qy1j"]
@@ -51,7 +51,7 @@ albedo_texture = SubResource("ViewportTexture_7qy1j")
 [sub_resource type="QuadMesh" id="QuadMesh_tr34g"]
 resource_local_to_scene = true
 material = SubResource("StandardMaterial3D_hkiug")
-size = Vector2(0.872526, 1.4)
+size = Vector2(0.659984, 1.08825)
 
 [sub_resource type="Curve" id="Curve_06c5m"]
 _limits = [0.0, 300.0, -100.0, 100.0]
@@ -71,18 +71,20 @@ text_mesh = NodePath("offset/text_mesh")
 viewport = NodePath("offset/text_mesh/sub_viewport")
 padding_container = NodePath("offset/text_mesh/sub_viewport/dialog_bubble_text/margin_container")
 typewriter = NodePath("offset/text_mesh/sub_viewport/dialog_bubble_text/typewriter")
-control_text = "ATTENTION PASSENGERS. IN FIVE MINUTES, YOU WILL ARRIVE AT THE ELYSIUM GRAND TERMINAL. AT THIS TIME, WE WOULD ALSO LIKE TO OFFER OUR FONDEST GRATITUDE TO ANY PASSENGERS OR CREW EN ROUTE TO THE CHARYBDIS. THANK YOU FOR YOUR SERVICE."
+control_text = "Sphinx of Black Quartz Judge My Vow
+
+Dialog bubbles shown in the editor will all share the same text."
 
 [node name="offset" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.544124, 0)
 
 [node name="superegg" type="MeshInstance3D" parent="offset"]
 transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 0, 0, 0)
 instance_shader_parameters/superegg_power = 6.0
-instance_shader_parameters/superegg_size = Vector3(0.872526, 1.4, 0.1)
+instance_shader_parameters/superegg_size = Vector3(0.659984, 1.08825, 0.1)
 mesh = SubResource("SphereMesh_4dujt")
 script = ExtResource("2_33t7b")
-size = Vector3(0.872526, 1.4, 0.1)
+size = Vector3(0.659984, 1.08825, 0.1)
 super_power = 6.0
 
 [node name="text_mesh" type="MeshInstance3D" parent="offset"]
@@ -90,7 +92,7 @@ mesh = SubResource("QuadMesh_tr34g")
 
 [node name="sub_viewport" type="SubViewport" parent="offset/text_mesh"]
 transparent_bg = true
-size = Vector2i(698, 1120)
+size = Vector2i(527, 870)
 render_target_update_mode = 4
 
 [node name="dialog_bubble_text" type="Control" parent="offset/text_mesh/sub_viewport"]
@@ -146,7 +148,9 @@ theme_override_font_sizes/mono_font_size = 32
 theme_override_font_sizes/normal_font_size = 64
 theme_override_font_sizes/bold_font_size = 32
 bbcode_enabled = true
-text = "ATTENTION PASSENGERS. IN FIVE MINUTES, YOU WILL ARRIVE AT THE ELYSIUM GRAND TERMINAL. AT THIS TIME, WE WOULD ALSO LIKE TO OFFER OUR FONDEST GRATITUDE TO ANY PASSENGERS OR CREW EN ROUTE TO THE CHARYBDIS. THANK YOU FOR YOUR SERVICE."
+text = "Sphinx of Black Quartz Judge My Vow
+
+Dialog bubbles shown in the editor will all share the same text."
 fit_content = true
 autowrap_mode = 2
 horizontal_alignment = 1
