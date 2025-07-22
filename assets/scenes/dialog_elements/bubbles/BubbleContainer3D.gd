@@ -1,4 +1,4 @@
-extends DialogNodeNew
+extends DialogNode
 class_name BubbleContainer3D
 
 enum EArrangeMode {

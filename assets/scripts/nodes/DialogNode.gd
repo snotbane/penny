@@ -1,6 +1,6 @@
 ## Actor suitable for receiving Dialog records and passing input to a [Typewriter].
 extends Actor
-class_name DialogNodeNew
+class_name DialogNode
 
 const PREVENT_SKIP_DELAY_SECONDS := 0.125
 
