@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://3hyihavre4f1"]
 
-[ext_resource type="Script" uid="uid://p8hs3j6egfsv" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/dialog_bubble_tail.gd" id="1_2rods"]
+[ext_resource type="Script" uid="uid://p8hs3j6egfsv" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/DialogBubbleTail2D.gd" id="1_2rods"]
 [ext_resource type="Script" uid="uid://bp1v3543dr6oq" path="res://addons/penny_godot/assets/scripts/geometry/pathed_line2d.gd" id="2_10qij"]
 
 [sub_resource type="Curve2D" id="Curve2D_4inls"]
