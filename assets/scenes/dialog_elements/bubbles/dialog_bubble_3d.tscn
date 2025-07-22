@@ -35,11 +35,13 @@ render_priority = 0
 shader = ExtResource("1_tr34g")
 shader_parameter/proportional = true
 shader_parameter/albedo = Color(1, 1, 1, 1)
-shader_parameter/emissive = Color(0.501961, 0.501961, 0.501961, 1)
+shader_parameter/emissive = Color(0.14, 0.14, 0.14, 1)
+shader_parameter/specular = 0.25
+shader_parameter/roughness = 0.25
 
 [sub_resource type="SphereMesh" id="SphereMesh_4dujt"]
 material = SubResource("ShaderMaterial_tr34g")
-custom_aabb = AABB(0, -0.7, 0, 0.659984, 1.08825, 0.1)
+custom_aabb = AABB(0, -0.7, 0, 0.539083, 0.818485, 0.1)
 radial_segments = 63
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_7qy1j"]
@@ -50,11 +52,13 @@ resource_local_to_scene = true
 transparency = 1
 no_depth_test = true
 albedo_texture = SubResource("ViewportTexture_7qy1j")
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 0.25
 
 [sub_resource type="QuadMesh" id="QuadMesh_tr34g"]
 resource_local_to_scene = true
 material = SubResource("StandardMaterial3D_hkiug")
-size = Vector2(0.659984, 1.08825)
+size = Vector2(0.539083, 0.818485)
 
 [sub_resource type="Curve" id="Curve_06c5m"]
 _limits = [0.0, 300.0, -100.0, 100.0]
@@ -74,20 +78,18 @@ text_mesh = NodePath("offset/text_mesh")
 viewport = NodePath("offset/text_mesh/sub_viewport")
 padding_container = NodePath("offset/text_mesh/sub_viewport/dialog_bubble_text/margin_container")
 typewriter = NodePath("offset/text_mesh/sub_viewport/dialog_bubble_text/typewriter")
-control_text = "Sphinx of Black Quartz Judge My Vow
-
-Dialog bubbles shown in the editor will all share the same text."
+control_text = "Sphinx of Black Quartz Judge My Vow"
 
 [node name="offset" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.544124, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.409243, 0)
 
 [node name="superegg" type="MeshInstance3D" parent="offset"]
 transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 0, 0, 0)
 instance_shader_parameters/superegg_power = 6.0
-instance_shader_parameters/superegg_size = Vector3(0.659984, 1.08825, 0.1)
+instance_shader_parameters/superegg_size = Vector3(0.539083, 0.818485, 0.1)
 mesh = SubResource("SphereMesh_4dujt")
 script = ExtResource("2_33t7b")
-size = Vector3(0.659984, 1.08825, 0.1)
+size = Vector3(0.539083, 0.818485, 0.1)
 super_power = 6.0
 
 [node name="text_mesh" type="MeshInstance3D" parent="offset"]
@@ -95,7 +97,7 @@ mesh = SubResource("QuadMesh_tr34g")
 
 [node name="sub_viewport" type="SubViewport" parent="offset/text_mesh"]
 transparent_bg = true
-size = Vector2i(527, 870)
+size = Vector2i(431, 654)
 render_target_update_mode = 4
 
 [node name="dialog_bubble_text" type="Control" parent="offset/text_mesh/sub_viewport"]
@@ -139,7 +141,7 @@ vertical_scroll_mode = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
-theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_colors/default_color = Color(0.12549, 0.12549, 0.12549, 1)
 theme_override_constants/line_separation = -24
 theme_override_fonts/normal_font = ExtResource("5_obgd5")
 theme_override_fonts/italics_font = ExtResource("6_dfc3c")
@@ -151,9 +153,7 @@ theme_override_font_sizes/mono_font_size = 64
 theme_override_font_sizes/normal_font_size = 64
 theme_override_font_sizes/bold_font_size = 64
 bbcode_enabled = true
-text = "Sphinx of Black Quartz Judge My Vow
-
-Dialog bubbles shown in the editor will all share the same text."
+text = "Sphinx of Black Quartz Judge My Vow"
 fit_content = true
 horizontal_alignment = 1
 vertical_alignment = 1

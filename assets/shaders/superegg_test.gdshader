@@ -4,6 +4,8 @@ shader_type spatial;
 
 uniform vec4 albedo : source_color = vec4(1.0);
 uniform vec3 emissive : source_color = vec3(1.0);
+uniform float specular : hint_range(0.0, 1.0) = 1.0;
+uniform float roughness : hint_range(0.0, 1.0) = 0.5;
 
 void vertex() {
 	VERTEX = superegg(VERTEX);
@@ -13,6 +15,8 @@ void vertex() {
 void fragment() {
 	ALBEDO = albedo.rgb;
 	EMISSION = emissive;
+	SPECULAR = specular;
+	ROUGHNESS = roughness;
 }
 
 //void light() {
