@@ -1,8 +1,36 @@
 extends DialogNodeNew
 class_name BubbleContainer3D
 
-@export var bubble_prefab : PackedScene
+enum EArrangeMode {
+	SEQUENTIAL,
+	STAGGERED,
+}
 
+var _arrange_methods := {
+	EArrangeMode.SEQUENTIAL: arrange_sequential,
+	EArrangeMode.STAGGERED: arrange_staggered,
+}
+var _arrange_method : Callable
+var arrange_method : Callable :
+	get: return _arrange_method
+	set(value):
+		if _arrange_method == value: return
+		_arrange_method = value
+		refresh_deferred()
+var _arrange_mode := EArrangeMode.SEQUENTIAL
+@export var arrange_mode := EArrangeMode.SEQUENTIAL :
+	get: return _arrange_mode
+	set(value):
+		if _arrange_mode == value: return
+		_arrange_mode = value
+		arrange_method = _arrange_methods[_arrange_mode]
+
+
+@export var spacing : float = 0.1
+
+@export_subgroup("Family")
+
+@export var bubble_prefab : PackedScene
 
 var bubble_children : Array[DialogBubble3D] :
 	get:
@@ -58,3 +86,11 @@ func receive(record: Record) :
 func flush() :
 	for bubble in bubble_children:
 		self.remove_child(bubble)
+
+
+func arrange_sequential() -> void:
+	pass
+
+
+func arrange_staggered() -> void:
+	pass

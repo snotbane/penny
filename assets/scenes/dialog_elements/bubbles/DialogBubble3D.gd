@@ -1,5 +1,5 @@
 @tool
-extends Node3D
+extends PathFollow3D
 class_name DialogBubble3D
 
 @export_tool_button("Refresh") var refresh_button_ := refresh
@@ -11,9 +11,8 @@ class_name DialogBubble3D
 
 @export_range(2, 2048) var viewport_pixels_per_unit : int = 100
 
-@export_category("Family")
+@export_subgroup("Family")
 
-@export var offset : Node3D
 @export var superegg : SupereggMeshInstance3D
 @export var text_mesh : MeshInstance3D
 @export var viewport : SubViewport
@@ -58,8 +57,6 @@ func refresh() -> void:
 	superegg.size.x = size.x + padding.x
 	superegg.size.y = size.y + padding.y
 	text_mesh.mesh.size = size + padding
-
-	offset.position.y = superegg.size.y * 0.5
 
 	viewport.size = text_mesh.mesh.size * viewport_pixels_per_unit
 
