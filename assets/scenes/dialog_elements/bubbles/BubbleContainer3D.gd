@@ -26,7 +26,7 @@ var _arrange_mode := EArrangeMode.SEQUENTIAL
 		arrange_method = _arrange_methods[_arrange_mode]
 
 
-@export var spacing : float = 0.1
+@export var spacing : float = 0.0
 
 @export_subgroup("Family")
 
@@ -50,11 +50,12 @@ func _get_typewriter() -> Typewriter:
 
 
 func _ready() -> void:
+	arrange_method = _arrange_methods[_arrange_mode]
+
 	child_entered_tree.connect(child_entered)
 	child_order_changed.connect(refresh_deferred)
 
-	for child in get_children():
-		child_entered(child)
+	for child in get_children(): child_entered(child)
 	refresh_deferred()
 
 
@@ -66,18 +67,14 @@ func child_entered(node: Node) -> void:
 func refresh_deferred() -> void:
 	refresh.call_deferred()
 func refresh() -> void:
-	var height := 0.0
-	for bubble in bubble_children:
-		if not bubble.visible: continue
-		bubble.position = Vector3.UP * height
-		height += bubble.superegg.size.y
+	arrange_method.call()
 
 
 ## Receives a record and creates a bubble for it.
 func receive(record: Record) :
 	var bubble : DialogBubble3D = bubble_prefab.instantiate()
 	add_child(bubble)
-	bubble.receive.call_deferred(record)
+	bubble.receive(record)
 
 # func receive_finish(record: Record) :
 
@@ -89,7 +86,18 @@ func flush() :
 
 
 func arrange_sequential() -> void:
-	pass
+	var distance := 0.0
+	var i := 0
+	for bubble in bubble_children:
+		if not bubble.visible: continue
+
+		var half_superegg_height := bubble.superegg.size.y * 0.5
+		if i > 0: distance += half_superegg_height
+
+		bubble.target_progress = distance + i * spacing
+
+		distance += half_superegg_height
+		i += 1
 
 
 func arrange_staggered() -> void:

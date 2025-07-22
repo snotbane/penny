@@ -14,6 +14,7 @@ void vertex() {
 
 void fragment() {
 	ALBEDO = albedo.rgb;
+	ALPHA = albedo.a;
 	EMISSION = emissive;
 	SPECULAR = specular;
 	ROUGHNESS = roughness;

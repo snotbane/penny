@@ -5,7 +5,7 @@
 
 [sub_resource type="Curve3D" id="Curve3D_ybpm4"]
 _data = {
-"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.75, 0, 0, 0.75, 0, 0, 1.5, -0.2, 0, 0, 0, 0, 0, 0, 0, 3, 0),
+"points": PackedVector3Array(0, 0, 0, 0, 0, -0.5, 0, 0, 0.5, 0, -0.75, 0, 0, 0.75, 0, 0, 1.5, -0.5, 0, 0, 0, 0, 0, 0, 0, 3, -0.5),
 "tilts": PackedFloat32Array(0, 0, 0)
 }
 point_count = 3
@@ -13,4 +13,5 @@ point_count = 3
 [node name="bubble_container_3d" type="Path3D"]
 curve = SubResource("Curve3D_ybpm4")
 script = ExtResource("1_ybpm4")
+spacing = 0.25
 bubble_prefab = ExtResource("2_3xlnk")

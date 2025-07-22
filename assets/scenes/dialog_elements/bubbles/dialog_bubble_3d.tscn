@@ -36,8 +36,8 @@ shader = ExtResource("1_tr34g")
 shader_parameter/proportional = true
 shader_parameter/albedo = Color(1, 1, 1, 1)
 shader_parameter/emissive = Color(0.14, 0.14, 0.14, 1)
-shader_parameter/specular = 0.25
-shader_parameter/roughness = 0.25
+shader_parameter/specular = 0.1
+shader_parameter/roughness = 0.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_4dujt"]
 material = SubResource("ShaderMaterial_tr34g")
@@ -75,6 +75,7 @@ size_curve_y = SubResource("Curve_hkiug")
 padding_curve_x = SubResource("Curve_l686q")
 padding_curve_y = SubResource("Curve_7qy1j")
 viewport_pixels_per_unit = 800
+move_speed = null
 superegg = NodePath("offset/superegg")
 text_mesh = NodePath("offset/text_mesh")
 viewport = NodePath("offset/text_mesh/sub_viewport")
@@ -86,12 +87,11 @@ control_text = "Sphinx of Black Quartz Judge My Vow"
 
 [node name="superegg" type="MeshInstance3D" parent="offset"]
 transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 0, 0, 0)
-instance_shader_parameters/superegg_power = 6.0
+instance_shader_parameters/superegg_power = 2.5
 instance_shader_parameters/superegg_size = Vector3(0.539083, 0.818485, 0.1)
 mesh = SubResource("SphereMesh_4dujt")
 script = ExtResource("2_33t7b")
 size = Vector3(0.539083, 0.818485, 0.1)
-super_power = 6.0
 
 [node name="text_mesh" type="MeshInstance3D" parent="offset"]
 mesh = SubResource("QuadMesh_tr34g")

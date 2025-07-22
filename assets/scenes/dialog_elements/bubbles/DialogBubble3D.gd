@@ -11,6 +11,8 @@ class_name DialogBubble3D
 
 @export_range(2, 2048) var viewport_pixels_per_unit : int = 100
 
+@export var move_speed : float = 10.0
+
 @export_subgroup("Family")
 
 @export var superegg : SupereggMeshInstance3D
@@ -25,8 +27,16 @@ class_name DialogBubble3D
 		if not typewriter: return
 		typewriter.rtl.text = value
 
+
+var target_progress : float
+
+
 func _ready() -> void:
 	clone_material()
+
+
+func _process(delta: float) -> void:
+	progress = lerpf(progress, target_progress, move_speed * delta)
 
 
 func clone_material() -> void:
