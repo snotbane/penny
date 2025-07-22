@@ -92,7 +92,6 @@ static func new_from_string(contents: String, index: int, context: Cell) -> Deco
 
 		var expr := Expr.new_from_string(arg_match.get_string(ARG_VALUE))
 		var arg_value : Variant = expr.evaluate(context)
-		prints(arg_key, arg_value)
 		if arg_value == null:
 			printerr("DecorElement argument '%s' evaluated to null in string: `%s`." % [arg_key, contents])
 			continue

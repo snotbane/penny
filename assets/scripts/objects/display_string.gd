@@ -4,7 +4,7 @@ class_name DisplayString extends RefCounted
 
 const TAG_SPLITTER = ";"
 static var INTERJECTION_PATTERN :=		RegEx.create_from_string(r"(?<!\\)\{(.*?)(?<!\\)\}")
-static var INTERPOLATION_PATTERN :=		RegEx.create_from_string(r"(?<![\\=])(?:@((?:\.?[A-Za-z_]\w*)+)|\[(.*?)(?<!\\)\])")
+static var INTERPOLATION_PATTERN :=		RegEx.create_from_string(r"(?<!\\)(?:@((?:\.?[A-Za-z_]\w*)+)|\[(.*?)(?<!\\)\])")
 static var TAG_PATTERN :=				RegEx.create_from_string(r"(?<!\\)<\s*([^<>]*?)\s*(?<!\\)>")
 static var ESCAPE_PATTERN := 			RegEx.create_from_string(r"\\(.)")
 static var ESCAPE_SUBSITUTIONS : Dictionary[String, String] = {
@@ -36,6 +36,7 @@ class Tag extends RefCounted:
 		elements = _elements
 		is_start = _is_start
 
+var free_elements_on_delete : bool = true
 
 var _text : String
 var text : String :
@@ -61,7 +62,7 @@ func _init(__text__ : String = "") -> void:
 func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_PREDELETE:
-			for element in elements:
+			if free_elements_on_delete:	for element in elements:
 				element.free()
 
 func _to_string() -> String:

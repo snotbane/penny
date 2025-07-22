@@ -5,7 +5,9 @@ script/source = "extends DecorCombo
 
 func populate(element: DecorElement) -> void:
 	var context : Cell = element.args[&\"like\"]
-	element.subelements = DisplayString.new_from_pure(context.get_value(Cell.K_PREFIX), context).elements
+	var ds := DisplayString.new_from_pure(context.get_value(Cell.K_PREFIX), context)
+	ds.free_elements_on_delete = false
+	element.subelements = ds.elements
 "
 
 [resource]
