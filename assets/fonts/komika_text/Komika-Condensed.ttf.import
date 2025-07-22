@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://babgpqcgk1i3m"
-path="res://.godot/imported/FuzzyBubbles-Bold.ttf-d4cd48192e9cce4c65872907e86dd83d.fontdata"
+uid="uid://bokmk2ajxduth"
+path="res://.godot/imported/Komika-Condensed.ttf-e8b4b40b8e47deb938567a352cec4ccd.fontdata"
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/fonts/Fuzzy_Bubbles/FuzzyBubbles-Bold.ttf"
-dest_files=["res://.godot/imported/FuzzyBubbles-Bold.ttf-d4cd48192e9cce4c65872907e86dd83d.fontdata"]
+source_file="res://addons/penny_godot/assets/fonts/komika_text/Komika-Condensed.ttf"
+dest_files=["res://.godot/imported/Komika-Condensed.ttf-e8b4b40b8e47deb938567a352cec4ccd.fontdata"]
 
 [params]
 

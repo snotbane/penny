@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://kbspeycuwtyi"
-path="res://.godot/imported/FuzzyBubbles-Regular.ttf-65db10d35e623c4d0b09c959b8f17b64.fontdata"
+uid="uid://xor8lneoivvb"
+path="res://.godot/imported/Komika-Italic.ttf-60cbc9cd106c6c458ba670847909225d.fontdata"
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/fonts/Fuzzy_Bubbles/FuzzyBubbles-Regular.ttf"
-dest_files=["res://.godot/imported/FuzzyBubbles-Regular.ttf-65db10d35e623c4d0b09c959b8f17b64.fontdata"]
+source_file="res://addons/penny_godot/assets/fonts/komika_text/Komika-Italic.ttf"
+dest_files=["res://.godot/imported/Komika-Italic.ttf-60cbc9cd106c6c458ba670847909225d.fontdata"]
 
 [params]
 
@@ -29,12 +29,7 @@ Fallbacks=null
 fallbacks=[]
 Compress=null
 compress=true
-preload=[{
-"chars": [],
-"glyphs": [],
-"name": "New Configuration",
-"size": Vector2i(16, 0)
-}]
+preload=[]
 language_support={}
 script_support={}
 opentype_features={}

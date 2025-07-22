@@ -1,11 +1,14 @@
-[gd_scene load_steps=17 format=3 uid="uid://dk235a8arrhyf"]
+[gd_scene load_steps=20 format=3 uid="uid://dk235a8arrhyf"]
 
 [ext_resource type="Script" uid="uid://e1w7laspqfgt" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/DialogBubble3D.gd" id="1_eb2vv"]
 [ext_resource type="Shader" uid="uid://vw54t8axvjbq" path="res://addons/penny_godot/assets/shaders/superegg_test.gdshader" id="1_tr34g"]
 [ext_resource type="Script" uid="uid://b74jd8ytija5r" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/SupereggMeshInstance3D.gd" id="2_33t7b"]
 [ext_resource type="Script" uid="uid://cdrs673e0hg62" path="res://addons/penny_godot/assets/scripts/nodes/typewriter/typewriter.gd" id="4_7qy1j"]
-[ext_resource type="FontFile" uid="uid://babgpqcgk1i3m" path="res://addons/penny_godot/assets/fonts/Fuzzy_Bubbles/FuzzyBubbles-Bold.ttf" id="5_hkiug"]
+[ext_resource type="FontFile" uid="uid://dmxeggqth074l" path="res://addons/penny_godot/assets/fonts/komika_text/Komika-Regular.ttf" id="5_obgd5"]
 [ext_resource type="PackedScene" uid="uid://byamam888n7fp" path="res://addons/penny_godot/assets/scenes/dialog_elements/roger.tscn" id="6_cpqc3"]
+[ext_resource type="FontFile" uid="uid://xor8lneoivvb" path="res://addons/penny_godot/assets/fonts/komika_text/Komika-Italic.ttf" id="6_dfc3c"]
+[ext_resource type="FontFile" uid="uid://cmkwnvm64iko2" path="res://addons/penny_godot/assets/fonts/komika_text/Komika-Bold-Italic.ttf" id="7_cykig"]
+[ext_resource type="FontFile" uid="uid://mtarvvcboxmv" path="res://addons/penny_godot/assets/fonts/komika_text/Komika-Bold.ttf" id="8_nqm6d"]
 
 [sub_resource type="Curve" id="Curve_eb2vv"]
 _limits = [0.0, 2.0, 0.0, 400.0]
@@ -138,15 +141,15 @@ size_flags_horizontal = 3
 size_flags_vertical = 6
 theme_override_colors/default_color = Color(0, 0, 0, 1)
 theme_override_constants/line_separation = -24
-theme_override_fonts/normal_font = ExtResource("5_hkiug")
-theme_override_fonts/italics_font = ExtResource("5_hkiug")
-theme_override_fonts/bold_italics_font = ExtResource("5_hkiug")
-theme_override_fonts/bold_font = ExtResource("5_hkiug")
-theme_override_font_sizes/bold_italics_font_size = 32
-theme_override_font_sizes/italics_font_size = 32
-theme_override_font_sizes/mono_font_size = 32
+theme_override_fonts/normal_font = ExtResource("5_obgd5")
+theme_override_fonts/italics_font = ExtResource("6_dfc3c")
+theme_override_fonts/bold_italics_font = ExtResource("7_cykig")
+theme_override_fonts/bold_font = ExtResource("8_nqm6d")
+theme_override_font_sizes/bold_italics_font_size = 64
+theme_override_font_sizes/italics_font_size = 64
+theme_override_font_sizes/mono_font_size = 64
 theme_override_font_sizes/normal_font_size = 64
-theme_override_font_sizes/bold_font_size = 32
+theme_override_font_sizes/bold_font_size = 64
 bbcode_enabled = true
 text = "Sphinx of Black Quartz Judge My Vow
 
