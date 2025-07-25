@@ -10,7 +10,7 @@ object
 dialog = new object
 	.res = 'uid://b8sp6ey8fsgt7'
 	.marker = 'dialog'
-	.filters = [PARAGRAPH_START, PUNCTUATION_TO_PIPE, PIPE_TO_DELAY, SLASH_TO_WAIT]
+	.filters = [PARAGRAPH_START, PUNCTUATION_TO_PIPE, PIPE_TO_DELAY, SLASH_TO_WAIT, TRIPLE_HYPHEN_TO_LONG_DASH, DOUBLE_HYPHEN_TO_EM_DASH, FANCY_SINGLE_QUOTE_RIGHT, FANCY_SINGLE_QUOTE_LEFT, FANCY_DOUBLE_QUOTE_RIGHT, FANCY_DOUBLE_QUOTE_LEFT]
 	.reusable = true
 
 prompt = new object
@@ -23,7 +23,7 @@ option = new object
 	.enabled = true
 	.visible = true
 	.consumed = false
-	.filters = [PARAGRAPH_START_CENTERED, PIPE_TO_DELAY, SLASH_TO_WAIT]
+	.filters = [PARAGRAPH_START_CENTERED, TRIPLE_HYPHEN_TO_LONG_DASH, DOUBLE_HYPHEN_TO_EM_DASH, FANCY_SINGLE_QUOTE_RIGHT, FANCY_SINGLE_QUOTE_LEFT, FANCY_DOUBLE_QUOTE_RIGHT, FANCY_DOUBLE_QUOTE_LEFT]
 
 filter = new object
 	.pattern = '.+'
@@ -72,3 +72,27 @@ PIPE_TO_DELAY = new filter
 SLASH_TO_WAIT = new filter
 	.pattern = `(?<!\\)\/`
 	.replace = `<wait>`
+
+TRIPLE_HYPHEN_TO_LONG_DASH = new filter
+	.pattern = `---`
+	.replace = `—`
+
+DOUBLE_HYPHEN_TO_EM_DASH = new filter
+	.pattern = `--`
+	.replace = `–`
+
+FANCY_SINGLE_QUOTE_RIGHT = new filter
+	.pattern = `(\S)'`
+	.replace = `$1’`
+
+FANCY_SINGLE_QUOTE_LEFT = new filter
+	.pattern = `'`
+	.replace = `‘`
+
+FANCY_DOUBLE_QUOTE_RIGHT = new filter
+	.pattern = `(\S)"`
+	.replace = `$1”`
+
+FANCY_DOUBLE_QUOTE_LEFT = new filter
+	.pattern = `"`
+	.replace = `“`
