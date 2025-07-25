@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="DecorRegistry" load_steps=16 format=3 uid="uid://drmpmcuvh657f"]
+[gd_resource type="Resource" script_class="DecorRegistry" load_steps=18 format=3 uid="uid://drmpmcuvh657f"]
 
 [ext_resource type="Script" uid="uid://w7bl3g20knuq" path="res://addons/penny_godot/assets/scripts/decor/decor_.gd" id="1_8yey2"]
+[ext_resource type="Resource" uid="uid://bgemvwokyw5gv" path="res://addons/penny_godot/assets/decor/builtin/advance.tres" id="2_vmywo"]
 [ext_resource type="Resource" uid="uid://cn7h0j1al143o" path="res://addons/penny_godot/assets/decor/builtin/delay.tres" id="2_xkc18"]
 [ext_resource type="Resource" uid="uid://r7l0c7yddrae" path="res://addons/penny_godot/assets/decor/builtin/dropin.tres" id="3_vmywo"]
 [ext_resource type="Resource" uid="uid://c1xc2o4abn5p6" path="res://addons/penny_godot/assets/decor/builtin/dropout.tres" id="4_is00u"]
@@ -12,10 +13,11 @@
 [ext_resource type="Resource" uid="uid://dv3j3qhq802lm" path="res://addons/penny_godot/assets/decor/builtin/prod.tres" id="10_ukvn5"]
 [ext_resource type="Resource" uid="uid://cp0xr84xog0k5" path="res://addons/penny_godot/assets/decor/builtin/rb.tres" id="11_6qn7o"]
 [ext_resource type="Resource" uid="uid://bp8v887yr5udf" path="res://addons/penny_godot/assets/decor/builtin/speed.tres" id="12_cmpwd"]
+[ext_resource type="Resource" uid="uid://b0c02niwg0rvx" path="res://addons/penny_godot/assets/decor/builtin/skip.tres" id="12_xkc18"]
 [ext_resource type="Resource" uid="uid://0cxs2uf7ey8k" path="res://addons/penny_godot/assets/decor/builtin/temp.tres" id="13_tureq"]
 [ext_resource type="Resource" uid="uid://wms4vq8i3jqi" path="res://addons/penny_godot/assets/decor/builtin/wait.tres" id="14_rdbep"]
 [ext_resource type="Script" uid="uid://cr3lmmfkuc6cm" path="res://addons/penny_godot/assets/scripts/decor/decor_registry.gd" id="15_o7bwu"]
 
 [resource]
 script = ExtResource("15_o7bwu")
-decors = Array[ExtResource("1_8yey2")]([ExtResource("2_xkc18"), ExtResource("3_vmywo"), ExtResource("4_is00u"), ExtResource("5_nu2pg"), ExtResource("6_uyhgw"), ExtResource("7_p34ur"), ExtResource("8_4rimq"), ExtResource("9_2ql11"), ExtResource("10_ukvn5"), ExtResource("11_6qn7o"), ExtResource("12_cmpwd"), ExtResource("13_tureq"), ExtResource("14_rdbep")])
+decors = Array[ExtResource("1_8yey2")]([ExtResource("2_vmywo"), ExtResource("2_xkc18"), ExtResource("3_vmywo"), ExtResource("4_is00u"), ExtResource("5_nu2pg"), ExtResource("6_uyhgw"), ExtResource("7_p34ur"), ExtResource("8_4rimq"), ExtResource("9_2ql11"), ExtResource("10_ukvn5"), ExtResource("11_6qn7o"), ExtResource("12_xkc18"), ExtResource("12_cmpwd"), ExtResource("13_tureq"), ExtResource("14_rdbep")])

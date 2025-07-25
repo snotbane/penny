@@ -26,6 +26,7 @@ static var NOW_USEC_FLOAT : float :
 
 signal character_arrived(char: String)
 signal visible_message_changed
+signal advanced
 signal completed
 signal prodded
 signal roger_shown(visible: bool)
@@ -102,7 +103,7 @@ var _audio_player : TypewriterAudioStreamPlayer
 
 var is_locked : bool = false
 var is_typing : bool :
-	get: return play_state == PlayState.PLAYING and visible_characters != -1
+	get: return play_state == PlayState.PLAYING and not visible_characters_completed
 var is_playing : bool :
 	get: return play_state == PlayState.PLAYING or play_state == PlayState.DELAYED
 var is_working : bool :
@@ -120,6 +121,7 @@ var message : DisplayString :
 		_message = value
 		visible_message_changed.emit()
 
+var visible_characters_max : int
 var time_reseted : float = INF
 var time_prepped : float
 var time_elapsed : float
@@ -173,11 +175,11 @@ var is_talking : bool :
 
 var next_prod_stop : int :
 	get:
-		if visible_characters == -1: return -1
+		if visible_characters_completed: return visible_characters_max
 		for k in element_opens.keys():
 			if visible_characters >= k: continue
 			for element in element_opens[k]: if element.prod_stop: return k
-		return -1
+		return visible_characters_max
 
 var _visible_characters_partial : float
 var visible_characters_partial : float :
@@ -186,15 +188,17 @@ var visible_characters_partial : float :
 		_visible_characters_partial = value
 		visible_characters = floori(value)
 
+var visible_characters_completed : bool :
+	get: return visible_characters == visible_characters_max
+
 var visible_characters : int :
 	get: return rtl.visible_characters
 	set (value):
-		value = clampi(value, -1, rtl.get_total_character_count())
+		value = clampi(value, 0, visible_characters_max)
 		if rtl.visible_characters == value: return
 
-		var increment := 1 if value == -1 else signi(value - rtl.visible_characters)
-		var target := rtl.get_total_character_count() if value == -1 else value
-		while rtl.visible_characters != target:
+		var increment := signi(value - rtl.visible_characters)
+		while rtl.visible_characters != value:
 			time_per_char[rtl.visible_characters] = time_elapsed
 			rtl.visible_characters += increment
 
@@ -212,9 +216,7 @@ var visible_characters : int :
 			if rtl.visible_characters > 0:
 				character_arrived.emit(message.visible_text[mini(rtl.visible_characters, message.visible_text.length()) - 1])
 
-		if rtl.visible_characters == rtl.get_total_character_count():
-			rtl.visible_characters = -1
-		else:
+		if not visible_characters_completed:
 			_visible_characters_partial = rtl.visible_characters + fmod(_visible_characters_partial, 1.0)
 
 		visible_message_changed.emit()
@@ -257,7 +259,7 @@ func _ready() -> void:
 	rtl.add_sibling.call_deferred(shape_rtl)
 	rtl.get_parent().move_child.call_deferred(shape_rtl, 0)
 
-	time_per_char.resize(rtl.get_total_character_count())
+	time_per_char.resize(visible_characters_max + 1)
 
 	roger.set.call_deferred(&"visible", false)
 
@@ -338,7 +340,7 @@ func _process_autoscroll(delta: float) -> void:
 
 
 func _process_end(delta: float) -> void:
-	if play_state == PlayState.COMPLETED or rtl.visible_characters != -1: return
+	if play_state == PlayState.COMPLETED or not visible_characters_completed: return
 
 	if handling_elements: return
 
@@ -352,27 +354,31 @@ func _process_end(delta: float) -> void:
 
 #region Script Functions
 
+func clear() -> void:
+	rtl.visible_characters = 0
+	_visible_characters_partial = 0
+
 ## Preps the dialog for printout, but doesn't start.
 func prep() -> void:
 	shape_rtl.text = rtl.text
 	time_prepped = NOW_USEC_FLOAT
 	play_state = PlayState.READY
-	visible_characters_partial = 0
+	clear()
 
 ## Begins printout.
 func present() -> void:
-	visible_characters_partial = 0
+	clear()
 	await get_tree().create_timer(start_delay).timeout
 	play_state = PlayState.PLAYING
 
 ## Skips to the very end, but doesn't reset.
 func complete() -> void:
-	visible_characters = -1
+	visible_characters = visible_characters_max
 	play_state = PlayState.COMPLETED
 
 ## Resets the dialog to be used again.
 func reset():
-	visible_characters = -1
+	clear()
 	play_state = PlayState.RESETTING
 	await get_tree().create_timer(reset_delay).timeout
 	play_state = PlayState.READY
@@ -392,7 +398,11 @@ func _receive(record: Record) :
 	rtl.text = message.compile_for_typewriter(self)
 	shape_rtl.text = String()
 
-	time_per_char.resize(rtl.get_total_character_count())
+	visible_characters_max = rtl.get_total_character_count()
+	if visible_characters_max != message.visible_text.length():
+		printerr("WARNING! The DisplayString's calculated length is different from its actual length! This usually happens because there is an unrecognized BBcode somewhere in the text.\n'%s'" % rtl.text)
+
+	time_per_char.resize(visible_characters_max)
 	time_per_char.fill(INF)
 
 	var visible_offset := 0
@@ -421,6 +431,11 @@ func prod() -> void:
 	prodded.emit()
 	if is_playing_and_unlocked:
 		visible_characters_partial = next_prod_stop
+
+
+func advance() -> void:
+	complete()
+	advanced.emit()
 
 #endregion
 #region DecorElement Functions

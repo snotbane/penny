@@ -21,6 +21,7 @@ func _enter_tree() -> void:
 	if has_signal(&"mouse_entered") and has_signal(&"mouse_exited"):
 		self.mouse_entered.connect(set.bind(&"is_mouse_inside", true))
 		self.mouse_exited.connect(set.bind(&"is_mouse_inside", false))
+	typewriter.advanced.connect(advanced.emit)
 
 
 func _notification(what: int) -> void:

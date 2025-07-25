@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://b0c02niwg0rvx"]
+
+[sub_resource type="GDScript" id="GDScript_52dxc"]
+script/source = "extends Decor
+
+func encounter_open(element: DecorElement) -> void:
+	element.owner.set.call_deferred(&\"visible_characters\", element.close_index)
+"
+
+[resource]
+script = SubResource("GDScript_52dxc")
+id = &"skip"
+args = Dictionary[StringName, Variant]({})
+closable = true
+bbcode = false
+prod_stop = false
+metadata/_custom_type_script = "uid://w7bl3g20knuq"
