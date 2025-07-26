@@ -43,6 +43,10 @@ func populate(_host: PennyHost, _cell: Cell = null) -> void:
 func _populate() -> void: pass
 
 
+func spawn() -> void:
+	pass
+
+
 func open(wait : bool = false) :
 	opening.emit()
 	if immediate_open: open_finish()

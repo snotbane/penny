@@ -160,40 +160,91 @@ func get_marker_node(host: PennyHost, marker_name: StringName = self.get_value(C
 	return host.get_tree().root
 
 
-## Loads, creates, and assigns an instance to this [Cell] (but does not add it to any parent Node).
-func instantiate(host: PennyHost) -> Node:
-	if not self.has_value(Cell.K_RES):
+# ## Loads, creates, and assigns an instance to this [Cell] (but does not add it to any parent Node).
+# func instantiate(host: PennyHost) -> Node:
+# 	if not self.has_value(Cell.K_RES):
+# 		printerr("Attempted to instantiate cell '%s', but it does not have a [%s] attribute." % [self, Cell.K_RES])
+# 		return null
+
+# 	var res_path : String = get_value(Cell.K_RES)
+# 	if not ResourceLoader.exists(res_path):
+# 		printerr("Attempted to instantiate cell '%s', but its [%s] attribute does not point to a valid file path ('%s')." % [self, Cell.K_RES, res_path])
+# 		return null
+
+# 	self.despawn()
+# 	var result : Node = load(res_path).instantiate()
+
+# 	if result is Actor:
+# 		result.populate(host, self)
+# 	if result.has_method(&"instantiate"):
+# 		result.instantiate()
+
+# 	result.tree_exiting.connect(self.disconnect_instance.bind(result))
+# 	result.name = self.node_name
+# 	self.instance = result
+# 	return result
+
+
+# ## [member instantiate]s a [Cell] (if it doesn't already exist), adds it to the appropriate parent [Node]. If the instance already exists, it doesn't reparent unless explicitly specified.
+## [member instantiate]s a [Cell], and adds it to the appropriate parent [Node]. If it already exists, it despawns the old node and creates a new one.
+func spawn(host: PennyHost, parent_name: StringName = get_value(K_MARKER)) -> Node:
+	var parent_node : Node = get_marker_node(host, parent_name if parent_name else get_value(K_MARKER))
+
+	if not has_value(Cell.K_RES):
 		printerr("Attempted to instantiate cell '%s', but it does not have a [%s] attribute." % [self, Cell.K_RES])
-		return null
 
-	var path : String = get_value(Cell.K_RES)
-	if not ResourceLoader.exists(path):
-		printerr("Attempted to instantiate cell '%s', but its [%s] attribute does not point to a valid file path ('%s')." % [self, Cell.K_RES, path])
-		return null
+	var res_path : String = get_value(Cell.K_RES)
+	if not ResourceLoader.exists(res_path):
+		printerr("Attempted to instantiate cell '%s', but its [%s] attribute does not point to a valid file path ('%s')." % [self, Cell.K_RES, res_path])
 
-	self.close_instance()
-	var result : Node = load(get_value(Cell.K_RES)).instantiate()
+	despawn()
+	var result : Node = load(res_path).instantiate()
 
 	if result is Actor:
 		result.populate(host, self)
+	if result.has_method(&"spawn"):
+		result.spawn()
 
-	result.tree_exiting.connect(self.disconnect_instance.bind(result))
-	result.name = self.node_name
-	self.instance = result
+	result.tree_exiting.connect(disconnect_instance.bind(result))
+	result.name = node_name
+	instance = result
+
+	parent_node.add_child(result)
+	result.global_position = parent_node.global_position
+
 	return result
+func spawn_undo(record: Record) -> void:
+	print("%s: Spawn undo." % key_name)
 
+
+func despawn() -> void:
+	var inst := instance
+	if inst == null: return
+	if inst.has_method(&"despawn"):
+		inst.despawn()
+	inst.queue_free()
+func despawn_undo(record: Record) -> void:
+	print("%s: Despawn undo." % key_name)
 
 func disconnect_instance(match : Node = null) -> void:
-	if match == null or self.instance == match:
-		self.instance = null
+	if match == null or instance == match:
+		instance = null
 
 
-func close_instance() -> void:
-	var inst := self.instance
-	if inst == null: return
-	if inst is Actor:
-		inst.close()
-	inst.queue_free()
+func enter(host: PennyHost, parent_name: StringName = get_value(K_MARKER)):
+	var inst := spawn(host, parent_name)
+	if inst.has_method(&"enter"):
+		await inst.enter()
+func enter_undo(record: Record) -> void:
+	print("%s: Enter undo." % key_name)
+
+
+func exit(host: PennyHost, __despawn__ := true):
+	var inst := instance
+	if inst and inst.has_method(&"exit"):
+		await inst.exit()
+	if __despawn__:
+		despawn()
 
 
 func _export_json(json: Dictionary) -> void:
@@ -212,7 +263,7 @@ func get_save_ref() -> Variant:
 
 
 func load_data(host: PennyHost, json: Dictionary) -> void:
-	self.close_instance()
+	self.despawn()
 
 	var result_data : Dictionary[StringName, Variant] = {}
 	var inst_data : Dictionary
@@ -234,32 +285,9 @@ func load_data(host: PennyHost, json: Dictionary) -> void:
 	if inst_data:
 		# prints(self, self.local_instance)
 		if inst_data.has(&"spawn_used") and inst_data[&"spawn_used"]:
-			var node := self.instantiate(host)
+			var node := self.spawn(host)
 			if node is Actor:
 				node.load_data(inst_data)
-
-
-## [member instantiate]s a [Cell] (if it doesn't already exist), adds it to the appropriate parent [Node]. If the instance already exists, it doesn't reparent unless explicitly specified.
-func enter(host: PennyHost, parent_name: StringName = self.get_value(K_MARKER)):
-	var parent_node : Node = self.get_marker_node(host, parent_name if parent_name else self.get_value(K_MARKER))
-
-
-	var inst : Node = self.instance
-	print("Instance: %s" % inst)
-	if inst:
-		if inst.get_parent(): inst.get_parent().remove_child(inst)
-	else:
-		inst = self.instantiate(host)
-
-	parent_node.add_child(inst)
-	inst.global_position = parent_node.global_position
-
-	if inst is Actor: await inst.open()
-
-	return inst
-
-func enter_undo(record: Record) -> void:
-	print("%s: Enter undo." % self.key_name)
 
 
 ## Closes and queues free a Cell's instance (if it exists).

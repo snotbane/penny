@@ -6,12 +6,12 @@ func _get_verbosity() -> Verbosity:
 	return Verbosity.NODE_ACTIVITY
 
 
-func instantiate_subject(host: PennyHost) -> Node:
-	return subject.instantiate(host)
+func spawn_subject(host: PennyHost) -> Node:
+	return subject.spawn(host)
 
 
 func open_subject(host: PennyHost, wait : bool = true) :
-	var node : Node = subject_node if subject_node else self.instantiate_subject(host)
+	var node : Node = subject_node if subject_node else self.spawn_subject(host)
 	if node is Actor:
 		await node.open(wait)
 	return node

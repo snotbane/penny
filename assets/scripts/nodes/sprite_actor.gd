@@ -47,6 +47,12 @@ func _ready() -> void:
 	# 	self.talking_changed.connect(sprite_flags.set_talking_flag)
 
 
+func spawn() -> void:
+	# opacity = 0.0
+	pass
+	print("Spawning a SpriteActor")
+
+
 func set_is_talking(value: bool) -> void:
 	is_talking = value
 
