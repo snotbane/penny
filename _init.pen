@@ -3,46 +3,46 @@ init
 
 object
 	.dialog = dialog
-	.text = "@.prefix@.name</>"
 	.name = "Unnamed Object"
 	.prefix = "<>"
+	.text = "@.prefix@.name</>"
 
 dialog = new object
-	.res = 'uid://b8sp6ey8fsgt7'
-	.marker = 'dialog'
 	.filters = [PARAGRAPH_START, PUNCTUATION_TO_PIPE, PIPE_TO_DELAY, SLASH_TO_WAIT, TRIPLE_HYPHEN_TO_LONG_DASH, DOUBLE_HYPHEN_TO_EM_DASH, FANCY_SINGLE_QUOTE_RIGHT, FANCY_SINGLE_QUOTE_LEFT, FANCY_DOUBLE_QUOTE_RIGHT, FANCY_DOUBLE_QUOTE_LEFT]
+	.marker = 'dialog'
+	.res = 'uid://b8sp6ey8fsgt7'
 	.reusable = true
 
 prompt = new object
-	.res = 'uid://cuu7puh0nnyug'
 	.marker = 'prompt'
 	.options = []
+	.res = 'uid://cuu7puh0nnyug'
 
 option = new object
-	.res = 'uid://cqv2gnjjkdh6c'
-	.enabled = true
-	.visible = true
 	.consumed = false
+	.enabled = true
 	.filters = [PARAGRAPH_START_CENTERED, TRIPLE_HYPHEN_TO_LONG_DASH, DOUBLE_HYPHEN_TO_EM_DASH, FANCY_SINGLE_QUOTE_RIGHT, FANCY_SINGLE_QUOTE_LEFT, FANCY_DOUBLE_QUOTE_RIGHT, FANCY_DOUBLE_QUOTE_LEFT]
+	.res = 'uid://cqv2gnjjkdh6c'
+	.visible = true
 
 filter = new object
 	.pattern = '.+'
 	.replace = 'default_filter_replace'
 
 actor = new object
-	.unknown = new unknown
-	.name = `@.f_name`
+	.color = #ff0000
 	.d_name = `Mx.`
 	.f_name = `John`
 	.l_name = `Doe`
-	.fl_name = `@.prefix@.f_name @.l_name</>`
 	.df_name = `@.prefix@.d_name @.f_name</>`
 	.dl_name = `@.prefix@.d_name @.l_name</>`
-	.fml_name = `@.prefix@.f_name @.m_name @.l_name</>`
+	.fl_name = `@.prefix@.f_name @.l_name</>`
 	.dfl_name = `@.prefix@.d_name @.f_name @.l_name</>`
+	.fml_name = `@.prefix@.f_name @.m_name @.l_name</>`
+	.name = `@.f_name`
 	.prefix = `<b;color=@.color>`
-	.color = #ff0000
 	.res = 'uid://3tbms65op2ht'
+	.unknown = new unknown
 
 unknown = new actor
 	.name = `???`
