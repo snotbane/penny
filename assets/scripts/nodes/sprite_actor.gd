@@ -8,6 +8,7 @@ signal talking_changed(value : bool)
 
 @export var voice_audio_player : Node
 @export var emanata_spawner : EmanataSpawner
+@export var mesh : MeshInstance3D
 @export var sprite_flags : FlagController
 @export var sprite_blink_anim : Node
 
@@ -49,9 +50,7 @@ func _ready() -> void:
 
 
 func spawn() -> void:
-	# opacity = 0.0
-	pass
-	print("Spawning a SpriteActor")
+	mesh.opacity = 0.0
 
 
 func set_is_talking(value: bool) -> void:

@@ -163,21 +163,24 @@ func get_marker_node(host: PennyHost, marker_name: StringName = self.get_value(C
 
 
 ## [member instantiate]s a [Cell], and adds it to the appropriate parent [Node]. If it already exists, it despawns the old node and creates a new one.
-func spawn(funx: Funx, parent_name: StringName = get_value(K_MARKER)) -> Node:
+func spawn(funx: Funx, parent_name = get_value(K_MARKER)) -> Node:
+	if parent_name: set_value(K_MARKER, parent_name)
+
 	var parent_node : Node = get_marker_node(funx.host, parent_name if parent_name else get_value(K_MARKER))
 
-	if not has_value(Cell.K_RES):
-		printerr("Attempted to instantiate cell '%s', but it does not have a [%s] attribute." % [self, Cell.K_RES])
+	assert(has_value(Cell.K_RES), "Attempted to instantiate cell '%s', but it does not have a [%s] attribute." % [self, Cell.K_RES])
 
 	var res_path : String = get_value(Cell.K_RES)
-	if not ResourceLoader.exists(res_path):
-		printerr("Attempted to instantiate cell '%s', but its [%s] attribute does not point to a valid file path ('%s')." % [self, Cell.K_RES, res_path])
+
+	assert(ResourceLoader.exists(res_path), "Attempted to instantiate cell '%s', but its [%s] attribute does not point to a valid file path ('%s')." % [self, Cell.K_RES, res_path])
 
 	despawn()
+
 	var result : Node = load(res_path).instantiate()
 
 	if result is Actor:
 		result.populate(funx.host, self)
+
 	if result.has_method(&"spawn"):
 		result.spawn()
 
@@ -194,7 +197,7 @@ func spawn_undo(record: Record) -> void:
 
 
 func disconnect_instance(match : Node = null) -> void:
-	if match == null or instance == match:
+	if match == null or match == instance:
 		instance = null
 
 
@@ -203,13 +206,16 @@ func despawn(funx: Funx = null) -> void:
 	if inst == null: return
 	if inst.has_method(&"despawn"):
 		inst.despawn()
+	disconnect_instance(inst)
 	inst.queue_free()
 func despawn_undo(record: Record) -> void:
 	print("%s: Despawn undo." % key_name)
 
 
-func enter(funx: Funx, parent_name: StringName = get_value(K_MARKER)) :
-	var inst := spawn(funx, parent_name)
+func enter(funx: Funx, parent_name = get_value(K_MARKER), __respawn__ := false) :
+	var inst : Node = instance
+	if inst == null or __respawn__:
+		inst = spawn(funx, parent_name)
 	if inst.has_method(&"enter"):
 		await inst.enter(funx)
 func enter_undo(record: Record) -> void:
@@ -218,7 +224,6 @@ func enter_undo(record: Record) -> void:
 
 func exit(funx: Funx, __despawn__ := true) :
 	var inst := instance
-	print("Exit!!!")
 	if inst and inst.has_method(&"exit"):
 		await inst.exit(funx)
 	if __despawn__:
