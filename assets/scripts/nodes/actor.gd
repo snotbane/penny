@@ -46,7 +46,6 @@ func enter(f := Funx.new()) :
 	else:
 		_enter()
 		entered.emit()
-	print("Enter finished: ", self.name)
 	is_entered = true
 func _enter() : pass
 

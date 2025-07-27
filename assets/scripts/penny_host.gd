@@ -46,6 +46,10 @@ signal on_roll_ahead_disabled(value : bool)
 
 @export var allow_rolling := true
 
+@export_subgroup("Debug")
+
+@export var debug_log_stmts : bool
+
 static var insts : Array[PennyHost] = []
 
 var call_stack : Array[Stmt]
@@ -167,7 +171,7 @@ func execute(stmt : Stmt) :
 	if cursor == null: return
 	last_valid_cursor = cursor
 
-	# print("Calling %s" % cursor._debug_string_do_not_use_for_anything_else_seriously_i_mean_it)
+	if debug_log_stmts: print("%s %s" % [name, cursor._debug_string_do_not_use_for_anything_else_seriously_i_mean_it])
 
 	var record : Record = cursor.pre_execute(self)
 

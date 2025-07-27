@@ -199,35 +199,35 @@ class Op extends RefCounted:
 
 	func _to_string() -> String:
 		match type:
-			GROUP_CLOSE: return ")"
-			GROUP_OPEN: return "("
-			ARRAY_CLOSE: return "]"
-			ARRAY_OPEN: return "["
-			ITERATOR: return ","
+			GROUP_CLOSE:	return ")"
+			GROUP_OPEN:		return "("
+			ARRAY_CLOSE:	return "]"
+			ARRAY_OPEN:		return "["
+			ITERATOR:		return ","
 
-			IS_EQUAL: return '=='
-			NOT_EQUAL: return '!='
-			MORE_THAN: return '>'
-			MORE_EQUAL: return '>='
-			LESS_THAN: return '<'
-			LESS_EQUAL: return '<='
+			IS_EQUAL:		return '=='
+			NOT_EQUAL:		return '!='
+			MORE_THAN:		return '>'
+			MORE_EQUAL:		return '>='
+			LESS_THAN:		return '<'
+			LESS_EQUAL:		return '<='
 
-			EVALUATE: return "@"
-			DOT: return "."
-			QUESTION: return "?"
+			EVALUATE:		return "@"
+			DOT:			return "."
+			QUESTION:		return "?"
 
-			NEW: return 'new'
-			NOT: return '!'
-			AND: return '&&'
-			OR: return '||'
+			NEW:			return 'new'
+			NOT:			return '!'
+			AND:			return '&&'
+			OR:				return '||'
 
-			ADD: return "+"
-			SUBTRACT: return "-"
-			MULTIPLY: return "*"
-			DIVIDE: return "/"
-			MODULO: return "%"
-			BIT_AND: return "&"
-			BIT_OR: return "|"
+			ADD:			return "+"
+			SUBTRACT:		return "-"
+			MULTIPLY:		return "*"
+			DIVIDE:			return "/"
+			MODULO:			return "%"
+			BIT_AND:		return "&"
+			BIT_OR:			return "|"
 		return "INVALID_OP"
 
 

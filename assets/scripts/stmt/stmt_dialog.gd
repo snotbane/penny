@@ -30,6 +30,7 @@ func _populate(tokens: Array) -> void:
 
 func _pre_execute(record: Record) -> void:
 	var incoming_dialog : Cell = subject_dialog_path.evaluate()
+	assert(incoming_dialog != null, "Attempted to get dialog box for '%s', but no such object exists" % subject_dialog_path)
 
 	record.data.merge({
 		&"who": subject,
@@ -40,9 +41,7 @@ func _pre_execute(record: Record) -> void:
 
 func _execute(record: Record) :
 	var incoming_dialog : Cell = record.data[&"dialog"]
-	if not incoming_dialog:
-		printerr("Attempted to create dialog box for '%s', but no such object exists" % self.subject_dialog_path)
-		return
+
 	var incoming_dialog_node : DialogNode
 	var previous_dialog : Cell = record.host.last_dialog_object
 
@@ -57,7 +56,7 @@ func _execute(record: Record) :
 
 	if incoming_needs_creation:
 		if previous_dialog_node != null:
-			await previous_dialog_node.exit()
+			await previous_dialog_node.exit(Funx.new(record.host, true))
 		await incoming_dialog.enter(Funx.new(record.host, true))
 		incoming_dialog_node = incoming_dialog.instance
 	else:

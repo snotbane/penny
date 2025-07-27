@@ -113,11 +113,16 @@ func evaluate_dynamic(context: Cell, get_func: StringName, has_func: StringName)
 	if not rel: context = Cell.ROOT
 	var result : Variant = context
 	for id in ids:
-		if result == null: printerr("Attempted to evaluate path '%s', but resulted to null." % [self]); return null
-		if result is Cell:
-			if result.call(has_func, id): result = result.call(get_func, id); continue
+		assert(result != null, "Attempted to evaluate path '%s', but resulted to null." % [self])
+		if result.has_method(id) or result.has_signal(id) or result.has_meta(id):
+			pass
+		elif result is Cell:
+			if result.call(has_func, id):
+				result = result.call(get_func, id)
+				continue
 			var inst : Node = result.instance
-			if inst and inst.get(id): result = inst.get(id); continue
-		# else:
+			if inst and inst.get(id):
+				result = inst.get(id)
+				continue
 		result = result.get(id)
 	return result

@@ -114,6 +114,8 @@ func has_local_value(key: StringName) -> bool:
 func has_value(key: StringName) -> bool:
 	return self.has_local_value(key) or (self.prototype.has_value(key) if self.prototype else false)
 
+
+## I don't think this is doing anything, but removing it throws a lot of errors. Wonderful. It's a spicy meat-a-ball in-a my spaghetti!
 func _get(property: StringName) -> Variant: return get_value(property)
 func _set(property: StringName, value: Variant) -> bool: set_value(property, value); return true
 func _get_property_list() -> Array[Dictionary]:
@@ -216,6 +218,7 @@ func enter_undo(record: Record) -> void:
 
 func exit(funx: Funx, __despawn__ := true) :
 	var inst := instance
+	print("Exit!!!")
 	if inst and inst.has_method(&"exit"):
 		await inst.exit(funx)
 	if __despawn__:
