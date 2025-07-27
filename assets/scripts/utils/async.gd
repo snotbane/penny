@@ -1,7 +1,7 @@
 
 class_name Async
 
-## Waits for ALL of the callables/signals to finish awaiting. They can be completed in any order but must all return before continuing. Returns an array with the results of each one.
+## Calls all provided callables. Then waits for ALL of the callables/signals to finish awaiting. They can be completed in any order but must all return before continuing. Returns an array with the results of each one, in order of completion..
 static func all(methods : Array) :
 	var listener := AllListener.new(methods)
 	if not listener.is_completed:
@@ -9,7 +9,7 @@ static func all(methods : Array) :
 	return listener.payload
 
 
-## Waits for the FIRST of the callables/signals to finish awaiting. Returns the result of that first method; others are never triggered. If multiple complete simultaneously, the first one in the list is prioritized.
+## Calls all provided callables. Then waits for the FIRST of the callables/signals to finish awaiting. Returns the result of that first method; others are never triggered. If multiple complete simultaneously, the first one in the list is prioritized.
 static func any(methods : Array) :
 	var listener := AnyListener.new(methods)
 	if not listener.is_completed:

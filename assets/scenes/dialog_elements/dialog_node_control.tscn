@@ -1,7 +1,7 @@
 [gd_scene load_steps=14 format=3 uid="uid://b8sp6ey8fsgt7"]
 
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="1_uxamp"]
-[ext_resource type="Script" uid="uid://bhviv6ri812ba" path="res://addons/penny_godot/assets/scenes/dialog_elements/DialogNodeControl.gd" id="2_a8dr1"]
+[ext_resource type="Script" path="res://addons/penny_godot/assets/scenes/dialog_elements/DialogNodeControl.gd" id="2_a8dr1"]
 [ext_resource type="PackedScene" uid="uid://byamam888n7fp" path="res://addons/penny_godot/assets/scenes/dialog_elements/roger.tscn" id="3_bfsyc"]
 [ext_resource type="Script" uid="uid://cdrs673e0hg62" path="res://addons/penny_godot/assets/scripts/nodes/typewriter/typewriter.gd" id="3_q7721"]
 [ext_resource type="AudioStream" uid="uid://bvaimbcs1j77n" path="res://addons/penny_godot/assets/audio/sfx_typewriter_sans.ogg" id="4_a8dr1"]
@@ -43,48 +43,6 @@ tracks/1/keys = {
 "values": [false]
 }
 
-[sub_resource type="Animation" id="Animation_niumw"]
-resource_name = "fade_out"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.3),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"close_finish"
-}]
-}
-
 [sub_resource type="Animation" id="Animation_kij65"]
 resource_name = "fade_in"
 length = 0.3
@@ -122,16 +80,58 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0.3),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [],
-"method": &"open_finish"
+"args": [&"entered"],
+"method": &"emit_signal"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_niumw"]
+resource_name = "fade_out"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.3),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [&"exited"],
+"method": &"emit_signal"
 }]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ywfyv"]
 _data = {
 &"RESET": SubResource("Animation_th5j2"),
-&"close": SubResource("Animation_niumw"),
-&"open": SubResource("Animation_kij65")
+&"enter": SubResource("Animation_kij65"),
+&"exit": SubResource("Animation_niumw")
 }
 
 [node name="dialog_default" type="Control" node_paths=PackedStringArray("_typewriter")]
@@ -146,8 +146,6 @@ grow_vertical = 0
 theme = ExtResource("1_uxamp")
 script = ExtResource("2_a8dr1")
 _typewriter = NodePath("typewriter")
-immediate_open = false
-immediate_close = false
 save_spawn = false
 save_transform = false
 
@@ -269,8 +267,8 @@ libraries = {
 &"": SubResource("AnimationLibrary_ywfyv")
 }
 
-[connection signal="closing" from="." to="animation_player" method="play" binds= [&"close"]]
-[connection signal="opened" from="." to="typewriter" method="present"]
-[connection signal="opening" from="." to="animation_player" method="play" binds= [&"open"]]
+[connection signal="entered" from="." to="typewriter" method="present"]
+[connection signal="entering" from="." to="animation_player" method="play" binds= [&"enter"]]
+[connection signal="exiting" from="." to="animation_player" method="play" binds= [&"exit"]]
 [connection signal="completed" from="typewriter" to="." method="prevent_skip"]
 [connection signal="roger_shown" from="typewriter" to="roger" method="set_visible"]

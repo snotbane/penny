@@ -38,9 +38,8 @@ func _populate(tokens: Array) -> void:
 
 
 func _pre_execute(record: Record) -> void:
-	var evaluated_arguments : Array = [record.host]
-	for arg in arguments:
-		evaluated_arguments.push_back(arg.evaluate() if arg is Expr else arg)
+	var evaluated_arguments : Array = [Funx.new(record.host, is_awaited)]
+	for arg in arguments: evaluated_arguments.push_back(arg.evaluate() if arg is Expr else arg)
 
 	record.data.merge({
 		&"args": evaluated_arguments
@@ -48,9 +47,7 @@ func _pre_execute(record: Record) -> void:
 
 
 func _execute(record: Record) :
-	var result : Variant
-	if is_awaited:	result = await	execute_callable.callv(record.data[&"args"])
-	else: 			result =		execute_callable.callv(record.data[&"args"])
+	var result : Variant = await execute_callable.callv(record.data[&"args"])
 
 	record.data[&"result"] = result
 

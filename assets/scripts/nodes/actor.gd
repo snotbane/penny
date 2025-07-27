@@ -3,15 +3,10 @@
 class_name Actor extends Node
 
 signal advanced
-signal closed
-signal closing
-signal opened
-signal opening
-
-## If true, the Penny script will not await anything to proceed before this node enters the scene tree. I.E. It will open on ready. If false, you'll have to manually open the node.
-@export var immediate_open : bool = true
-## If true, the Penny script will not await anything to proceed before this node exits the scene tree. I.E. It will queue free on close. If false, you'll have to manually queue_free the node.
-@export var immediate_close : bool = true
+signal entering
+signal entered
+signal exiting
+signal exited
 
 @export_subgroup("Save Data")
 
@@ -24,7 +19,7 @@ signal opening
 var host : PennyHost
 var cell : Cell
 
-var is_open : bool = false
+var is_entered : bool = false
 
 
 func _ready() -> void: pass
@@ -38,37 +33,40 @@ func _exit_tree() -> void:
 func populate(_host: PennyHost, _cell: Cell = null) -> void:
 	host = _host
 	cell = _cell
-
 	_populate()
 func _populate() -> void: pass
 
 
-func spawn() -> void:
-	pass
+# func spawn() -> void: pass
+# func despawn() -> void: pass
+func enter(f := Funx.new()) :
+	entering.emit()
+	if f.wait:
+		await Async.all([_enter, entered])
+	else:
+		_enter()
+		entered.emit()
+	print("Enter finished: ", self.name)
+	is_entered = true
+func _enter() : pass
 
 
-func open(wait : bool = false) :
-	opening.emit()
-	if immediate_open: open_finish()
-	elif wait: await opened
+func exit(f := Funx.new()) :
+	is_entered = false
+	exiting.emit()
+	if f.wait:
+		await Async.all([_exit, exited])
+	else:
+		_exit()
+		exited.emit()
+func _exit() : pass
 
 
-func open_finish() -> void:
-	is_open = true
-	opened.emit()
-
-
-func close(wait : bool = false) :
-	cell.disconnect_instance(self)
-	is_open = false
-	closing.emit()
-	if immediate_close: close_finish()
-	elif wait: await closed
-
-func close_finish() -> void:
-	cell.disconnect_instance(self)
-	queue_free()
-	closed.emit()
+func play_animation_and_wait(player: AnimationPlayer, anim: StringName) :
+	player.play(anim)
+	var target_anim := &""
+	while target_anim != anim:
+		target_anim = await player.animation_finished
 
 
 func get_save_data() -> Variant:

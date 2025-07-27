@@ -58,7 +58,7 @@ func prevent_skip() -> void:
 
 func try_advance() -> void:
 	if focus_left: return
-	if not is_open: return
+	if not is_entered: return
 	if not typewriter: return
 	if typewriter.is_working:
 		typewriter.prod()

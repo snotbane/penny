@@ -160,35 +160,9 @@ func get_marker_node(host: PennyHost, marker_name: StringName = self.get_value(C
 	return host.get_tree().root
 
 
-# ## Loads, creates, and assigns an instance to this [Cell] (but does not add it to any parent Node).
-# func instantiate(host: PennyHost) -> Node:
-# 	if not self.has_value(Cell.K_RES):
-# 		printerr("Attempted to instantiate cell '%s', but it does not have a [%s] attribute." % [self, Cell.K_RES])
-# 		return null
-
-# 	var res_path : String = get_value(Cell.K_RES)
-# 	if not ResourceLoader.exists(res_path):
-# 		printerr("Attempted to instantiate cell '%s', but its [%s] attribute does not point to a valid file path ('%s')." % [self, Cell.K_RES, res_path])
-# 		return null
-
-# 	self.despawn()
-# 	var result : Node = load(res_path).instantiate()
-
-# 	if result is Actor:
-# 		result.populate(host, self)
-# 	if result.has_method(&"instantiate"):
-# 		result.instantiate()
-
-# 	result.tree_exiting.connect(self.disconnect_instance.bind(result))
-# 	result.name = self.node_name
-# 	self.instance = result
-# 	return result
-
-
-# ## [member instantiate]s a [Cell] (if it doesn't already exist), adds it to the appropriate parent [Node]. If the instance already exists, it doesn't reparent unless explicitly specified.
 ## [member instantiate]s a [Cell], and adds it to the appropriate parent [Node]. If it already exists, it despawns the old node and creates a new one.
-func spawn(host: PennyHost, parent_name: StringName = get_value(K_MARKER)) -> Node:
-	var parent_node : Node = get_marker_node(host, parent_name if parent_name else get_value(K_MARKER))
+func spawn(funx: Funx, parent_name: StringName = get_value(K_MARKER)) -> Node:
+	var parent_node : Node = get_marker_node(funx.host, parent_name if parent_name else get_value(K_MARKER))
 
 	if not has_value(Cell.K_RES):
 		printerr("Attempted to instantiate cell '%s', but it does not have a [%s] attribute." % [self, Cell.K_RES])
@@ -201,7 +175,7 @@ func spawn(host: PennyHost, parent_name: StringName = get_value(K_MARKER)) -> No
 	var result : Node = load(res_path).instantiate()
 
 	if result is Actor:
-		result.populate(host, self)
+		result.populate(funx.host, self)
 	if result.has_method(&"spawn"):
 		result.spawn()
 
@@ -217,7 +191,12 @@ func spawn_undo(record: Record) -> void:
 	print("%s: Spawn undo." % key_name)
 
 
-func despawn() -> void:
+func disconnect_instance(match : Node = null) -> void:
+	if match == null or instance == match:
+		instance = null
+
+
+func despawn(funx: Funx = null) -> void:
 	var inst := instance
 	if inst == null: return
 	if inst.has_method(&"despawn"):
@@ -226,25 +205,45 @@ func despawn() -> void:
 func despawn_undo(record: Record) -> void:
 	print("%s: Despawn undo." % key_name)
 
-func disconnect_instance(match : Node = null) -> void:
-	if match == null or instance == match:
-		instance = null
 
-
-func enter(host: PennyHost, parent_name: StringName = get_value(K_MARKER)):
-	var inst := spawn(host, parent_name)
+func enter(funx: Funx, parent_name: StringName = get_value(K_MARKER)) :
+	var inst := spawn(funx, parent_name)
 	if inst.has_method(&"enter"):
-		await inst.enter()
+		await inst.enter(funx)
 func enter_undo(record: Record) -> void:
 	print("%s: Enter undo." % key_name)
 
 
-func exit(host: PennyHost, __despawn__ := true):
+func exit(funx: Funx, __despawn__ := true) :
 	var inst := instance
 	if inst and inst.has_method(&"exit"):
-		await inst.exit()
+		await inst.exit(funx)
 	if __despawn__:
 		despawn()
+func exit_undo(record: Record) -> void:
+	print("%s: Exit undo." % self.key_name)
+
+
+## Moves (crosses) a Node from one position to another. Can be a marker or a literal position.
+func cross(funx: Funx, to: Variant, curve: Variant):
+	print("%s: cross (to: %s, curve: %s)" % [self.key_name, str(to), curve])
+func cross_undo(record: Record) -> void:
+	print("%s: cross undo." % self.key_name)
+
+
+func reparent(funx: Funx, parent_name: StringName):
+	var parent_node : Node = get_marker_node(funx.host, parent_name)
+
+	var inst : Node = self.instance
+	if not inst: return
+
+	var global_position_before = inst.global_position
+	inst.get_parent().remove_child(inst)
+	parent_node.add_child(funx.host)
+	inst.global_position = global_position_before
+func reparent_undo(record: Record) -> void:
+	print("%s: reparent undo." % self.key_name)
+
 
 
 func _export_json(json: Dictionary) -> void:
@@ -285,43 +284,6 @@ func load_data(host: PennyHost, json: Dictionary) -> void:
 	if inst_data:
 		# prints(self, self.local_instance)
 		if inst_data.has(&"spawn_used") and inst_data[&"spawn_used"]:
-			var node := self.spawn(host)
+			var node := self.spawn(Funx.new(host))
 			if node is Actor:
 				node.load_data(inst_data)
-
-
-## Closes and queues free a Cell's instance (if it exists).
-func exit(host: PennyHost, despawn: bool = true):
-	var inst := self.instance
-	if inst == null: print("Attempted to exit %s, but its instance is null." % self.key_name); return
-
-	if inst is Actor: await inst.close()
-	if despawn: inst.queue_free()
-
-
-func exit_undo(record: Record) -> void:
-	print("%s: Exit undo." % self.key_name)
-
-
-## Moves (crosses) a Node from one position to another. Can be a marker or a literal position.
-func cross(host: PennyHost, to: Variant, curve: Variant):
-	print("%s: cross (to: %s, curve: %s)" % [self.key_name, str(to), curve])
-
-
-func cross_undo(record: Record) -> void:
-	print("%s: cross undo." % self.key_name)
-
-
-func reparent(host: PennyHost, parent_name: StringName):
-	var parent_node : Node = get_marker_node(host, parent_name)
-
-	var inst : Node = self.instance
-	if not inst: return
-
-	var global_position_before = inst.global_position
-	inst.get_parent().remove_child(inst)
-	parent_node.add_child(host)
-	inst.global_position = global_position_before
-
-func reparent_undo(record: Record) -> void:
-	print("%s: reparent undo." % self.key_name)

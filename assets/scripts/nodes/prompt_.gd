@@ -21,13 +21,13 @@ func receive_options(_host: PennyHost, _options: Array) -> void:
 	else:
 		print("Prompt '%s' was not supplied with any visible options. Advancing." % cell)
 		queue_free()
-		self.advanced.emit.call_deferred()
+		advanced.emit.call_deferred()
 func _receive_options(_host: PennyHost, _options: Array) -> void:	pass
 
 
 func receive_response(option: Path) -> void:
 	cell.set_value(Cell.K_RESPONSE, option)
-	self.close()
-	self.advanced.emit()
+	exit()
+	advanced.emit()
 	_receive_response(option)
 func _receive_response(option: Path) -> void: pass

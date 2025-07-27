@@ -57,10 +57,9 @@ func _execute(record: Record) :
 
 	if incoming_needs_creation:
 		if previous_dialog_node != null:
-			await previous_dialog_node.close(true)
-		# incoming_dialog_node = incoming_dialog.instantiate(host)
-		incoming_dialog_node = await incoming_dialog.enter(record.host)
-		await incoming_dialog_node.open(true)
+			await previous_dialog_node.exit()
+		await incoming_dialog.enter(Funx.new(record.host, true))
+		incoming_dialog_node = incoming_dialog.instance
 	else:
 		incoming_dialog_node = previous_dialog_node
 
