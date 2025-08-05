@@ -18,26 +18,26 @@ func _get_is_skippable() -> bool:
 
 
 func _populate(tokens: Array) -> void:
-	is_simple_timer_delay = tokens[0].value is float or tokens[0].value is int
-	if is_simple_timer_delay:
-		expr = float(tokens[0].value)
-	else:
-		expr = Path.new_from_tokens(tokens)
+	expr = Expr.new_from_tokens(tokens)
+	var eval = expr.evaluate()
+	is_simple_timer_delay = eval is float or eval is int
+
+
+func _pre_execute(record: Record) -> void:
+	var wait : Variant = expr.evaluate(context)
+	assert(wait != null, "Attempted to await %s, but the wait object is null. (Does the Cell's instance exist?)" % wait)
+	is_simple_timer_delay = wait is float or wait is int
+	record.data[&"wait"] = wait
 
 
 func _execute(record: Record) :
+	var wait : Variant = record.data[&"wait"]
 	if is_simple_timer_delay:
-		await record.host.get_tree().create_timer(expr, false, false, false).timeout
+		await record.host.get_tree().create_timer(wait, false, false, false).timeout
+	elif wait is Signal:
+		await wait
 	else:
-		var object : Cell = expr.evaluate()
-		if object != null:
-			var node : Actor = object.instance
-			if node is Actor:
-				await node.advanced
-			else:
-				printerr("Attempted to await the node of %s, but the node isn't an Actor." % object)
-		else:
-			printerr("Attempted to await the node of %s, but the object is null." % object)
+		printerr("Attempted to await %s, but we don't know what to do with it." % wait)
 
 
 # func _undo(record: Record) -> void:

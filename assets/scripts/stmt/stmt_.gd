@@ -158,6 +158,7 @@ func _next(record: Record) -> Stmt:
 	return next_in_order
 
 
+## Perform calculations before execution and creates/initializes a record. Not awaitable and doesn't happen on redo.
 func pre_execute(host: PennyHost, data: Dictionary = {}) -> Record:
 	var result := Record.new(host, self, data)
 	_pre_execute(result)
@@ -297,9 +298,6 @@ func get_context_ref() -> Path:
 	while cursor:
 		if cursor is StmtCell: for i in cursor.local_subject_ref.ids.size():
 			_ids.insert(0, cursor.local_subject_ref.ids[-i - 1])
-			# ## Non-recursive
-			# _ids = cursor.subject_ref.ids.duplicate()
-			# break
 		cursor = cursor.get_prev_in_lower_depth()
 	return Path.new(_ids, false)
 
