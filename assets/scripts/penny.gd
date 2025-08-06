@@ -82,11 +82,11 @@ static func get_stmt_from_label(label_name: StringName) -> Stmt:
 		return null
 
 
-static func load_script(path: String, type_hint := "") -> Variant:
+static func load_script(path: String, type_hint := "") -> PennyScript:
 	return ResourceLoader.load(path, type_hint, reload_cache_mode)
 
 
-static func reload_all() -> void:
+static func reload_all(emit_signals: bool = true) -> void:
 	is_reloading_bulk = true
 	var result : Array[PennyScript] = []
 
@@ -95,11 +95,11 @@ static func reload_all() -> void:
 		script_reload_timestamps[path] = FileAccess.get_modified_time(path)
 		result.push_back(Penny.load_script(path))
 
-	Penny.reload_many(result)
+	Penny.reload_many(result, emit_signals)
 	is_reloading_bulk = false
 
 
-static func reload_updated() -> void:
+static func reload_updated(emit_signals: bool = true) -> void:
 	is_reloading_bulk = true
 	var result : Array[PennyScript] = []
 
@@ -118,21 +118,21 @@ static func reload_updated() -> void:
 	for path in del_paths:
 		script_reload_timestamps.erase(path)
 
-	Penny.reload_many(result)
+	Penny.reload_many(result, emit_signals)
 	is_reloading_bulk = false
 
 
-static func reload_single(script : PennyScript) -> void:
+static func reload_single(script : PennyScript, emit_signals: bool = true) -> void:
 	## Check this so that scripts loading independently will reload the environment, but scripts loading in bulk will not.
 	if is_reloading_bulk: return
-	Penny.reload_many([script])
+	Penny.reload_many([script], emit_signals)
 
 
-static func reload_many(many: Array[PennyScript] = scripts):
-	inst.on_reload_start.emit()
+static func reload_many(many: Array[PennyScript] = scripts, emit_signals: bool = true):
+	if emit_signals:
+		inst.on_reload_start.emit()
 
 	if many.size() > 0:
-
 		for script in many:
 			var i : int = -1
 			for j in scripts.size():
@@ -140,14 +140,7 @@ static func reload_many(many: Array[PennyScript] = scripts):
 			if i == -1: scripts.push_back(script)
 			else: scripts[i] = script
 
-		labels.clear()
-
-		for script in scripts:
-			for stmt in script.stmts:
-				if stmt == null: continue
-				stmt.reload()
-
-		is_all_scripts_valid = errors.is_empty()
+		rebuild()
 
 		if is_all_scripts_valid:
 			print("Successfully loaded %s script(s), %s total." % [str(many.size()), str(scripts.size())])
@@ -156,11 +149,25 @@ static func reload_many(many: Array[PennyScript] = scripts):
 			for e in errors:
 				printerr("\t" + e)
 
-		inst.on_reload_finish.emit(is_all_scripts_valid)
+		if emit_signals:
+			inst.on_reload_finish.emit(is_all_scripts_valid)
 	elif is_all_scripts_valid:
-		inst.on_reload_cancel.emit()
+		if emit_signals:
+			inst.on_reload_cancel.emit()
 	else:
-		inst.on_reload_finish.emit(false)
+		if emit_signals:
+			inst.on_reload_finish.emit(false)
+
+
+static func rebuild() -> void:
+	labels.clear()
+
+	for script in scripts:
+		for stmt in script.stmts:
+			if stmt == null: continue
+			stmt.reload()
+
+	is_all_scripts_valid = errors.is_empty()
 
 
 func _enter_tree() -> void:
@@ -173,19 +180,19 @@ func _ready():
 		static_host = PennyHost.new()
 		static_host.name = "static_host"
 		static_host.allow_rolling = false
-		self.add_child.call_deferred(static_host)
+		add_child.call_deferred(static_host)
 
 		if OS.is_debug_build():
 			var debug_canvas := CanvasLayer.new()
 			debug_canvas.layer = 256
-			self.add_child.call_deferred(debug_canvas)
+			add_child.call_deferred(debug_canvas)
 			var debug : PennyDebug = PENNY_DEBUG_SCENE.instantiate()
 			on_reload_start.connect(debug.on_reload_start.emit)
 			on_reload_finish.connect(debug.on_reload_finish.emit)
 			on_reload_cancel.connect(debug.on_reload_cancel.emit)
 			debug_canvas.add_child.call_deferred(debug)
 
-	Penny.reload_all.call_deferred()
+	Penny.reload_all.call_deferred(false)
 
 	if not Engine.is_editor_hint():
 		inits.sort_custom(StmtInit.sort)
