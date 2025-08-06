@@ -24,9 +24,7 @@ func _load(path: String, original_path: String, use_sub_threads: bool, cache_mod
 	if result == null:
 		result = PennyScript.new(path)
 
-	if Engine.is_editor_hint() or not OS.has_feature(&"template"):
-		result.update_from_file(file)
-
+	result.update_from_file(file)
 	Penny.reload_single(result)
 
 	return result
