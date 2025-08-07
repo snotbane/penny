@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="DecorRegistry" load_steps=21 format=3 uid="uid://drmpmcuvh657f"]
 
-[ext_resource type="Script" uid="uid://w7bl3g20knuq" path="res://addons/penny_godot/assets/scripts/decor/decor_.gd" id="1_8yey2"]
+[ext_resource type="Script" uid="uid://w7bl3g20knuq" path="res://addons/penny_godot/assets/scripts/objects/decor/decor_.gd" id="1_8yey2"]
 [ext_resource type="Resource" uid="uid://bgemvwokyw5gv" path="res://addons/penny_godot/assets/decor/builtin/advance.tres" id="2_vmywo"]
 [ext_resource type="Resource" uid="uid://cn7h0j1al143o" path="res://addons/penny_godot/assets/decor/builtin/delay.tres" id="2_xkc18"]
 [ext_resource type="Resource" uid="uid://r7l0c7yddrae" path="res://addons/penny_godot/assets/decor/builtin/dropin.tres" id="3_vmywo"]
@@ -19,7 +19,7 @@
 [ext_resource type="Resource" uid="uid://b0c02niwg0rvx" path="res://addons/penny_godot/assets/decor/builtin/skip.tres" id="12_xkc18"]
 [ext_resource type="Resource" uid="uid://0cxs2uf7ey8k" path="res://addons/penny_godot/assets/decor/builtin/temp.tres" id="13_tureq"]
 [ext_resource type="Resource" uid="uid://wms4vq8i3jqi" path="res://addons/penny_godot/assets/decor/builtin/wait.tres" id="14_rdbep"]
-[ext_resource type="Script" uid="uid://cr3lmmfkuc6cm" path="res://addons/penny_godot/assets/scripts/decor/decor_registry.gd" id="15_o7bwu"]
+[ext_resource type="Script" uid="uid://cr3lmmfkuc6cm" path="res://addons/penny_godot/assets/scripts/objects/decor/decor_registry.gd" id="15_o7bwu"]
 
 [resource]
 script = ExtResource("15_o7bwu")

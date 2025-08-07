@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="DecorCombo" load_steps=2 format=3 uid="uid://0cxs2uf7ey8k"]
 
-[ext_resource type="Script" uid="uid://c2fhfd5aw0syl" path="res://addons/penny_godot/assets/scripts/decor/decor_combo.gd" id="1_j4fq0"]
+[ext_resource type="Script" uid="uid://c2fhfd5aw0syl" path="res://addons/penny_godot/assets/scripts/objects/decor/decor_combo.gd" id="1_j4fq0"]
 
 [resource]
 script = ExtResource("1_j4fq0")
