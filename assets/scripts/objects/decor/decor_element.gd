@@ -4,7 +4,8 @@ class_name DecorElement extends Object
 
 enum {
 	ARG_KEY = 1,
-	ARG_VALUE = 2,
+	ARG_VALUE_EXPR = 2,
+	ARG_VALUE_SIMPLE = 3,
 }
 
 enum {
@@ -15,10 +16,8 @@ enum {
 	CLOSED,
 }
 
-static var INSTANCE_PATTERN := RegEx.create_from_string(r"(?<!\\)<\s*([^<>]*?)\s*(?<!\\)>")
-static var CONTENTS_PATTERN := RegEx.create_from_string(r"(^\s*\/\s*$)|(\w+)\s*\b(.*?)")
 static var ID_PATTERN := RegEx.create_from_string(r"^\s*(\w*)")
-static var ARG_PATTERN := RegEx.create_from_string(r"([^=\s]+)\s*=\s*([^=\s]+)")
+static var ARG_PATTERN := RegEx.create_from_string(r"([^=\s]+)\s*=\s*(?:(?:\{(.*?)\})|([^\s]+))")
 
 var owner : Typewriter
 
@@ -86,15 +85,14 @@ static func new_from_string(contents: String, index: int, context: Cell) -> Deco
 	var arg_matches := ARG_PATTERN.search_all(contents)
 	for arg_match in arg_matches:
 		var arg_key : StringName = arg_match.get_string(ARG_KEY)
-		if result.args.has(arg_key):
-			printerr("DecorElement argument '%s' already exists in the element declaration. This will be ignored.")
-			continue
+		assert(not result.args.has(arg_key), "DecorElement argument '%s' already exists in the element declaration. This will be ignored.")
 
-		var expr := Expr.new_from_string(arg_match.get_string(ARG_VALUE))
+		print("arg_match.get_string(ARG_VALUE_EXPR) : %s, arg_match.get_string(ARG_VALUE_SIMPLE) : %s" % [ arg_match.get_string(ARG_VALUE_EXPR), arg_match.get_string(ARG_VALUE_SIMPLE) ])
+
+		var expr := Expr.new_from_string(arg_match.get_string(ARG_VALUE_EXPR) + arg_match.get_string(ARG_VALUE_SIMPLE))
 		var arg_value : Variant = expr.evaluate(context)
-		if arg_value == null:
-			printerr("DecorElement argument '%s' evaluated to null in string: `%s`." % [arg_key, contents])
-			continue
+		print("expr, arg_value : %s, %s" % [ expr, arg_value ])
+		assert(arg_value != null, "DecorElement argument '%s' evaluated to null in string: `%s`." % [arg_key, contents])
 
 		result.args[arg_key] = arg_value
 
@@ -115,6 +113,13 @@ static func new_from_other(other: DecorElement, _id: StringName = other.id, _arg
 	result.close_index = other.close_index
 
 	return result
+
+
+func something(dstring: DisplayString) -> void:
+	if not decor: return
+	if not decor.has_method(&"something"): return
+
+	decor.something(dstring, self)
 
 
 func register_end(index: int = open_index) -> void:

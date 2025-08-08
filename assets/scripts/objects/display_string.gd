@@ -36,6 +36,32 @@ class Tag extends RefCounted:
 		elements = _elements
 		is_start = _is_start
 
+class ConditionalBlock:
+	var conditions : Array[DecorElement]
+
+	var main_if_element : DecorElement :
+		get: return conditions.front()
+
+	func process(dstring: DisplayString) -> void:
+		if not dstring.elements.has(main_if_element): return
+
+		var start = 0
+		var end = 0
+		for i in conditions.size():
+			match conditions[i].id:
+				&"if":		if not conditions[i].args[&"if"]: continue
+				&"elif":	if not conditions[i].args[&"elif"]: continue
+				&"else":	pass
+				_:			assert(false, "Unimplemented conditional: '%s'" % conditions[i].id)
+
+			start = conditions[i].open_index
+			end = conditions[i + 1].open_index if i != conditions.size() - 1 else main_if_element.close_index
+			break
+
+		dstring.erase(end, main_if_element.close_index)
+		dstring.erase(main_if_element.open_index, start)
+
+
 var free_elements_on_delete : bool = true
 
 var _text : String
@@ -44,7 +70,7 @@ var text : String :
 	set(value):
 		if _text == value: return
 		_text = value
-		visible_text = get_visible_text(_text)
+		# visible_text = get_visible_text(_text)
 var visible_text : String
 
 var elements : Array[DecorElement]
@@ -90,8 +116,25 @@ func compile_for_typewriter(tw: Typewriter) -> String:
 	return result
 
 
+## Erases a portion of this [DisplayString], and re-indexes [DecorElement]s.
+func erase(start: int = 0, end: int = -1, remove_elements: bool = true) -> void:
+	if start == end: return
+	# if end == -1: end = text.length()
+
+	text = text.substr(0, start) + text.substr(end)
+
+	for element in elements:
+		if element.open_index > start:
+			element.open_index = maxi(element.open_index - (end - start), start)
+		if element.close_index > start:
+			element.close_index = maxi(element.close_index - (end - start), start)
+
+
 static func new_as_is(__text__ : String = "") -> DisplayString:
-	return DisplayString.new(__text__)
+	var result := DisplayString.new(__text__)
+
+	result.visible_text = result.get_visible_text(result.text)
+	return result
 
 
 static func new_from_pure(pure: String = "", context := Cell.ROOT, filter_context := context) -> DisplayString:
@@ -109,6 +152,8 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 
 	var result := DisplayString.new(string)
 	var unclosed_tag_stack : Array[Tag]
+	var if_block_list : Array[ConditionalBlock]
+	var if_block_stack : Array[ConditionalBlock]
 
 	while true:
 		var esc_match := ESCAPE_PATTERN.search(result.text)
@@ -125,6 +170,13 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 					var element := DecorElement.new_from_string(element_string, tag_match.get_start(), context)
 					tag_elements.push_back(element)
 					result.elements.push_back(element)
+
+					match element.id:
+						&"if", &"elif", &"else":
+							if element.id == &"if":
+								if_block_stack.push_back(ConditionalBlock.new())
+							assert(not if_block_stack.is_empty())
+							if_block_stack.back().conditions.push_back(element)
 				var tag := Tag.new(tag_elements, true)
 				if tag.closable: unclosed_tag_stack.push_back(tag)
 				result.tags.push_back(tag)
@@ -132,13 +184,21 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 				var tag : Tag = unclosed_tag_stack.pop_back()
 				for element in tag.elements:
 					element.register_end(tag_match.get_start())
+					match element.id:
+						&"if":
+							if_block_list.push_back(if_block_stack.pop_back())
 				var end_elements := tag.elements.duplicate()
 				end_elements.reverse()
 				result.tags.push_back(Tag.new(end_elements, false))
 			result.text = replace_match(tag_match, "")
 
+	while if_block_stack: if_block_list.push_back(if_block_stack.pop_back())
+	for block in if_block_list: block.process(result)
+
 	# print("Decorated: `%s`" % result.text)
-	# print("Tags: %s" % str(result.elements))
+	# print("Elements: %s" % str(result.elements))
+
+	result.visible_text = result.get_visible_text(result.text)
 	return result
 
 

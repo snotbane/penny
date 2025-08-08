@@ -54,5 +54,6 @@ func compile(element: DecorElement) -> String:
 func _compile(element: DecorElement) -> String: return ""
 
 ## Hidden for efficiency. DecorElement encounters are only registered if their decor possesses these methods.
+# func something(element: DecorElement, dstring: DisplayString) : pass
 # func encounter_open(element: DecorElement) : pass
 # func encounter_close(element: DecorElement) : pass
