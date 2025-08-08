@@ -49,9 +49,7 @@ func spawn_emanata(id: StringName) -> void:
 	if id in emanata_children: clear_emanata(id)
 	emanata_children[id] = []
 
-	if not id in transforms:
-		printerr("No transform for emanata id '%s' exists for this spawner. Spawning at the default location." % id)
-		return
+	assert(id in transforms, "No transform for emanata id '%s' exists for this spawner. Spawning at the default location." % id)
 
 	for t in transforms[id]:
 		var hook := ViewAngleScaler.new()

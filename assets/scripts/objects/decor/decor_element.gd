@@ -76,22 +76,18 @@ func _to_string() -> String:
 static func new_from_string(contents: String, index: int, context: Cell) -> DecorElement:
 	var result := DecorElement.new()
 
-	var id_match := ID_PATTERN.search(contents)
-	if id_match:
-		result.id = ID_PATTERN.search(contents).get_string(1)
-	else:
-		printerr("Invalid id in element contents: %s" % contents)
+	var id_match : RegExMatch = ID_PATTERN.search(contents)
+	assert(id_match != null, "Invalid id in element contents: %s" % contents)
+
+	result.id = ID_PATTERN.search(contents).get_string(1)
 
 	var arg_matches := ARG_PATTERN.search_all(contents)
 	for arg_match in arg_matches:
 		var arg_key : StringName = arg_match.get_string(ARG_KEY)
 		assert(not result.args.has(arg_key), "DecorElement argument '%s' already exists in the element declaration. This will be ignored.")
 
-		print("arg_match.get_string(ARG_VALUE_EXPR) : %s, arg_match.get_string(ARG_VALUE_SIMPLE) : %s" % [ arg_match.get_string(ARG_VALUE_EXPR), arg_match.get_string(ARG_VALUE_SIMPLE) ])
-
 		var expr := Expr.new_from_string(arg_match.get_string(ARG_VALUE_EXPR) + arg_match.get_string(ARG_VALUE_SIMPLE))
 		var arg_value : Variant = expr.evaluate(context)
-		print("expr, arg_value : %s, %s" % [ expr, arg_value ])
 		assert(arg_value != null, "DecorElement argument '%s' evaluated to null in string: `%s`." % [arg_key, contents])
 
 		result.args[arg_key] = arg_value

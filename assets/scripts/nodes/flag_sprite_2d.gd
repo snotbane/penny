@@ -21,6 +21,7 @@ func set_flags(array: PackedStringArray) -> bool:
 				if self.animation != filter[0]: self.play(filter[0])
 				return true
 		candidates = filter.duplicate()
+
 	match candidates.size():
 		0: printerr("FlagSprite2D %s: Attempted to apply flags %s, but no matching animations were found." % [ self, array ])
 		_: printerr("FlagSprite2D %s: While applying flags %s, multiple animations were found %s" % [ self, array, candidates ])

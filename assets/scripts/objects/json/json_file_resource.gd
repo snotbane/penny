@@ -76,9 +76,8 @@ func save_changes(path: String = save_path) -> void:
 
 func save_to_file(path: String = save_path) -> void:
 	var file := FileAccess.open(save_path, FileAccess.WRITE)
-	if not file:
-		printerr("Cannot save to file, file does not exist: %s" % save_path)
-		return
+	assert(file != null, "Cannot save to file, file does not exist: %s" % save_path)
+
 	file.store_string(_export_json_string())
 func _export_json_string() -> String:
 	return JSON.stringify(export_json())
@@ -100,9 +99,8 @@ func load_from_file(path: String = save_path) -> void:
 	_import_json_string(file.get_as_text())
 func _import_json_string(text: String) -> void:
 	var json = JSON.parse_string(text)
-	if json == null:
-		printerr("Couldn't parse string to json: %s" % text)
-		return
+	assert(json != null, "Couldn't parse string to json: %s" % text)
+
 	import_json(json)
 func import_json(json: Dictionary) -> void:
 	time_created = json[K_TIME_CREATED]

@@ -36,7 +36,7 @@ static func new_from_tokens(tokens: Array, _stmt: Stmt = null) -> Expr:
 					_:
 						_symbols.push_back(op)
 			_:
-				printerr("Expression not evaluated: unexpected token '%s'" % token)
+				assert(false, "Expression not evaluated: unexpected token '%s'" % token)
 				return null
 
 	while ops:
@@ -82,9 +82,7 @@ func _evaluate_actually(context: Cell, keep_refs : bool):
 	while ops:
 		ops.pop_back().apply(stack, context, keep_refs)
 
-	if stack.size() != 1:
-		printerr("Expression not evaluated: result stack size is not 1. Symbols: %s | Stack: %s" % [str(symbols), str(stack)])
-		return null
+	assert(stack.size() == 1, "Expression not evaluated: result stack size is not 1. Symbols: %s | Stack: %s" % [str(symbols), str(stack)])
 
 	return stack[0]
 
@@ -299,10 +297,10 @@ class Op extends RefCounted:
 			LESS_THAN:		stack.push_back(abc[0]  < abc[1])
 			LESS_EQUAL:		stack.push_back(abc[0] <= abc[1])
 			ADD:			stack.push_back(abc[0]  + abc[1])
-			SUBTRACT:		stack.push_back(abc[0]  - abc[1])
+			SUBTRACT:		stack.push_back(abc[0]  - abc[1]	if abc[0] != null else		-abc[1])
 			MULTIPLY:		stack.push_back(abc[0]  * abc[1])
 			DIVIDE:			stack.push_back(abc[0]  / abc[1])
 			MODULO:			stack.push_back(abc[0]  % abc[1])
 			BIT_AND:		stack.push_back(abc[0]  & abc[1])
 			BIT_OR:			stack.push_back(abc[0]  | abc[1])
-			_:				printerr("Unimplemented operator type %s" % str(type))
+			_:				assert(false, "Unimplemented operator type %s" % str(type))

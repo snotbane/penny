@@ -37,7 +37,7 @@ func _execute(record: Record) :
 	elif wait is Signal:
 		await wait
 	else:
-		printerr("Attempted to await %s, but we don't know what to do with it." % wait)
+		assert(false, "Attempted to await %s, but we don't know what to do with it." % wait)
 
 
 # func _undo(record: Record) -> void:

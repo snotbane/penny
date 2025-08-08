@@ -399,8 +399,7 @@ func _receive(record: Record) :
 	shape_rtl.text = String()
 
 	visible_characters_max = rtl.get_total_character_count()
-	if visible_characters_max != message.visible_text.length():
-		printerr("WARNING! The DisplayString's calculated length is different from its actual length! This usually happens because there is an unrecognized BBcode somewhere in the text.\n'%s'" % rtl.text)
+	assert(visible_characters_max == message.visible_text.length(), "The DisplayString's calculated length is different from its actual length! This usually happens because there is an unrecognized BBcode somewhere in the text:\n'%s'" % rtl.text)
 
 	time_per_char.resize(visible_characters_max)
 	time_per_char.fill(INF)

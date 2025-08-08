@@ -29,18 +29,16 @@ func _populate(tokens: Array) -> void:
 				"-=": 	type = Type.SUBTRACT
 				"*=": 	type = Type.MULTIPLY
 				"/=": 	type = Type.DIVIDE
-				_:		type = Type.INVALID; printerr("Invalid assignment type '%s'" % tokens[i].value)
+				_:
+						type = Type.INVALID
+						assert(false, "Invalid assignment type '%s'" % tokens[i].value)
 			op_index = i
 			break
 
-	if op_index == -1:
-		printerr("Expected assignment operator.")
-		return
+	assert(op_index != -1, "Expected assignment operator.")
 
 	var expr_index := op_index + 1
-	if expr_index >= tokens.size():
-		printerr("Expected expression after assignment operator.")
-		return
+	assert(expr_index < tokens.size(), "Expected expression after assignment operator.")
 
 	var left := tokens.slice(0, op_index)
 	local_subject_ref = Path.new_from_tokens(left)

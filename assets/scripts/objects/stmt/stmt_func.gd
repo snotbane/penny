@@ -26,11 +26,9 @@ func _populate(tokens: Array) -> void:
 		if tokens[i].type != PennyScript.Token.Type.OPERATOR or tokens[i].value.type != Expr.Op.GROUP_OPEN: continue
 		group_index = i
 		break
-	if group_index == -1: printerr("Function start not found."); return
+	assert(group_index != -1, "Function start not found.")
 
 	var left := tokens.slice(0, group_index)
-	# print(left)
-
 	var right := tokens.slice(group_index + 1, -1)
 	arguments = new_args_from_tokens(right)
 

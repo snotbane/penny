@@ -33,10 +33,7 @@ func _populate(tokens: Array) -> void:
 	var tokens_error_string := str(tokens)
 
 	local_subject_ref = Path.new_from_tokens(tokens)
-
-	if subject_ref == null:
-		printerr("subject_ref evaluated to null from tokens: %s" % tokens_error_string)
-		owner.errors.push_back("subject_ref evaluated to null from tokens: %s" % tokens_error_string)
+	assert(subject_ref != null, "subject_ref evaluated to null from tokens: %s" % tokens_error_string)
 
 	for token in tokens:
 		flags.push_back(token.value)

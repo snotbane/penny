@@ -75,11 +75,9 @@ static func get_stmt_from_address(path: String, index: int) -> Stmt:
 
 
 static func get_stmt_from_label(label_name: StringName) -> Stmt:
-	if labels.has(label_name):
-		return labels[label_name]
-	else:
-		printerr("Label '%s' does not exist in any loaded script." % label_name)
-		return null
+	assert(labels.has(label_name), "Label '%s' does not exist in any loaded script." % label_name)
+
+	return labels[label_name]
 
 
 static func load_script(path: String, type_hint := "") -> PennyScript:

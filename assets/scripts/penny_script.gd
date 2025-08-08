@@ -213,7 +213,7 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 			&"pass": 	return StmtPass.new()
 			&"print": 	return StmtPrint.new()
 			&"return":	return StmtReturn.new()
-		printerr("The keyword '%s' was found, but it isn't assigned to any Stmt." % keyword)
+		assert(false, "The keyword '%s' was found, but it isn't assigned to any Stmt." % keyword)
 		return null
 
 	var block_header := stmt.get_prev_in_lower_depth()
@@ -236,7 +236,7 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 			match keyword:
 				&"await":
 					return StmtAwait.new()
-			printerr("The keyword '%s' was found, but it isn't assigned to any Stmt." % keyword)
+			assert(false, "The keyword '%s' was found, but it isn't assigned to any Stmt." % keyword)
 			return null
 		Token.Type.IDENTIFIER:
 			return StmtCell.new()
@@ -244,7 +244,7 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 			if tokens.front().value.type == Expr.Op.DOT and tokens[1].type == Token.Type.IDENTIFIER:
 				return StmtCell.new()
 
-	printerr("No Stmt recycled from tokens: %s" % str(tokens))
+	assert(false, "No Stmt recycled from tokens: %s" % str(tokens))
 	return null
 
 
