@@ -8,6 +8,6 @@ func _receive_options(_host: PennyHost, _options: Array) -> void:
 	# var button_scene = load(button_scene_path)
 	for path in _options:
 		var option : Cell = path.evaluate()
-		var button : PennyPromptButton = option.instantiate(host)
+		var button : PennyPromptButton = option.spawn(Funx.new(host))
 		button.pressed.connect(receive_response.bind(path))
 		button_container.add_child(button)

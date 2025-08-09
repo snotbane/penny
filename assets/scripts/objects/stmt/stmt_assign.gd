@@ -55,9 +55,9 @@ func _pre_execute(record: Record) -> void:
 
 	match type:
 		Type.EXPRESSION:	after = expr
-		Type.FLAT:			after = expr.evaluate(context)
+		Type.FLAT:			after = expr._evaluate(context)						## Use [_evaluate] here so that raw paths will be preserved. [Expr] will automatically evaluate [Path]s if needed.
 		_:
-			assert(prior is int or prior is float, "Can't operate on a null value.")
+			assert(prior != null, "Can't operate on a null value.")
 			match type:
 				Type.ADD:			after = prior + expr.evaluate(context)
 				Type.SUBTRACT:		after = prior - expr.evaluate(context)

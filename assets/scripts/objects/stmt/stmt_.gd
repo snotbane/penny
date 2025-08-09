@@ -110,19 +110,27 @@ func populate_from_other(other: Stmt, tokens : Array) -> void:
 
 ## Called when Penny reloads all scripts. If any errors are produced, add them to [member script]'s error list.
 func reload() -> void:
-	prev_in_order = get_prev_in_order()
-	prev_in_same_depth = get_prev_in_same_depth()
-	prev_in_same_or_lower_depth = get_prev_in_same_or_lower_depth()
-	prev_in_lower_depth = get_prev_in_lower_depth()
-	prev_in_higher_depth = get_prev_in_higher_depth()
-	next_in_order = get_next_in_order()
-	next_in_same_depth = get_next_in_same_depth()
-	next_in_same_or_lower_depth = get_next_in_same_or_lower_depth()
-	next_in_lower_depth = get_next_in_lower_depth()
-	next_in_higher_depth = get_next_in_higher_depth()
+	prev_in_order = 				get_prev_in_order()
+	prev_in_same_depth = 			get_prev_in_same_depth()
+	prev_in_same_or_lower_depth = 	get_prev_in_same_or_lower_depth()
+	prev_in_lower_depth = 			get_prev_in_lower_depth()
+	prev_in_higher_depth = 			get_prev_in_higher_depth()
+	next_in_order = 				get_next_in_order()
+	next_in_same_depth = 			get_next_in_same_depth()
+	next_in_same_or_lower_depth = 	get_next_in_same_or_lower_depth()
+	next_in_lower_depth = 			get_next_in_lower_depth()
+	next_in_higher_depth = 			get_next_in_higher_depth()
 
 	self._reload()
 func _reload() -> void: pass
+
+
+## Perform calculations before execution and creates/initializes a record. Not awaitable and doesn't happen on redo.
+func pre_execute(host: PennyHost, data: Dictionary = {}) -> Record:
+	var result := Record.new(host, self, data)
+	_pre_execute(result)
+	return result
+func _pre_execute(record: Record) -> void: pass
 
 
 ## Given a record, waits for something to complete BEFORE calling the next [Stmt]
@@ -156,14 +164,6 @@ func _redo(record: Record) -> void: _execute(record)
 func next(record: Record) -> Stmt: return _next(record)
 func _next(record: Record) -> Stmt:
 	return next_in_order
-
-
-## Perform calculations before execution and creates/initializes a record. Not awaitable and doesn't happen on redo.
-func pre_execute(host: PennyHost, data: Dictionary = {}) -> Record:
-	var result := Record.new(host, self, data)
-	_pre_execute(result)
-	return result
-func _pre_execute(record: Record) -> void: pass
 
 
 func create_history_listing(record: Record) -> HistoryListing: return _create_history_listing(record)

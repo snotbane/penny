@@ -133,7 +133,7 @@ func erase(start: int = 0, end: int = -1, remove_elements: bool = true) -> void:
 static func new_as_is(__text__ : String = "") -> DisplayString:
 	var result := DisplayString.new(__text__)
 
-	result.visible_text = result.get_visible_text(result.text)
+	result.visible_text = DisplayString.get_visible_text(result.text)
 	return result
 
 
@@ -198,7 +198,7 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 	# print("Decorated: `%s`" % result.text)
 	# print("Elements: %s" % str(result.elements))
 
-	result.visible_text = result.get_visible_text(result.text)
+	result.visible_text = DisplayString.get_visible_text(result.text)
 	return result
 
 

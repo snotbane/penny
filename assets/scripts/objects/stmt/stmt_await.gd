@@ -19,8 +19,6 @@ func _get_is_skippable() -> bool:
 
 func _populate(tokens: Array) -> void:
 	expr = Expr.new_from_tokens(tokens)
-	var eval = expr.evaluate()
-	is_simple_timer_delay = eval is float or eval is int
 
 
 func _pre_execute(record: Record) -> void:

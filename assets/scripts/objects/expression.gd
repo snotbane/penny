@@ -63,7 +63,6 @@ func _to_string() -> String:
 
 
 func _evaluate(context: Cell) -> Variant:
-	var keep_refs := false
 	var stack : Array = []
 	var ops : Array[Op] = []
 

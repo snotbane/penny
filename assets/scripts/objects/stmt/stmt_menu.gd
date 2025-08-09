@@ -72,7 +72,7 @@ func _pre_execute(record: Record) -> void:
 
 
 func _execute(record: Record) :
-	await subject.enter(record.host)
+	await subject.enter(Funx.new(record.host, true))
 	await subject_node.advanced
 
 	record.data[&"after"] = subject.get_value(Cell.K_RESPONSE)

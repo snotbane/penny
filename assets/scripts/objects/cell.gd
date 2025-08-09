@@ -164,18 +164,17 @@ func get_marker_node(host: PennyHost, marker_name: StringName = self.get_value(C
 
 ## [member instantiate]s a [Cell], and adds it to the appropriate parent [Node]. If it already exists, it despawns the old node and creates a new one.
 func spawn(funx: Funx, parent_name = get_value(K_MARKER)) -> Node:
-	if parent_name: set_value(K_MARKER, parent_name)
-
-	var parent_node : Node = get_marker_node(funx.host, parent_name if parent_name else get_value(K_MARKER))
+	var parent_node : Node = null
+	if parent_name:
+		set_value(K_MARKER, parent_name)
+		parent_node = get_marker_node(funx.host, parent_name)
 
 	assert(has_value(Cell.K_RES), "Attempted to instantiate cell '%s', but it does not have a [%s] attribute." % [self, Cell.K_RES])
 
 	var res_path : String = get_value(Cell.K_RES)
-
 	assert(ResourceLoader.exists(res_path), "Attempted to instantiate cell '%s', but its [%s] attribute does not point to a valid file path ('%s')." % [self, Cell.K_RES, res_path])
 
 	despawn()
-
 	var result : Node = load(res_path).instantiate()
 
 	if result is Actor:
@@ -188,8 +187,9 @@ func spawn(funx: Funx, parent_name = get_value(K_MARKER)) -> Node:
 	result.name = node_name
 	instance = result
 
-	parent_node.add_child(result)
-	result.global_position = parent_node.global_position
+	if parent_node:
+		parent_node.add_child(result)
+		result.global_position = parent_node.global_position
 
 	return result
 func spawn_undo(record: Record) -> void:
