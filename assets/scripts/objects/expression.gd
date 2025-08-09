@@ -62,12 +62,8 @@ func _to_string() -> String:
 	return result.substr(0, result.length() - 1)
 
 
-func _evaluate(context: Cell) -> Variant: return _evaluate_actually(context, false)
-
-## Evaluates the expression, but doesn't evaluate any paths found along the way.
-func evaluate_keep_refs(context: Cell) -> Variant: return _evaluate_actually(context, true)
-
-func _evaluate_actually(context: Cell, keep_refs : bool):
+func _evaluate(context: Cell) -> Variant:
+	var keep_refs := false
 	var stack : Array = []
 	var ops : Array[Op] = []
 
@@ -75,12 +71,12 @@ func _evaluate_actually(context: Cell, keep_refs : bool):
 		if symbol is Op:
 			if symbol.type == Op.ITERATOR: continue
 			while ops and symbol.type <= ops.back().type:
-				ops.pop_back().apply(stack, context, keep_refs)
+				ops.pop_back().apply(stack, context)
 			ops.push_back(symbol)
 		else:
 			stack.push_back(symbol)
 	while ops:
-		ops.pop_back().apply(stack, context, keep_refs)
+		ops.pop_back().apply(stack, context)
 
 	assert(stack.size() == 1, "Expression not evaluated: result stack size is not 1. Symbols: %s | Stack: %s" % [str(symbols), str(stack)])
 
@@ -100,6 +96,9 @@ class Op extends RefCounted:
 	enum {
 		INVALID,
 
+		NEW,
+		EVALUATE,
+
 		GROUP_CLOSE,
 		GROUP_OPEN,
 		ARRAY_CLOSE,
@@ -113,7 +112,6 @@ class Op extends RefCounted:
 		LESS_EQUAL,
 		LESS_THAN,
 
-		NEW,
 		NOT,
 		AND,
 		OR,
@@ -126,7 +124,6 @@ class Op extends RefCounted:
 		BIT_AND,
 		BIT_OR,
 
-		EVALUATE,
 		QUESTION,
 		DOT,
 	}
@@ -165,23 +162,11 @@ class Op extends RefCounted:
 
 	static var PATTERN_COMPILED : RegEx
 
-	var type : int
-
-	var symbols_required : int :
-		get:
-			match type:
-				ARRAY_OPEN, ARRAY_CLOSE, ITERATOR, NEW:
-					return 0
-				EVALUATE, NOT:
-					return 1
-				_:
-					return 2
-
 	static func _static_init() -> void:
-		var s := r""
+		var compiled_string := r""
 		for k in PATTERNS.keys():
-			s += PATTERNS[k].get_pattern() + "|"
-		PATTERN_COMPILED = RegEx.create_from_string(s.substr(0, s.length() - 1))
+			compiled_string += PATTERNS[k].get_pattern() + "|"
+		PATTERN_COMPILED = RegEx.create_from_string(compiled_string.substr(0, compiled_string.length() - 1))
 
 
 	static func new_from_string(s: String) -> Op:
@@ -189,6 +174,17 @@ class Op extends RefCounted:
 			var match : RegExMatch = PATTERNS[k].search(s)
 			if match: return Op.new(k)
 		return Op.new()
+
+
+	var type : int
+
+
+	var symbols_required : int :
+		get:
+			match type:
+				ARRAY_OPEN, ARRAY_CLOSE, ITERATOR, NEW:		return 0
+				EVALUATE, NOT:								return 1
+				_:											return 2
 
 
 	func _init(_type: int = INVALID) -> void:
@@ -212,7 +208,7 @@ class Op extends RefCounted:
 
 			EVALUATE:		return "@"
 			DOT:			return "."
-			QUESTION:		return "?"
+			QUESTION:		return "??"
 
 			NEW:			return 'new'
 			NOT:			return '!'
@@ -262,30 +258,26 @@ class Op extends RefCounted:
 							stack.push_back(Path.new([b], true))
 
 
-	func apply(stack: Array[Variant], context: Cell, force_paths := false) -> void:
+	func apply(stack: Array[Variant], context: Cell) -> void:
 		match type:
 			NEW:
 				var data : Dictionary[StringName, Variant] = {}
-				if stack:
-					data[Cell.K_PROTOTYPE] = stack.pop_back()
-				else:
-					data[Cell.K_PROTOTYPE] = Path.DEFAULT_BASE
+				data[Cell.K_PROTOTYPE] = stack.pop_back() if stack else Path.DEFAULT_BASE
 				stack.push_back(Cell.new(Cell.NEW_OBJECT_KEY_NAME, context, data))
+				return
+			EVALUATE:
+				stack.push_back(stack.pop_back().evaluate(context))
 				return
 
 		var abc : Array[Variant] = []
 		for i in symbols_required:
 			abc.push_front(stack.pop_back())
 
-		if force_paths:
-			pass
-		else: for i in abc.size():
-			var e = abc[i]
-			if e is Evaluable:
-				abc[i] = e.evaluate(context)
+		for i in abc.size():
+			if abc[i] is Evaluable:
+				abc[i] = abc[i].evaluate(context)
 
 		match type:
-			EVALUATE:		stack.push_back(abc[0].evaluate(context))
 			QUESTION:		stack.push_back(abc[0] if abc[0] != null else abc[1])
 			NOT:			stack.push_back(		! abc[0])
 			AND:			stack.push_back(abc[0] && abc[1])
@@ -296,11 +288,11 @@ class Op extends RefCounted:
 			MORE_EQUAL:		stack.push_back(abc[0] >= abc[1])
 			LESS_THAN:		stack.push_back(abc[0]  < abc[1])
 			LESS_EQUAL:		stack.push_back(abc[0] <= abc[1])
-			ADD:			stack.push_back(abc[0]  + abc[1])
-			SUBTRACT:		stack.push_back(abc[0]  - abc[1]	if abc[0] != null else		-abc[1])
+			ADD:			stack.push_back(abc[0]  + abc[1]	if abc[0] != null else		+ abc[1])
+			SUBTRACT:		stack.push_back(abc[0]  - abc[1]	if abc[0] != null else		- abc[1])
 			MULTIPLY:		stack.push_back(abc[0]  * abc[1])
 			DIVIDE:			stack.push_back(abc[0]  / abc[1])
 			MODULO:			stack.push_back(abc[0]  % abc[1])
 			BIT_AND:		stack.push_back(abc[0]  & abc[1])
 			BIT_OR:			stack.push_back(abc[0]  | abc[1])
-			_:				assert(false, "Unimplemented operator type %s" % str(type))
+			_:				assert(false, "Unimplemented operator type '%s'" % str(type))

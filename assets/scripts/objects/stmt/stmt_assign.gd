@@ -55,14 +55,14 @@ func _pre_execute(record: Record) -> void:
 
 	match type:
 		Type.EXPRESSION:	after = expr
-		Type.FLAT:			after = expr.evaluate_keep_refs(context)
+		Type.FLAT:			after = expr.evaluate(context)
 		_:
 			assert(prior is int or prior is float, "Can't operate on a null value.")
 			match type:
-				Type.ADD:			after = prior + expr.evaluate_keep_refs(context)
-				Type.SUBTRACT:		after = prior - expr.evaluate_keep_refs(context)
-				Type.MULTIPLY:		after = prior * expr.evaluate_keep_refs(context)
-				Type.DIVIDE:		after = prior / expr.evaluate_keep_refs(context)
+				Type.ADD:			after = prior + expr.evaluate(context)
+				Type.SUBTRACT:		after = prior - expr.evaluate(context)
+				Type.MULTIPLY:		after = prior * expr.evaluate(context)
+				Type.DIVIDE:		after = prior / expr.evaluate(context)
 
 	if after is Cell:
 		if after.key_name == Cell.NEW_OBJECT_KEY_NAME:
