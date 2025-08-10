@@ -146,6 +146,8 @@ grow_vertical = 0
 theme = ExtResource("1_uxamp")
 script = ExtResource("2_a8dr1")
 _typewriter = NodePath("typewriter")
+enter_await_signal = true
+exit_await_signal = true
 save_spawn = false
 save_transform = false
 

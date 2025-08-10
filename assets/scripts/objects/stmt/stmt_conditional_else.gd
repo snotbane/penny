@@ -10,5 +10,5 @@ func _evaluate_self(host: PennyHost) -> Variant:
 	return null
 
 
-func _should_passover(record: Record) -> bool:
+func _should_pass_over(record: Record) -> bool:
 	return not record.host.expecting_conditional

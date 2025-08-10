@@ -8,6 +8,12 @@ signal entered
 signal exiting
 signal exited
 
+## If enabled, [member entered] must be emitted before this [Actor] is considered entered.
+@export var enter_await_signal : bool = false
+
+## If enabled, [member exited] must be emitted before this [Actor] is considered exited.
+@export var exit_await_signal : bool = false
+
 @export_subgroup("Save Data")
 
 ## If enabled, this [PennyNode] will be instantiated when loading (and also destroyed when unloading).
@@ -39,13 +45,14 @@ func _populate() -> void: pass
 
 # func spawn() -> void: pass
 # func despawn() -> void: pass
+
+
 func enter(f := Funx.new()) :
 	entering.emit()
 	if f.wait:
-		await Async.all([_enter, entered])
-	else:
-		_enter()
-		entered.emit()
+		if enter_await_signal:	await Async.all([_enter, entered])
+		else:					await _enter()
+	else:						_enter()
 	is_entered = true
 func _enter() : pass
 
@@ -54,10 +61,9 @@ func exit(f := Funx.new()) :
 	is_entered = false
 	exiting.emit()
 	if f.wait:
-		await Async.all([_exit, exited])
-	else:
-		_exit()
-		exited.emit()
+		if exit_await_signal:	await Async.all([_exit, exited])
+		else:					await _exit()
+	else:						_exit()
 func _exit() : pass
 
 

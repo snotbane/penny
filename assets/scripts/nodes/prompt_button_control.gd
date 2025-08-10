@@ -1,4 +1,3 @@
-
 extends PennyPromptButton
 
 @export var label : RichTextLabel

@@ -1,5 +1,5 @@
-
-class_name StmtConditional extends StmtExpr
+extends StmtExpr
+class_name StmtConditional
 
 
 func _get_verbosity() -> Verbosity:
@@ -17,24 +17,18 @@ func _next(record: Record) -> Stmt:
 		record.host.expecting_conditional = false
 		return next_in_same_or_lower_depth
 
-	var passover := _should_passover(record)
+	var pass_over := _should_pass_over(record)
+	var result : Stmt = next_in_same_depth if pass_over else next_in_order
 
-	var result : Stmt
-	if passover: 	result = next_in_same_depth
-	else:		result = next_in_order
-
-	if result:
-		record.host.expecting_conditional = passover and result is StmtConditional
-		return result
-	else:
-		record.host.expecting_conditional = false
-		return next_in_same_or_lower_depth
+	record.host.expecting_conditional = (pass_over and result is StmtConditional) if result else false
+	return result if result else next_in_same_or_lower_depth
 
 
 func _evaluate_self(host: PennyHost) -> Variant: return null
 
 
-func _should_passover(record: Record) -> bool: return true
+func _should_pass_over(record: Record) -> bool:
+	return not (record.host.expecting_conditional and record.data[&"result"])
 
 
 func _get_record_message(record: Record) -> String:

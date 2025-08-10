@@ -12,8 +12,7 @@ enum Mode {
 var mode : Mode
 var nested_option_stmts : Array[StmtConditionalMenu]
 var response : Variant :
-	get:
-		return subject.get_value(Cell.K_RESPONSE)
+	get: return subject.get_value(Cell.K_RESPONSE)
 
 
 func _get_verbosity() -> Verbosity:
@@ -103,7 +102,6 @@ func _next(record: Record) -> Stmt:
 		Mode.CELL:
 			return Penny.get_stmt_from_label(record.data[&"after"].evaluate().get_value(&"jump"))
 	return super._next(record)
-
 
 
 func _get_default_subject() -> Path:

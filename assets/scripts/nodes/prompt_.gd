@@ -1,5 +1,5 @@
-
-class_name PennyPrompt extends Actor
+extends Actor
+class_name PennyPrompt
 
 var options : Array
 
@@ -25,9 +25,9 @@ func receive_options(_host: PennyHost, _options: Array) -> void:
 func _receive_options(_host: PennyHost, _options: Array) -> void:	pass
 
 
-func receive_response(option: Path) -> void:
+func receive_response(option: Path):
 	cell.set_value(Cell.K_RESPONSE, option)
-	exit()
-	advanced.emit()
+	await exit(Funx.new(null, true))
 	_receive_response(option)
+	advanced.emit()
 func _receive_response(option: Path) -> void: pass
