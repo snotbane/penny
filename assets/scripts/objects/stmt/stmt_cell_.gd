@@ -31,9 +31,11 @@ func _get_verbosity() -> Verbosity:
 
 func _populate(tokens: Array) -> void:
 	var tokens_error_string := str(tokens)
-
 	local_subject_ref = Path.new_from_tokens(tokens)
 	assert(subject_ref != null, "subject_ref evaluated to null from tokens: %s" % tokens_error_string)
+
+	if local_subject_ref.is_host_previous:
+		local_subject_ref = get_prev_with_explicit_subject().local_subject_ref
 
 	for token in tokens:
 		flags.push_back(token.value)
@@ -48,6 +50,16 @@ func _pre_execute(record: Record) -> void:
 		&"flags_before": [],
 		&"flags_after": [],
 	})
+
+
+func get_prev_with_explicit_subject() -> StmtCell :
+	var cursor := self
+	while cursor:
+		if cursor is StmtCell and not cursor.local_subject_ref.is_host_previous:
+			return cursor
+		cursor = self.get_prev_in_same_or_lower_depth()
+	assert(false, "There is no previous StmtCell in the script with an explicit subject.")
+	return null
 
 
 func _get_record_message(record: Record) -> String:

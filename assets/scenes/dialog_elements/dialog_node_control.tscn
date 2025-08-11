@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://b8sp6ey8fsgt7"]
+[gd_scene load_steps=15 format=3 uid="uid://b8sp6ey8fsgt7"]
 
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny_godot/assets/themes/default_theme.tres" id="1_uxamp"]
 [ext_resource type="Script" uid="uid://bhviv6ri812ba" path="res://addons/penny_godot/assets/scenes/dialog_elements/DialogNodeControl.gd" id="2_a8dr1"]
@@ -13,6 +13,15 @@ _data = [Vector2(-50, 300), -2.59079, 0.0, 0, 0, Vector2(0, 60), 0.0, 0.0, 0, 0,
 point_count = 4
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7rfiq"]
+
+[sub_resource type="GDScript" id="GDScript_qp42y"]
+resource_name = "name_label"
+script/source = "extends RichTextLabel
+
+func _on_typewriter_received(record: Record) -> void:
+	var dstring = DisplayString.new_from_pure(record.data[&\"who\"].get_value(Cell.K_NAME, \"???\"), record.data[&\"who\"])
+	self.text = dstring.text
+"
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ni267"]
 
@@ -169,15 +178,16 @@ max_polyphony = 2
 script = ExtResource("5_a8dr1")
 
 [node name="name_label" type="RichTextLabel" parent="."]
+visible = false
 clip_contents = false
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 32.0
-offset_top = -52.0
+offset_top = -106.37
 offset_right = -32.0
-offset_bottom = -2.0
+offset_bottom = -56.37
 grow_horizontal = 2
 pivot_offset = Vector2(0, 50)
 size_flags_horizontal = 2
@@ -190,11 +200,13 @@ theme_override_font_sizes/normal_font_size = 36
 theme_override_font_sizes/bold_font_size = 36
 theme_override_styles/focus = SubResource("StyleBoxEmpty_7rfiq")
 bbcode_enabled = true
+text = "Someone"
 fit_content = true
 scroll_active = false
 shortcut_keys_enabled = false
 selection_enabled = true
 visible_characters_behavior = 1
+script = SubResource("GDScript_qp42y")
 
 [node name="panel" type="PanelContainer" parent="."]
 self_modulate = Color(1, 1, 1, 0.878431)
@@ -203,6 +215,7 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -56.0
 grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 3
@@ -273,4 +286,5 @@ libraries = {
 [connection signal="entering" from="." to="animation_player" method="play" binds= [&"enter"]]
 [connection signal="exiting" from="." to="animation_player" method="play" binds= [&"exit"]]
 [connection signal="completed" from="typewriter" to="." method="prevent_skip"]
+[connection signal="received" from="typewriter" to="name_label" method="_on_typewriter_received"]
 [connection signal="roger_shown" from="typewriter" to="roger" method="set_visible"]

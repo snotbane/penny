@@ -26,6 +26,7 @@ static var NOW_USEC_FLOAT : float :
 
 signal character_arrived(char: String)
 signal visible_message_changed
+signal received(record: Record)
 signal advanced
 signal completed
 signal prodded
@@ -418,6 +419,8 @@ func _receive(record: Record) :
 		if element.decor.has_method(&"encounter_close"):
 			if not element_closes.has(element.close_index): element_closes[element.close_index + visible_offset] = []
 			element_closes[element.close_index + visible_offset].push_back(element)
+
+	received.emit(record)
 
 	if not is_initialized: return
 

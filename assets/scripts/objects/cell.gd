@@ -217,10 +217,7 @@ func enter(funx: Funx, parent_name = get_value(K_MARKER), __respawn__ := false) 
 	if inst == null or __respawn__:
 		inst = spawn(funx, parent_name)
 	if inst.has_method(&"enter"):
-		print("inst : %s" % [ inst ])
-		print("AWAIT?")
 		await inst.enter(funx)
-		print("AWAIT!!!!!!!")
 func enter_undo(record: Record) -> void:
 	print("%s: Enter undo." % key_name)
 

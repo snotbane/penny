@@ -60,6 +60,9 @@ func get_save_data() -> Variant:
 var ids : PackedStringArray
 var rel : bool
 
+var is_host_previous : bool :
+	get: return rel == true and ids.is_empty()
+
 
 func _init(_ids: PackedStringArray, _rel: bool) -> void:
 	self.ids = _ids
