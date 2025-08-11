@@ -8,7 +8,7 @@ func encounter_open(element: DecorElement) :
 		element.owner.is_talking = false
 	await element.owner.delay(
 		element.args.get(&\"delay\", args[&\"delay\"]),
-		Typewriter.PlayState.PAUSED if prod_stop else Typewriter.PlayState.DELAYED
+		wait_state
 	)
 "
 

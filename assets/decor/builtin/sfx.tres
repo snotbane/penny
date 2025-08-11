@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://cvgy6u37mo04p"]
+
+[sub_resource type="GDScript" id="GDScript_tdx07"]
+script/source = "extends Decor
+
+func encounter_open(element: DecorElement):
+	await element.owner.play_sfx(
+		load(element.args[&\"sfx\"]),
+		element.args[&\"from\"],
+		element.args.get(&\"wait\", args[&\"wait\"]),
+		wait_state
+	)
+"
+
+[resource]
+script = SubResource("GDScript_tdx07")
+id = &"sfx"
+args = Dictionary[StringName, Variant]({
+&"wait": true
+})
+closable = true
+bbcode = false
+prod_stop = true
+metadata/_custom_type_script = "uid://w7bl3g20knuq"

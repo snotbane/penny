@@ -30,6 +30,9 @@ static func register_in_master(dec: Decor) -> void:
 var is_decor_text_effect : bool :
 	get: return effect is DecorTextEffect
 
+var wait_state : Typewriter.PlayState :
+	get: return Typewriter.PlayState.PAUSED if prod_stop else Typewriter.PlayState.DELAYED
+
 func get_bbcode_open(element: DecorElement) -> String:
 	if not bbcode: return ""
 	return _get_bbcode_open(element)

@@ -92,22 +92,22 @@ var user_scroll_enabled : bool = true :
 
 @export_subgroup("Audio")
 
-var _audio_player_volume_default : float
-var _audio_player : TypewriterAudioStreamPlayer
-@export var audio_player : TypewriterAudioStreamPlayer :
-	get: return _audio_player
+var _talker_volume_default : float
+var _talker_audio_player : TypewriterAudioStreamPlayer
+@export var talker_audio_player : TypewriterAudioStreamPlayer :
+	get: return _talker_audio_player
 	set(value):
-		if _audio_player == value: return
+		if _talker_audio_player == value: return
 
-		if _audio_player:
-			_audio_player.volume_linear = _audio_player_volume_default
-			character_arrived.disconnect(_audio_player.receive_character)
+		if _talker_audio_player:
+			_talker_audio_player.volume_linear = _talker_volume_default
+			character_arrived.disconnect(_talker_audio_player.receive_character)
 
-		_audio_player = value
+		_talker_audio_player = value
 
-		if _audio_player:
-			_audio_player_volume_default = _audio_player.volume_linear
-			character_arrived.connect(_audio_player.receive_character)
+		if _talker_audio_player:
+			_talker_volume_default = _talker_audio_player.volume_linear
+			character_arrived.connect(_talker_audio_player.receive_character)
 
 		refresh_volume()
 
@@ -483,7 +483,7 @@ func install_effect_from(element: DecorElement) -> void:
 
 func delay(seconds: float, new_state: PlayState = PlayState.DELAYED) :
 	play_state = new_state
-	await get_tree().create_timer(seconds).timeout
+	await Async.any([get_tree().create_timer(seconds).timeout, prodded])
 	if play_state == new_state: play_state = PlayState.PLAYING
 
 
@@ -513,8 +513,19 @@ func pop_volume_element() -> void:
 	refresh_volume()
 
 func refresh_volume() -> void:
-	if not audio_player: return
+	if not talker_audio_player: return
 
-	audio_player.volume_linear = _audio_player_volume_default * volume
+	talker_audio_player.volume_linear = _talker_volume_default * volume
+
+
+func play_sfx(stream: AudioStream, from: Cell, wait_to_complete: bool = true, wait_state : PlayState = PlayState.DELAYED) :
+	var audio_player : AudioStreamPlayer = from.instance
+
+	audio_player.stream = stream
+	audio_player.play()
+	if wait_to_complete:
+		play_state = wait_state
+		await Async.any([audio_player.finished, prodded])
+		play_state = PlayState.PLAYING
 
 #endregion
