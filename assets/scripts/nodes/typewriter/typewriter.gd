@@ -40,6 +40,17 @@ var speed_stack : Array[float] = [ 40.0 ]
 	get: return speed_stack[0]
 	set(value):
 		speed_stack[0] = value
+var speed : float :
+	get: return speed_stack.back()
+
+var volume_stack : Array[float] = [ 1.0 ]
+## How loud (percentage of the currently active [AudioStreamPlayer]) to play voice audio. For specific volume mid-printout, use the <volume=x> decor.
+@export var print_volume : float = 1.0 :
+	get: return volume_stack[0]
+	set(value):
+		volume_stack[0] = value
+var volume : float :
+	get: return volume_stack.back()
 
 ## Amount of time to wait after receiving a new message, before printing it out.
 @export var start_delay : float = 0.5
@@ -81,6 +92,7 @@ var user_scroll_enabled : bool = true :
 
 @export_subgroup("Audio")
 
+var _audio_player_volume_default : float
 var _audio_player : TypewriterAudioStreamPlayer
 @export var audio_player : TypewriterAudioStreamPlayer :
 	get: return _audio_player
@@ -88,12 +100,16 @@ var _audio_player : TypewriterAudioStreamPlayer
 		if _audio_player == value: return
 
 		if _audio_player:
+			_audio_player.volume_linear = _audio_player_volume_default
 			character_arrived.disconnect(_audio_player.receive_character)
 
 		_audio_player = value
 
 		if _audio_player:
+			_audio_player_volume_default = _audio_player.volume_linear
 			character_arrived.connect(_audio_player.receive_character)
+
+		refresh_volume()
 
 @export_subgroup("Debug")
 
@@ -159,9 +175,6 @@ var play_state := PlayState.READY :
 				time_reseted = Typewriter.now
 			PlayState.COMPLETED:
 				completed.emit()
-
-var speed : float :
-	get: return self.speed_stack.back()
 
 var _is_talking : bool
 var is_talking : bool :
@@ -488,5 +501,20 @@ func push_speed_element(characters_per_second: float) -> void:
 func pop_speed_element() -> void:
 	if speed_stack.size() <= 1: return
 	speed_stack.pop_back()
+
+
+func push_volume_element(volume_percent: float) -> void:
+	volume_stack.push_back(volume_percent)
+	refresh_volume()
+
+func pop_volume_element() -> void:
+	if volume_stack.size() <= 1: return
+	volume_stack.pop_back()
+	refresh_volume()
+
+func refresh_volume() -> void:
+	if not audio_player: return
+
+	audio_player.volume_linear = _audio_player_volume_default * volume
 
 #endregion
