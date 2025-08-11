@@ -4,14 +4,17 @@
 script/source = "extends Decor
 
 func encounter_open(element: DecorElement) :
-	await element.owner.wait(element.args.get(&\"roger\", false))
+	if element.args.get(&\"silent\", args[&\"silent\"]):
+		element.owner.is_talking = false
+	await element.owner.wait(element.args.get(&\"roger\", args[&\"roger\"]))
 "
 
 [resource]
 script = SubResource("GDScript_nkqrf")
 id = &"wait"
 args = Dictionary[StringName, Variant]({
-&"roger": false
+&"roger": false,
+&"silent": true
 })
 closable = false
 bbcode = false

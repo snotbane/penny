@@ -170,6 +170,8 @@ scrollbox_add_height = 32.0
 autoscroll_curve = SubResource("Curve_a8dr1")
 roger = NodePath("../roger")
 audio_player = NodePath("audio_stream_player")
+talk_character_pattern = "[a-zA-Z0-9]"
+silent_character_pattern = "[.?!]"
 
 [node name="audio_stream_player" type="AudioStreamPlayer" parent="typewriter"]
 stream = ExtResource("4_a8dr1")

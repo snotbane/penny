@@ -142,7 +142,6 @@ var play_state := PlayState.READY :
 		_play_state = value
 
 		user_scroll_enabled = _play_state == PlayState.PAUSED or _play_state == PlayState.COMPLETED
-		is_talking = _play_state == PlayState.PLAYING
 
 		roger_shown.emit(play_state == PlayState.COMPLETED)
 
@@ -151,6 +150,7 @@ var play_state := PlayState.READY :
 				_visible_characters_partial = 0
 				is_locked = false
 				user_scroll_override = false
+				is_talking = false
 
 		match _play_state:
 			PlayState.READY:
@@ -215,7 +215,7 @@ var visible_characters : int :
 			var shape_marker_match := REGEX_SHAPE_MARKER.search(message.visible_text, rtl.visible_characters)
 			shape_rtl.visible_characters = shape_marker_match.get_start() if shape_marker_match else rtl.visible_characters
 			if rtl.visible_characters > 0:
-				character_arrived.emit(message.visible_text[mini(rtl.visible_characters, message.visible_text.length()) - 1])
+				encounter_char(message.visible_text[mini(rtl.visible_characters, message.visible_text.length()) - 1])
 
 		if not visible_characters_completed:
 			_visible_characters_partial = rtl.visible_characters + fmod(_visible_characters_partial, 1.0)
@@ -230,12 +230,12 @@ func handle_elements() -> void:
 	if element_opens.has(rtl.visible_characters):
 		for element in element_opens[rtl.visible_characters]:
 			if element.prod_stop:	await	element.encounter_open()
-			else:						element.encounter_open()
+			else:							element.encounter_open()
 
 	if element_closes.has(rtl.visible_characters):
 		for element in element_closes[rtl.visible_characters]:
 			if element.prod_stop:	await	element.encounter_close()
-			else:						element.encounter_close()
+			else:							element.encounter_close()
 
 	handling_elements = false
 
@@ -440,8 +440,24 @@ func advance() -> void:
 	advanced.emit()
 
 #endregion
-#region DecorElement Functions
+#region Event Functions
 
+@export var talk_character_pattern : String
+@export var silent_character_pattern : String
+
+@onready var talk_character_regex := RegEx.create_from_string(talk_character_pattern)
+@onready var silent_character_regex := RegEx.create_from_string(silent_character_pattern)
+
+func encounter_char(c: String) -> void:
+	character_arrived.emit(c)
+
+	if silent_character_regex.search(c):
+		is_talking = false
+	elif talk_character_regex.search(c):
+		is_talking = true
+
+#endregion
+#region DecorElement Functions
 
 func install_effect_from(element: DecorElement) -> void:
 	if not element.decor.effect: return

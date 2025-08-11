@@ -4,6 +4,8 @@
 script/source = "extends Decor
 
 func encounter_open(element: DecorElement) :
+	if element.args.get(&\"silent\", args[&\"silent\"]):
+		element.owner.is_talking = false
 	await element.owner.delay(
 		element.args.get(&\"delay\", args[&\"delay\"]),
 		Typewriter.PlayState.PAUSED if prod_stop else Typewriter.PlayState.DELAYED
@@ -14,7 +16,8 @@ func encounter_open(element: DecorElement) :
 script = SubResource("GDScript_hjcn3")
 id = &"delay"
 args = Dictionary[StringName, Variant]({
-&"delay": 0.667
+&"delay": 0.667,
+&"silent": true
 })
 closable = false
 bbcode = false
