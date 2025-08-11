@@ -1,4 +1,5 @@
-class_name EmanataSpawner extends Node
+extends Node
+class_name EmanataSpawner
 
 const EMANATA_PATHS : Dictionary[StringName, String] = {
 	&"fireball": "res://assets/scenes/emanata/emanata_fireball.tscn",

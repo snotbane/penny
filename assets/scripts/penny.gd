@@ -32,7 +32,7 @@ static var PENNY_DEBUG_SCENE := preload("uid://cfkhtume00g5e")
 static var DECOR_REGISTRY_DEFAULT : DecorRegistry = preload("uid://drmpmcuvh657f")
 
 
-static var inst : Penny
+static var inst : Penny = null
 static var is_reloading_bulk : bool = false
 static var is_all_scripts_valid : bool = true
 static var script_reload_timestamps : Dictionary[String, int]
@@ -195,6 +195,7 @@ func _ready():
 	if not Engine.is_editor_hint():
 		inits.sort_custom(StmtInit.sort)
 		static_host.perform_inits_selective.call_deferred(scripts)
+		Cell.ROOT.assign_instances_recursive.call_deferred(get_tree())
 
 
 func _notification(what: int) -> void:

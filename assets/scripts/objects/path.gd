@@ -44,6 +44,7 @@ static func new_from_tokens(tokens: Array) -> Path:
 ## Creates a new [Path] from a string. Mainly used via manual access.
 static func new_from_string(s : String) -> Path:
 	if s.is_empty(): return
+	if s[0] == "@": s = s.substr(1)
 	var _rel := s[0] == "."
 	s = s.substr(1 if _rel else 0)
 	var _ids := s.split(".", false)

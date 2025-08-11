@@ -1,12 +1,14 @@
-
 ## A [Node] that can/must be safely opened and closed. In [Penny], these nodes can be awaited so that the script flows together cleanly.
-class_name Actor extends Node
+extends Node
+class_name Actor
 
 signal advanced
 signal entering
 signal entered
 signal exiting
 signal exited
+
+@export var link_priority : int = 0
 
 ## If enabled, [member entered] must be emitted before this [Actor] is considered entered.
 @export var enter_await_signal : bool = false
@@ -32,7 +34,7 @@ func _ready() -> void: pass
 
 func _exit_tree() -> void:
 	if cell:
-		cell.disconnect_instance(self)
+		cell.remove_instance(self)
 
 
 ## Called immediately after instantiation. Use to "populate" the node with specific, one-time information it may need.

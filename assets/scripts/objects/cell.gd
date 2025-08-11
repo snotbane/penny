@@ -1,5 +1,7 @@
+extends JSONResource
+class_name Cell
 
-class_name Cell extends JSONResource
+#region Key Constants
 
 ## Default name of any new object.
 const NEW_OBJECT_KEY_NAME := &"_NEW_OBJECT"
@@ -32,8 +34,8 @@ const K_PREFIX := &"prefix"
 ## Appears after the display name.
 const K_SUFFIX := &"suffix"
 const K_ICON := &"icon"
-## The object's node instance, instantiated from [member K_RES]
-const K_INST := &"inst"
+## The object's node instance, instantiated from [member K_RES], or otherwise found in the scene.
+const K_INST := &"instances"
 const K_OPTIONS := &"options"
 ## A prompt's result.
 const K_RESPONSE := &"response"
@@ -46,10 +48,18 @@ const K_CONSUMED := &"consumed"
 ## Display key_text used to represent this object.
 const K_TEXT := &"text"
 
+static var static_init_completed : bool = false
 
-static var ROOT := Cell.new(&"", null, {})
-static var OBJECT := Cell.new(Cell.K_OBJECT, ROOT, {})
+static var ROOT : Cell
+static var OBJECT : Cell
 
+static func _static_init() -> void:
+	ROOT = Cell.new(&"", null, {})
+	OBJECT = Cell.new(Cell.K_OBJECT, ROOT, {})
+
+	static_init_completed = true
+
+#endregion
 
 var _key_name : StringName
 var key_name : StringName :
@@ -81,16 +91,48 @@ var text_as_display_string : DisplayString :
 var node_name : String :
 	get: return key_name
 
-
-var instance : Node :
+var instances : Variant :
 	get: return self.get_local_value(Cell.K_INST)
 	set(value): self.set_local_value(Cell.K_INST, value)
+func add_instance(node: Node) -> void:
+	if instances:
+		if instances.has(node): return
+
+		instances.push_back(node)
+		instances.sort_custom(sort_instances)
+	else:
+		instances = [ node ]
+
+	node.tree_exiting.connect(remove_instance.bind(node))
+func remove_instance(node : Node = null) -> void:
+	if not instances: return
+	instances.erase(node)
+	if instances.is_empty():
+		set_local_value(Cell.K_INST, null)
+func sort_instances(a: Node, b: Node) -> bool:
+	return (a.link_priority if a is Actor else 0) > (b.link_priority if a is Actor else 0)
+func assign_instances_recursive(tree: SceneTree) -> void:
+	for node in tree.get_nodes_in_group(link_group_name):
+		add_instance(node)
+	for k in data.keys():
+		if data[k] is not Cell: continue
+		data[k].assign_instances_recursive(tree)
+
+## The primary instance of this [Cell]. [Cell]s can have multiple [member instances], but only the primary instance is used. Typically you should only ever have one instance visible at a time.
+var instance : Node :
+	get: return instances.front() if instances else null
+
+var link_group_name : StringName :
+	get: return CellLink.GROUP_PREFIX + key_name
 
 
 func _init(__key_name : StringName, _parent : Cell, _data : Dictionary[StringName, Variant]) -> void:
 	parent = _parent
 	key_name = __key_name
 	data = _data
+
+	if static_init_completed:
+		assign_instances_recursive(Penny.inst.get_tree())
 
 
 func _to_string() -> String:
@@ -183,9 +225,8 @@ func spawn(funx: Funx, parent_name = get_value(K_MARKER)) -> Node:
 	if result.has_method(&"spawn"):
 		result.spawn()
 
-	result.tree_exiting.connect(disconnect_instance.bind(result))
 	result.name = node_name
-	instance = result
+	add_instance(result)
 
 	if parent_node:
 		parent_node.add_child(result)
@@ -195,18 +236,15 @@ func spawn(funx: Funx, parent_name = get_value(K_MARKER)) -> Node:
 func spawn_undo(record: Record) -> void:
 	print("%s: Spawn undo." % key_name)
 
-
-func disconnect_instance(match : Node = null) -> void:
-	if match == null or match == instance:
-		instance = null
-
+func disconnect_all_instances() -> void:
+	instances = []
 
 func despawn(funx: Funx = null) -> void:
 	var inst := instance
 	if inst == null: return
 	if inst.has_method(&"despawn"):
 		inst.despawn()
-	disconnect_instance(inst)
+	remove_instance(inst)
 	inst.queue_free()
 func despawn_undo(record: Record) -> void:
 	print("%s: Despawn undo." % key_name)
@@ -251,7 +289,6 @@ func reparent(funx: Funx, parent_name: StringName):
 	inst.global_position = global_position_before
 func reparent_undo(record: Record) -> void:
 	print("%s: reparent undo." % self.key_name)
-
 
 
 func _export_json(json: Dictionary) -> void:
