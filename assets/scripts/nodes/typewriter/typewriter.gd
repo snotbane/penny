@@ -17,6 +17,8 @@ static var REGEX_SHAPE_MARKER := RegEx.create_from_string(r"$|(?<=\s)\S")
 
 static var now : float
 
+static var user_setting_print_speed : float = 1.0
+
 static var NOW_USEC_FLOAT : float :
 	get: return float(Time.get_ticks_usec()) * 0.00_000_1
 
@@ -41,7 +43,7 @@ var speed_stack : Array[float] = [ 40.0 ]
 	set(value):
 		speed_stack[0] = value
 var speed : float :
-	get: return speed_stack.back() * Setting.get_setting(&"print_speed")
+	get: return user_setting_print_speed * speed_stack.back()
 
 var volume_stack : Array[float] = [ 1.0 ]
 ## How loud (percentage of the currently active [AudioStreamPlayer]) to play voice audio. For specific volume mid-printout, use the <volume=x> decor.

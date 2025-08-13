@@ -6,10 +6,10 @@ script/source = "extends Decor
 func encounter_open(element: DecorElement) :
 	if element.args.get(&\"silent\", args[&\"silent\"]):
 		element.owner.is_talking = false
-	await element.owner.delay(
-		element.args.get(&\"delay\", args[&\"delay\"]),
-		wait_state
-	)
+	var duration : float = element.args.get(&\"delay\", args[&\"delay\"])
+	if element.args.get(&\"scaled\", args[&\"scaled\"]):
+		duration /= Typewriter.user_setting_print_speed
+	await element.owner.delay(duration, wait_state)
 "
 
 [resource]
@@ -17,6 +17,7 @@ script = SubResource("GDScript_hjcn3")
 id = &"delay"
 args = Dictionary[StringName, Variant]({
 &"delay": 0.667,
+&"scaled": false,
 &"silent": true
 })
 closable = false
