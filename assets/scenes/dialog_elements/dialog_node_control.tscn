@@ -160,7 +160,7 @@ exit_await_signal = true
 save_spawn = false
 save_transform = false
 
-[node name="typewriter" type="Node" parent="." node_paths=PackedStringArray("rtl", "scroll_container", "roger", "audio_player")]
+[node name="typewriter" type="Node" parent="." node_paths=PackedStringArray("rtl", "scroll_container", "roger")]
 script = ExtResource("3_q7721")
 rtl = NodePath("../panel/margin_container/scroll_container/margin_container/text_label")
 reset_delay = 0.333
@@ -169,7 +169,6 @@ scrollbox_max_height = 128.0
 scrollbox_add_height = 32.0
 autoscroll_curve = SubResource("Curve_a8dr1")
 roger = NodePath("../roger")
-audio_player = NodePath("audio_stream_player")
 talk_character_pattern = "[a-zA-Z0-9]"
 silent_character_pattern = "[.?!]"
 

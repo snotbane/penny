@@ -41,7 +41,7 @@ var speed_stack : Array[float] = [ 40.0 ]
 	set(value):
 		speed_stack[0] = value
 var speed : float :
-	get: return speed_stack.back()
+	get: return speed_stack.back() * Setting.get_setting(&"print_speed")
 
 var volume_stack : Array[float] = [ 1.0 ]
 ## How loud (percentage of the currently active [AudioStreamPlayer]) to play voice audio. For specific volume mid-printout, use the <volume=x> decor.
