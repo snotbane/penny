@@ -1,6 +1,4 @@
-@tool
-extends ResourceFormatLoader
-class_name PennyScriptFormatLoader
+@tool class_name PennyScriptFormatLoader extends ResourceFormatLoader
 
 func _handles_type(type: StringName) -> bool:
 	return type == &"Resource"

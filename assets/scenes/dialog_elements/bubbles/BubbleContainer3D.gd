@@ -1,5 +1,4 @@
-extends DialogNode
-class_name BubbleContainer3D
+class_name BubbleContainer3D extends DialogNode
 
 enum EArrangeMode {
 	SEQUENTIAL,

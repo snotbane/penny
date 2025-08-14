@@ -1,5 +1,4 @@
-extends JSONResource
-class_name Cell
+class_name Cell extends JSONResource
 
 #region Key Constants
 

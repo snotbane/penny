@@ -1,5 +1,4 @@
-extends Actor
-class_name PennyPrompt
+class_name PennyPrompt extends Actor
 
 var options : Array
 

@@ -1,6 +1,5 @@
 
-@tool
-class_name SpriteFramesConverter extends Node
+@tool class_name SpriteFramesConverter extends Node
 
 const CONVERTED_NAME_DELIMITER : String = "_"
 
@@ -81,7 +80,7 @@ func refresh_anims():
 	for anim_name in leftover_anims:
 		library_default.remove_animation(anim_name)
 
-	
+
 func get_existing_converted_anim_names() -> Array[StringName]:
 	var result : Array[StringName]
 	for anim_name in library_default.get_animation_list():

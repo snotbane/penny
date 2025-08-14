@@ -1,6 +1,5 @@
 
-@tool
-extends TabContainer
+@tool extends TabContainer
 
 var _tab_icons : Array[Texture2D] :
 	get: return tab_icons

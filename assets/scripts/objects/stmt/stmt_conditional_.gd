@@ -1,5 +1,4 @@
-extends StmtExpr
-class_name StmtConditional
+class_name StmtConditional extends StmtExpr
 
 
 func _get_verbosity() -> Verbosity:

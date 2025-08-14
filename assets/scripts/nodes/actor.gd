@@ -1,6 +1,5 @@
 ## A [Node] that can/must be safely opened and closed. In [Penny], these nodes can be awaited so that the script flows together cleanly.
-extends Node
-class_name Actor
+class_name Actor extends Node
 
 signal advanced
 signal entering

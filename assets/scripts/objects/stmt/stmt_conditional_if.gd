@@ -1,5 +1,4 @@
-extends StmtConditional
-class_name StmtConditionalIf
+class_name StmtConditionalIf extends StmtConditional
 
 
 func _evaluate_self(host: PennyHost) -> Variant:

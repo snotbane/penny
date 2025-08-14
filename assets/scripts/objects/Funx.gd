@@ -1,5 +1,4 @@
-extends RefCounted
-class_name Funx
+class_name Funx extends RefCounted
 
 var host : PennyHost
 var wait : bool

@@ -1,6 +1,5 @@
 
-@tool
-class_name PennyScript extends Resource
+@tool class_name PennyScript extends Resource
 
 class Diff:
 	class Entry:

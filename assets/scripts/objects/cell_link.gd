@@ -1,5 +1,4 @@
-extends Node
-class_name CellLink
+class_name CellLink extends Node
 
 const GROUP_PREFIX := &"_claimant_"
 

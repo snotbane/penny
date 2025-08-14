@@ -1,5 +1,4 @@
-extends StmtConditional
-class_name StmtConditionalMatch
+class_name StmtConditionalMatch extends StmtConditional
 
 var match_header_stmt : StmtMatch
 

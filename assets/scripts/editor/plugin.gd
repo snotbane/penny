@@ -1,7 +1,6 @@
 
 ## Handles debug tools for the editor only.
-@tool
-class_name PennyPlugin extends EditorPlugin
+@tool class_name PennyPlugin extends EditorPlugin
 
 const IMPORTER := "res://addons/penny_godot/assets/scripts/penny.gd"
 const AUTOLOAD_NAME = "penny"

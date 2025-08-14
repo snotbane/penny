@@ -1,5 +1,4 @@
-extends StmtConditional
-class_name StmtConditionalMenu
+class_name StmtConditionalMenu extends StmtConditional
 
 var expected_path : Path
 

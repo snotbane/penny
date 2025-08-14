@@ -1,6 +1,4 @@
-@tool
-extends MeshInstance3D
-class_name SupereggMeshInstance3D
+@tool class_name SupereggMeshInstance3D extends MeshInstance3D
 
 var _size := Vector3.ONE
 @export var size := Vector3.ONE :

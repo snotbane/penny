@@ -1,6 +1,4 @@
-@tool
-extends PrimitiveMesh
-class_name SupereggMesh
+@tool class_name SupereggMesh extends PrimitiveMesh
 
 var _resolution : Vector2i
 @export var resolution : Vector2i = Vector2i.ONE * 16 :

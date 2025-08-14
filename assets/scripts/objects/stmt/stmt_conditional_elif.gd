@@ -1,5 +1,4 @@
-extends StmtConditional
-class_name StmtConditionalElif
+class_name StmtConditionalElif extends StmtConditional
 
 func _evaluate_self(host: PennyHost) -> Variant:
 	## May return TRUE, FALSE, or NULL

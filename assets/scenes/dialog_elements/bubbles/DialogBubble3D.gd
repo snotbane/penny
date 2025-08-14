@@ -1,6 +1,4 @@
-@tool
-extends PathFollow3D
-class_name DialogBubble3D
+@tool class_name DialogBubble3D extends PathFollow3D
 
 @export_tool_button("Refresh") var refresh_button_ := refresh
 
