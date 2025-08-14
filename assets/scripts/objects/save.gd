@@ -15,11 +15,8 @@ static func any(value: Variant, use_cell_refs: bool = false) -> Variant:
 static func object(value: Object, use_cell_refs: bool = false) -> Variant:
 	if value is Cell:
 		# print("value is Cell: use_cell_refs: ", use_cell_refs, " ", value.get_save_path())
-		if use_cell_refs:
-			return value.get_save_ref()
-		else:
-			return value.get_save_data()
-	elif value.has_method("get_save_data"):
+		return value.get_save_ref() if use_cell_refs else value.get_save_data()
+	elif value.has_method(&"get_save_data"):
 		return value.get_save_data()
 	elif value is Node:
 		return Save.node(value)

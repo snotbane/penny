@@ -8,20 +8,21 @@ signal entered
 signal exiting
 signal exited
 
+##
 @export var link_priority : int = 0
 
-## If enabled, [member entered] must be emitted before this [Actor] is considered entered.
+## If enabled, [member entered] must be emitted before this [Actor] finishes entering.
 @export var enter_await_signal : bool = false
 
-## If enabled, [member exited] must be emitted before this [Actor] is considered exited.
+## If enabled, [member exited] must be emitted before this [Actor] finishes exiting.
 @export var exit_await_signal : bool = false
 
 @export_subgroup("Save Data")
 
-## If enabled, this [PennyNode] will be instantiated when loading (and also destroyed when unloading).
+## If enabled, this [Node] will be instantiated when loading (and also destroyed when unloading).
 @export var save_spawn : bool = true
 
-## If enabled, this [PennyNode]'s transform will be saved.
+## If enabled, this [Node]'s transform will be saved.
 @export var save_transform : bool = true
 
 var host : PennyHost

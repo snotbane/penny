@@ -315,7 +315,7 @@ class Token extends RefCounted:
 		Token.Type.ASSIGNMENT: 				RegEx.create_from_string(r"=>|([+\-*/]?)=(?!=)"),
 		Token.Type.OPERATOR: 				Expr.Op.PATTERN_COMPILED,
 		Token.Type.COMMENT: 				RegEx.create_from_string(r"(?ms)(([#/])\*.*?(\*\2))|((#|\/{2}).*?$)"),
-		Token.Type.IDENTIFIER: 				RegEx.create_from_string(r"[a-zA-Z_\$]\w*"),
+		Token.Type.IDENTIFIER: 				RegEx.create_from_string(r"\$?[a-zA-Z_]\w*"),
 		Token.Type.VALUE_NUMBER: 			RegEx.create_from_string(r"\d+\.\d*|\.?\d+"),
 		Token.Type.TERMINATOR: 				RegEx.create_from_string(r"(?m)(?<!\[)[:;\n]+(?!\])"),
 		Token.Type.WHITESPACE: 				RegEx.create_from_string(r"(?m)[ \n]+|(?<!^|\t)\t+"),

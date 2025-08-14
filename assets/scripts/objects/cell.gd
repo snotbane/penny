@@ -35,16 +35,16 @@ const K_PREFIX := &"prefix"
 const K_SUFFIX := &"suffix"
 const K_ICON := &"icon"
 ## The object's node instance, instantiated from [member K_RES], or otherwise found in the scene.
-const K_INST := &"instances"
+const K_INST := &"$instances"
 const K_OPTIONS := &"options"
 ## A prompt's result.
-const K_RESPONSE := &"response"
+const K_RESPONSE := &"$response"
 ## Whether or not an option appears at all.
-const K_VISIBLE := &"visible"
+const K_VISIBLE := &"$visible"
 ## Whether or not an option is able to be selected.
-const K_ENABLED := &"enabled"
+const K_ENABLED := &"$enabled"
 ## Whether or not an option has been selected previously.
-const K_CONSUMED := &"consumed"
+const K_CONSUMED := &"$consumed"
 ## Display key_text used to represent this object.
 const K_TEXT := &"text"
 
@@ -300,7 +300,16 @@ func _export_json(json: Dictionary) -> void:
 
 
 func get_save_data() -> Variant:
-	return Save.any(data)
+	var result : Dictionary = {}
+	for k in data.keys():
+		var transient = String(k)[0] != "$"
+		var key_value = Save.any(data[k])
+		match typeof(key_value):
+			TYPE_NIL, TYPE_OBJECT, TYPE_DICTIONARY:
+				if key_value: transient = false
+		if transient: continue
+		result[k] = key_value
+	return result
 
 func get_save_ref() -> Variant:
 	return (Path.to(self)).get_save_data()
