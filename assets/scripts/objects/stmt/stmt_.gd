@@ -146,7 +146,7 @@ func _execute(record: Record) : pass
 func abort(record: Record, response : Record.Response) -> void:
 	_abort(record)
 	record.response = response
-	self.aborted.emit()
+	aborted.emit()
 func _abort(record: Record) -> void : pass
 
 
@@ -178,15 +178,16 @@ func _get_record_message(record: Record) -> String:
 	return "[code][color=deep_pink]Unimplemented Stmt %s[/color][/code]" % self
 
 
-func get_save_data() -> Variant:
-	var result : Dictionary[StringName, Variant] = {
-		&"index": index,
-		&"script": owner.resource_path,
+func export_json() -> Dictionary:
+	var result := {
+		&"idx": index,
+		&"uid": ResourceUID.id_to_text(ResourceLoader.get_resource_uid(owner.resource_path)),
 	}
-	# if OS.is_debug_build():
-	# 	result.merge({
-	# 		&"debug_string": _debug_string_do_not_use_for_anything_else_seriously_i_mean_it
-	# 	})
+	if OS.is_debug_build():
+		result.merge({
+			&"__debug_script__": owner.resource_path,
+			&"__debug_string__": _debug_string_do_not_use_for_anything_else_seriously_i_mean_it,
+		})
 	return result
 
 #region Addresses

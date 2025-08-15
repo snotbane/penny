@@ -15,9 +15,9 @@ static func any(value: Variant, use_cell_refs: bool = false) -> Variant:
 static func object(value: Object, use_cell_refs: bool = false) -> Variant:
 	if value is Cell:
 		# print("value is Cell: use_cell_refs: ", use_cell_refs, " ", value.get_save_path())
-		return value.get_save_ref() if use_cell_refs else value.get_save_data()
-	elif value.has_method(&"get_save_data"):
-		return value.get_save_data()
+		return value.get_save_ref() if use_cell_refs else value.export_json()
+	elif value.has_method(&"export_json"):
+		return value.export_json()
 	elif value is Node:
 		return Save.node(value)
 	else:
@@ -26,8 +26,8 @@ static func object(value: Object, use_cell_refs: bool = false) -> Variant:
 
 static func node(value: Node) -> Dictionary:
 	return {
-		"name": value.name,
-		"parent": value.get_parent().name
+		&"name": value.name,
+		&"parent": value.get_parent().name
 	}
 
 

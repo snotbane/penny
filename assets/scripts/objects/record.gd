@@ -3,8 +3,11 @@
 class_name Record extends JSONResource
 
 enum Response {
+	## Do not create a record.
 	IGNORE,
+	## Create a record, but do nothing else.
 	RECORD_ONLY,
+	## Create a record and advance to the next [Stmt].
 	RECORD_AND_ADVANCE
 }
 
@@ -48,7 +51,7 @@ func redo() -> void:
 
 
 func _to_string() -> String:
-	return "Record : stamp %s" % [stamp]
+	return "Record : %s\n       : %s\n       : %s" % [ stmt._debug_string_do_not_use_for_anything_else_seriously_i_mean_it, data, response]
 
 
 func equals(other: Record) -> bool:
@@ -63,8 +66,14 @@ func create_history_listing() -> HistoryListing:
 	return stmt.create_history_listing(self)
 
 
-func get_save_data() -> Variant:
-	return {
-		"stmt": Save.any(stmt),
-		"data": Save.any(data, true)
-	}
+func _export_json(json: Dictionary) -> void:
+	json.merge({
+		&"data": Save.any(data, true),
+		# &"response": Save.any(response),
+		&"stmt": Save.any(stmt),
+	})
+
+# func _import_json(json: Dictionary) -> void:
+# 	data = Load.any(json[&"data"])
+# 	stmt = Penny.get_stmt_from_address(ResourceUID.id_to_text((json[&"stmt"][&"script_uid"])), json[&"stmt"][&"index"])
+# 	response = Load.any(json[&"response"])

@@ -38,6 +38,7 @@ static var is_all_scripts_valid : bool = true
 static var script_reload_timestamps : Dictionary[String, int]
 
 static var scripts : Array[PennyScript]
+static var uid_scripts : Dictionary[String, PennyScript]
 static var inits : Array[Stmt]
 static var labels : Dictionary[StringName, Stmt]
 
@@ -45,7 +46,7 @@ static var static_host : PennyHost
 static var errors : Array[String] :
 	get:
 		var result : Array[String] = []
-		for script in scripts:
+		for script in uid_scripts.values():
 			result.append_array(script.errors)
 		return result
 
@@ -62,16 +63,17 @@ static func register_formats() -> void:
 	ResourceLoader.add_resource_format_loader(SCRIPT_RESOURCE_LOADER)
 
 
-static func find_script_from_path(path: String) -> PennyScript:
-	for i in scripts: if i.resource_path == path: return i
-	return null
+static func get_script_from_uid(uid: int) -> PennyScript:
+	return uid_scripts.get(uid)
+static func get_stmt_from_uid(uid: String, idx: int) -> Stmt:
+	return uid_scripts[uid].stmts[idx] if uid_scripts.has(uid) else null
 
+static func get_script_from_path(path: String) -> PennyScript:
+	return uid_scripts.get(ResourceUID.id_to_text(ResourceLoader.get_resource_uid(path)))
+static func get_stmt_from_path(path: String, idx: int) -> Stmt:
+	var script := get_script_from_path(path)
+	return script.stmts[idx] if script else null
 
-static func get_stmt_from_address(path: String, index: int) -> Stmt:
-	for script in scripts:
-		if script.resource_path != path: continue
-		return script.stmts[index]
-	return null
 
 
 static func get_stmt_from_label(label_name: StringName) -> Stmt:
@@ -126,22 +128,20 @@ static func reload_single(script : PennyScript, emit_signals: bool = true) -> vo
 	Penny.reload_many([script], emit_signals)
 
 
-static func reload_many(many: Array[PennyScript] = scripts, emit_signals: bool = true):
+static func reload_many(many: Array[PennyScript] = uid_scripts.values(), emit_signals: bool = true):
 	if emit_signals:
 		inst.on_reload_start.emit()
 
 	if many.size() > 0:
 		for script in many:
-			var i : int = -1
-			for j in scripts.size():
-				if scripts[j].id == script.id: i = j; break
-			if i == -1: scripts.push_back(script)
-			else: scripts[i] = script
+			assert(ResourceLoader.get_resource_uid(script.resource_path) != -1, "No uid exists for resource path '%s'" % script.resource_path)
+
+			uid_scripts[ResourceUID.id_to_text(ResourceLoader.get_resource_uid(script.resource_path))] = script
 
 		rebuild()
 
 		if is_all_scripts_valid:
-			print("Successfully loaded %s script(s), %s total." % [str(many.size()), str(scripts.size())])
+			print("Successfully loaded %s script(s), %s total." % [str(many.size()), str(uid_scripts.size())])
 		else:
 			printerr("Failed to load one or more scripts:")
 			for e in errors:
@@ -160,7 +160,7 @@ static func reload_many(many: Array[PennyScript] = scripts, emit_signals: bool =
 static func rebuild() -> void:
 	labels.clear()
 
-	for script in scripts:
+	for script in uid_scripts.values():
 		for stmt in script.stmts:
 			if stmt == null: continue
 			stmt.reload()
@@ -176,7 +176,7 @@ func _enter_tree() -> void:
 func _ready():
 	if not Engine.is_editor_hint():
 		static_host = PennyHost.new()
-		static_host.name = "static_host"
+		static_host.name = &"static_host"
 		static_host.allow_rolling = false
 		add_child.call_deferred(static_host)
 
@@ -193,9 +193,13 @@ func _ready():
 	Penny.reload_all.call_deferred(false)
 
 	if not Engine.is_editor_hint():
-		inits.sort_custom(StmtInit.sort)
-		static_host.perform_inits_selective.call_deferred(scripts)
-		Cell.ROOT.assign_instances_recursive.call_deferred(get_tree())
+		_run_inits.call_deferred()
+
+
+func _run_inits() -> void:
+	inits.sort_custom(StmtInit.sort)
+	static_host.perform_inits_selective(uid_scripts.values())
+	Cell.ROOT.assign_instances_recursive(get_tree())
 
 
 func _notification(what: int) -> void:

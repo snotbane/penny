@@ -1,33 +1,47 @@
-## Theoretically works, but doesn't actually. Leaving as is for now.
 class_name AESFileResource extends JSONFileResource
 
+const KEY_SIZE := 16
+const IV_SIZE := 16
+
 var aes := AESContext.new()
+var crypto := Crypto.new()
 
-## Implement this in your own custom class to create a passkey for the type. Only one is necessary per project and should never change. Must be exactly 16 characters long.
-func _get_passkey_16() -> StringName:
-	return &"ABCDEFGHIJKLMNOP"
+func _get_path_ext() -> String:
+	return ".dat"
 
 
-func _export_json_string() -> String:
-	var key := _get_passkey_16().to_utf8_buffer()
+var passkey : String :
+	get: return _get_passkey()
+func _get_passkey() -> String:
+	return "PENNY_MY_BELOVED"
 
-	var data_string := super._export_json_string()
-	data_string += " ".repeat(16 - (data_string.length() % 16))
-	var data := data_string.to_utf8_buffer()
 
-	aes.start(AESContext.MODE_ECB_ENCRYPT, key)
-	var encrypted := aes.update(data)
+func _save_to_file(file: FileAccess, json: String) -> void:
+	json += " ".repeat(KEY_SIZE - (json.length() % KEY_SIZE))
+
+	var key := passkey.to_utf8_buffer()
+	var iv := crypto.generate_random_bytes(IV_SIZE)
+	var decrypted := json.to_utf8_buffer()
+
+	aes.start(AESContext.MODE_CBC_ENCRYPT, key, iv)
+	var encrypted := aes.update(decrypted)
 	aes.finish()
 
-	return encrypted.get_string_from_utf8()
+	var result := PackedByteArray()
+	result.append_array(iv)
+	result.append_array(encrypted)
 
+	file.store_buffer(result)
 
-func _import_json_string(text: String) -> void:
-	var key := _get_passkey_16().to_utf8_buffer()
-	var data := text.to_utf8_buffer()
+func _load_from_file(file: FileAccess) -> String:
+	var data = file.get_buffer(file.get_length())
 
-	aes.start(AESContext.MODE_ECB_DECRYPT, key)
-	var decrypted := aes.update(data)
+	var key := passkey.to_utf8_buffer()
+	var iv := data.slice(0, IV_SIZE)
+	var encrypted := data.slice(IV_SIZE)
+
+	aes.start(AESContext.MODE_CBC_DECRYPT, key, iv)
+	var decrypted := aes.update(encrypted)
 	aes.finish()
 
-	super._import_json_string(decrypted.get_string_from_utf8())
+	return decrypted.get_string_from_utf8()

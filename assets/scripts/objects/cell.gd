@@ -291,15 +291,6 @@ func reparent_undo(record: Record) -> void:
 
 
 func _export_json(json: Dictionary) -> void:
-	var keep := {}
-	for k in data.keys():
-		# if str(k)[0] != "$": continue
-		keep[k] = data[k]
-	json.merge(Save.any(keep))
-
-
-func get_save_data() -> Variant:
-	var result : Dictionary = {}
 	for k in data.keys():
 		var transient = String(k)[0] != "$"
 		var key_value = Save.any(data[k])
@@ -307,8 +298,12 @@ func get_save_data() -> Variant:
 			TYPE_NIL, TYPE_OBJECT, TYPE_DICTIONARY:
 				if key_value: transient = false
 		if transient: continue
-		result[k] = key_value
-	return result
+		json[k] = key_value
+
+
+func _import_json(json: Dictionary) -> void:
+	pass
+
 
 func get_save_ref() -> Variant:
 	return (Path.to(self)).get_save_data()

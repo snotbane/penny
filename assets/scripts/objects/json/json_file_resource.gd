@@ -47,10 +47,10 @@ func _init(__save_path__: String = generate_save_path()) -> void:
 	time_created = NOW
 	time_modified = time_created
 
-	if FileAccess.file_exists(save_path):
-		load_from_file()
-	else:
-		save_to_file()
+	# if FileAccess.file_exists(save_path):
+	# 	load_from_file()
+	# else:
+	# 	save_to_file()
 
 
 func shell_open() -> void:
@@ -68,19 +68,17 @@ func get_parent_folder(levels: int = 1, path: String = ProjectSettings.globalize
 	return get_parent_folder(levels - 1, path.substr(0, path.rfind("/")))
 
 
-func save_changes(path: String = save_path) -> void:
-	time_modified = NOW
-	save_to_file(path)
-	modified.emit()
-
-
 func save_to_file(path: String = save_path) -> void:
 	var file := FileAccess.open(save_path, FileAccess.WRITE)
 	assert(file != null, "Cannot save to file, file does not exist: %s" % save_path)
 
-	file.store_string(_export_json_string())
-func _export_json_string() -> String:
-	return JSON.stringify(export_json())
+	time_modified = NOW
+	var json := JSON.stringify(export_json(), "\t" if OS.is_debug_build() else "", OS.is_debug_build())
+	_save_to_file(file, json)
+	modified.emit()
+## Saves the given stringified JSON text to the file.
+func _save_to_file(file: FileAccess, json: String) -> void:
+	file.store_string(json)
 func export_json() -> Dictionary:
 	var result := {
 		K_TIME_CREATED: time_created,
@@ -92,16 +90,17 @@ func export_json() -> Dictionary:
 
 func load_from_file(path: String = save_path) -> void:
 	save_path = path
-	if not file_exists:
-		push_error("Cannot load from file, file does not exist: %s" % save_path)
-		return
+	assert(file_exists, "Cannot load from file, file does not exist: %s" % save_path)
+
 	var file := FileAccess.open(path, FileAccess.READ)
-	_import_json_string(file.get_as_text())
-func _import_json_string(text: String) -> void:
-	var json = JSON.parse_string(text)
-	assert(json != null, "Couldn't parse string to json: %s" % text)
+	var json_string = _load_from_file(file)
+	var json = JSON.parse_string(json_string)
+	assert(json != null, "Couldn't parse string to json: %s" % json_string)
 
 	import_json(json)
+## Loads the given file as stringified JSON text.
+func _load_from_file(file: FileAccess) -> String:
+	return file.get_as_text()
 func import_json(json: Dictionary) -> void:
 	time_created = json[K_TIME_CREATED]
 	time_modified = json[K_TIME_MODIFIED]

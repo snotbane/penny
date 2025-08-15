@@ -16,17 +16,15 @@ class SaveData extends JSONFileResource:
 			&"git_rev_penny": PennyUtils.get_git_commit_id("res://addons/penny_godot/"),
 			&"git_rev_project": PennyUtils.get_git_commit_id(),
 			&"screenshot": null,
-			&"state": Save.any(Cell.ROOT),
-			&"history": host.history.export_json()
+			&"state": Cell.ROOT.export_json(),
+			&"history": host.history.export_json(),
+			&"history_index": host.history_index
 		})
 
-var save_data : SaveData
-
-func create_save_data() -> void:
-	save_data = SaveData.new(self)
-
-func save_changes() -> void:
-	save_data.save_changes()
+	func _import_json(json: Dictionary) -> void:
+		host.history.import_json(json[&"history"].merged({ &"__host__": host }))
+		host._history_index = json[&"history_index"]
+		Cell.ROOT.import_json(json[&"state"])
 
 #endregion
 
@@ -69,20 +67,20 @@ var last_dialog_object : Cell :
 		return null
 
 func _set_history_index(value: int) -> void:
-		self.abort(Record.Response.IGNORE)
+	self.abort(Record.Response.IGNORE)
 
-		var increment := signi(value - _history_index)
-		while _history_index != value:
-			if increment > 0 and history_cursor:
-				history_cursor.undo()
+	var increment := signi(value - _history_index)
+	while _history_index != value:
+		if increment > 0 and history_cursor:
+			history_cursor.undo()
 
-			_history_index += increment
+		_history_index += increment
 
-			if increment < 0 and history_cursor:
-				history_cursor.redo()
+		if increment < 0 and history_cursor:
+			history_cursor.redo()
 
-		self.execute_at_history_cursor()
-		self.emit_roll_events()
+	self.execute_at_history_cursor()
+	self.emit_roll_events()
 
 
 var can_roll_back : bool :
@@ -116,11 +114,11 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if Engine.is_editor_hint() : return
-	if event.is_action_pressed("penny_skip"):
+	if event.is_action_pressed(&"penny_skip"):
 		skip_to_next()
-	elif event.is_action_pressed("penny_roll_back"):
+	elif event.is_action_pressed(&"penny_roll_back"):
 		roll_back()
-	elif event.is_action_pressed("penny_roll_ahead"):
+	elif event.is_action_pressed(&"penny_roll_ahead"):
 		roll_ahead()
 
 
@@ -181,15 +179,13 @@ func execute(stmt : Stmt) :
 
 	await cursor.execute(record)
 
-	if record.is_recorded:
-		if record.is_advanced:
-			cursor = self.next(record)
-			last_valid_cursor = cursor
-			self.execute(cursor)
-		else:
-			cursor = null
-	else:
-		cursor = null
+	print("Finished execution for ", record)
+
+	cursor = null
+	if record.is_recorded and record.is_advanced:
+		cursor = self.next(record)
+		last_valid_cursor = cursor
+		execute(cursor)
 
 
 func abort(response : Record.Response) -> void:
@@ -201,9 +197,9 @@ func skip_to_next() -> void:
 	if cursor and not cursor.is_skippable: return
 
 	if history_cursor != null:
-		self.roll_ahead()
+		roll_ahead()
 	else:
-		self.abort(Record.Response.RECORD_AND_ADVANCE)
+		abort(Record.Response.RECORD_AND_ADVANCE)
 
 
 func roll_ahead() -> void:
@@ -242,15 +238,8 @@ func next(record : Record) -> Stmt:
 	return result
 
 
-func execute_at_end() :
-	await self.execute(self.next(history.most_recent))
-
-
 func execute_at_history_cursor() :
-	if history_cursor:
-		self.execute(history_cursor.stmt)
-	else:
-		self.execute_at_end()
+	execute(history_cursor.stmt if history_cursor else history.most_recent.stmt)
 
 
 func on_reach_end() -> void:
@@ -262,66 +251,39 @@ func close() -> void:
 	return
 
 
+func emit_roll_events() -> void:
+	on_roll_ahead_disabled.emit(not can_roll_ahead)
+	on_roll_back_disabled.emit(not can_roll_back)
+
+
 func save() -> void:
 	var path = await prompt_file_path(FileDialog.FILE_MODE_SAVE_FILE)
 	if path == null: return
 
-	var save_file := FileAccess.open(path, FileAccess.WRITE)
-	var save_dict : Dictionary = get_save_data()
-	var save_json := JSON.stringify(save_dict, "")
-	save_file.store_line(save_json)
-
-	print("Saved data to ", save_file.get_path_absolute())
+	var data := SaveData.new(self, path)
+	data.save_to_file()
 
 
 func load() -> void:
 	var path = await prompt_file_path(FileDialog.FILE_MODE_OPEN_FILE)
-	if path == null : return
+	if path == null: return
 
-	var load_file := FileAccess.open(path, FileAccess.READ)
-	var load_data = JSON.parse_string(load_file.get_as_text())
-	assert(load_data != null, "JSON parser error; data couldn't be loaded.")
+	abort(Record.Response.IGNORE)
 
-	Cell.ROOT.load_data(self, load_data["data"])
+	var data := SaveData.new(self, path)
+	data.load_from_file()
 
-	history.load_data(self, load_data["history"])
-	_history_index = history.get_reverse_index(load_data["history_index"])
-
-	self.abort(Record.Response.IGNORE)
-	self.execute_at_history_cursor()
-	self.emit_roll_events()
+	execute_at_history_cursor()
+	emit_roll_events()
 
 
 func prompt_file_path(mode : FileDialog.FileMode) :
 	var file_dialog := FileDialog.new()
 	file_dialog.access = FileDialog.ACCESS_USERDATA
 	file_dialog.file_mode = mode
-	file_dialog.filters = [ "*.json" ]
+	file_dialog.filters = [ "*.json", "*.dat" ]
 	self.add_child(file_dialog)
 	file_dialog.popup_centered_ratio(0.5)
 	var result = await Async.any([file_dialog.file_selected, file_dialog.canceled])
 	file_dialog.queue_free()
 	return result
-
-
-func get_save_data() -> Variant:
-	return {
-		"meta": {
-			"git_rev_penny": PennyUtils.get_git_commit_id("res://addons/penny_godot/"),
-			"git_rev_project": PennyUtils.get_git_commit_id(),
-			"screenshot": null,
-			"time_saved_utc": Time.get_datetime_dict_from_system(true),
-		},
-		"data": Save.any(Cell.ROOT),
-		"history": Save.any(history),
-		"history_index": history.get_reverse_index(history_index),
-	}
-
-
-func emit_roll_events() -> void:
-	on_roll_ahead_disabled.emit(not can_roll_ahead)
-	on_roll_back_disabled.emit(not can_roll_back)
-
-
-func print(s: String) -> void:
-	prints(s)
