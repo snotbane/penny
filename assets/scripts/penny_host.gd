@@ -179,8 +179,6 @@ func execute(stmt : Stmt) :
 
 	await cursor.execute(record)
 
-	print("Finished execution for ", record)
-
 	cursor = null
 	if record.is_recorded and record.is_advanced:
 		cursor = self.next(record)

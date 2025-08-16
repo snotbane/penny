@@ -5,6 +5,7 @@ const REF_PREFIX := "ref::"
 const COLOR_PREFIX := "col::#"
 
 static func any(value: Variant, use_cell_refs: bool = false) -> Variant:
+	if value == null: return null
 	if value is Object:		return Save.object(value, use_cell_refs)
 	if value is Dictionary:	return Save.dict(value, use_cell_refs)
 	if value is Array:		return Save.array(value, use_cell_refs)
@@ -14,7 +15,6 @@ static func any(value: Variant, use_cell_refs: bool = false) -> Variant:
 
 static func object(value: Object, use_cell_refs: bool = false) -> Variant:
 	if value is Cell:
-		# print("value is Cell: use_cell_refs: ", use_cell_refs, " ", value.get_save_path())
 		return value.get_save_ref() if use_cell_refs else value.export_json()
 	elif value.has_method(&"export_json"):
 		return value.export_json()
