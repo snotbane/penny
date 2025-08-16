@@ -61,10 +61,6 @@ func get_roll_ahead_point(from: int) -> int:
 	return -1
 
 
-func get_reverse_index(i: int) -> int:
-	return records.size() - i - 1
-
-
 func _export_json(json: Dictionary) -> void:
 	var record_data : Array
 	for i in records.size(): record_data.push_back(records[i].export_json())

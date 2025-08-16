@@ -68,6 +68,12 @@ func _get_is_skippable() -> bool:
 	return true
 
 
+var is_loadable : bool :
+	get: return _get_is_loadable()
+func _get_is_loadable() -> bool:
+	return false
+
+
 func _to_string() -> String:
 	return _debug_string_do_not_use_for_anything_else_seriously_i_mean_it
 

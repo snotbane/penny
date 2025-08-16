@@ -18,6 +18,10 @@ func _get_is_rollable() -> bool:
 	return true
 
 
+func _get_is_loadable() -> bool:
+	return true
+
+
 func _populate(tokens: Array) -> void:
 	var regex_whitespace := RegEx.create_from_string(DEPTH_REMOVAL_PATTERN % self.depth)
 	pure_text = regex_whitespace.sub(tokens.pop_back().value, " ", true)

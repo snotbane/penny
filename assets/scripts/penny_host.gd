@@ -18,7 +18,7 @@ class SaveData extends JSONFileResource:
 			&"screenshot": null,
 			&"state": Cell.ROOT.export_json(),
 			&"history": host.history.export_json(),
-			&"history_index": host.history_index
+			&"history_index": clampi(host.history_index, 0, host.history.records.size() - 1)
 		})
 
 	func _import_json(json: Dictionary) -> void:
@@ -79,8 +79,7 @@ func _set_history_index(value: int) -> void:
 		if increment < 0 and history_cursor:
 			history_cursor.redo()
 
-	self.execute_at_history_cursor()
-	self.emit_roll_events()
+	execute_at_history_cursor()
 
 
 var can_roll_back : bool :
@@ -200,32 +199,6 @@ func skip_to_next() -> void:
 		abort(Record.Response.RECORD_AND_ADVANCE)
 
 
-func roll_ahead() -> void:
-	if not allow_rolling or not can_roll_ahead: return
-
-	history_index = history.get_roll_ahead_point(history_index)
-
-
-func roll_back() -> void:
-	if not allow_rolling or not can_roll_back: return
-
-	history_index = history.get_roll_back_point(history_index)
-
-
-func roll_end() -> void:
-	history_index = -1
-
-
-func reset_history_in_place() -> void:
-	history.reset_at(history_index)
-	_history_index = -1
-
-
-func clear_history() -> void:
-	history.records.clear()
-	_history_index = -1
-
-
 func next(record : Record) -> Stmt:
 	var result : Stmt = record.next()
 	if result == null:
@@ -238,6 +211,7 @@ func next(record : Record) -> Stmt:
 
 func execute_at_history_cursor() :
 	execute(history_cursor.stmt if history_cursor else history.most_recent.stmt)
+	emit_roll_events()
 
 
 func on_reach_end() -> void:
@@ -247,6 +221,16 @@ func on_reach_end() -> void:
 func close() -> void:
 	on_close.emit()
 	return
+
+
+func roll_ahead() -> void:
+	if not (allow_rolling and can_roll_ahead): return
+	super.roll_ahead()
+
+
+func roll_back() -> void:
+	if not (allow_rolling and can_roll_back): return
+	super.roll_back()
 
 
 func emit_roll_events() -> void:
@@ -271,8 +255,10 @@ func load() -> void:
 	var data := SaveData.new(self, path)
 	data.load_from_file()
 
+	while history_cursor and not history_cursor.stmt.is_loadable:
+		_history_index -= 1
+
 	execute_at_history_cursor()
-	emit_roll_events()
 
 
 func prompt_file_path(mode : FileDialog.FileMode) :
