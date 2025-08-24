@@ -24,7 +24,8 @@ var history_cursor : Record :
 	get:
 		if _history_index < 0 or _history_index >= history.records.size(): return null
 		else: return history.records[history_index]
-
+var is_at_present : bool :
+	get: return _history_index == history.records.size() - 1
 
 func _init() -> void:
 	history = History.new()

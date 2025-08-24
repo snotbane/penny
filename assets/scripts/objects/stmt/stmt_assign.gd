@@ -58,11 +58,12 @@ func _pre_execute(record: Record) -> void:
 		Type.FLAT:			after = expr._evaluate(context)						## Use [_evaluate] here so that raw paths will be preserved. [Expr] will automatically evaluate [Path]s if needed.
 		_:
 			assert(prior != null, "Can't operate on a null value.")
+			var eval = expr.evaluate(context)
 			match type:
-				Type.ADD:			after = prior + expr.evaluate(context)
-				Type.SUBTRACT:		after = prior - expr.evaluate(context)
-				Type.MULTIPLY:		after = prior * expr.evaluate(context)
-				Type.DIVIDE:		after = prior / expr.evaluate(context)
+				Type.ADD:		after = Expr.add(prior, eval)
+				Type.SUBTRACT:	after = Expr.subtract(prior, eval)
+				Type.MULTIPLY:	after = Expr.multiply(prior, eval)
+				Type.DIVIDE:	after = Expr.divide(prior, eval)
 
 	if after is Cell:
 		if after.key_name == Cell.NEW_OBJECT_KEY_NAME:

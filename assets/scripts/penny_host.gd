@@ -193,10 +193,10 @@ func abort(response : Record.Response) -> void:
 func skip_to_next() -> void:
 	if cursor and not cursor.is_skippable: return
 
-	if history_cursor != null:
-		roll_ahead()
-	else:
+	if is_at_present:
 		abort(Record.Response.RECORD_AND_ADVANCE)
+	else:
+		roll_ahead()
 
 
 func next(record : Record) -> Stmt:

@@ -50,6 +50,44 @@ static func new_from_tokens(tokens: Array, _stmt: Stmt = null) -> Expr:
 	return Expr.new(_stmt, _symbols)
 
 
+static func add(a: Variant, b: Variant) -> Variant:
+	if a is Array:
+		if b is Array:	a.append_array(b)
+		else:			a.append(b)
+		return a
+	else:
+		return a + b if a != null else +b
+
+static func subtract(a: Variant, b: Variant) -> Variant:
+	if a is Array:
+		if b is Array: for e in b:	a.erase(e)
+		else:						a.erase(b)
+		return a
+	else:
+		return a - b if a != null else -b
+
+static func multiply(a: Variant, b: Variant) -> Variant:
+	if a is Array:
+		if b is Array:
+			var result : Array = []
+			for e in b: if a.has(e): result.push_back(e)
+			return result
+		else:
+			return a.has(b)
+	else:
+		return a * b
+
+static func divide(a: Variant, b: Variant) -> Variant:
+	if a is Array:
+		assert(b is Array, "")
+
+		var result : Array = []
+		for e in b: if not a.has(e): result.push_back(e)
+		return result
+	else:
+		return a / b
+
+
 func _init(_stmt: Stmt, _symbols: Array) -> void:
 	stmt = _stmt
 	symbols = _symbols
@@ -287,10 +325,10 @@ class Op extends RefCounted:
 			MORE_EQUAL:		stack.push_back(abc[0] >= abc[1])
 			LESS_THAN:		stack.push_back(abc[0]  < abc[1])
 			LESS_EQUAL:		stack.push_back(abc[0] <= abc[1])
-			ADD:			stack.push_back(abc[0]  + abc[1]	if abc[0] != null else		+ abc[1])
-			SUBTRACT:		stack.push_back(abc[0]  - abc[1]	if abc[0] != null else		- abc[1])
-			MULTIPLY:		stack.push_back(abc[0]  * abc[1])
-			DIVIDE:			stack.push_back(abc[0]  / abc[1])
+			ADD:			stack.push_back(Expr.add(abc[0], abc[1]))
+			SUBTRACT:		stack.push_back(Expr.subtract(abc[0], abc[1]))
+			MULTIPLY:		stack.push_back(Expr.multiply(abc[0], abc[1]))
+			DIVIDE:			stack.push_back(Expr.divide(abc[0], abc[1]))
 			MODULO:			stack.push_back(abc[0]  % abc[1])
 			BIT_AND:		stack.push_back(abc[0]  & abc[1])
 			BIT_OR:			stack.push_back(abc[0]  | abc[1])
