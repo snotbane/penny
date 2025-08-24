@@ -149,11 +149,10 @@ func _execute(record: Record) : pass
 
 
 ## Occurs when something interrupts this [Stmt] in the middle of execution.
-func abort(record: Record, response : Record.Response) -> void:
-	_abort(record)
-	record.response = response
+func abort() -> void:
+	_abort()
 	aborted.emit()
-func _abort(record: Record) -> void : pass
+func _abort() -> void : pass
 
 
 ## Occurs when the user rewinds through history to undo this action.

@@ -33,15 +33,13 @@ signal on_data_modified
 signal on_close
 signal finished_execution
 
-signal on_roll_back_disabled(value : bool)
-signal on_roll_ahead_disabled(value : bool)
-
 ## If enabled, the host will begin execution on ready.
 @export var autostart := false
 
 ## The label in Penny scripts to start at. Make sure this is populated with a valid label.
 @export var start_label := &"start"
 
+@export var allow_skipping := true
 @export var allow_rolling := true
 
 @export_subgroup("Debug")
@@ -58,6 +56,7 @@ var last_valid_cursor : Stmt
 var expecting_conditional : bool
 
 var is_skipping : bool
+var is_aborting : bool = false
 
 ## Returns the object in data that has most recently sent a message.
 var last_dialog_object : Cell :
@@ -67,7 +66,7 @@ var last_dialog_object : Cell :
 		return null
 
 func _set_history_index(value: int) -> void:
-	self.abort(Record.Response.IGNORE)
+	abort()
 
 	var increment := signi(value - _history_index)
 	while _history_index != value:
@@ -79,15 +78,7 @@ func _set_history_index(value: int) -> void:
 		if increment < 0 and history_cursor:
 			history_cursor.redo()
 
-	execute_at_history_cursor()
-
-
-var can_roll_back : bool :
-	get: return history.get_roll_back_point(history_index) != -1
-
-
-var can_roll_ahead : bool :
-	get: return history_index != -1
+	record_execute(history_cursor)
 
 
 func _init() -> void:
@@ -98,7 +89,6 @@ func _init() -> void:
 
 func _exit_tree() -> void:
 	insts.erase(self)
-	# Cell.ROOT.clear_instances(true)
 
 
 func _ready() -> void:
@@ -107,18 +97,7 @@ func _ready() -> void:
 	if autostart:
 		jump_to.call_deferred(start_label)
 
-	history.record_added.connect(self.emit_roll_events.unbind(1))
-	self.emit_roll_events()
-
-
-func _input(event: InputEvent) -> void:
-	if Engine.is_editor_hint() : return
-	if event.is_action_pressed(&"penny_skip"):
-		skip_to_next()
-	elif event.is_action_pressed(&"penny_roll_back"):
-		roll_back()
-	elif event.is_action_pressed(&"penny_roll_ahead"):
-		roll_ahead()
+	super._ready()
 
 
 # func _physics_process(delta: float) -> void:
@@ -128,8 +107,8 @@ func _input(event: InputEvent) -> void:
 
 func try_reload(success: bool) -> void:
 	if self.cursor:
-		self.abort(Record.Response.IGNORE)
-		reset_history_in_place()
+		abort()
+		cull_ahead_in_place()
 
 	if self.last_valid_cursor:
 		var start : Stmt = self.last_valid_cursor.owner.diff.remap_stmt_index(self.last_valid_cursor)
@@ -137,69 +116,82 @@ func try_reload(success: bool) -> void:
 			## TODO: Go back through the records till you find the new cursor, and undo stmts until that point.
 			# self.last_valid_cursor.undo(history_cursor)
 			self.last_valid_cursor = null
-			self.execute(start)
+			create_execute(start)
 		else:
 			self.last_valid_cursor = null
 
 
 func perform_inits() -> void:
 	for init in Penny.inits:
-		await self.execute(init)
+		await create_execute(init)
 
 
 func perform_inits_selective(scripts: Array[PennyScript]) -> void:
 	for init in Penny.inits:
 		if not scripts.has(init.owner): continue
-		await self.execute(init)
+		await create_execute(init)
 
 
 func jump_to(label: StringName) -> void:
-	self.abort(Record.Response.RECORD_ONLY)
-	self.execute(Penny.get_stmt_from_label(label))
+	abort()
+	create_execute(Penny.get_stmt_from_label(label))
 
 
 func call_to(label: StringName) -> void:
-	self.call_stack.push_back(cursor.next_in_order)
-	self.jump_to(label)
+	call_stack.push_back(cursor.next_in_order)
+	jump_to(label)
 
 
-func execute(stmt : Stmt) :
-	cursor = stmt
-	if cursor == null: return
+## Creates a new record from the given [stmt] and then executes it.
+func create_execute(stmt : Stmt) :
+	if stmt == null: return
+
+	var record : Record = stmt.pre_execute(self)
+
+	history.add(record)
+	_history_index += 1
+
+	record_execute(record)
+
+## Executes an already existing record.
+func record_execute(record: Record) :
+	cursor = record.stmt
 	last_valid_cursor = cursor
 
 	if debug_log_stmts: print("%s %s" % [name, cursor._debug_string_do_not_use_for_anything_else_seriously_i_mean_it])
 
-	var record : Record = cursor.pre_execute(self)
-
-	if record.is_recorded:
-		reset_history_in_place()
-		history.add(record)
-
 	await cursor.execute(record)
 
-	cursor = null
-	if record.is_recorded and record.is_advanced:
-		cursor = self.next(record)
-		last_valid_cursor = cursor
-		execute(cursor)
+	if is_aborting:
+		is_aborting = false
+		return
 
+	if is_at_present: ## Or if we need to change the outcome (NOT IMPLEMENTED)
+		create_execute(get_next_stmt(record))
+	else:
+		roll_ahead()
 
-func abort(response : Record.Response) -> void:
+func abort() -> void:
 	if cursor == null: return
-	cursor.abort(history.most_recent, response)
+	is_aborting = true
+	cursor.abort()
+
+func abort_but_proceed() -> void:
+	if cursor == null: return
+	cursor.abort()
 
 
 func skip_to_next() -> void:
-	if cursor and not cursor.is_skippable: return
+	if not allow_skipping: return
 
 	if is_at_present:
-		abort(Record.Response.RECORD_AND_ADVANCE)
+		if cursor and not cursor.is_skippable: return
+		abort_but_proceed()
 	else:
 		roll_ahead()
 
 
-func next(record : Record) -> Stmt:
+func get_next_stmt(record : Record) -> Stmt:
 	var result : Stmt = record.next()
 	if result == null:
 		if call_stack:
@@ -209,33 +201,20 @@ func next(record : Record) -> Stmt:
 	return result
 
 
-func execute_at_history_cursor() :
-	execute(history_cursor.stmt if history_cursor else history.most_recent.stmt)
-	emit_roll_events()
-
-
 func on_reach_end() -> void:
-	close()
-
-
-func close() -> void:
 	on_close.emit()
-	return
 
 
 func roll_ahead() -> void:
-	if not (allow_rolling and can_roll_ahead): return
+	if not allow_rolling: return
+
 	super.roll_ahead()
 
 
 func roll_back() -> void:
-	if not (allow_rolling and can_roll_back): return
+	if not allow_rolling: return
+
 	super.roll_back()
-
-
-func emit_roll_events() -> void:
-	on_roll_ahead_disabled.emit(not can_roll_ahead)
-	on_roll_back_disabled.emit(not can_roll_back)
 
 
 func save() -> void:
@@ -250,7 +229,7 @@ func load() -> void:
 	var path = await prompt_file_path(FileDialog.FILE_MODE_OPEN_FILE)
 	if path == null: return
 
-	abort(Record.Response.IGNORE)
+	abort()
 
 	var data := SaveData.new(self, path)
 	data.load_from_file()
@@ -258,7 +237,7 @@ func load() -> void:
 	while history_cursor and not history_cursor.stmt.is_loadable:
 		_history_index -= 1
 
-	execute_at_history_cursor()
+	record_execute(history_cursor)
 
 
 func prompt_file_path(mode : FileDialog.FileMode) :

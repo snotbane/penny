@@ -12,13 +12,15 @@ var max_size : int = -1
 var most_recent : Record :
 	get: return records.back()
 
-
 var last_dialog : Record :
 	get:
-		for record in records:
-			if record.stmt is StmtDialog:
-				return record
+		for i in records.size():
+			if records[-i-1].stmt is StmtDialog:
+				return records[-i-1]
 		return null
+
+var back_index : int :
+	get : return records.size() - 1
 
 
 func _get_path_ext() -> String:
@@ -42,20 +44,25 @@ func add(record: Record) -> void:
 	record_added.emit(record)
 
 
-func reset_at(index : int) -> void:
-	index += 1
-	for i in index:
+func cull_ahead(index: int) -> void:
+	for i in back_index - index:
 		record_removed.emit(records.pop_back())
 
+func cull_behind(index: int) -> void:
+	var start := records.slice(0, index)
+	records = records.slice(0)
+	for record in start:
+		record_removed.emit(record)
 
-func get_roll_back_point(from: int) -> int:
+
+func get_roll_back_index(from: int) -> int:
 	while from > 0:
 		from -= 1
 		if records[from].stmt.is_rollable: return from
 	return -1
 
-func get_roll_ahead_point(from: int) -> int:
-	while from < records.size() - 1:
+func get_roll_ahead_index(from: int) -> int:
+	while from < back_index:
 		from += 1
 		if records[from].stmt.is_rollable: return from
 	return -1
@@ -63,7 +70,7 @@ func get_roll_ahead_point(from: int) -> int:
 
 func _export_json(json: Dictionary) -> void:
 	var record_data : Array
-	for i in records.size(): record_data.push_back(records[i].export_json())
+	for record in records: record_data.push_back(record.export_json())
 
 	json.merge({
 		&"records": record_data
