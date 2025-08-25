@@ -85,6 +85,5 @@ func _import_json(json: Dictionary) -> void:
 				record[&"stmt"][&"uid"],
 				record[&"stmt"][&"idx"]
 			),
-			record[&"data"],
-			Record.Response.IGNORE
+			record[&"data"]
 		))
