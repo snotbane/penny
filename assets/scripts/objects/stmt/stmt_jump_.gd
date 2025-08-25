@@ -13,7 +13,7 @@ func _populate(tokens: Array) -> void:
 	label_name = tokens[0].value
 
 
-func _pre_execute(record: Record) -> void:
+func _prep(record: Record) -> void:
 	record.data.merge({
 		&"label": label_name
 	})

@@ -17,12 +17,10 @@ var response : Variant :
 
 func _get_verbosity() -> Verbosity:
 	return Verbosity.FLOW_ACTIVITY
-
-
-func _get_is_rollable() -> bool:
+func _get_is_rollable_back() -> bool:
+	return false
+func _get_is_rollable_ahead() -> bool:
 	return true
-
-
 func _get_is_skippable() -> bool:
 	return false
 
@@ -41,7 +39,7 @@ func _reload() -> void:
 	mode = Mode.CELL if nested_option_stmts.is_empty() else Mode.EXPLICIT
 
 
-func _pre_execute(record: Record) -> void:
+func _prep(record: Record) -> void:
 	record.host.expecting_conditional = true
 
 	match mode:
@@ -64,6 +62,8 @@ func _pre_execute(record: Record) -> void:
 				Cell.ROOT.set_value(key, option)
 				prompt_option_refs.push_back(Path.new([key], false))
 			subject.set_value(Cell.K_OPTIONS, prompt_option_refs)
+		Mode.CELL:
+			record.host.call_stack.push_back(next_in_order)
 
 	record.data.merge({
 		&"prior": subject.get_value(Cell.K_RESPONSE),
@@ -76,23 +76,17 @@ func _execute(record: Record) :
 
 	record.data[&"after"] = subject.get_value(Cell.K_RESPONSE)
 
-	match mode:
-		Mode.CELL:
-			record.host.call_stack.push_back(next_in_order)
+
+func _cleanup(record: Record) :
+	await subject.exit(Funx.new(record.host, true))
 
 
 func _undo(record: Record) -> void:
-	match mode:
-		Mode.CELL:
-			record.host.call_stack.pop_back()
 	super._undo(record)
 	subject.set_value(Cell.K_RESPONSE, record.data[&"prior"])
 
 
 func _redo(record: Record) -> void:
-	match mode:
-		Mode.CELL:
-			record.host.call_stack.push_back(next_in_order)
 	super._redo(record)
 	subject.set_value(Cell.K_RESPONSE, record.data[&"after"])
 

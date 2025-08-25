@@ -14,7 +14,7 @@ func _get_verbosity() -> Verbosity:
 	return Verbosity.USER_FACING
 
 
-func _get_is_rollable() -> bool:
+func _get_is_rollable_back() -> bool:
 	return true
 
 
@@ -32,7 +32,7 @@ func _populate(tokens: Array) -> void:
 	subject_dialog_path.ids.push_back(Cell.K_DIALOG)
 
 
-func _pre_execute(record: Record) -> void:
+func _prep(record: Record) -> void:
 	var incoming_dialog : Cell = subject_dialog_path.evaluate()
 	assert(incoming_dialog != null, "Attempted to get dialog box for '%s', but no such object exists" % subject_dialog_path)
 
@@ -70,6 +70,13 @@ func _execute(record: Record) :
 
 	incoming_dialog_node.receive(record)
 	await incoming_dialog_node.advanced
+
+
+func _undo(record: Record) -> void:
+	super._undo(record)
+
+func _redo(record: Record) -> void:
+	super._redo(record)
 
 
 func _create_history_listing(record: Record) -> HistoryListing:

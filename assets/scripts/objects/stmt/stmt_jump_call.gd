@@ -2,17 +2,17 @@
 class_name StmtJumpCall extends StmtJump
 
 
-func _pre_execute(record: Record) -> void:
-	super._pre_execute(record)
+func _prep(record: Record) -> void:
+	super._prep(record)
 	record.host.call_stack.push_back(next_in_order)
 
 
 func _undo(record: Record) -> void:
-	record.host.call_stack.pop_back()
+	super._undo(record)
 
 
 func _redo(record: Record) -> void:
-	record.host.call_stack.push_back(next_in_order)
+	super._redo(record)
 
 
 func _get_record_message(record: Record) -> String:

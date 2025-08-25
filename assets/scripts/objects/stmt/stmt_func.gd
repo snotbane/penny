@@ -43,7 +43,7 @@ func _populate(tokens: Array) -> void:
 	execute_function_ref.ids.push_back(execute_name)
 
 
-func _pre_execute(record: Record) -> void:
+func _prep(record: Record) -> void:
 	var evaluated_arguments : Array = [Funx.new(record.host, is_awaited)]
 	for arg in arguments: evaluated_arguments.push_back(arg.evaluate() if arg is Expr else arg)
 
@@ -58,10 +58,15 @@ func _execute(record: Record) :
 	record.data[&"result"] = result
 
 
-func _undo(record: Record) -> void :
+func _undo(record: Record) -> void:
+	super._undo(record)
 	var evaluated_arguments : Array = [record]
 	evaluated_arguments.append_array(record.data[&"args"])
 	undo_function.callv(evaluated_arguments)
+
+
+func _redo(record: Record) -> void:
+	super._redo(record)
 
 
 ## Separates tokens by iterator.

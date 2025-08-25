@@ -54,12 +54,16 @@ func _get_verbosity() -> Verbosity:
 	return Verbosity.USER_FACING
 
 
-## Defines whether or not this statement can be used as a stop point when rolling back or forward. Usually true for any statement that pauses execution until user manually inputs.
-var is_rollable : bool :
-	get: return _get_is_rollable()
-func _get_is_rollable() -> bool:
+## Defines whether or not this statement can be used as a stop point when rolling back. Usually true for any statement that pauses execution until user manually inputs.
+var is_rollable_back : bool :
+	get: return _get_is_rollable_back()
+func _get_is_rollable_back() -> bool:
 	return false
 
+var is_rollable_ahead : bool :
+	get: return _get_is_rollable_ahead()
+func _get_is_rollable_ahead() -> bool:
+	return _get_is_rollable_back()
 
 ## Defines whether or not this statement can be automatically skipped. This should be false for any stmt that both (1) relies on user input AND (2) alters the stmt flow. E.g. menus/prompts. True for all others.
 var is_skippable : bool :
@@ -132,20 +136,24 @@ func _reload() -> void: pass
 
 
 ## Perform calculations before execution and creates/initializes a record. Not awaitable and doesn't happen on redo.
-func pre_execute(host: PennyHost, data: Dictionary = {}) -> Record:
+func prep(host: PennyHost, data: Dictionary = {}) -> Record:
 	var result := Record.new(host, self, data)
-	_pre_execute(result)
+	_prep(result)
 	return result
-func _pre_execute(record: Record) -> void: pass
+func _prep(record: Record) -> void: pass
 
 
 ## Given a record, waits for something to complete BEFORE calling the next [Stmt]
 func execute(record: Record) :
-	return await Async.any([
+	var result = await Async.any([
 		self._execute.bind(record),
 		self.aborted,
 	])
+	await _cleanup(record)
+	return result
 func _execute(record: Record) : pass
+## Perform cleanup actions regardless of how the execution finished.
+func _cleanup(record: Record) : pass
 
 
 ## Occurs when something interrupts this [Stmt] in the middle of execution.
@@ -162,7 +170,7 @@ func _undo(record: Record) -> void:	pass
 
 ## Occurs when the user fast-forwards through history to redo this action.
 func redo(record: Record) -> void: _redo(record)
-func _redo(record: Record) -> void: _execute(record)
+func _redo(record: Record) -> void: pass
 
 
 ## Returns the address of the next statement to go to, based on what happened.

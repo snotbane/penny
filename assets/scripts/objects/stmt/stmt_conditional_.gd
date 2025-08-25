@@ -5,7 +5,7 @@ func _get_verbosity() -> Verbosity:
 	return Verbosity.FLOW_ACTIVITY
 
 
-func _pre_execute(record: Record) -> void:
+func _prep(record: Record) -> void:
 	record.data.merge({
 		&"result": _evaluate_self(record.host)
 	})

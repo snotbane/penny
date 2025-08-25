@@ -47,8 +47,8 @@ func _populate(tokens: Array) -> void:
 	expr = Expr.new_from_tokens(right, self)
 
 
-func _pre_execute(record: Record) -> void:
-	super._pre_execute(record)
+func _prep(record: Record) -> void:
+	super._prep(record)
 
 	var prior : Variant = local_subject_ref.evaluate_local(context)
 	var after : Variant
@@ -79,6 +79,13 @@ func _pre_execute(record: Record) -> void:
 		&"after": after
 	})
 
+func _undo(record: Record) -> void:
+	subject_ref.set_local_value_in_cell(context, record.data[&"prior"])
+	super._undo(record)
+
+func _redo(record: Record) -> void:
+	subject_ref.set_local_value_in_cell(context, record.data[&"after"])
+	super._redo(record)
 
 func _get_record_message(record: Record) -> String:
 	return "[code][color=dim_gray]assign %s : [color=slate_gray]%s[/color] => [color=dodger_blue]%s[/color][/color][/code]" % [Penny.get_value_as_bbcode_string(subject_ref), Penny.get_value_as_bbcode_string(record.data[&"prior"]), Penny.get_value_as_bbcode_string(record.data[&"after"])]

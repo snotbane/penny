@@ -70,15 +70,24 @@ func _set_history_index(value: int) -> void:
 
 	var increment := signi(value - _history_index)
 	while _history_index != value:
-		if increment > 0 and history_cursor:
+		if increment < 0:
 			history_cursor.undo()
+		elif increment > 0:
+			history_cursor.redo()
 
 		_history_index += increment
 
-		if increment < 0 and history_cursor:
-			history_cursor.redo()
-
 	record_execute(history_cursor)
+
+func roll_ahead() -> void:
+	if not allow_rolling: return
+
+	super.roll_ahead()
+
+func roll_back() -> void:
+	if not allow_rolling: return
+
+	super.roll_back()
 
 
 func _init() -> void:
@@ -146,7 +155,7 @@ func call_to(label: StringName) -> void:
 func create_execute(stmt : Stmt) :
 	if stmt == null: return
 
-	var record : Record = stmt.pre_execute(self)
+	var record : Record = stmt.prep(self)
 
 	history.add(record)
 	_history_index += 1
@@ -203,18 +212,6 @@ func get_next_stmt(record : Record) -> Stmt:
 
 func on_reach_end() -> void:
 	on_close.emit()
-
-
-func roll_ahead() -> void:
-	if not allow_rolling: return
-
-	super.roll_ahead()
-
-
-func roll_back() -> void:
-	if not allow_rolling: return
-
-	super.roll_back()
 
 
 func save() -> void:

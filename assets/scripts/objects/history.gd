@@ -58,13 +58,13 @@ func cull_behind(index: int) -> void:
 func get_roll_back_index(from: int) -> int:
 	while from > 0:
 		from -= 1
-		if records[from].stmt.is_rollable: return from
+		if records[from].stmt.is_rollable_back: return from
 	return -1
 
 func get_roll_ahead_index(from: int) -> int:
 	while from < back_index:
 		from += 1
-		if records[from].stmt.is_rollable: return from
+		if records[from].stmt.is_rollable_ahead: return from
 	return -1
 
 

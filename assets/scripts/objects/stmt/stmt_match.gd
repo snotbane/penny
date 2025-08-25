@@ -6,9 +6,9 @@ func _get_verbosity() -> Verbosity:
 	return Verbosity.FLOW_ACTIVITY
 
 
-func _pre_execute(record: Record) -> void:
+func _prep(record: Record) -> void:
 	record.host.expecting_conditional = true
-	super._pre_execute(record)
+	super._prep(record)
 
 
 func _get_record_message(record: Record) -> String:

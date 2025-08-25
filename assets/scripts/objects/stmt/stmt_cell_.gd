@@ -41,7 +41,7 @@ func _populate(tokens: Array) -> void:
 		flags.push_back(token.value)
 
 
-func _pre_execute(record: Record) -> void:
+func _prep(record: Record) -> void:
 	if subject_node is SpriteActor:
 		for flag in flags:
 			subject_node.sprite_flags.push_flag(flag)
@@ -50,6 +50,14 @@ func _pre_execute(record: Record) -> void:
 		&"flags_before": [],
 		&"flags_after": [],
 	})
+
+func _undo(record: Record) -> void:
+	super._undo(record)
+	## TODO: set flags
+
+func _redo(record: Record) -> void:
+	super._redo(record)
+	## TODO: set flags
 
 
 func get_prev_with_explicit_subject() -> StmtCell :
