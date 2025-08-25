@@ -6,6 +6,7 @@ var host : PennyHost
 var stamp : int
 var stmt : Stmt
 var data : Dictionary
+var force_cull_history : bool = false
 
 var verbosity : int :
 	get: return stmt.verbosity

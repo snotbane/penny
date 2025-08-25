@@ -40,8 +40,6 @@ func _reload() -> void:
 
 
 func _prep(record: Record) -> void:
-	record.host.expecting_conditional = true
-
 	match mode:
 		Mode.EXPLICIT:
 			var prompt_option_refs : Array
@@ -66,15 +64,19 @@ func _prep(record: Record) -> void:
 			record.host.call_stack.push_back(next_in_order)
 
 	record.data.merge({
-		&"prior": subject.get_value(Cell.K_RESPONSE),
+		&"prior": response,
 	})
 
 
 func _execute(record: Record) :
+
 	await subject.enter(Funx.new(record.host, true))
 	await subject_node.advanced
 
-	record.data[&"after"] = subject.get_value(Cell.K_RESPONSE)
+	record.force_cull_history = record.data.get(&"after") != response
+	record.data[&"after"] = response
+
+	record.host.expecting_conditional = record.force_cull_history
 
 
 func _cleanup(record: Record) :

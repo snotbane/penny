@@ -158,7 +158,7 @@ func create_execute(stmt : Stmt) :
 	var record : Record = stmt.prep(self)
 
 	history.add(record)
-	_history_index += 1
+	_history_index = history.back_index
 
 	record_execute(record)
 
@@ -175,7 +175,9 @@ func record_execute(record: Record) :
 		is_aborting = false
 		return
 
-	if is_at_present: ## Or if we need to change the outcome (NOT IMPLEMENTED)
+	if is_at_present or record.force_cull_history:
+		record.force_cull_history = false
+		cull_ahead_in_place()
 		create_execute(get_next_stmt(record))
 	else:
 		roll_ahead()
