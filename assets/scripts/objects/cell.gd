@@ -302,7 +302,14 @@ func _export_json(json: Dictionary) -> void:
 
 
 func _import_json(json: Dictionary) -> void:
-	pass
+	for k in data.keys():
+		if k in json: continue
+		var transient = String(k)[0] != "$"
+		if transient: continue
+		data.erase(k)
+	for k in json.keys():
+		var key_value = Load.any(json[k])
+		data[k] = key_value
 
 
 func get_save_ref() -> Variant:

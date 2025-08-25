@@ -11,7 +11,7 @@ enum Mode {
 
 var mode : Mode
 var nested_option_stmts : Array[StmtConditionalMenu]
-var response : Variant :
+var response : Path :
 	get: return subject.get_value(Cell.K_RESPONSE)
 
 
@@ -65,16 +65,19 @@ func _prep(record: Record) -> void:
 
 	record.data.merge({
 		&"prior": response,
+		&"prior_data": (response if response else Cell.ROOT.get_value(Cell.K_OPTION)).export_json()
 	})
+
+	print(record.data)
 
 
 func _execute(record: Record) :
-
 	await subject.enter(Funx.new(record.host, true))
 	await subject_node.advanced
 
 	record.force_cull_history = record.data.get(&"after") != response
 	record.data[&"after"] = response
+	record.data[&"after_data"] = response.evaluate().export_json()
 
 	record.host.expecting_conditional = record.force_cull_history
 
@@ -85,12 +88,14 @@ func _cleanup(record: Record) :
 
 func _undo(record: Record) -> void:
 	super._undo(record)
+	response.evaluate().import_json(record.data[&"prior_data"])
 	subject.set_value(Cell.K_RESPONSE, record.data[&"prior"])
 
 
 func _redo(record: Record) -> void:
 	super._redo(record)
 	subject.set_value(Cell.K_RESPONSE, record.data[&"after"])
+	response.evaluate().import_json(record.data[&"after_data"])
 
 
 func _next(record: Record) -> Stmt:
