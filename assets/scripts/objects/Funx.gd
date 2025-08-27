@@ -1,3 +1,4 @@
+## Function context.
 class_name Funx extends RefCounted
 
 var host : PennyHost

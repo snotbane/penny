@@ -50,9 +50,9 @@ static var insts : Array[PennyHost] = []
 
 var call_stack : Array[Stmt]
 
-var cursor : Stmt
+var cursor : Record
 
-var last_valid_cursor : Stmt
+var last_valid_cursor : Record
 var expecting_conditional : bool
 
 var is_skipping : bool
@@ -77,7 +77,7 @@ func _set_history_index(value: int) -> void:
 
 		_history_index += increment
 
-	record_execute(history_cursor)
+	execute_record(history_cursor)
 
 func roll_ahead() -> void:
 	if not allow_rolling: return
@@ -115,35 +115,35 @@ func _ready() -> void:
 
 
 func try_reload(success: bool) -> void:
-	if self.cursor:
+	if cursor:
 		abort()
 		cull_ahead_in_place()
 
-	if self.last_valid_cursor:
-		var start : Stmt = self.last_valid_cursor.owner.diff.remap_stmt_index(self.last_valid_cursor)
+	if last_valid_cursor:
+		var start : Stmt = last_valid_cursor.stmt.owner.diff.remap_stmt_index(last_valid_cursor.stmt)
 		if success:
 			## TODO: Go back through the records till you find the new cursor, and undo stmts until that point.
-			# self.last_valid_cursor.undo(history_cursor)
-			self.last_valid_cursor = null
-			create_execute(start)
+			# last_valid_cursor.undo(history_cursor)
+			last_valid_cursor = null
+			create_record_and_execute(start)
 		else:
-			self.last_valid_cursor = null
+			last_valid_cursor = null
 
 
 func perform_inits() -> void:
 	for init in Penny.inits:
-		await create_execute(init)
+		await create_record_and_execute(init)
 
 
 func perform_inits_selective(scripts: Array[PennyScript]) -> void:
 	for init in Penny.inits:
 		if not scripts.has(init.owner): continue
-		await create_execute(init)
+		await create_record_and_execute(init)
 
 
 func jump_to(label: StringName) -> void:
 	abort()
-	create_execute(Penny.get_stmt_from_label(label))
+	create_record_and_execute(Penny.get_stmt_from_label(label))
 
 
 func call_to(label: StringName) -> void:
@@ -151,53 +151,53 @@ func call_to(label: StringName) -> void:
 	jump_to(label)
 
 
+func create_record(stmt: Stmt) -> Record:
+	if stmt == null: return null
+
+	var result := stmt.prep(self)
+	history.add(result)
+	return result
+
+
 ## Creates a new record from the given [stmt] and then executes it.
-func create_execute(stmt : Stmt) :
-	if stmt == null: return
+func create_record_and_execute(stmt : Stmt) -> void:
+	var record : Record = create_record(stmt)
+	if not record: return
 
-	var record : Record = stmt.prep(self)
-
-	history.add(record)
 	_history_index = history.back_index
-
-	record_execute(record)
+	execute_record(record)
 
 ## Executes an already existing record.
-func record_execute(record: Record) :
-	cursor = record.stmt
+func execute_record(record: Record) :
+	cursor = record
 	last_valid_cursor = cursor
 
-	if debug_log_stmts: print("%s %s" % [name, cursor._debug_string_do_not_use_for_anything_else_seriously_i_mean_it])
+	if debug_log_stmts: print("%s %s" % [name, cursor.stmt.__debug_string__])
 
-	await cursor.execute(record)
+	var response : Stmt.ExecutionResponse = await cursor.stmt.execute(cursor)
 
-	if is_aborting:
-		is_aborting = false
-		return
+	if response != Stmt.ExecutionResponse.FINISHED: return
 
-	if is_at_present or record.force_cull_history:
-		record.force_cull_history = false
+	if is_at_present or cursor.force_cull_history:
+		cursor.force_cull_history = false
 		cull_ahead_in_place()
-		create_execute(get_next_stmt(record))
+		var next__ = get_next_stmt(cursor)
+		create_record_and_execute(next__)
 	else:
 		roll_ahead()
 
 func abort() -> void:
 	if cursor == null: return
-	is_aborting = true
-	cursor.abort()
-
-func abort_but_proceed() -> void:
-	if cursor == null: return
-	cursor.abort()
+	cursor.stmt.abort()
 
 
-func skip_to_next() -> void:
+func user_skip() -> void:
 	if not allow_skipping: return
 
 	if is_at_present:
-		if cursor and not cursor.is_skippable: return
-		abort_but_proceed()
+		if cursor and not cursor.stmt.is_skippable: return
+		abort()
+		create_record_and_execute(get_next_stmt(cursor))
 	else:
 		roll_ahead()
 
@@ -236,7 +236,7 @@ func load() -> void:
 	while history_cursor and not history_cursor.stmt.is_loadable:
 		_history_index -= 1
 
-	record_execute(history_cursor)
+	execute_record(history_cursor)
 
 
 func prompt_file_path(mode : FileDialog.FileMode) :

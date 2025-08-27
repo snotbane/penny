@@ -88,14 +88,14 @@ func _cleanup(record: Record) :
 
 func _undo(record: Record) -> void:
 	super._undo(record)
-	response.evaluate().import_json(record.data[&"prior_data"])
 	subject.set_value(Cell.K_RESPONSE, record.data[&"prior"])
+	record.data[&"after"].evaluate().import_json(record.data[&"prior_data"])
 
 
 func _redo(record: Record) -> void:
 	super._redo(record)
 	subject.set_value(Cell.K_RESPONSE, record.data[&"after"])
-	response.evaluate().import_json(record.data[&"after_data"])
+	record.data[&"after"].evaluate().import_json(record.data[&"after_data"])
 
 
 func _next(record: Record) -> Stmt:

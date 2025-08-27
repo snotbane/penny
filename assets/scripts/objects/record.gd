@@ -35,7 +35,7 @@ func redo() -> void:
 
 
 func _to_string() -> String:
-	return "Record : %s\n       : %s" % [ stmt._debug_string_do_not_use_for_anything_else_seriously_i_mean_it, data]
+	return "Record : %s\n       : %s" % [ stmt.__debug_string__, data]
 
 
 func equals(other: Record) -> bool:

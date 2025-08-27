@@ -9,14 +9,6 @@ static func all(methods : Array) :
 	return listener.payload
 
 
-## Calls all provided callables. Then waits for the FIRST of the callables/signals to finish awaiting. Returns the result of that first method; others are never triggered. If multiple complete simultaneously, the first one in the list is prioritized.
-static func any(methods : Array) :
-	var listener := AnyListener.new(methods)
-	if not listener.is_completed:
-		await listener.completed
-	return listener.payload
-
-
 class AllListener extends RefCounted :
 	signal completed
 	var payload : Array = []
@@ -54,30 +46,46 @@ class AllListener extends RefCounted :
 			completed.emit()
 
 
+## Calls all provided callables. Then waits for the FIRST of the callables/signals to finish awaiting. Returns the result of that first method; others are never triggered. If multiple complete simultaneously, the first one in the list is prioritized.
+static func any(methods : Array) :
+	var listener := AnyListener.new(methods)
+	if not listener.is_completed:
+		await listener.completed
+	return listener.payload
+
+## Functions like [member any], but returns the index of the method which was first completed. Returns 0 if completed instantly.
+static func any_indexed(methods : Array) :
+	var listener := AnyListener.new(methods)
+	if not listener.is_completed:
+		return await listener.completed
+	else:
+		return 0
+
+
 class AnyListener extends RefCounted :
-	signal completed
+	signal completed(idx: int)
 	var payload : Variant = null
 	var is_completed : bool = false
 
 
-	func _init(methods : Array) -> void:
-		for method in methods:
-			self.add(method)
+	func _init(methods : Array = []) -> void:
+		for i in methods.size():
+			self.add(methods[i], i)
 
 
-	func add(method) -> void:
+	func add(method, idx: int) -> void:
 		if is_completed: return
 		if method is Signal:
-			receive(await method)
+			receive(await method, idx)
 		elif method is Callable:
-			receive(await method.call())
+			receive(await method.call(), idx)
 		else:
 			assert(false, "Awaitable method must be either a Signal or a Callable.")
 
 
-	func receive(value : Variant = null) -> void:
+	func receive(value : Variant = null, idx: int = -1) -> void:
 		if is_completed: return
 		is_completed = true
 
 		payload = value
-		completed.emit()
+		completed.emit(idx)

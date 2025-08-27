@@ -9,7 +9,7 @@ var host : PennyHost :
 func _input(event: InputEvent) -> void:
 	if Engine.is_editor_hint() : return
 	if event.is_action_pressed(&"penny_skip"):
-		host.skip_to_next()
+		host.user_skip()
 	elif event.is_action_pressed(&"penny_roll_back"):
 		host.roll_back()
 	elif event.is_action_pressed(&"penny_roll_ahead"):

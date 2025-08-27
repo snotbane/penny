@@ -2,6 +2,11 @@
 ## Base class for all executable statemetnts.
 class_name Stmt extends RefCounted
 
+enum ExecutionResponse {
+	FINISHED = 0,
+	ABORTED = 1,
+}
+
 enum Verbosity {
 	NONE = 0,
 	USER_FACING = 1 << 0,
@@ -28,7 +33,7 @@ var owner : PennyScript
 var index : int
 var depth : int
 var hash_id : int
-var _debug_string_do_not_use_for_anything_else_seriously_i_mean_it : String
+var __debug_string__ : String
 
 var prev_in_order : Stmt
 var prev_in_same_depth : Stmt
@@ -79,7 +84,7 @@ func _get_is_loadable() -> bool:
 
 
 func _to_string() -> String:
-	return _debug_string_do_not_use_for_anything_else_seriously_i_mean_it
+	return __debug_string__
 
 
 ## Called after the statement is created.
@@ -98,7 +103,7 @@ func populate(_owner : PennyScript, _index : int, tokens : Array) -> void:
 		var _d : String = ""
 		for token in tokens:
 			_d += token.to_string().split(":")[1] + " "
-		_debug_string_do_not_use_for_anything_else_seriously_i_mean_it = ">\t".repeat(depth + 1) + _d.substr(0, _d.length() - 1)
+		__debug_string__ = ">\t".repeat(depth + 1) + _d.substr(0, _d.length() - 1)
 
 	index_in_same_depth_chain = get_index_in_same_depth_chain()
 	context_ref = get_context_ref()
@@ -110,7 +115,7 @@ func populate_from_other(other: Stmt, tokens : Array) -> void:
 	owner = other.owner
 	index = other.index
 	depth = other.depth
-	_debug_string_do_not_use_for_anything_else_seriously_i_mean_it = other._debug_string_do_not_use_for_anything_else_seriously_i_mean_it
+	__debug_string__ = other.__debug_string__
 
 	index_in_same_depth_chain = other.index_in_same_depth_chain
 	context_ref = other.context_ref
@@ -145,12 +150,12 @@ func _prep(record: Record) -> void: pass
 
 ## Given a record, waits for something to complete BEFORE calling the next [Stmt]
 func execute(record: Record) :
-	var result = await Async.any([
-		self._execute.bind(record),
-		self.aborted,
+	var result = await Async.any_indexed([
+		_execute.bind(record),
+		aborted,
 	])
 	await _cleanup(record)
-	return result
+	return result as ExecutionResponse
 func _execute(record: Record) : pass
 ## Perform cleanup actions regardless of how the execution finished.
 func _cleanup(record: Record) : pass
@@ -199,7 +204,7 @@ func export_json() -> Dictionary:
 	if OS.is_debug_build():
 		result.merge({
 			&"__debug_script__": owner.resource_path,
-			&"__debug_string__": _debug_string_do_not_use_for_anything_else_seriously_i_mean_it,
+			&"__debug_string__": __debug_string__,
 		})
 	return result
 
