@@ -30,11 +30,13 @@ func _get_record_message(record: Record) -> String:
 	return "[code][color=dim_gray]menu : [/color]%s[/code]" % Penny.get_value_as_bbcode_string(subject)
 
 
+func _init() -> void:
+	super._init(StorageQualifier.NONE)
+
 func _populate(tokens: Array) -> void:
 	super._populate(tokens)
 	if subject == Cell.ROOT:
 		local_subject_ref = Path.new([ Cell.K_PROMPT ], false)
-
 
 func _reload() -> void:
 	super._reload()
@@ -44,7 +46,6 @@ func _reload() -> void:
 			nested_option_stmts.push_back(stmt)
 
 	mode = Mode.CELL if nested_option_stmts.is_empty() else Mode.EXPLICIT
-
 
 func _prep(record: Record) -> void:
 	match mode:
@@ -75,7 +76,6 @@ func _prep(record: Record) -> void:
 		&"prior_data": (response if response else Cell.ROOT.get_value(Cell.K_OPTION)).export_json()
 	})
 
-
 func _execute(record: Record) :
 	await subject.enter(Funx.new(record.host, true))
 	await subject_node.advanced
@@ -86,10 +86,8 @@ func _execute(record: Record) :
 
 	record.host.expecting_conditional = record.force_cull_history and mode == Mode.EXPLICIT
 
-
 func _cleanup(record: Record) :
 	await subject.exit(Funx.new(record.host, true))
-
 
 func _undo(record: Record) -> void:
 	super._undo(record)
@@ -97,13 +95,11 @@ func _undo(record: Record) -> void:
 	if record.data[&"after"] == null: return
 	record.data[&"after"].evaluate().import_json(record.data[&"prior_data"])
 
-
 func _redo(record: Record) -> void:
 	super._redo(record)
 	subject.set_value(Cell.K_RESPONSE, record.data[&"after"])
 	if record.data[&"after"] == null: return
 	record.data[&"after"].evaluate().import_json(record.data[&"after_data"])
-
 
 # func _next(record: Record) -> Stmt:
 # 	match mode:

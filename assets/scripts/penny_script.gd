@@ -193,13 +193,14 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 		tokens.pop_front()
 		if tokens.size() == 0: return null
 
-	for token in tokens: if token.type == Token.Type.ASSIGNMENT: return StmtAssign.new()
+	var front_keywords : Array[Token] = []
+	while tokens and tokens.front().type == Token.Type.KEYWORD:
+		front_keywords.push_back(tokens.pop_front())
 
-	if tokens.front().type == Token.Type.KEYWORD and tokens.front().value != &"await":
-		var keyword_token : Token = tokens.pop_front()
-		var keyword : StringName = keyword_token.value
+	for token in tokens: if token.type == Token.Type.ASSIGNMENT: return StmtAssign.new(StmtCell.get_storage_qualifier_from_front_tokens(front_keywords))
 
-		match keyword:
+	if front_keywords:
+		match front_keywords[0].value:
 			&"call": 	return StmtJumpCall.new()
 			&"else": 	return StmtConditionalElse.new()
 			&"elif": 	return StmtConditionalElif.new()
@@ -212,8 +213,6 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 			&"pass": 	return StmtPass.new()
 			&"print": 	return StmtPrint.new()
 			&"return":	return StmtReturn.new()
-		assert(false, "The keyword '%s' was found, but it isn't assigned to any Stmt." % keyword)
-		return null
 
 	var block_header := stmt.get_prev_in_lower_depth()
 	if block_header:
@@ -227,21 +226,18 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 			return StmtDialog.new()
 		Token.Type.OPERATOR:
 			if tokens.back().value.type == Expr.Op.GROUP_CLOSE:
-				return StmtFunc.new()
+				return StmtFunc.new(front_keywords and front_keywords[0].value == &"await")
+
+	if front_keywords:
+		match front_keywords[0].value:
+			&"await":	return StmtAwait.new()
 
 	match tokens.front().type:
-		Token.Type.KEYWORD:
-			var keyword : StringName = tokens.pop_front().value
-			match keyword:
-				&"await":
-					return StmtAwait.new()
-			assert(false, "The keyword '%s' was found, but it isn't assigned to any Stmt." % keyword)
-			return null
 		Token.Type.IDENTIFIER:
-			return StmtCell.new()
+			return StmtCell.new(StmtCell.get_storage_qualifier_from_front_tokens(front_keywords))
 		Token.Type.OPERATOR:
 			if tokens.front().value.type == Expr.Op.DOT and tokens[1].type == Token.Type.IDENTIFIER:
-				return StmtCell.new()
+				return StmtCell.new(StmtCell.get_storage_qualifier_from_front_tokens(front_keywords))
 
 	assert(false, "No Stmt recycled from tokens: %s" % str(tokens))
 	return null
@@ -272,8 +268,17 @@ static func parse_code_to_tokens(raw: String, context_file: FileAccess = null) -
 
 		if not token_found:
 			var address_numbers := get_line_and_column_numbers(cursor, raw)
-			if context_file:	printerr("%s (ln %s, cl %s): Unrecognized token '%s'." % [context_file.get_path(), raw[cursor], address_numbers[0], address_numbers[1]])
-			else:				printerr("Unrecognized token '%s' at (ln %s, cl %s)." % [raw[cursor], address_numbers[0], address_numbers[1]])
+			if context_file:	printerr("%s (ln %s, cl %s): Unrecognized token '%s'." % [
+				context_file.get_path(),
+				address_numbers[0],
+				address_numbers[1],
+				raw[cursor]
+			])
+			else:				printerr("(ln %s, cl %s): Unrecognized token '%s'." % [
+				address_numbers[0],
+				address_numbers[1],
+				raw[cursor]
+			])
 			break
 
 	return result
@@ -308,13 +313,13 @@ class Token extends RefCounted:
 	static var TYPE_PATTERNS : Dictionary[Type, RegEx] = {
 		Token.Type.INDENTATION: 			RegEx.create_from_string(r"(?m)^\t+"),
 		Token.Type.VALUE_STRING: 			RegEx.create_from_string(r"(?s)([`'\"]).*?\1"),
-		Token.Type.KEYWORD: 				RegEx.create_from_string(r"\b(await|call|else|elif|if|init|jump|label|match|menu|pass|print|return)\b"),
+		Token.Type.KEYWORD: 				RegEx.create_from_string(r"\b(await|call|else|elif|if|init|jump|label|let|match|menu|pass|print|return|var)\b"),
 		Token.Type.VALUE_BOOLEAN: 			RegEx.create_from_string(r"\b([Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
 		Token.Type.VALUE_COLOR: 			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
 		Token.Type.ASSIGNMENT: 				RegEx.create_from_string(r"=>|([+\-*/]?)=(?!=)"),
 		Token.Type.OPERATOR: 				Expr.Op.PATTERN_COMPILED,
 		Token.Type.COMMENT: 				RegEx.create_from_string(r"(?ms)(([#/])\*.*?(\*\2))|((#|\/{2}).*?$)"),
-		Token.Type.IDENTIFIER: 				RegEx.create_from_string(r"\$?[a-zA-Z_]\w*"),
+		Token.Type.IDENTIFIER: 				RegEx.create_from_string(r"[a-zA-Z_]\w*"),
 		Token.Type.VALUE_NUMBER: 			RegEx.create_from_string(r"\d+\.\d*|\.?\d+"),
 		Token.Type.TERMINATOR: 				RegEx.create_from_string(r"(?m)(?<!\[)[:;\n]+(?!\])"),
 		Token.Type.WHITESPACE: 				RegEx.create_from_string(r"(?m)[ \n]+|(?<!^|\t)\t+"),

@@ -1,7 +1,23 @@
 ## Generic statement for referring to a [Cell]. Also allows one to specify flags for that [Cell].
 class_name StmtCell extends Stmt
 
+enum StorageQualifier {
+	## Do not affect the storage qualification of the specified [Cell].
+	NONE,
+	## Set the storage qualification of the [Cell] to be stored in save data.
+	STORED,
+	## Set the storage qualification of the [Cell] to not be stored in save data.
+	TRANSIENT
+}
+
 static var DEFAULT_CELL_REF := Path.to(Cell.OBJECT)
+
+static func get_storage_qualifier_from_front_tokens(front_keywords: Array[PennyScript.Token]) -> StorageQualifier:
+	if front_keywords.is_empty(): return StorageQualifier.NONE
+	match front_keywords[0].value:
+		&"let": return StorageQualifier.TRANSIENT
+		&"var": return StorageQualifier.STORED
+	return StorageQualifier.NONE
 
 var _local_subject_ref : Path
 var local_subject_ref : Path :
@@ -23,12 +39,17 @@ var subject_node : Node :
 
 var flags : PackedStringArray
 
+var storage_qualifier : StorageQualifier
 
 func _get_verbosity() -> Verbosity:
 	return Verbosity.IGNORED
 
 func _get_record_message(record: Record) -> String:
 	return "[code][color=dim_gray]cell : %s[/color][/code]" % Penny.get_value_as_bbcode_string(subject_ref)
+
+
+func _init(__storage_qualifier__ := StorageQualifier.NONE) -> void:
+	storage_qualifier = __storage_qualifier__
 
 
 func _populate(tokens: Array) -> void:

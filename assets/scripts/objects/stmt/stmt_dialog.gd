@@ -28,6 +28,9 @@ func _get_record_message(record: Record) -> String:
 	return record.data[&"what"].text
 
 
+func _init() -> void:
+	super._init(StorageQualifier.NONE)
+
 func _populate(tokens: Array) -> void:
 	var regex_whitespace := RegEx.create_from_string(DEPTH_REMOVAL_PATTERN % self.depth)
 	pure_text = regex_whitespace.sub(tokens.pop_back().value, " ", true)
@@ -36,7 +39,6 @@ func _populate(tokens: Array) -> void:
 
 	subject_dialog_path = subject_ref.duplicate()
 	subject_dialog_path.ids.push_back(Cell.K_DIALOG)
-
 
 func _prep(record: Record) -> void:
 	var incoming_dialog : Cell = subject_dialog_path.evaluate()
@@ -47,7 +49,6 @@ func _prep(record: Record) -> void:
 		&"what": DisplayString.new_from_pure(pure_text, Cell.ROOT, incoming_dialog),
 		&"dialog": incoming_dialog
 	})
-
 
 func _execute(record: Record) :
 	var incoming_dialog : Cell = record.data[&"dialog"]

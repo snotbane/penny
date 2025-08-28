@@ -20,6 +20,10 @@ func _get_verbosity() -> Verbosity:
 func _get_record_message(record: Record) -> String:
 	return "[code][color=dim_gray]assign %s : [color=slate_gray]%s[/color] => [color=dodger_blue]%s[/color][/color][/code]" % [Penny.get_value_as_bbcode_string(subject_ref), Penny.get_value_as_bbcode_string(record.data[&"prior"]), Penny.get_value_as_bbcode_string(record.data[&"after"])]
 
+
+# func _init(__storage_qualifier__ := StorageQualifier.NONE) -> void:
+# 	super._init(__storage_qualifier__)
+
 func _populate(tokens: Array) -> void:
 	var op_index := -1
 	for i in tokens.size():

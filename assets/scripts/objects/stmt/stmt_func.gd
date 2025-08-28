@@ -28,10 +28,11 @@ var redo_function : Callable :
 var is_reserved_function : bool :
 	get: return local_subject_ref.ids.size() == 1
 
-func _populate(tokens: Array) -> void:
-	self.is_awaited = tokens.front().type == PennyScript.Token.Type.KEYWORD and tokens.front().value == &"await"
-	if self.is_awaited:	tokens.pop_front()
+func _init(__is_awaited__: bool = false) -> void:
+	super._init(StorageQualifier.NONE)
+	is_awaited = __is_awaited__
 
+func _populate(tokens: Array) -> void:
 	var group_index : int = -1
 	for i in tokens.size():
 		if tokens[i].type != PennyScript.Token.Type.OPERATOR or tokens[i].value.type != Expr.Op.GROUP_OPEN: continue

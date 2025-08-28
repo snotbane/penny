@@ -91,6 +91,9 @@ func _get_record_message(record: Record) -> String:
 	return "[code][color=deep_pink]Unimplemented Stmt %s[/color][/code]" % self
 
 
+func _init() -> void: pass
+
+
 ## Called after the statement is created.
 func populate(_owner : PennyScript, _index : int, tokens : Array) -> void:
 	tokens = tokens.duplicate()
