@@ -132,13 +132,13 @@ func try_reload(success: bool) -> void:
 
 func perform_inits() -> void:
 	for init in Penny.inits:
-		await create_record_and_execute(init)
+		create_record_and_execute(init)
 
 
 func perform_inits_selective(scripts: Array[PennyScript]) -> void:
 	for init in Penny.inits:
 		if not scripts.has(init.owner): continue
-		await create_record_and_execute(init)
+		create_record_and_execute(init)
 
 
 func jump_to(label: StringName) -> void:

@@ -235,21 +235,27 @@ func spawn(funx: Funx, parent_name = get_value(K_MARKER)) -> Node:
 
 	return result
 func spawn__undo(record: Record) -> void:
-	print("%s: Spawn undo." % key_name)
+	record.data[&"parent_name"] = instance.get_parent().name
+	despawn()
 func spawn__redo(record: Record) -> void:
-	print("%s: Spawn redo." % key_name)
+	record.data[&"result"] = spawn(Funx.new(record.host), record.data[&"parent_name"])
 
-func despawn(funx: Funx = null) -> void:
+
+func despawn(funx: Funx = null) -> Variant:
 	var inst := instance
-	if inst == null: return
+	if inst == null: return null
+	var result := inst.get_parent().name
 	if inst.has_method(&"despawn"):
 		inst.despawn()
 	remove_instance(inst)
 	inst.queue_free()
+	return result
 func despawn__undo(record: Record) -> void:
-	print("%s: Despawn undo." % key_name)
+	if not record.data[&"result"]: return
+
+	spawn(Funx.new(record.host), record.data[&"result"])
 func despawn__redo(record: Record) -> void:
-	print("%s: Despawn redo." % key_name)
+	record.data[&"result"] = despawn()
 
 
 func enter(funx: Funx, parent_name = get_value(K_MARKER), __respawn__ := false) :
