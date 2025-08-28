@@ -234,11 +234,12 @@ func spawn(funx: Funx, parent_name = get_value(K_MARKER)) -> Node:
 		result.global_position = parent_node.global_position
 
 	return result
+
 func spawn__undo(record: Record) -> void:
-	record.data[&"parent_name"] = instance.get_parent().name
 	despawn()
+
 func spawn__redo(record: Record) -> void:
-	record.data[&"result"] = spawn(Funx.new(record.host), record.data[&"parent_name"])
+	record.data[&"result"] = spawn.callv(record.data[&"args"])
 
 
 func despawn(funx: Funx = null) -> Variant:
@@ -250,36 +251,51 @@ func despawn(funx: Funx = null) -> Variant:
 	remove_instance(inst)
 	inst.queue_free()
 	return result
+
 func despawn__undo(record: Record) -> void:
-	if not record.data[&"result"]: return
-
 	spawn(Funx.new(record.host), record.data[&"result"])
+
 func despawn__redo(record: Record) -> void:
-	record.data[&"result"] = despawn()
+	record.data[&"result"] = despawn.callv(record.data[&"args"])
 
 
-func enter(funx: Funx, parent_name = get_value(K_MARKER), __respawn__ := false) :
+func enter(funx: Funx, parent_name = get_value(K_MARKER)) :
 	var inst : Node = instance
-	if inst == null or __respawn__:
+	var spawned : bool = false
+	if inst == null:
+		spawned = true
 		inst = spawn(funx, parent_name)
+
 	if inst.has_method(&"enter"):
 		await inst.enter(funx)
+
+	return spawned
+
 func enter__undo(record: Record) -> void:
-	print("%s: Enter undo." % key_name)
+	exit(record.data[&"args"][0], record.data[&"result"])
+
 func enter__redo(record: Record) -> void:
-	print("%s: Enter undo." % key_name)
+	record.data[&"result"] = await enter.callv(record.data[&"args"])
 
 
 func exit(funx: Funx, __despawn__ := true) :
 	var inst := instance
 	if inst and inst.has_method(&"exit"):
 		await inst.exit(funx)
+
 	if __despawn__:
-		despawn()
+		return despawn()
+	else:
+		return null
+
 func exit__undo(record: Record) -> void:
-	print("%s: Exit undo." % self.key_name)
+	if record.data[&"result"]:
+		enter(record.data[&"args"][0], record.data[&"result"])
+	else:
+		enter(record.data[&"args"][0])
+
 func exit__redo(record: Record) -> void:
-	print("%s: Exit redo." % self.key_name)
+	record.data[&"result"] = await exit.callv(record.data[&"args"])
 
 
 ## Moves (crosses) a Node from one position to another. Can be a marker or a literal position.
@@ -291,20 +307,27 @@ func cross__redo(record: Record) -> void:
 	print("%s: cross redo." % self.key_name)
 
 
-func reparent(funx: Funx, parent_name: StringName):
+func reparent(funx: Funx, parent_name: StringName) -> Variant:
 	var parent_node : Node = get_marker_node(funx.host, parent_name)
 
 	var inst : Node = self.instance
-	if not inst: return
+	if not inst: return null
 
+	var result := inst.get_parent().name
 	var global_position_before = inst.global_position
 	inst.get_parent().remove_child(inst)
 	parent_node.add_child(funx.host)
 	inst.global_position = global_position_before
+	return result
+
 func reparent__undo(record: Record) -> void:
-	print("%s: reparent undo." % self.key_name)
+	if record.data[&"result"] == null: return
+
+	reparent(record.data[&"args"][0], record.data[&"result"])
+
 func reparent__redo(record: Record) -> void:
-	print("%s: reparent redo." % self.key_name)
+	record.data[&"result"] = reparent.callv(record.data[&"args"])
+
 
 
 func _export_json(json: Dictionary) -> void:
