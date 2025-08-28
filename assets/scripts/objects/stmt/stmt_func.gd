@@ -4,7 +4,8 @@
 ## An undo function is not required, but if it exists, it must start with a [Record] parameter.
 class_name StmtFunc extends StmtCell
 
-const UNDO_SUFFIX := &"_undo"
+const UNDO_SUFFIX := &"__undo"
+const REDO_SUFFIX := &"__redo"
 
 var is_awaited : bool
 var arguments : Array
@@ -13,8 +14,16 @@ var execute_function_ref : Path
 
 var execute_function : Callable :
 	get: return execute_function_ref.evaluate()
+
+var undo_function_name : StringName :
+	get: return execute_function.get_method() + UNDO_SUFFIX
 var undo_function : Callable :
-	get: return Callable(execute_function.get_object(), execute_function.get_method() + UNDO_SUFFIX)
+	get: return Callable(execute_function.get_object(), undo_function_name)
+
+var redo_function_name : StringName :
+	get: return execute_function.get_method() + REDO_SUFFIX
+var redo_function : Callable :
+	get: return Callable(execute_function.get_object(), redo_function_name)
 
 var is_reserved_function : bool :
 	get: return local_subject_ref.ids.size() == 1
@@ -53,6 +62,11 @@ func _prep(record: Record) -> void:
 
 
 func _execute(record: Record) :
+	if not subject.has_method(undo_function_name):
+		printerr("Warning: the method '%s' does not have an undo submethod set up. Please create one! E.g. %s(record: Record) -> void" % [ execute_function.get_method(), undo_function_name ])
+	if not subject.has_method(redo_function_name):
+		printerr("Warning: the method '%s' does not have a  redo submethod set up. Please create one! E.g. %s(record: Record) -> void" % [ execute_function.get_method(), redo_function_name ])
+
 	var result : Variant = await execute_function.callv(record.data[&"args"])
 
 	record.data[&"result"] = result
@@ -62,14 +76,12 @@ func _execute(record: Record) :
 
 func _undo(record: Record) -> void:
 	super._undo(record)
-	var evaluated_arguments : Array = [record]
-	evaluated_arguments.append_array(record.data[&"args"])
-	undo_function.callv(evaluated_arguments)
+	undo_function.call(record)
 
 
 func _redo(record: Record) -> void:
 	super._redo(record)
-	execute_function.callv(record.data[&"args"])
+	redo_function.call(record)
 
 
 ## Separates tokens by iterator.

@@ -202,6 +202,8 @@ func get_marker_node(host: PennyHost, marker_name: StringName = self.get_value(C
 		if marker_name == node.name: return node
 	return host.get_tree().root
 
+func disconnect_all_instances() -> void:
+	instances = []
 
 ## [member instantiate]s a [Cell], and adds it to the appropriate parent [Node]. If it already exists, it despawns the old node and creates a new one.
 func spawn(funx: Funx, parent_name = get_value(K_MARKER)) -> Node:
@@ -232,11 +234,10 @@ func spawn(funx: Funx, parent_name = get_value(K_MARKER)) -> Node:
 		result.global_position = parent_node.global_position
 
 	return result
-func spawn_undo(record: Record) -> void:
+func spawn__undo(record: Record) -> void:
 	print("%s: Spawn undo." % key_name)
-
-func disconnect_all_instances() -> void:
-	instances = []
+func spawn__redo(record: Record) -> void:
+	print("%s: Spawn redo." % key_name)
 
 func despawn(funx: Funx = null) -> void:
 	var inst := instance
@@ -245,8 +246,10 @@ func despawn(funx: Funx = null) -> void:
 		inst.despawn()
 	remove_instance(inst)
 	inst.queue_free()
-func despawn_undo(record: Record) -> void:
+func despawn__undo(record: Record) -> void:
 	print("%s: Despawn undo." % key_name)
+func despawn__redo(record: Record) -> void:
+	print("%s: Despawn redo." % key_name)
 
 
 func enter(funx: Funx, parent_name = get_value(K_MARKER), __respawn__ := false) :
@@ -255,7 +258,9 @@ func enter(funx: Funx, parent_name = get_value(K_MARKER), __respawn__ := false) 
 		inst = spawn(funx, parent_name)
 	if inst.has_method(&"enter"):
 		await inst.enter(funx)
-func enter_undo(record: Record) -> void:
+func enter__undo(record: Record) -> void:
+	print("%s: Enter undo." % key_name)
+func enter__redo(record: Record) -> void:
 	print("%s: Enter undo." % key_name)
 
 
@@ -265,15 +270,19 @@ func exit(funx: Funx, __despawn__ := true) :
 		await inst.exit(funx)
 	if __despawn__:
 		despawn()
-func exit_undo(record: Record) -> void:
+func exit__undo(record: Record) -> void:
 	print("%s: Exit undo." % self.key_name)
+func exit__redo(record: Record) -> void:
+	print("%s: Exit redo." % self.key_name)
 
 
 ## Moves (crosses) a Node from one position to another. Can be a marker or a literal position.
 func cross(funx: Funx, to: Variant, curve: Variant):
 	print("%s: cross (to: %s, curve: %s)" % [self.key_name, str(to), curve])
-func cross_undo(record: Record) -> void:
+func cross__undo(record: Record) -> void:
 	print("%s: cross undo." % self.key_name)
+func cross__redo(record: Record) -> void:
+	print("%s: cross redo." % self.key_name)
 
 
 func reparent(funx: Funx, parent_name: StringName):
@@ -286,8 +295,10 @@ func reparent(funx: Funx, parent_name: StringName):
 	inst.get_parent().remove_child(inst)
 	parent_node.add_child(funx.host)
 	inst.global_position = global_position_before
-func reparent_undo(record: Record) -> void:
+func reparent__undo(record: Record) -> void:
 	print("%s: reparent undo." % self.key_name)
+func reparent__redo(record: Record) -> void:
+	print("%s: reparent redo." % self.key_name)
 
 
 func _export_json(json: Dictionary) -> void:
