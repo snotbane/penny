@@ -39,9 +39,11 @@ func _populate(tokens: Array) -> void:
 
 func _reload() -> void:
 	super._reload()
-	for stmt in self.get_nested_stmts_single_depth():
-		if stmt is StmtConditionalMenu:
+	if self.get_next_in_order().depth > self.depth:
+		for stmt in self.get_nested_stmts_single_depth():
+			if stmt is not StmtConditionalMenu: continue
 			nested_option_stmts.push_back(stmt)
+
 	mode = Mode.CELL if nested_option_stmts.is_empty() else Mode.EXPLICIT
 
 
@@ -73,8 +75,6 @@ func _prep(record: Record) -> void:
 		&"prior": response,
 		&"prior_data": (response if response else Cell.ROOT.get_value(Cell.K_OPTION)).export_json()
 	})
-
-	print(record.data)
 
 
 func _execute(record: Record) :

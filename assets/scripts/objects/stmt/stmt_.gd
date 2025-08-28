@@ -321,6 +321,7 @@ func get_context_ref() -> Path:
 
 
 func get_nested_stmts_single_depth() -> Array[Stmt] :
+	# if self.get_next_in_order().depth <= self.depth: return []
 	var cursor := self.get_next_in_higher_depth()
 	var result : Array[Stmt]
 	while cursor:
