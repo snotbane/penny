@@ -120,7 +120,6 @@ func _evaluate(context: Cell) -> Variant:
 	return stack[0]
 
 
-
 static func type_safe_equals(a: Variant, b: Variant) -> bool:
 	if typeof(a) != typeof(b):
 		return false
