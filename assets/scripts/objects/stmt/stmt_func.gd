@@ -57,6 +57,8 @@ func _execute(record: Record) :
 
 	record.data[&"result"] = result
 
+# func _cleanup(record: Record) -> void:
+# 	pass
 
 func _undo(record: Record) -> void:
 	super._undo(record)
@@ -67,6 +69,7 @@ func _undo(record: Record) -> void:
 
 func _redo(record: Record) -> void:
 	super._redo(record)
+	execute_function.callv(record.data[&"args"])
 
 
 ## Separates tokens by iterator.

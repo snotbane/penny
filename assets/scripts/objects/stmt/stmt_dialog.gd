@@ -1,4 +1,4 @@
-
+## Manages interactions between dialog boxes to display text to the end user.
 class_name StmtDialog extends StmtNode
 
 const DEPTH_REMOVAL_PATTERN := r"\n\t{0,%s}"
@@ -13,13 +13,19 @@ var pure_text : String
 func _get_verbosity() -> Verbosity:
 	return Verbosity.USER_FACING
 
-
 func _get_is_rollable_back() -> bool:
 	return true
 
-
 func _get_is_loadable() -> bool:
 	return true
+
+func _create_history_listing(record: Record) -> HistoryListing:
+	var result : HistoryListing = preload("uid://c4ye52jktr1so").instantiate()
+	result.populate(record)
+	return result
+
+func _get_record_message(record: Record) -> String:
+	return record.data[&"what"].text
 
 
 func _populate(tokens: Array) -> void:
@@ -71,22 +77,15 @@ func _execute(record: Record) :
 	incoming_dialog_node.receive(record)
 	await incoming_dialog_node.advanced
 
+# func _cleanup(record: Record) -> void:
+# 	pass
 
-func _undo(record: Record) -> void:
-	super._undo(record)
+# func _undo(record: Record) -> void:
+# 	super._undo(record)
 
-func _redo(record: Record) -> void:
-	super._redo(record)
+# func _redo(record: Record) -> void:
+# 	super._redo(record)
 
-
-func _create_history_listing(record: Record) -> HistoryListing:
-	var result : HistoryListing = load("res://addons/penny_godot/assets/scenes/history_listings/history_listing_dialog.tscn").instantiate()
-	result.populate(record)
-	return result
-
-
-func _get_record_message(record: Record) -> String:
-	return record.data[&"what"].text
 
 func get_metrics() -> Dictionary:
 	return DisplayString.get_metrics_from_pure(pure_text)

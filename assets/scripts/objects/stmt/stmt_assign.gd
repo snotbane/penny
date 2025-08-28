@@ -1,4 +1,3 @@
-
 ## Assigns the local value of a [Cell] to a specified value.
 class_name StmtAssign extends StmtCell
 
@@ -17,6 +16,9 @@ var expr : Expr
 
 func _get_verbosity() -> Verbosity:
 	return Verbosity.DATA_ACTIVITY
+
+func _get_record_message(record: Record) -> String:
+	return "[code][color=dim_gray]assign %s : [color=slate_gray]%s[/color] => [color=dodger_blue]%s[/color][/color][/code]" % [Penny.get_value_as_bbcode_string(subject_ref), Penny.get_value_as_bbcode_string(record.data[&"prior"]), Penny.get_value_as_bbcode_string(record.data[&"after"])]
 
 func _populate(tokens: Array) -> void:
 	var op_index := -1
@@ -45,7 +47,6 @@ func _populate(tokens: Array) -> void:
 
 	var right := tokens.slice(expr_index)
 	expr = Expr.new_from_tokens(right, self)
-
 
 func _prep(record: Record) -> void:
 	super._prep(record)
@@ -86,6 +87,3 @@ func _undo(record: Record) -> void:
 func _redo(record: Record) -> void:
 	subject_ref.set_local_value_in_cell(context, record.data[&"after"])
 	super._redo(record)
-
-func _get_record_message(record: Record) -> String:
-	return "[code][color=dim_gray]assign %s : [color=slate_gray]%s[/color] => [color=dodger_blue]%s[/color][/color][/code]" % [Penny.get_value_as_bbcode_string(subject_ref), Penny.get_value_as_bbcode_string(record.data[&"prior"]), Penny.get_value_as_bbcode_string(record.data[&"after"])]

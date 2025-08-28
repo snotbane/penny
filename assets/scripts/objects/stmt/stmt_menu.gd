@@ -1,5 +1,4 @@
-
-## No description
+## Defines a menu for the player to choose which branch they wish to execute.
 class_name StmtMenu extends StmtNode
 
 enum Mode {
@@ -17,12 +16,19 @@ var response : Path :
 
 func _get_verbosity() -> Verbosity:
 	return Verbosity.FLOW_ACTIVITY
+
 func _get_is_rollable_back() -> bool:
 	return false
+
 func _get_is_rollable_ahead() -> bool:
 	return true
+
 func _get_is_skippable() -> bool:
 	return false
+
+func _get_record_message(record: Record) -> String:
+	return "[code][color=dim_gray]menu : [/color]%s[/code]" % Penny.get_value_as_bbcode_string(subject)
+
 
 
 func _populate(tokens: Array) -> void:
@@ -107,7 +113,3 @@ func _next(record: Record) -> Stmt:
 
 func _get_default_subject() -> Path:
 	return Path.new([Cell.K_PROMPT], false)
-
-
-func _get_record_message(record: Record) -> String:
-	return "[code][color=dim_gray]menu : [/color]%s[/code]" % Penny.get_value_as_bbcode_string(subject)

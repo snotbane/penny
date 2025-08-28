@@ -26,8 +26,11 @@ func close_subject(host : PennyHost, wait : bool = true) :
 	else:
 		node.queue_free()
 
-func _undo(record: Record) -> void:
-	super._undo(record)
+# func _cleanup(record: Record) -> void:
+# 	pass
 
-func _redo(record: Record) -> void:
-	super._redo(record)
+# func _undo(record: Record) -> void:
+# 	super._undo(record)
+
+# func _redo(record: Record) -> void:
+# 	super._redo(record)

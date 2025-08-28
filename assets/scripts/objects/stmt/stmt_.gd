@@ -1,4 +1,3 @@
-
 ## Base class for all executable statemetnts.
 class_name Stmt extends RefCounted
 
@@ -85,6 +84,11 @@ func _get_is_loadable() -> bool:
 
 func _to_string() -> String:
 	return __debug_string__
+
+
+func get_record_message(record: Record) -> String: return _get_record_message(record)
+func _get_record_message(record: Record) -> String:
+	return "[code][color=deep_pink]Unimplemented Stmt %s[/color][/code]" % self
 
 
 ## Called after the statement is created.
@@ -189,11 +193,6 @@ func _create_history_listing(record: Record) -> HistoryListing:
 	var result : HistoryListing = load("res://addons/penny_godot/assets/scenes/history_listings/history_listing_default.tscn").instantiate()
 	result.populate(record)
 	return result
-
-
-func get_record_message(record: Record) -> String: return _get_record_message(record)
-func _get_record_message(record: Record) -> String:
-	return "[code][color=deep_pink]Unimplemented Stmt %s[/color][/code]" % self
 
 
 func export_json() -> Dictionary:

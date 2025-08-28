@@ -1,5 +1,4 @@
-
-## Generic statement for referring to a [Cell].
+## Generic statement for referring to a [Cell]. Also allows one to specify flags for that [Cell].
 class_name StmtCell extends Stmt
 
 static var DEFAULT_CELL_REF := Path.to(Cell.OBJECT)
@@ -28,6 +27,9 @@ var flags : PackedStringArray
 func _get_verbosity() -> Verbosity:
 	return Verbosity.IGNORED
 
+func _get_record_message(record: Record) -> String:
+	return "[code][color=dim_gray]cell : %s[/color][/code]" % Penny.get_value_as_bbcode_string(subject_ref)
+
 
 func _populate(tokens: Array) -> void:
 	var tokens_error_string := str(tokens)
@@ -40,7 +42,6 @@ func _populate(tokens: Array) -> void:
 	for token in tokens:
 		flags.push_back(token.value)
 
-
 func _prep(record: Record) -> void:
 	if subject_node is SpriteActor:
 		for flag in flags:
@@ -50,6 +51,9 @@ func _prep(record: Record) -> void:
 		&"flags_before": [],
 		&"flags_after": [],
 	})
+
+# func _cleanup(record: Record) -> void:
+# 	pass
 
 func _undo(record: Record) -> void:
 	super._undo(record)
@@ -68,7 +72,3 @@ func get_prev_with_explicit_subject() -> StmtCell :
 		cursor = self.get_prev_in_same_or_lower_depth()
 	assert(false, "There is no previous StmtCell in the script with an explicit subject.")
 	return null
-
-
-func _get_record_message(record: Record) -> String:
-	return "[code][color=dim_gray]cell : %s[/color][/code]" % Penny.get_value_as_bbcode_string(subject_ref)
