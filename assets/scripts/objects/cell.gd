@@ -75,7 +75,7 @@ var key_name : StringName :
 			parent.set_local_value(_key_name, self)
 
 var parent : Cell
-var data : Dictionary[StringName, Variant]
+var data : Dictionary
 var data_storage : Array[StringName]
 
 var prototype : Cell :
@@ -126,7 +126,7 @@ var link_group_name : StringName :
 	get: return CellLink.GROUP_PREFIX + key_name
 
 
-func _init(__key_name : StringName, _parent : Cell, _data : Dictionary[StringName, Variant]) -> void:
+func _init(__key_name : StringName, _parent : Cell, _data : Dictionary) -> void:
 	parent = _parent
 	key_name = __key_name
 	data = _data
@@ -191,7 +191,7 @@ func set_local_value(key: StringName, value: Variant) -> void:
 
 
 func add_cell(key: StringName, base: Path = null) -> Cell:
-	var initial_data : Dictionary[StringName, Variant] = {}
+	var initial_data : Dictionary = {}
 	if base: initial_data[Cell.K_PROTOTYPE] = base
 
 	var result := Cell.new(key, self, initial_data)
@@ -345,23 +345,28 @@ func reparent__redo(record: Record) -> void:
 func _export_json(json: Dictionary) -> void:
 	for k in data.keys():
 		var transient : bool = not get_storage(k)
-		var key_value = Save.any(data[k])
-		match typeof(key_value):
+		var value = Save.any(data[k])
+		match typeof(value):
 			TYPE_NIL, TYPE_OBJECT, TYPE_DICTIONARY:
-				if key_value: transient = false
+				if value: transient = false
 		if transient: continue
-		json[k] = key_value
+		json[k] = value
 
 
 func _import_json(json: Dictionary) -> void:
-	# print("json : %s" % [ json ])
-	for k in data.keys():
-		if get_storage(k) and k not in json:
-			data.erase(k)
-	for k in json.keys():
-		var key_value = Load.any(json[k])
-		# print("key_value : %s" % [ key_value ])
-		data[k] = key_value
+	print("json : %s" % [ json ])
+	# for k in data.keys():
+	# 	if get_storage(k) and k not in json:
+	# 		data.erase(k)
+	# for k in json.keys():
+	# 	var value = Load.any(json[k])
+	# 	if data.has(k) and data[k] is Cell:
+	# 		data[k].import_json(value)
+	# 		continue
+	# 	elif value is Dictionary:
+	# 		value = Cell.new(k, self, value)
+
+	# 	data[k] = value
 
 
 func get_save_ref() -> Variant:
@@ -371,7 +376,7 @@ func get_save_ref() -> Variant:
 func load_data(host: PennyHost, json: Dictionary) -> void:
 	self.despawn()
 
-	var result_data : Dictionary[StringName, Variant] = {}
+	var result_data : Dictionary = {}
 	var inst_data : Dictionary
 	for k in json.keys():
 		match k:

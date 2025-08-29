@@ -77,7 +77,7 @@ func play_animation_and_wait(player: AnimationPlayer, anim: StringName) :
 
 
 func get_save_data() -> Variant:
-	var result : Dictionary[StringName, Variant] = {
+	var result : Dictionary = {
 		&"name": self.name,
 		&"parent": self.get_parent().name,
 		&"spawn_used": self.save_spawn,

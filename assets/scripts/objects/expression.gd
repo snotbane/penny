@@ -297,7 +297,7 @@ class Op extends RefCounted:
 	func apply(stack: Array[Variant], context: Cell) -> void:
 		match type:
 			NEW:
-				var data : Dictionary[StringName, Variant] = {}
+				var data : Dictionary = {}
 				data[Cell.K_PROTOTYPE] = stack.pop_back() if stack else Path.DEFAULT_BASE
 				stack.push_back(Cell.new(Cell.NEW_OBJECT_KEY_NAME, context, data))
 				return

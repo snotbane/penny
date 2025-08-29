@@ -56,6 +56,7 @@ func _export_json(json: Dictionary) -> void:
 		&"stmt": Save.any(stmt),
 	})
 
+## Records are not directly imported; new records are created with this data instead.
 # func _import_json(json: Dictionary) -> void:
 # 	data = Load.any(json[&"data"])
 # 	stmt = Penny.get_stmt_from_address(ResourceUID.id_to_text((json[&"stmt"][&"script_uid"])), json[&"stmt"][&"index"])

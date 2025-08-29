@@ -3,6 +3,7 @@ class_name Save extends Object
 
 const REF_PREFIX := "ref::"
 const COLOR_PREFIX := "col::#"
+const CELL_PREFIX := "cell::"
 
 static func any(value: Variant, use_cell_refs: bool = false) -> Variant:
 	if value == null: return null
