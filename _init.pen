@@ -5,6 +5,7 @@ object
 	.name = "Unnamed Object"
 	.prefix = "<>"
 	.text = "@.prefix@.name</>"
+	var .instances = null
 
 dialog = new object
 	.filters = [PARAGRAPH_START, PUNCTUATION_TO_PIPE, PIPE_TO_DELAY, SLASH_TO_WAIT, TRIPLE_HYPHEN_TO_LONG_DASH, DOUBLE_HYPHEN_TO_EM_DASH, FANCY_SINGLE_QUOTE_RIGHT, FANCY_SINGLE_QUOTE_LEFT, FANCY_DOUBLE_QUOTE_RIGHT, FANCY_DOUBLE_QUOTE_LEFT]
@@ -16,14 +17,14 @@ prompt = new object
 	.marker = 'prompt'
 	.options = []
 	.res = 'uid://cuu7puh0nnyug'
-	var .response
+	var .response = null
 
 option = new object
 	.filters = [PARAGRAPH_START_CENTERED, TRIPLE_HYPHEN_TO_LONG_DASH, DOUBLE_HYPHEN_TO_EM_DASH, FANCY_SINGLE_QUOTE_RIGHT, FANCY_SINGLE_QUOTE_LEFT, FANCY_DOUBLE_QUOTE_RIGHT, FANCY_DOUBLE_QUOTE_LEFT]
 	.res = 'uid://cqv2gnjjkdh6c'
+	.enabled = true
+	.visible = true
 	var .consumed = false
-	var .enabled = true
-	var .visible = true
 
 filter = new object
 	.pattern = '.+'

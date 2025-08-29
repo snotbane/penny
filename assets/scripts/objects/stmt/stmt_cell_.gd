@@ -64,6 +64,10 @@ func _populate(tokens: Array) -> void:
 		flags.push_back(token.value)
 
 func _prep(record: Record) -> void:
+	match storage_qualifier:
+		StorageQualifier.STORED:	subject_ref.set_storage_in_cell(context, true)
+		StorageQualifier.TRANSIENT: subject_ref.set_storage_in_cell(context, false)
+
 	if subject_node is SpriteActor:
 		for flag in flags:
 			subject_node.sprite_flags.push_flag(flag)

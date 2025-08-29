@@ -34,16 +34,16 @@ const K_PREFIX := &"prefix"
 const K_SUFFIX := &"suffix"
 const K_ICON := &"icon"
 ## The object's node instance, instantiated from [member K_RES], or otherwise found in the scene.
-const K_INST := &"$instances"
+const K_INST := &"instances"
 const K_OPTIONS := &"options"
 ## A prompt's result.
-const K_RESPONSE := &"$response"
+const K_RESPONSE := &"response"
 ## Whether or not an option appears at all.
-const K_VISIBLE := &"$visible"
+const K_VISIBLE := &"visible"
 ## Whether or not an option is able to be selected.
-const K_ENABLED := &"$enabled"
+const K_ENABLED := &"enabled"
 ## Whether or not an option has been selected previously.
-const K_CONSUMED := &"$consumed"
+const K_CONSUMED := &"consumed"
 ## Display key_text used to represent this object.
 const K_TEXT := &"text"
 
@@ -76,11 +76,12 @@ var key_name : StringName :
 
 var parent : Cell
 var data : Dictionary[StringName, Variant]
+var data_storage : Array[StringName]
 
 var prototype : Cell :
 	get:
-		var result_path : Path = self.get_local_value(K_PROTOTYPE)
-		return result_path.duplicate().evaluate() if result_path else null
+		if not has_local_value(K_PROTOTYPE): return null
+		return get_local_value(K_PROTOTYPE).duplicate().evaluate()
 
 var key_text : String :
 	get: return self.get_value(Cell.K_TEXT, key_name)
@@ -195,6 +196,17 @@ func add_cell(key: StringName, base: Path = null) -> Cell:
 
 	var result := Cell.new(key, self, initial_data)
 	return result
+
+
+func get_storage(key: StringName) -> bool:
+	return key in data_storage or (prototype.get_storage(key) if prototype else false)
+
+
+func set_storage(key: StringName, stored: bool) -> void:
+	if stored == data_storage.has(key): return
+
+	if stored:	data_storage.push_back(key)
+	else:		data_storage.erase(key)
 
 
 func get_marker_node(host: PennyHost, marker_name: StringName = self.get_value(Cell.K_MARKER, Penny.DEFAULT_MARKER_NAME)) -> Node:
@@ -332,7 +344,7 @@ func reparent__redo(record: Record) -> void:
 
 func _export_json(json: Dictionary) -> void:
 	for k in data.keys():
-		var transient = String(k)[0] != "$"
+		var transient : bool = not get_storage(k)
 		var key_value = Save.any(data[k])
 		match typeof(key_value):
 			TYPE_NIL, TYPE_OBJECT, TYPE_DICTIONARY:
@@ -342,13 +354,13 @@ func _export_json(json: Dictionary) -> void:
 
 
 func _import_json(json: Dictionary) -> void:
+	# print("json : %s" % [ json ])
 	for k in data.keys():
-		if k in json: continue
-		var transient = String(k)[0] != "$"
-		if transient: continue
-		data.erase(k)
+		if get_storage(k) and k not in json:
+			data.erase(k)
 	for k in json.keys():
 		var key_value = Load.any(json[k])
+		# print("key_value : %s" % [ key_value ])
 		data[k] = key_value
 
 
