@@ -76,7 +76,7 @@ func play_animation_and_wait(player: AnimationPlayer, anim: StringName) :
 		target_anim = await player.animation_finished
 
 
-func get_save_data() -> Variant:
+func export_json() -> Variant:
 	var result : Dictionary = {
 		&"name": self.name,
 		&"parent": self.get_parent().name,
@@ -86,11 +86,11 @@ func get_save_data() -> Variant:
 	}
 	return result
 
-func load_data(json: Dictionary) -> void:
-	self.name = json["name"]
-	self.save_spawn = json["spawn_used"]
-	self.save_transform = json["transform_used"]
-	self.set_transform_data(json["transform"])
+func import_json(json: Dictionary) -> void:
+	self.name = json[&"nam&"]
+	self.save_spawn = json[&"spawn_use&"]
+	self.save_transform = json[&"transform_use&"]
+	self.set_transform_data(json[&"transform"])
 
 
 func get_save_transform_data() -> Variant:

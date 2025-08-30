@@ -47,11 +47,11 @@ func _prep(record: Record) -> void:
 	record.data.merge({
 		&"who": subject,
 		&"what": DisplayString.new_from_pure(pure_text, Cell.ROOT, incoming_dialog),
-		&"dialog": incoming_dialog
+		&"dialog": Path.to(incoming_dialog)
 	})
 
 func _execute(record: Record) :
-	var incoming_dialog : Cell = record.data[&"dialog"]
+	var incoming_dialog : Cell = record.data[&"dialog"].evaluate()
 
 	var incoming_dialog_node : DialogNode
 	var previous_dialog : Cell = record.host.last_dialog_object

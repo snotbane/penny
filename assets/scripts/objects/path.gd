@@ -46,16 +46,25 @@ static func new_from_string(s : String) -> Path:
 	if s.is_empty(): return
 	if s[0] == "@": s = s.substr(1)
 	var _rel := s[0] == "."
-	s = s.substr(1 if _rel else 0)
+	if _rel: s = s.substr(1)
 	var _ids := s.split(".", false)
 	return Path.new(_ids, _rel)
 
 
-## Creates a new [Path] from a json string. Mainly used in saving/loading data.
-static func new_from_load_json(json: String) -> Path:
-	return Path.new_from_string(json.substr(Save.REF_PREFIX.length() + 1))
-func get_save_data() -> Variant:
-	return Save.REF_PREFIX + self.to_string()
+static func new_from_json(json: String) -> Path:
+	return Path.new_from_string(json)
+
+func export_json() -> Variant:
+	var result := "." if rel else ""
+	for id in ids:
+		result += id + "."
+	return result.substr(0, result.length() - 1)
+
+func import_json(json: String) -> void:
+	if json.is_empty(): return
+	rel = json[0] == "."
+	if rel: json = json.substr(1)
+	ids = json.split(".", false)
 
 
 var ids : PackedStringArray
@@ -65,7 +74,7 @@ var is_host_previous : bool :
 	get: return rel == true and ids.is_empty()
 
 
-func _init(_ids: PackedStringArray, _rel: bool) -> void:
+func _init(_ids: PackedStringArray = [], _rel: bool = false) -> void:
 	self.ids = _ids
 	self.rel = _rel
 
@@ -107,7 +116,7 @@ func set_storage_in_cell(context: Variant, stored: bool) -> void:
 	if not rel: context = Cell.ROOT
 
 	for i in ids.size() -1: context = context.get_value(ids[i]) if context is Cell else context.get(ids[i])
-	context.set_storage(ids[ids.size() - 1], stored)
+	context.set_key_stored(ids[ids.size() - 1], stored)
 
 
 func _evaluate(context: Cell) -> Variant:

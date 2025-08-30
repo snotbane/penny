@@ -236,7 +236,7 @@ func load() -> void:
 	while history_cursor and not history_cursor.stmt.is_loadable:
 		_history_index -= 1
 
-	execute_record(history_cursor)
+	# execute_record(history_cursor)
 
 
 func prompt_file_path(mode : FileDialog.FileMode) :

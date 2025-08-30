@@ -66,6 +66,7 @@ func _prep(record: Record) -> void:
 					option = stmt.expr.evaluate()
 					key = option.key_name
 				Cell.ROOT.set_value(key, option)
+				Cell.ROOT.set_key_stored(key, true)
 				prompt_option_refs.push_back(Path.new([key], false))
 			subject.set_value(Cell.K_OPTIONS, prompt_option_refs)
 		# Mode.CELL:

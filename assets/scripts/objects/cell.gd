@@ -44,7 +44,7 @@ const K_VISIBLE := &"visible"
 const K_ENABLED := &"enabled"
 ## Whether or not an option has been selected previously.
 const K_CONSUMED := &"consumed"
-## Display key_text used to represent this object.
+## Display text used to represent this object.
 const K_TEXT := &"text"
 
 static var static_init_completed : bool = false
@@ -126,10 +126,14 @@ var link_group_name : StringName :
 	get: return CellLink.GROUP_PREFIX + key_name
 
 
-func _init(__key_name : StringName, _parent : Cell, _data : Dictionary) -> void:
-	parent = _parent
-	key_name = __key_name
-	data = _data
+func _init(
+	__key_name__ : StringName,
+	__parent__ : Cell,
+	__data__ : Dictionary
+	) -> void:
+	parent = __parent__
+	key_name = __key_name__
+	data = __data__
 
 	if static_init_completed:
 		assign_instances_recursive(Penny.inst.get_tree())
@@ -138,6 +142,7 @@ func _init(__key_name : StringName, _parent : Cell, _data : Dictionary) -> void:
 func _to_string() -> String:
 	return "*%s" % key_name
 
+#region Data Manipulation
 
 func get_local_value(key: StringName, default: Variant = null) -> Variant:
 	var result : Variant = data[key] if self.has_local_value(key) else null
@@ -198,16 +203,21 @@ func add_cell(key: StringName, base: Path = null) -> Cell:
 	return result
 
 
-func get_storage(key: StringName) -> bool:
-	return key in data_storage or (prototype.get_storage(key) if prototype else false)
+var is_stored_in_parent : bool :
+	get: return (parent.is_key_stored(key_name) or parent.is_stored_in_parent) if parent else false
 
 
-func set_storage(key: StringName, stored: bool) -> void:
+func is_key_stored(key: StringName) -> bool:
+	return is_stored_in_parent or key in data_storage or (prototype.is_key_stored(key) if prototype else false)
+
+
+func set_key_stored(key: StringName, stored: bool) -> void:
 	if stored == data_storage.has(key): return
 
 	if stored:	data_storage.push_back(key)
 	else:		data_storage.erase(key)
 
+#endregion
 
 func get_marker_node(host: PennyHost, marker_name: StringName = self.get_value(Cell.K_MARKER, Penny.DEFAULT_MARKER_NAME)) -> Node:
 	for node in host.get_tree().get_nodes_in_group(Penny.STAGE_GROUP_NAME):
@@ -216,6 +226,8 @@ func get_marker_node(host: PennyHost, marker_name: StringName = self.get_value(C
 
 func disconnect_all_instances() -> void:
 	instances = []
+
+#region Penny-Compatible Methods
 
 ## [member instantiate]s a [Cell], and adds it to the appropriate parent [Node]. If it already exists, it despawns the old node and creates a new one.
 func spawn(funx: Funx, parent_name = get_value(K_MARKER)) -> Node:
@@ -340,37 +352,35 @@ func reparent__undo(record: Record) -> void:
 func reparent__redo(record: Record) -> void:
 	record.data[&"result"] = reparent.callv(record.data[&"args"])
 
-
+#endregion
 
 func _export_json(json: Dictionary) -> void:
 	for k in data.keys():
-		var transient : bool = not get_storage(k)
-		var value = Save.any(data[k])
-		match typeof(value):
-			TYPE_NIL, TYPE_OBJECT, TYPE_DICTIONARY:
-				if value: transient = false
-		if transient: continue
-		json[k] = value
+		if not is_key_stored(k) and data[k] is not Cell: continue
+
+		var serial = JSONSerialize.serialize(data[k])
+		if data[k] is Cell and not serial[&"value"]: continue
+
+		json[k] = serial
 
 
 func _import_json(json: Dictionary) -> void:
-	print("json : %s" % [ json ])
-	# for k in data.keys():
-	# 	if get_storage(k) and k not in json:
-	# 		data.erase(k)
-	# for k in json.keys():
-	# 	var value = Load.any(json[k])
-	# 	if data.has(k) and data[k] is Cell:
-	# 		data[k].import_json(value)
-	# 		continue
-	# 	elif value is Dictionary:
-	# 		value = Cell.new(k, self, value)
+	for k in data.keys():
+		if is_key_stored(k) and k not in json[&"value"]:
+			data.erase(k)
+	for k in json.keys():
+		var value = JSONSerialize.deserialize(json[k])
+		if json[k].get(&"script") == &"Cell":
+			if data.has(k) and data[k] is Cell:
+				data[k].import_json(value)
+				continue
+			else:
+				var new_cell := Cell.new(k, self, {})
+				new_cell.import_json(value)
+				value = new_cell
 
-	# 	data[k] = value
+		data[k] = value
 
-
-func get_save_ref() -> Variant:
-	return (Path.to(self)).get_save_data()
 
 
 func load_data(host: PennyHost, json: Dictionary) -> void:

@@ -16,7 +16,7 @@ static func any(value: Variant, use_cell_refs: bool = false) -> Variant:
 
 static func object(value: Object, use_cell_refs: bool = false) -> Variant:
 	if value is Cell:
-		return value.get_save_ref() if use_cell_refs else value.export_json()
+		return Path.to(value).export_json() if use_cell_refs else value.export_json()
 	elif value.has_method(&"export_json"):
 		return value.export_json()
 	elif value is Node:

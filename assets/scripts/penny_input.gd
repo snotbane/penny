@@ -14,3 +14,17 @@ func _input(event: InputEvent) -> void:
 		host.roll_back()
 	elif event.is_action_pressed(&"penny_roll_ahead"):
 		host.roll_ahead()
+
+	# if event is InputEventKey and event.is_pressed():
+	# 	match event.keycode:
+	# 		KEY_1:
+	# 			var json := {
+	# 				&"type": TYPE_OBJECT,
+	# 				&"class": "Resource",
+	# 				&"script": "uid://dsr5vl8q6oe33",
+	# 				&"value": {
+	# 					&"prototype": &"object"
+	# 				}
+	# 			}
+	# 			var cell = JSONSerialize.deserialize(json, false)
+	# 			print(cell)

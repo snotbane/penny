@@ -76,6 +76,6 @@ layout_mode = 2
 icon = ExtResource("2_g63wf")
 flat = true
 
-[connection signal="pressed" from="search_query_textedit/search_query_clear" to="search_query_textedit" method="release_focus"]
 [connection signal="pressed" from="search_query_textedit/search_query_clear" to="search_query_textedit" method="clear"]
+[connection signal="pressed" from="search_query_textedit/search_query_clear" to="search_query_textedit" method="release_focus"]
 [connection signal="pressed" from="hbox_zoom/zoom_reset" to="hbox_zoom/zoom_hslider" method="set_value" binds= [10.0]]

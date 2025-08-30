@@ -15,8 +15,8 @@ dialog = new object
 
 prompt = new object
 	.marker = 'prompt'
-	.options = []
 	.res = 'uid://cuu7puh0nnyug'
+	var .options = []
 	var .response = null
 
 option = new object
@@ -31,7 +31,7 @@ filter = new object
 	.replace = 'default_filter_replace'
 
 actor = new object
-	.color = #ff0000
+	.color = #ff00ff
 	.d_name = `Mx.`
 	.f_name = `John`
 	.l_name = `Doe`
@@ -44,6 +44,7 @@ actor = new object
 	.prefix = `<b;color=@.color>`
 	.res = 'uid://3tbms65op2ht'
 	.unknown = new unknown
+	var .marker = null
 
 unknown = new actor
 	.name = `???`
