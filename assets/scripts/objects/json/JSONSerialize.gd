@@ -43,7 +43,7 @@ static func _serialize_object(value: Object) -> Variant:
 			&"parent": value.get_parent().name,
 		}
 
-	assert(value.get_script() and value.get_script().get_global_name() in KNOWN_NONSERIALIZABLE_OBJECT_SCRIPTS, "Attempted to export an object (%s) to json that cannot be. Try adding an export_json() method to the object. Or, if this is expected, add the Script class_name to 'JSONSerialize.KNOWN_NONSERIALIZABLE_OBJECT_SCRIPTS'." % str(value))
+	assert(value.get_script() and value.get_script().get_global_name() in KNOWN_NONSERIALIZABLE_OBJECT_SCRIPTS, "Attempted to export an object (%s) to json that cannot be. Try adding an export_json() method to the object. Or, if this is expected, add the Script class_name to 'JSONSerialize.KNOWN_NONSERIALIZABLE_OBJECT_SCRIPTS'." % (value.get_script().get_global_name() if value.get_script() else str(value)))
 
 	return null
 

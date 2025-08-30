@@ -17,7 +17,6 @@ var prev : Record :
 		return host.history.records[stamp - 1]
 
 
-
 func _init(_host: PennyHost, _stmt: Stmt, _data: Dictionary = {}) -> void:
 	host = _host
 	stamp = host.history.records.size()

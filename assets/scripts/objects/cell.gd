@@ -393,7 +393,6 @@ func import_cell(json: Dictionary, host: PennyHost) -> void:
 				var value = JSONSerialize.deserialize(json_data[k])
 				data[k] = value
 
-	despawn()
 	for inst in inst_data:
 		var node_data : Dictionary = inst[&"value"]
 		if node_data.get(&"spawn_used"):

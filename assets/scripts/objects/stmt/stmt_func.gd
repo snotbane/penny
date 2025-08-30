@@ -54,7 +54,7 @@ func _populate(tokens: Array) -> void:
 
 
 func _prep(record: Record) -> void:
-	var evaluated_arguments : Array = [Funx.new(record.host, is_awaited)]
+	var evaluated_arguments : Array = []
 	for arg in arguments: evaluated_arguments.push_back(arg.evaluate() if arg is Expr else arg)
 
 	record.data.merge({
@@ -68,7 +68,9 @@ func _execute(record: Record) :
 	if not subject.has_method(redo_function_name):
 		printerr("Warning: the method '%s' does not have a  redo submethod set up. Please create one! E.g. %s(record: Record) -> void" % [ execute_function.get_method(), redo_function_name ])
 
-	var result : Variant = await execute_function.callv(record.data[&"args"])
+	var final_arguments : Array = record.data[&"args"].duplicate()
+	final_arguments.push_front(Funx.new(record.host, is_awaited))
+	var result : Variant = await execute_function.callv(final_arguments)
 
 	record.data[&"result"] = result
 
