@@ -65,6 +65,7 @@ static func deserialize(json: Variant) -> Variant:
 		TYPE_DICTIONARY:	return _deserialize_dictionary(json[&"value"])
 		TYPE_ARRAY:			return _deserialize_array(json[&"value"])
 		TYPE_COLOR:			return Color.html(json[&"value"])
+		TYPE_INT:			return int(json[&"value"])
 
 	return json[&"value"]
 

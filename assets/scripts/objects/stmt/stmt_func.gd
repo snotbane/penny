@@ -35,7 +35,7 @@ func _init(__is_awaited__: bool = false) -> void:
 func _populate(tokens: Array) -> void:
 	var group_index : int = -1
 	for i in tokens.size():
-		if tokens[i].type != PennyScript.Token.Type.OPERATOR or tokens[i].value.type != Expr.Op.GROUP_OPEN: continue
+		if tokens[i].type != PennyScript.Token.Type.OPERATOR or tokens[i].value.type != Op.GROUP_OPEN: continue
 		group_index = i
 		break
 	assert(group_index != -1, "Function start not found.")
@@ -92,7 +92,7 @@ static func new_args_from_tokens(tokens: Array, _stmt: Stmt = null) -> Array:
 	var result : Array = []
 	var start := 0
 	for i in tokens.size():
-		if tokens[i].type != PennyScript.Token.Type.OPERATOR or tokens[i].value.type != Expr.Op.ITERATOR: continue
+		if tokens[i].type != PennyScript.Token.Type.OPERATOR or tokens[i].value.type != Op.ITERATOR: continue
 		result.push_back(Expr.new_from_tokens(tokens.slice(start, i)))
 		start = i + 1
 	result.push_back(Expr.new_from_tokens(tokens.slice(start, tokens.size())))

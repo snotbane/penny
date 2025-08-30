@@ -225,7 +225,7 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 		Token.Type.VALUE_STRING:
 			return StmtDialog.new()
 		Token.Type.OPERATOR:
-			if tokens.back().value.type == Expr.Op.GROUP_CLOSE:
+			if tokens.back().value.type == Op.GROUP_CLOSE:
 				return StmtFunc.new(front_keywords and front_keywords[0].value == &"await")
 
 	if front_keywords:
@@ -236,7 +236,7 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 		Token.Type.IDENTIFIER:
 			return StmtCell.new(StmtCell.get_storage_qualifier_from_front_tokens(front_keywords))
 		Token.Type.OPERATOR:
-			if tokens.front().value.type == Expr.Op.DOT and tokens[1].type == Token.Type.IDENTIFIER:
+			if tokens.front().value.type == Op.DOT and tokens[1].type == Token.Type.IDENTIFIER:
 				return StmtCell.new(StmtCell.get_storage_qualifier_from_front_tokens(front_keywords))
 
 	assert(false, "No Stmt recycled from tokens: %s" % str(tokens))
@@ -317,7 +317,7 @@ class Token extends RefCounted:
 		Token.Type.VALUE_BOOLEAN: 			RegEx.create_from_string(r"\b([Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
 		Token.Type.VALUE_COLOR: 			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
 		Token.Type.ASSIGNMENT: 				RegEx.create_from_string(r"=>|([+\-*/]?)=(?!=)"),
-		Token.Type.OPERATOR: 				Expr.Op.PATTERN_COMPILED,
+		Token.Type.OPERATOR: 				Op.PATTERN_COMPILED,
 		Token.Type.COMMENT: 				RegEx.create_from_string(r"(?ms)(([#/])\*.*?(\*\2))|((#|\/{2}).*?$)"),
 		Token.Type.IDENTIFIER: 				RegEx.create_from_string(r"[a-zA-Z_]\w*"),
 		Token.Type.VALUE_NUMBER: 			RegEx.create_from_string(r"\d+\.\d*|\.?\d+"),
@@ -368,7 +368,7 @@ class Token extends RefCounted:
 			Token.Type.INDENTATION:
 				value = _raw.length()
 			Token.Type.OPERATOR:
-				value = Expr.Op.new_from_string(_raw)
+				value = Op.new_from_string(_raw)
 			_:
 				value = Token.parse_code_as_literal(_raw)
 

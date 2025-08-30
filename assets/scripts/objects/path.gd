@@ -22,14 +22,14 @@ static func to(cell: Cell, _rel: bool = false) -> Path:
 ## Creates a new [Path] from tokens. Mainly used when parsing scripts. Removes used tokens from the passed array.
 static func new_from_tokens(tokens: Array) -> Path:
 	if not tokens: return Path.ROOT
-	var _rel : bool = tokens[0].type == PennyScript.Token.Type.OPERATOR and tokens[0].value.type == Expr.Op.DOT
+	var _rel : bool = tokens[0].type == PennyScript.Token.Type.OPERATOR and tokens[0].value.type == Op.DOT
 	if _rel: tokens.pop_front()
 
 	var _ids : PackedStringArray
 	var expect_dot := false
 	while tokens:
 		if expect_dot:
-			if tokens.front().type == PennyScript.Token.Type.OPERATOR and tokens.front().value.type == Expr.Op.DOT:
+			if tokens.front().type == PennyScript.Token.Type.OPERATOR and tokens.front().value.type == Op.DOT:
 				tokens.pop_front()
 				expect_dot = false
 				continue
