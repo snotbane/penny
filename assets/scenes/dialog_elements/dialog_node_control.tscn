@@ -18,7 +18,7 @@ resource_name = "name_label"
 script/source = "extends RichTextLabel
 
 func _on_typewriter_received(record: Record) -> void:
-	var dstring = DisplayString.new_from_pure(record.data[&\"who\"].get_value(Cell.K_NAME, \"???\"), record.data[&\"who\"])
+	var dstring = DisplayString.new_from_pure(record.data[&\"who\"].evaluate().get_value(Cell.K_NAME, \"???\"), record.data[&\"who\"].evaluate())
 	self.text = dstring.text
 "
 

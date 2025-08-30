@@ -39,7 +39,7 @@ static func _serialize_object(value: Object) -> Variant:
 			&"parent": value.get_parent().name,
 		}
 
-	assert(false, "Attempted to export an object (%s) to json that cannot be. Try adding an export_json() method to the object, if possible." % str(value))
+	# assert(false, "Attempted to export an object (%s) to json that cannot be. Try adding an export_json() method to the object, if possible." % str(value))
 	return value.get_instance_id()
 
 static func _serialize_dictionary(value: Dictionary) -> Dictionary:
@@ -59,7 +59,8 @@ static func _serialize_array(value: Array) -> Array:
 static func deserialize(json: Variant) -> Variant:
 	if json == null: return null
 
-	match json[&"type"]:
+
+	match json[&"type"] as int:
 		TYPE_OBJECT:		return _deserialize_object(json)
 		TYPE_DICTIONARY:	return _deserialize_dictionary(json[&"value"])
 		TYPE_ARRAY:			return _deserialize_array(json[&"value"])
@@ -68,14 +69,15 @@ static func deserialize(json: Variant) -> Variant:
 	return json[&"value"]
 
 static func _deserialize_object(json: Dictionary) -> Variant:
-	if json[&"script"] == &"Cell": return json
+	assert(json[&"script"] != &"Cell", "Cells should handle their own deserialization.")
 
 	var result : Object = ClassDB.instantiate(json[&"class"])
 	if json.has(&"script"):
 		result.set_script(load(json[&"script_uid"]))
-		assert(result.get_script(), "Attempted to deserialize an object, but couldn't set the script. Make sure that it has an _init() method with 0 *required* arguments.")
-		if result.has_method(&"import_json"):
-			result.import_json(json[&"value"])
+		# if result.get_script() == null or not result.has_method(&"import_json"): return result
+		assert(result.get_script() != null, "Attempted to deserialize an object, but couldn't set the script. Make sure that it has an _init() method with 0 *required* arguments.")
+		assert(result.has_method(&"import_json"), "Attempted to deserialize object '%s', but it has no 'import_json' method." % result)
+		result.import_json(json[&"value"])
 
 	return result
 

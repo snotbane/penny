@@ -405,7 +405,7 @@ func _receive(record: Record) :
 	if play_state != PlayState.READY:
 		await reset()
 
-	subject = record.data[&"who"]
+	subject = record.data[&"who"].evaluate()
 	message = record.data[&"what"]
 
 	element_opens.clear()

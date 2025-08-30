@@ -1,5 +1,4 @@
-
-## Record of a stmt that has occurred. Records that share the same stmt are not necessarily equal as they can have occurred at different stamps (times).
+## Record of a [Stmt] that has occurred. Records that share the same [Stmt] are not necessarily equal as they can have occurred at different stamps (times).
 class_name Record extends JSONResource
 
 var host : PennyHost
@@ -52,8 +51,10 @@ func create_history_listing() -> HistoryListing:
 
 func _export_json(json: Dictionary) -> void:
 	json.merge({
-		&"data": Save.any(data, true),
-		&"stmt": Save.any(stmt),
+		&"stmt": stmt.export_json(),
+	})
+	if data: json.merge({
+		&"data": JSONSerialize.serialize(data),
 	})
 
 ## Records are not directly imported; new records are created with this data instead.

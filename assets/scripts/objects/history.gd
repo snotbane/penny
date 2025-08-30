@@ -85,5 +85,5 @@ func _import_json(json: Dictionary) -> void:
 				record[&"stmt"][&"uid"],
 				record[&"stmt"][&"idx"]
 			),
-			Load.any(record[&"data"])
+			JSONSerialize.deserialize(record[&"data"]) if record.has(&"data") else {}
 		))

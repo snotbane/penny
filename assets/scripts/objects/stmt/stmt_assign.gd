@@ -80,8 +80,8 @@ func _prep(record: Record) -> void:
 	# print({ &"ref": subject_ref.globalize(self.context), &"prior": prior, &"after": after })
 
 	record.data.merge({
-		&"prior": prior,
-		&"after": after
+		&"prior": Path.to(prior) if prior is Cell else prior,
+		&"after": Path.to(after) if after is Cell else after
 	})
 
 func _undo(record: Record) -> void:

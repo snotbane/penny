@@ -78,26 +78,24 @@ func play_animation_and_wait(player: AnimationPlayer, anim: StringName) :
 
 func export_json() -> Variant:
 	var result : Dictionary = {
-		&"name": self.name,
-		&"parent": self.get_parent().name,
-		&"spawn_used": self.save_spawn,
-		&"transform_used": self.save_transform,
-		&"transform": self.get_save_transform_data()
+		&"name": name,
+		&"parent": get_parent().name,
+		&"spawn_used": save_spawn,
+		&"transform_used": save_transform,
+		&"transform": get_save_transform_data()
 	}
 	return result
 
 func import_json(json: Dictionary) -> void:
-	self.name = json[&"nam&"]
-	self.save_spawn = json[&"spawn_use&"]
-	self.save_transform = json[&"transform_use&"]
-	self.set_transform_data(json[&"transform"])
+	name = json[&"name"]
+	save_spawn = json[&"spawn_used"]
+	save_transform = json[&"transform_used"]
+	set_transform_data(json[&"transform"])
 
 
 func get_save_transform_data() -> Variant:
 	var this = self
-	if this is Node3D:
-		return this.transform
-	if this is Node2D:
+	if this is Node3D or this is Node2D:
 		return this.transform
 	if this is Control:
 		return this.get_transform()

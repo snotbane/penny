@@ -45,7 +45,7 @@ func _prep(record: Record) -> void:
 	assert(incoming_dialog != null, "Attempted to get dialog box for '%s', but no such object exists" % subject_dialog_path)
 
 	record.data.merge({
-		&"who": subject,
+		&"who": subject_ref,
 		&"what": DisplayString.new_from_pure(pure_text, Cell.ROOT, incoming_dialog),
 		&"dialog": Path.to(incoming_dialog)
 	})

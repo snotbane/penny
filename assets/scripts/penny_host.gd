@@ -16,7 +16,7 @@ class SaveData extends JSONFileResource:
 			&"git_rev_penny": PennyUtils.get_git_commit_id("res://addons/penny_godot/"),
 			&"git_rev_project": PennyUtils.get_git_commit_id(),
 			&"screenshot": null,
-			&"state": Cell.ROOT.export_json(),
+			&"state": JSONSerialize.serialize(Cell.ROOT),
 			&"history": host.history.export_json(),
 			&"history_index": clampi(host.history_index, 0, host.history.records.size() - 1)
 		})
