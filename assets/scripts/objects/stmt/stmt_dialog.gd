@@ -46,12 +46,12 @@ func _prep(record: Record) -> void:
 
 	record.data.merge({
 		&"who": subject_ref,
-		&"what": null,
-		&"dialog": Path.to(incoming_dialog)
+		&"what": DisplayString.new_from_pure(pure_text, Cell.ROOT, incoming_dialog),
+		&"dialog": incoming_dialog
 	})
 
 func _execute(record: Record) :
-	var incoming_dialog : Cell = record.data[&"dialog"].evaluate()
+	var incoming_dialog : Cell = record.data[&"dialog"]
 
 	var incoming_dialog_node : DialogNode
 	var previous_dialog : Cell = record.host.last_dialog_object
@@ -89,6 +89,19 @@ func _execute(record: Record) :
 
 # func _redo(record: Record) -> void:
 # 	super._redo(record)
+
+func _serialize_record(record: Record) -> Variant:
+	return record.data.merged({
+		&"dialog": Path.to(record.data[&"dialog"]),
+		&"what": null,
+	}, true)
+
+func _deserialize_record(record: Record, json: Variant) -> Variant:
+	var dialog : Cell = json[&"dialog"].evaluate()
+	return json.merged({
+		&"dialog": dialog,
+		&"what": DisplayString.new_from_pure(pure_text, Cell.ROOT, dialog),
+	}, true)
 
 
 func get_metrics() -> Dictionary:

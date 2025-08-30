@@ -51,12 +51,12 @@ func create_history_listing() -> HistoryListing:
 func _export_json(json: Dictionary) -> void:
 	json.merge({
 		&"stmt": stmt.export_json(),
-	})
-	if data: json.merge({
-		&"data": JSONSerialize.serialize(data),
+		&"data": stmt.serialize_record(self),
 	})
 
-## Records are not directly imported; new records are created with this data instead.
-# func _import_json(json: Dictionary) -> void:
-# 	data = Load.any(json[&"data"])
-# 	stmt = Penny.get_stmt_from_address(ResourceUID.id_to_text((json[&"stmt"][&"script_uid"])), json[&"stmt"][&"index"])
+func _import_json(json: Dictionary) -> void:
+	stmt = Penny.get_stmt_from_uid(
+		json[&"stmt"][&"uid"],
+		json[&"stmt"][&"idx"]
+	)
+	data = stmt.deserialize_record(self, json[&"data"])

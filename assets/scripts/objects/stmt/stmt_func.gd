@@ -54,7 +54,7 @@ func _populate(tokens: Array) -> void:
 
 
 func _prep(record: Record) -> void:
-	var evaluated_arguments : Array = []
+	var evaluated_arguments : Array = [Funx.new(record.host, is_awaited)]
 	for arg in arguments: evaluated_arguments.push_back(arg.evaluate() if arg is Expr else arg)
 
 	record.data.merge({
@@ -68,9 +68,7 @@ func _execute(record: Record) :
 	if not subject.has_method(redo_function_name):
 		printerr("Warning: the method '%s' does not have a  redo submethod set up. Please create one! E.g. %s(record: Record) -> void" % [ execute_function.get_method(), redo_function_name ])
 
-	var final_arguments : Array = record.data[&"args"].duplicate()
-	final_arguments.push_front(Funx.new(record.host, is_awaited))
-	var result : Variant = await execute_function.callv(final_arguments)
+	var result : Variant = await execute_function.callv(record.data[&"args"])
 
 	record.data[&"result"] = result
 
@@ -81,10 +79,24 @@ func _undo(record: Record) -> void:
 	super._undo(record)
 	undo_function.call(record)
 
-
 func _redo(record: Record) -> void:
 	super._redo(record)
 	redo_function.call(record)
+
+
+func _serialize_record(record: Record) -> Variant:
+	var args = record.data[&"args"].duplicate()
+	args.pop_front()
+	return record.data.merged({
+		&"args": args,
+	}, true)
+
+func _deserialize_record(record: Record, json: Variant) -> Variant:
+	var args = json[&"args"]
+	args.push_back(Funx.new(record.host, is_awaited))
+	return json.merged({
+		&"args": args,
+	}, true)
 
 
 ## Separates tokens by iterator.

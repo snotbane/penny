@@ -51,6 +51,8 @@ var context_ref : Path
 var context : Cell :
 	get: return context_ref.evaluate()
 
+#region Attributes
+
 ## Defines whether or not this statement should show up in history. -1 = always show, even to end user. Values greater than 0 are used for debugging purposes.
 var verbosity : int :
 	get: return _get_verbosity()
@@ -81,6 +83,7 @@ var is_loadable : bool :
 func _get_is_loadable() -> bool:
 	return false
 
+#endregion
 
 func _to_string() -> String:
 	return __debug_string__
@@ -90,6 +93,7 @@ func get_record_message(record: Record) -> String: return _get_record_message(re
 func _get_record_message(record: Record) -> String:
 	return "[code][color=deep_pink]Unimplemented Stmt %s[/color][/code]" % self
 
+#region Construction
 
 func _init() -> void: pass
 
@@ -146,6 +150,8 @@ func reload() -> void:
 	self._reload()
 func _reload() -> void: pass
 
+#endregion
+#region Execution Cycle
 
 ## Perform calculations before execution and creates/initializes a record. Not awaitable and doesn't happen on redo.
 func prep(host: PennyHost, data: Dictionary = {}) -> Record:
@@ -190,6 +196,7 @@ func next(record: Record) -> Stmt: return _next(record)
 func _next(record: Record) -> Stmt:
 	return next_in_order
 
+#endregion
 
 func create_history_listing(record: Record) -> HistoryListing: return _create_history_listing(record)
 func _create_history_listing(record: Record) -> HistoryListing:
@@ -209,6 +216,16 @@ func export_json() -> Dictionary:
 			&"__debug_string__": __debug_string__,
 		})
 	return result
+
+func serialize_record(record: Record) -> Variant:
+	return JSONSerialize.serialize(_serialize_record(record))
+func _serialize_record(record: Record) -> Variant:
+	return record.data
+
+func deserialize_record(record: Record, json: Variant) -> Variant:
+	return _deserialize_record(record, JSONSerialize.deserialize(json))
+func _deserialize_record(record: Record, json: Variant) -> Variant:
+	return json
 
 #region Addresses
 

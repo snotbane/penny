@@ -80,8 +80,8 @@ func _prep(record: Record) -> void:
 	# print({ &"ref": subject_ref.globalize(self.context), &"prior": prior, &"after": after })
 
 	record.data.merge({
-		&"prior": Path.to(prior) if prior is Cell else prior,
-		&"after": Path.to(after) if after is Cell else after
+		&"prior": prior,
+		&"after": after
 	})
 
 func _undo(record: Record) -> void:
@@ -91,3 +91,21 @@ func _undo(record: Record) -> void:
 func _redo(record: Record) -> void:
 	subject_ref.set_local_value_in_cell(context, record.data[&"after"])
 	super._redo(record)
+
+func _serialize_record(record: Record) -> Variant:
+	var prior = record.data[&"prior"]
+	var after = record.data[&"after"]
+	return record.data.merged({
+		&"prior": Path.to(prior) if prior is Cell else prior,
+		&"prior_is_cell": prior is Cell,
+		&"after": Path.to(after) if after is Cell else after,
+		&"after_is_cell": after is Cell,
+	}, true)
+
+func _deserialize_record(record: Record, json: Variant) -> Variant:
+	var prior = json[&"prior"]
+	var after = json[&"after"]
+	return json.merged({
+		&"prior": prior.evaluate() if json[&"prior_is_cell"] else prior,
+		&"after": after.evaluate() if json[&"after_is_cell"] else after,
+	}, true)

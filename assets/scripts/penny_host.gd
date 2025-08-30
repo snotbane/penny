@@ -209,9 +209,10 @@ class SaveData extends JSONFileResource:
 		})
 
 	func _import_json(json: Dictionary) -> void:
+		Cell.ROOT.import_cell(json[&"state"], host)
+
 		host.history.import_json(json[&"history"].merged({ &"__host__": host }))
 		host._history_index = json[&"history_index"]
-		Cell.ROOT.import_cell(json[&"state"], host)
 
 
 func save() -> void:

@@ -78,12 +78,7 @@ func _export_json(json: Dictionary) -> void:
 
 func _import_json(json: Dictionary) -> void:
 	records.clear()
-	for record in json[&"records"]:
-		records.push_back(Record.new(
-			json[&"__host__"],
-			Penny.get_stmt_from_uid(
-				record[&"stmt"][&"uid"],
-				record[&"stmt"][&"idx"]
-			),
-			JSONSerialize.deserialize(record[&"data"]) if record.has(&"data") else {}
-		))
+	for data in json[&"records"]:
+		var record := Record.new(json[&"__host__"], null, {})
+		record.import_json(data)
+		records.push_back(record)
