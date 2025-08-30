@@ -2,6 +2,10 @@ class_name JSONSerialize
 
 #region Serialization
 
+static var KNOWN_NONSERIALIZABLE_OBJECT_SCRIPTS : PackedStringArray = [
+	"DisplayString",
+]
+
 static func serialize(value: Variant) -> Variant:
 	if value == null: return null
 	var result := {
@@ -39,8 +43,9 @@ static func _serialize_object(value: Object) -> Variant:
 			&"parent": value.get_parent().name,
 		}
 
-	# assert(false, "Attempted to export an object (%s) to json that cannot be. Try adding an export_json() method to the object, if possible." % str(value))
-	return value.get_instance_id()
+	if value.get_script().get_global_name() not in KNOWN_NONSERIALIZABLE_OBJECT_SCRIPTS:
+		printerr("Attempted to export an object (%s) to json that cannot be. Try adding an export_json() method to the object. Or, if this is expected, add the Script class_name to KNOWN_NONSERIALIZABLE_OBJECT_SCRIPTS in JSONSerialize.gd." % str(value))
+	return null
 
 static func _serialize_dictionary(value: Dictionary) -> Dictionary:
 	var result := {}
@@ -73,7 +78,7 @@ static func _deserialize_object(json: Dictionary) -> Variant:
 	assert(json[&"script"] != &"Cell", "Cells should handle their own deserialization.")
 
 	var result : Object = ClassDB.instantiate(json[&"class"])
-	if json.has(&"script"):
+	if json.has(&"script") and json[&"value"]:
 		result.set_script(load(json[&"script_uid"]))
 		# if result.get_script() == null or not result.has_method(&"import_json"): return result
 		assert(result.get_script() != null, "Attempted to deserialize an object, but couldn't set the script. Make sure that it has an _init() method with 0 *required* arguments.")

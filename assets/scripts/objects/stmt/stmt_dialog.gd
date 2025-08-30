@@ -46,7 +46,7 @@ func _prep(record: Record) -> void:
 
 	record.data.merge({
 		&"who": subject_ref,
-		&"what": DisplayString.new_from_pure(pure_text, Cell.ROOT, incoming_dialog),
+		&"what": null,
 		&"dialog": Path.to(incoming_dialog)
 	})
 
@@ -74,6 +74,9 @@ func _execute(record: Record) :
 
 	if not incoming_dialog_node.is_entered:
 		await incoming_dialog_node.enter(Funx.new(record.host, true))
+
+	if record.data[&"what"] == null:
+		record.data[&"what"] = DisplayString.new_from_pure(pure_text, Cell.ROOT, incoming_dialog)
 
 	incoming_dialog_node.receive(record)
 	await incoming_dialog_node.advanced
