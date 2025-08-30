@@ -365,8 +365,10 @@ func _export_json(json: Dictionary) -> void:
 
 		json[&"data"][k] = serial
 
-
 func _import_json(json: Dictionary) -> void:
+	assert(false, "You should not be importing Cells directly. Use [import_cell] instead.")
+
+func import_cell(json: Dictionary, host: PennyHost) -> void:
 	var json_storage : Array = json[&"value"][&"storage"]
 	data_storage.resize(json_storage.size())
 	for i in data_storage.size(): data_storage[i] = json_storage[i]
@@ -375,44 +377,53 @@ func _import_json(json: Dictionary) -> void:
 	for k in data.keys():
 		if is_key_stored(k) and k not in json_data:
 			data.erase(k)
+
+	var inst_data : Array = []
 	for k in json_data.keys():
-		if json_data[k].get(&"script") == &"Cell":
-			if not data.has(k) or data[k] is not Cell:
-				data[k] = Cell.new(k, self, {})
-			print("Importing Cell: ", data[k])
-			data[k].import_json(json_data[k])
-			continue
+		match k:
+			K_INST:
+				inst_data = json_data[k][&"value"]
+			_:
+				if json_data[k].get(&"script") == &"Cell":
+					if not (data.has(k) and data[k] is Cell):
+						data[k] = Cell.new(k, self, {})
+					data[k].import_cell(json_data[k], host)
+					continue
 
-		var value = JSONSerialize.deserialize(json_data[k])
-		print("json_data[k] : %s" % [ json_data[k] ])
-		print("k : %s" % [ k ])
-		print("value : %s" % [ value ])
-		data[k] = value
+				var value = JSONSerialize.deserialize(json_data[k])
+				data[k] = value
 
+	despawn()
+	for inst in inst_data:
+		var node_data : Dictionary = inst[&"value"]
+		if node_data.get(&"spawn_used"):
+			var node := spawn(Funx.new(host))
+			if node is Actor:
+				node.import_json(node_data)
 
-# func load_data(host: PennyHost, json: Dictionary) -> void:
-# 	self.despawn()
+func load_data(host: PennyHost, json: Dictionary) -> void:
+	self.despawn()
 
-# 	var result_data : Dictionary = {}
-# 	var inst_data : Dictionary
-# 	for k in json.keys():
-# 		match k:
-# 			K_INST:
-# 				inst_data = json[k]
-# 			_:
-# 				if json[k] is Dictionary:
-# 					var cell : Cell = data[k] if data.has(k) else Cell.new(k, self, {})
-# 					cell.load_data(host, json[k])
-# 					result_data[k] = cell
-# 				else:
-# 					result_data[k] = Load.any(json[k])
+	var result_data : Dictionary = {}
+	var inst_data : Dictionary
+	for k in json.keys():
+		match k:
+			K_INST:
+				inst_data = json[k]
+			_:
+				if json[k] is Dictionary:
+					var cell : Cell = data[k] if data.has(k) else Cell.new(k, self, {})
+					cell.load_data(host, json[k])
+					result_data[k] = cell
+				else:
+					result_data[k] = JSONSerialize.deserialize(json[k])
 
-# 	# Assuming all is valid. We don't want to set any data if the load fails.
-# 	data = result_data
+	# Assuming all is valid. We don't want to set any data if the load fails.
+	data = result_data
 
-# 	if inst_data:
-# 		# prints(self, self.local_instance)
-# 		if inst_data.has(&"spawn_used") and inst_data[&"spawn_used"]:
-# 			var node := self.spawn(Funx.new(host))
-# 			if node is Actor:
-# 				node.load_data(inst_data)
+	if inst_data:
+		# prints(self, self.local_instance)
+		if inst_data.has(&"spawn_used") and inst_data[&"spawn_used"]:
+			var node := self.spawn(Funx.new(host))
+			if node is Actor:
+				node.load_data(inst_data)

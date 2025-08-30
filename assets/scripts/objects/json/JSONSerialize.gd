@@ -43,8 +43,8 @@ static func _serialize_object(value: Object) -> Variant:
 			&"parent": value.get_parent().name,
 		}
 
-	if value.get_script().get_global_name() not in KNOWN_NONSERIALIZABLE_OBJECT_SCRIPTS:
-		printerr("Attempted to export an object (%s) to json that cannot be. Try adding an export_json() method to the object. Or, if this is expected, add the Script class_name to KNOWN_NONSERIALIZABLE_OBJECT_SCRIPTS in JSONSerialize.gd." % str(value))
+	assert(value.get_script() and value.get_script().get_global_name() in KNOWN_NONSERIALIZABLE_OBJECT_SCRIPTS, "Attempted to export an object (%s) to json that cannot be. Try adding an export_json() method to the object. Or, if this is expected, add the Script class_name to 'JSONSerialize.KNOWN_NONSERIALIZABLE_OBJECT_SCRIPTS'." % str(value))
+
 	return null
 
 static func _serialize_dictionary(value: Dictionary) -> Dictionary:
@@ -64,7 +64,6 @@ static func _serialize_array(value: Array) -> Array:
 static func deserialize(json: Variant) -> Variant:
 	if json == null: return null
 
-
 	match json[&"type"] as int:
 		TYPE_OBJECT:		return _deserialize_object(json)
 		TYPE_DICTIONARY:	return _deserialize_dictionary(json[&"value"])
@@ -76,11 +75,11 @@ static func deserialize(json: Variant) -> Variant:
 
 static func _deserialize_object(json: Dictionary) -> Variant:
 	assert(json[&"script"] != &"Cell", "Cells should handle their own deserialization.")
+	if json[&"script"] in KNOWN_NONSERIALIZABLE_OBJECT_SCRIPTS: return null
 
 	var result : Object = ClassDB.instantiate(json[&"class"])
-	if json.has(&"script") and json[&"value"]:
+	if json.has(&"script") and json[&"value"] != null:
 		result.set_script(load(json[&"script_uid"]))
-		# if result.get_script() == null or not result.has_method(&"import_json"): return result
 		assert(result.get_script() != null, "Attempted to deserialize an object, but couldn't set the script. Make sure that it has an _init() method with 0 *required* arguments.")
 		assert(result.has_method(&"import_json"), "Attempted to deserialize object '%s', but it has no 'import_json' method." % result)
 		result.import_json(json[&"value"])

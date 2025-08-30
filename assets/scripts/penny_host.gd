@@ -2,32 +2,6 @@
 ## Node that actualizes Penny statements. This stores local data_root and records based on what the player chooses to do. Most applications will simply use an autoloaded, global host. For more advanced uses, you can instantiate multiple of these simultaneously for concurrent or even network-replicated instances. The records/state can be saved.
 class_name PennyHost extends HistoryUser
 
-#region Save
-
-class SaveData extends JSONFileResource:
-	var host : PennyHost
-
-	func _init(__host: PennyHost, __save_data__: String = generate_save_path()) -> void:
-		host = __host
-		super._init(__save_data__)
-
-	func _export_json(json: Dictionary) -> void:
-		json.merge({
-			&"git_rev_penny": PennyUtils.get_git_commit_id("res://addons/penny_godot/"),
-			&"git_rev_project": PennyUtils.get_git_commit_id(),
-			&"screenshot": null,
-			&"state": JSONSerialize.serialize(Cell.ROOT),
-			&"history": host.history.export_json(),
-			&"history_index": clampi(host.history_index, 0, host.history.records.size() - 1)
-		})
-
-	func _import_json(json: Dictionary) -> void:
-		host.history.import_json(json[&"history"].merged({ &"__host__": host }))
-		host._history_index = json[&"history_index"]
-		Cell.ROOT.import_json(json[&"state"])
-
-#endregion
-
 signal on_try_advance
 signal on_data_modified
 signal on_close
@@ -215,6 +189,30 @@ func get_next_stmt(record : Record) -> Stmt:
 func on_reach_end() -> void:
 	on_close.emit()
 
+#region Save/Load
+
+class SaveData extends JSONFileResource:
+	var host : PennyHost
+
+	func _init(__host: PennyHost, __save_data__: String = generate_save_path()) -> void:
+		host = __host
+		super._init(__save_data__)
+
+	func _export_json(json: Dictionary) -> void:
+		json.merge({
+			&"git_rev_penny": PennyUtils.get_git_commit_id("res://addons/penny_godot/"),
+			&"git_rev_project": PennyUtils.get_git_commit_id(),
+			&"screenshot": null,
+			&"state": JSONSerialize.serialize(Cell.ROOT),
+			&"history": host.history.export_json(),
+			&"history_index": clampi(host.history_index, 0, host.history.records.size() - 1)
+		})
+
+	func _import_json(json: Dictionary) -> void:
+		host.history.import_json(json[&"history"].merged({ &"__host__": host }))
+		host._history_index = json[&"history_index"]
+		Cell.ROOT.import_cell(json[&"state"], host)
+
 
 func save() -> void:
 	var path = await prompt_file_path(FileDialog.FILE_MODE_SAVE_FILE)
@@ -236,7 +234,7 @@ func load() -> void:
 	while history_cursor and not history_cursor.stmt.is_loadable:
 		_history_index -= 1
 
-	# execute_record(history_cursor)
+	execute_record(history_cursor)
 
 
 func prompt_file_path(mode : FileDialog.FileMode) :
@@ -249,3 +247,5 @@ func prompt_file_path(mode : FileDialog.FileMode) :
 	var result = await Async.any([file_dialog.file_selected, file_dialog.canceled])
 	file_dialog.queue_free()
 	return result
+
+#endregion

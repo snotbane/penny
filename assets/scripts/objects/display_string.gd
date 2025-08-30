@@ -81,9 +81,9 @@ var interfacing_elements : Array[DecorElement] :
 		return element.decor != null
 		)
 
+
 func _init(__text__ : String = "") -> void:
 	text = __text__
-
 
 func _notification(what: int) -> void:
 	match what:
