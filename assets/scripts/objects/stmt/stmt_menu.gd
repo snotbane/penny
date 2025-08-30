@@ -74,7 +74,7 @@ func _prep(record: Record) -> void:
 
 	record.data.merge({
 		&"prior": response,
-		&"prior_data": (response if response else Cell.ROOT.get_value(Cell.K_OPTION)).export_json()
+		&"prior_consumed": (response.evaluate().get_value(Cell.K_CONSUMED)) if response else false
 	})
 
 func _execute(record: Record) :
@@ -83,7 +83,7 @@ func _execute(record: Record) :
 
 	record.force_cull_history = record.data.get(&"after") != response
 	record.data[&"after"] = response
-	# record.data[&"after_data"] = JSONSerialize.serialize(response.evaluate()) if response else null
+	record.data[&"after_consumed"] = (response.evaluate().get_value(Cell.K_CONSUMED)) if response else false
 
 	record.host.expecting_conditional = record.force_cull_history and mode == Mode.EXPLICIT
 
@@ -93,14 +93,14 @@ func _cleanup(record: Record) :
 func _undo(record: Record) -> void:
 	super._undo(record)
 	subject.set_value(Cell.K_RESPONSE, record.data[&"prior"])
-	# if record.data[&"after"] == null: return
-	# record.data[&"after"].evaluate().import_cell(record.data[&"prior_data"], record.host)
+	if record.data[&"after"] == null: return
+	record.data[&"after"].evaluate().set_value(Cell.K_CONSUMED, record.data[&"prior_consumed"])
 
 func _redo(record: Record) -> void:
 	super._redo(record)
 	subject.set_value(Cell.K_RESPONSE, record.data[&"after"])
-	# if record.data[&"after"] == null: return
-	# record.data[&"after"].evaluate().import_cell(record.data[&"after_data"], record.host)
+	if record.data[&"after"] == null: return
+	record.data[&"after"].evaluate().set_value(Cell.K_CONSUMED, record.data[&"after_consumed"])
 
 # func _next(record: Record) -> Stmt:
 # 	match mode:

@@ -354,6 +354,8 @@ func reparent__redo(record: Record) -> void:
 
 #endregion
 
+#region Serialization
+
 func _export_json(json: Dictionary) -> void:
 	json[&"storage"] = data_storage
 	json[&"data"] = {}
@@ -426,3 +428,5 @@ func load_data(host: PennyHost, json: Dictionary) -> void:
 			var node := self.spawn(Funx.new(host))
 			if node is Actor:
 				node.load_data(inst_data)
+
+#endregion
