@@ -125,26 +125,26 @@ func create_tree_item_for_any(parent: TreeItem, key: StringName, value: Variant,
 	return result
 
 static func get_storage_icon(value: Variant) -> Texture2D:
-	return preload("res://addons/penny_godot/assets/textures/icons/Storage.svg") if value else null
+	return preload("uid://bh14tq6l7jvmn") if value else null
 
 static func get_storage_tooltip(value: Variant) -> String:
 	return "This value will be saved." if value else ""
 
 static func get_icon(value: Variant) -> Texture2D:
 	if value is Cell:
-		return preload("res://addons/penny_godot/assets/textures/icons/Object.svg")
+		return preload("uid://dfir03166e6r2")
 	if value is Dictionary:
-		return preload("res://addons/penny_godot/assets/textures/icons/Dictionary.svg")
+		return preload("uid://b3yg388eo1tr4")
 	if value is	Array:
-		return preload("res://addons/penny_godot/assets/textures/icons/Array.svg")
+		return preload("uid://brecacl0mws63")
 	if value is	Color:
-		return preload("res://addons/penny_godot/assets/textures/icons/Color.svg")
+		return preload("uid://dpxsajvwjy3w6")
 	if value is Path:
-		return preload("res://addons/penny_godot/assets/textures/icons/Ref.svg")
+		return preload("uid://dn51yrr71rglp")
 	if value is Expr:
-		return preload("res://addons/penny_godot/assets/textures/icons/PrismMesh.svg")
+		return preload("uid://bee45y5iclbot")
 	if value is Node:
-		return preload("res://addons/penny_godot/assets/textures/icons/Node.svg")
+		return preload("uid://bovb503mwm2jf")
 	return null
 
 

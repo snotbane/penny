@@ -2,6 +2,8 @@
 ## An [AnimatedSprite2D] that can change its animation by adding or removing [StringName] flags to it.
 @tool class_name FlagSprite2D extends AnimatedSprite2D
 
+@export var autostart : bool = true
+
 const DELIMITER : String = "_"
 
 var animation_loop : bool :
@@ -36,6 +38,11 @@ var all_possible_flags : PackedStringArray :
 				if result.has(flag): continue
 				result.push_back(flag)
 		return result
+
+
+func _ready() -> void:
+	if autostart and sprite_frames:
+		play(animation)
 
 
 func add_flag(flag: StringName) -> bool:
