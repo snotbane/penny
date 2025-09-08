@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://b71rr1loowp5k"]
 
-[ext_resource type="Script" uid="uid://ucpht8ma6ohj" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/BubbleContainer3D.gd" id="1_ybpm4"]
-[ext_resource type="PackedScene" uid="uid://dk235a8arrhyf" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/dialog_bubble_3d.tscn" id="2_3xlnk"]
+[ext_resource type="Script" uid="uid://ucpht8ma6ohj" path="res://addons/penny/assets/scenes/dialog_elements/bubbles/BubbleContainer3D.gd" id="1_ybpm4"]
+[ext_resource type="PackedScene" uid="uid://dk235a8arrhyf" path="res://addons/penny/assets/scenes/dialog_elements/bubbles/dialog_bubble_3d.tscn" id="2_3xlnk"]
 
 [sub_resource type="Curve3D" id="Curve3D_ybpm4"]
 _data = {

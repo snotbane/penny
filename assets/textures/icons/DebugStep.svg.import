@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dudvfcddqwr3d"
-path="res://.godot/imported/DebugStep.svg-ee9972ca7576a1f5eb9bd87194912cae.ctex"
+path="res://.godot/imported/DebugStep.svg-84a7dfca4c1c1d4b1081f53695b2c3a2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/textures/icons/DebugStep.svg"
-dest_files=["res://.godot/imported/DebugStep.svg-ee9972ca7576a1f5eb9bd87194912cae.ctex"]
+source_file="res://addons/penny/assets/textures/icons/DebugStep.svg"
+dest_files=["res://.godot/imported/DebugStep.svg-84a7dfca4c1c1d4b1081f53695b2c3a2.ctex"]
 
 [params]
 

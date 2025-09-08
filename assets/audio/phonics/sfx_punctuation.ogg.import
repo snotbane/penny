@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://eio2nks3bnyd"
-path="res://.godot/imported/sfx_punctuation.ogg-16b3d2937f6a0f3e20f1abe41554b04c.oggvorbisstr"
+path="res://.godot/imported/sfx_punctuation.ogg-8b9c15d0d9d8ba977d76960c791aa2cd.oggvorbisstr"
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/audio/phonics/sfx_punctuation.ogg"
-dest_files=["res://.godot/imported/sfx_punctuation.ogg-16b3d2937f6a0f3e20f1abe41554b04c.oggvorbisstr"]
+source_file="res://addons/penny/assets/audio/phonics/sfx_punctuation.ogg"
+dest_files=["res://.godot/imported/sfx_punctuation.ogg-8b9c15d0d9d8ba977d76960c791aa2cd.oggvorbisstr"]
 
 [params]
 

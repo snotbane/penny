@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d32s2mav1d2xi"
-path="res://.godot/imported/actor_placeholder.png-7eaa07d2fc0524307be4d35750a83eb6.ctex"
+path="res://.godot/imported/actor_placeholder.png-5acd7415741fb19f7f6a6f9d7753ab9c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/textures/actor_placeholder.png"
-dest_files=["res://.godot/imported/actor_placeholder.png-7eaa07d2fc0524307be4d35750a83eb6.ctex"]
+source_file="res://addons/penny/assets/textures/actor_placeholder.png"
+dest_files=["res://.godot/imported/actor_placeholder.png-5acd7415741fb19f7f6a6f9d7753ab9c.ctex"]
 
 [params]
 

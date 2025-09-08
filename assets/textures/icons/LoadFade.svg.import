@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://yevin05lnguh"
-path="res://.godot/imported/LoadFade.svg-cd51c233f08335bef6593c2bf0248053.ctex"
+path="res://.godot/imported/LoadFade.svg-ef16a218ee4abe6be56f39b23249ae98.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/textures/icons/LoadFade.svg"
-dest_files=["res://.godot/imported/LoadFade.svg-cd51c233f08335bef6593c2bf0248053.ctex"]
+source_file="res://addons/penny/assets/textures/icons/LoadFade.svg"
+dest_files=["res://.godot/imported/LoadFade.svg-ef16a218ee4abe6be56f39b23249ae98.ctex"]
 
 [params]
 

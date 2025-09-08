@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://casyj4t5bxxe2"
-path="res://.godot/imported/History.svg-f9213d83c93d3ad203cd8dc9bb1b7fcd.ctex"
+path="res://.godot/imported/History.svg-f6ed0f2b9ebe6885fe5e64f376e89ae8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/textures/icons/History.svg"
-dest_files=["res://.godot/imported/History.svg-f9213d83c93d3ad203cd8dc9bb1b7fcd.ctex"]
+source_file="res://addons/penny/assets/textures/icons/History.svg"
+dest_files=["res://.godot/imported/History.svg-f6ed0f2b9ebe6885fe5e64f376e89ae8.ctex"]
 
 [params]
 

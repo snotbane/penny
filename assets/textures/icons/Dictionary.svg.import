@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b3yg388eo1tr4"
-path="res://.godot/imported/Dictionary.svg-4d43cd0927d63ab77b4535b8fbce45af.ctex"
+path="res://.godot/imported/Dictionary.svg-dc0662cd3c9c02e9203acfb683990daa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/textures/icons/Dictionary.svg"
-dest_files=["res://.godot/imported/Dictionary.svg-4d43cd0927d63ab77b4535b8fbce45af.ctex"]
+source_file="res://addons/penny/assets/textures/icons/Dictionary.svg"
+dest_files=["res://.godot/imported/Dictionary.svg-dc0662cd3c9c02e9203acfb683990daa.ctex"]
 
 [params]
 

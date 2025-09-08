@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://cgxoa5vuur6al"
-path="res://.godot/imported/NotoSansMono-Medium.ttf-d572d1263d56095a7736e10d2f0cf63b.fontdata"
+path="res://.godot/imported/NotoSansMono-Medium.ttf-6e386f0ec035d4cd33675484bed798b6.fontdata"
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/fonts/NotoSansMono-Medium.ttf"
-dest_files=["res://.godot/imported/NotoSansMono-Medium.ttf-d572d1263d56095a7736e10d2f0cf63b.fontdata"]
+source_file="res://addons/penny/assets/fonts/NotoSansMono-Medium.ttf"
+dest_files=["res://.godot/imported/NotoSansMono-Medium.ttf-6e386f0ec035d4cd33675484bed798b6.fontdata"]
 
 [params]
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://b8w7wdy7jy5vo"]
 
-[ext_resource type="PackedScene" uid="uid://3hyihavre4f1" path="res://addons/penny_godot/assets/scenes/dialog_elements/bubbles/dialog_bubble_tail.tscn" id="1_t0xmx"]
+[ext_resource type="PackedScene" uid="uid://3hyihavre4f1" path="res://addons/penny/assets/scenes/dialog_elements/bubbles/dialog_bubble_tail.tscn" id="1_t0xmx"]
 
 [sub_resource type="Curve2D" id="Curve2D_t0xmx"]
 _data = {

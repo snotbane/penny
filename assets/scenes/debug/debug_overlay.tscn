@@ -1,12 +1,12 @@
 [gd_scene load_steps=16 format=3 uid="uid://cfkhtume00g5e"]
 
-[ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny_godot/assets/themes/debug_theme.tres" id="1_wnmh5"]
-[ext_resource type="Script" uid="uid://b738ne6tpjblc" path="res://addons/penny_godot/assets/scripts/nodes/penny_debug.gd" id="2_vh75p"]
-[ext_resource type="PackedScene" uid="uid://c8yr1nrnrh2jh" path="res://addons/penny_godot/assets/scenes/debug/debug_panel.tscn" id="3_sytt2"]
-[ext_resource type="Texture2D" uid="uid://sk0o8qo2fdjw" path="res://addons/penny_godot/assets/textures/icons/Failure.svg" id="6_qhd4w"]
-[ext_resource type="Texture2D" uid="uid://dw74g8fttffmq" path="res://addons/penny_godot/assets/textures/icons/Reload.svg" id="17_kdqm8"]
-[ext_resource type="Texture2D" uid="uid://cb8qfgw6tykev" path="res://addons/penny_godot/assets/textures/icons/CheckBox.svg" id="18_2dire"]
-[ext_resource type="FontFile" uid="uid://dwidsc5m3kiw" path="res://addons/penny_godot/assets/fonts/IBMPlexSans-BoldItalic.ttf" id="20_asy2r"]
+[ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny/assets/themes/debug_theme.tres" id="1_wnmh5"]
+[ext_resource type="Script" uid="uid://b738ne6tpjblc" path="res://addons/penny/assets/scripts/nodes/penny_debug.gd" id="2_vh75p"]
+[ext_resource type="PackedScene" uid="uid://c8yr1nrnrh2jh" path="res://addons/penny/assets/scenes/debug/debug_panel.tscn" id="3_sytt2"]
+[ext_resource type="Texture2D" uid="uid://sk0o8qo2fdjw" path="res://addons/penny/assets/textures/icons/Failure.svg" id="6_qhd4w"]
+[ext_resource type="Texture2D" uid="uid://dw74g8fttffmq" path="res://addons/penny/assets/textures/icons/Reload.svg" id="17_kdqm8"]
+[ext_resource type="Texture2D" uid="uid://cb8qfgw6tykev" path="res://addons/penny/assets/textures/icons/CheckBox.svg" id="18_2dire"]
+[ext_resource type="FontFile" uid="uid://dwidsc5m3kiw" path="res://addons/penny/assets/fonts/IBMPlexSans-BoldItalic.ttf" id="20_asy2r"]
 
 [sub_resource type="GDScript" id="GDScript_bo025"]
 script/source = "extends Window

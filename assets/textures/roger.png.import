@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bwkpyykbnbfrb"
-path="res://.godot/imported/roger.png-32216171b941dda1667ef26525a591c6.ctex"
+path="res://.godot/imported/roger.png-6082aa8b1463985b00a50937464e56e1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/textures/roger.png"
-dest_files=["res://.godot/imported/roger.png-32216171b941dda1667ef26525a591c6.ctex"]
+source_file="res://addons/penny/assets/textures/roger.png"
+dest_files=["res://.godot/imported/roger.png-6082aa8b1463985b00a50937464e56e1.ctex"]
 
 [params]
 

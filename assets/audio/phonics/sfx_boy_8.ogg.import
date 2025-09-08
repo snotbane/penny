@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://cxcromtsd23ax"
-path="res://.godot/imported/sfx_boy_8.ogg-373230cff9c7e30561e875c77b3e1ae7.oggvorbisstr"
+path="res://.godot/imported/sfx_boy_8.ogg-47eaf2f0b3e7a0795371cf4830c4c086.oggvorbisstr"
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/audio/phonics/sfx_boy_8.ogg"
-dest_files=["res://.godot/imported/sfx_boy_8.ogg-373230cff9c7e30561e875c77b3e1ae7.oggvorbisstr"]
+source_file="res://addons/penny/assets/audio/phonics/sfx_boy_8.ogg"
+dest_files=["res://.godot/imported/sfx_boy_8.ogg-47eaf2f0b3e7a0795371cf4830c4c086.oggvorbisstr"]
 
 [params]
 

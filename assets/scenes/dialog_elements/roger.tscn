@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://byamam888n7fp"]
 
-[ext_resource type="Texture2D" uid="uid://bwkpyykbnbfrb" path="res://addons/penny_godot/assets/textures/roger.png" id="1_m3qjw"]
+[ext_resource type="Texture2D" uid="uid://bwkpyykbnbfrb" path="res://addons/penny/assets/textures/roger.png" id="1_m3qjw"]
 
 [sub_resource type="GDScript" id="GDScript_vkyqm"]
 script/source = "extends Control

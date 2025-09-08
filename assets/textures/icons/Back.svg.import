@@ -3,8 +3,8 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://xpmyo52daraf"
-path.s3tc="res://.godot/imported/Back.svg-cb547fb5b4b73a1d4c427a30224d716b.s3tc.ctex"
-path.etc2="res://.godot/imported/Back.svg-cb547fb5b4b73a1d4c427a30224d716b.etc2.ctex"
+path.s3tc="res://.godot/imported/Back.svg-0f0c31e2d38d21bf3a15df27178df8c7.s3tc.ctex"
+path.etc2="res://.godot/imported/Back.svg-0f0c31e2d38d21bf3a15df27178df8c7.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
@@ -12,8 +12,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/textures/icons/Back.svg"
-dest_files=["res://.godot/imported/Back.svg-cb547fb5b4b73a1d4c427a30224d716b.s3tc.ctex", "res://.godot/imported/Back.svg-cb547fb5b4b73a1d4c427a30224d716b.etc2.ctex"]
+source_file="res://addons/penny/assets/textures/icons/Back.svg"
+dest_files=["res://.godot/imported/Back.svg-0f0c31e2d38d21bf3a15df27178df8c7.s3tc.ctex", "res://.godot/imported/Back.svg-0f0c31e2d38d21bf3a15df27178df8c7.etc2.ctex"]
 
 [params]
 

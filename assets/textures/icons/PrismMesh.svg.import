@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bee45y5iclbot"
-path="res://.godot/imported/PrismMesh.svg-b8082e5033d9040ed07c442451757aa1.ctex"
+path="res://.godot/imported/PrismMesh.svg-a2d7f0baaec8d42cb107534a2bd05852.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/textures/icons/PrismMesh.svg"
-dest_files=["res://.godot/imported/PrismMesh.svg-b8082e5033d9040ed07c442451757aa1.ctex"]
+source_file="res://addons/penny/assets/textures/icons/PrismMesh.svg"
+dest_files=["res://.godot/imported/PrismMesh.svg-a2d7f0baaec8d42cb107534a2bd05852.ctex"]
 
 [params]
 

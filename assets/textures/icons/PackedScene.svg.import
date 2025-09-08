@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://yrrj3kgg2n2g"
-path="res://.godot/imported/PackedScene.svg-328ba9f721ebc4139c81ba9930b8c5cc.ctex"
+path="res://.godot/imported/PackedScene.svg-3b1098d3ecdafcd39259aa03be1721db.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny_godot/assets/textures/icons/PackedScene.svg"
-dest_files=["res://.godot/imported/PackedScene.svg-328ba9f721ebc4139c81ba9930b8c5cc.ctex"]
+source_file="res://addons/penny/assets/textures/icons/PackedScene.svg"
+dest_files=["res://.godot/imported/PackedScene.svg-3b1098d3ecdafcd39259aa03be1721db.ctex"]
 
 [params]
 

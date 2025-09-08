@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://t7gnah716i63"]
 
-[ext_resource type="PackedScene" uid="uid://cfkhtume00g5e" path="res://addons/penny_godot/assets/scenes/debug/debug_overlay.tscn" id="1_ya4nk"]
+[ext_resource type="PackedScene" uid="uid://cfkhtume00g5e" path="res://addons/penny/assets/scenes/debug/debug_overlay.tscn" id="1_ya4nk"]
 
 [node name="debug_window" type="Window"]
 initial_position = 3
