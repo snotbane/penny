@@ -7,10 +7,11 @@ class_name ActorWalkMovement3D extends Node
 var move_direction : Vector3
 
 func _physics_process(delta: float) -> void:
-	character.velocity = move_direction * walk_speed * delta
+	character.velocity += move_direction * walk_speed * delta
 	character.velocity += ProjectSettings.get_setting("physics/3d/default_gravity_vector") * ProjectSettings.get_setting("physics/3d/default_gravity")
 
 	character.move_and_slide()
+	character.velocity = Vector3.ZERO
 
 
 func update_move_vector(direction:Vector3) -> void:
