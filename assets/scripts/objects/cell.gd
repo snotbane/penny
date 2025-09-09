@@ -227,7 +227,7 @@ func get_marker_node(host: PennyHost, marker_name: StringName = self.get_value(C
 func disconnect_all_instances() -> void:
 	instances = []
 
-#region Penny-Compatible Methods
+#region Penny Methods
 
 ## [member instantiate]s a [Cell], and adds it to the appropriate parent [Node]. If it already exists, it despawns the old node and creates a new one.
 func spawn(funx: Funx, parent_name = get_value(K_MARKER)) -> Node:
@@ -351,6 +351,12 @@ func reparent__undo(record: Record) -> void:
 
 func reparent__redo(record: Record) -> void:
 	record.data[&"result"] = reparent.callv(record.data[&"args"])
+
+
+func play_audio(funx: Funx, res: String) :
+	var __parent__ : Node = instance if instance else funx.host
+	var asp := Snotbane.create_one_shot_audio(__parent__, load(res))
+	if funx.wait:	await asp.finished
 
 #endregion
 

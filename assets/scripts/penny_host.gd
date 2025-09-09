@@ -191,7 +191,6 @@ func close() -> void:
 
 #region Save/Load
 
-
 class SaveData extends JSONFileResource:
 	var host : PennyHost
 

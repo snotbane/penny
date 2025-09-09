@@ -63,25 +63,20 @@ func _prep(record: Record) -> void:
 
 
 func _execute(record: Record) :
-	if not subject.has_method(undo_function_name):
-		printerr("Warning: the method '%s' does not have an undo submethod set up. Please create one! E.g. %s(record: Record) -> void" % [ execute_function.get_method(), undo_function_name ])
-	if not subject.has_method(redo_function_name):
-		printerr("Warning: the method '%s' does not have a  redo submethod set up. Please create one! E.g. %s(record: Record) -> void" % [ execute_function.get_method(), redo_function_name ])
-
-	var result : Variant = await execute_function.callv(record.data[&"args"])
-
-	record.data[&"result"] = result
+	record.data[&"result"] = await execute_function.callv(record.data[&"args"])
 
 # func _cleanup(record: Record) -> void:
 # 	pass
 
 func _undo(record: Record) -> void:
 	super._undo(record)
-	undo_function.call(record)
+	if undo_function.is_valid():
+		undo_function.call(record)
 
 func _redo(record: Record) -> void:
 	super._redo(record)
-	redo_function.call(record)
+	if redo_function.is_valid():
+		redo_function.call(record)
 
 
 func _serialize_record(record: Record) -> Variant:
