@@ -167,7 +167,7 @@ focus_neighbor_right = NodePath("../button_save")
 focus_neighbor_bottom = NodePath("../button_quit")
 focus_next = NodePath("../button_save")
 focus_previous = NodePath("../../../../roll_panel/margin_container/grid_container/button_roll_end")
-focus_mode = 1
+focus_mode = 0
 shortcut = SubResource("Shortcut_n8otq")
 texture_normal = ExtResource("3_cxwlt")
 texture_pressed = ExtResource("4_quq2v")
@@ -180,7 +180,7 @@ focus_neighbor_left = NodePath("../button_load")
 focus_neighbor_right = NodePath("../../../../roll_panel/margin_container/grid_container/button_roll_back")
 focus_next = NodePath("../button_quit")
 focus_previous = NodePath("../button_load")
-focus_mode = 1
+focus_mode = 0
 shortcut = SubResource("Shortcut_8eokp")
 texture_normal = ExtResource("5_kug6h")
 texture_pressed = ExtResource("6_7hd8h")
@@ -192,7 +192,7 @@ tooltip_text = "Exit"
 focus_neighbor_top = NodePath("../button_load")
 focus_next = NodePath("../../../../roll_panel/margin_container/grid_container/button_roll_back")
 focus_previous = NodePath("../button_save")
-focus_mode = 1
+focus_mode = 0
 texture_normal = ExtResource("7_cnibl")
 texture_pressed = ExtResource("8_xgny0")
 texture_disabled = ExtResource("8_xgny0")
@@ -230,7 +230,7 @@ focus_neighbor_left = NodePath("../../../../file_panel/margin_container/grid_con
 focus_neighbor_right = NodePath("../button_roll_ahead")
 focus_next = NodePath("../button_roll_ahead")
 focus_previous = NodePath("../../../../file_panel/margin_container/grid_container/button_quit")
-focus_mode = 1
+focus_mode = 0
 texture_normal = ExtResource("9_c4iuu")
 texture_pressed = ExtResource("10_8a7qu")
 texture_disabled = ExtResource("10_8a7qu")
@@ -242,7 +242,7 @@ focus_neighbor_left = NodePath("../button_roll_back")
 focus_neighbor_bottom = NodePath("../button_roll_end")
 focus_next = NodePath("../button_roll_end")
 focus_previous = NodePath("../button_roll_back")
-focus_mode = 1
+focus_mode = 0
 texture_normal = ExtResource("9_c4iuu")
 texture_pressed = ExtResource("10_8a7qu")
 texture_disabled = ExtResource("10_8a7qu")
@@ -257,10 +257,15 @@ tooltip_text = "Roll Ahead to Latest"
 focus_neighbor_top = NodePath("../button_roll_ahead")
 focus_next = NodePath("../../../../file_panel/margin_container/grid_container/button_load")
 focus_previous = NodePath("../button_roll_ahead")
-focus_mode = 1
+focus_mode = 0
 texture_normal = ExtResource("11_55foh")
 texture_pressed = ExtResource("12_ynwo7")
 texture_disabled = ExtResource("12_ynwo7")
+
+[node name="exit_confirm" type="ConfirmationDialog" parent="."]
+initial_position = 1
+size = Vector2i(413, 100)
+dialog_text = "Are you sure you want to return to the main menu?"
 
 [connection signal="on_roll_ahead_disabled" from="." to="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel/margin_container/grid_container/button_roll_ahead" method="set_disabled"]
 [connection signal="on_roll_ahead_disabled" from="." to="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel/margin_container/grid_container/button_roll_end" method="set_disabled"]
@@ -268,7 +273,8 @@ texture_disabled = ExtResource("12_ynwo7")
 [connection signal="on_click" from="canvas_layer/ui/input_catcher" to="." method="emit_signal" binds= [&"on_try_advance"]]
 [connection signal="pressed" from="canvas_layer/ui/main_container/v_box_container/hbox/file_panel/margin_container/grid_container/button_load" to="." method="load"]
 [connection signal="pressed" from="canvas_layer/ui/main_container/v_box_container/hbox/file_panel/margin_container/grid_container/button_save" to="." method="save"]
-[connection signal="pressed" from="canvas_layer/ui/main_container/v_box_container/hbox/file_panel/margin_container/grid_container/button_quit" to="." method="close"]
+[connection signal="pressed" from="canvas_layer/ui/main_container/v_box_container/hbox/file_panel/margin_container/grid_container/button_quit" to="exit_confirm" method="set_visible" binds= [true]]
 [connection signal="pressed" from="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel/margin_container/grid_container/button_roll_back" to="." method="roll_back"]
 [connection signal="pressed" from="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel/margin_container/grid_container/button_roll_ahead" to="." method="roll_ahead"]
 [connection signal="pressed" from="canvas_layer/ui/main_container/v_box_container/hbox/roll_panel/margin_container/grid_container/button_roll_end" to="." method="roll_end"]
+[connection signal="confirmed" from="exit_confirm" to="." method="close"]

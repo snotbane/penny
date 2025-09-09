@@ -182,14 +182,15 @@ func get_next_stmt(record : Record) -> Stmt:
 		if call_stack:
 			return call_stack.pop_back()
 		else:
-			on_reach_end()
+			close()
 	return result
 
 
-func on_reach_end() -> void:
+func close() -> void:
 	on_close.emit()
 
 #region Save/Load
+
 
 class SaveData extends JSONFileResource:
 	var host : PennyHost
