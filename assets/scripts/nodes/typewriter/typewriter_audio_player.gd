@@ -1,4 +1,4 @@
-class_name TypewriterAudioStreamPlayer extends AudioStreamPlayer
+class_name TypewriterAudioStreamPlayer extends Node
 
 ## Length of time (seconds) that must pass before a new typewriter sound can be played.
 @export_range(0.01, 0.1, 0.0001, "or_greater") var minimum_audio_delay : float = 0.033
@@ -17,7 +17,7 @@ var default_audio_stream : AudioStream
 
 
 func _ready() -> void:
-	default_audio_stream = stream
+	default_audio_stream = self.stream
 
 
 func _process(delta: float) -> void:
@@ -31,15 +31,16 @@ func receive_character(c: String) -> void:
 	_receive_character(c)
 func _receive_character(c: String) -> void:
 	c = c.to_lower()
-	stream = default_audio_stream
+	self.stream = default_audio_stream
 
 	if char_map.has(c):
-		stream = char_map[c]
+		self.stream = char_map[c]
 	else:
 		for k in regex_map.keys():
 			regex.compile(k)
 			if not regex.search(c): continue
-			stream = regex_map[k]
+			self.stream = regex_map[k]
 			break
 
-	play()
+	var this = self
+	this.play()

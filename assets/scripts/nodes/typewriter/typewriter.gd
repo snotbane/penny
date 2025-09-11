@@ -95,10 +95,12 @@ var user_scroll_enabled : bool = true :
 @export_subgroup("Audio")
 
 var _talker_volume_default : float
+var _talker_audio_player_default : TypewriterAudioStreamPlayer
 var _talker_audio_player : TypewriterAudioStreamPlayer
 @export var talker_audio_player : TypewriterAudioStreamPlayer :
 	get: return _talker_audio_player
 	set(value):
+		if value == null: value = _talker_audio_player_default
 		if _talker_audio_player == value: return
 
 		if _talker_audio_player:
@@ -131,7 +133,19 @@ var is_working : bool :
 var shape_rtl : RichTextLabel
 var v_scroll_bar : VScrollBar
 
-var subject : Cell
+var _subject : Cell
+var subject : Cell :
+	get: return _subject
+	set(value):
+		if _subject == value: return
+		_subject = value
+
+		if _subject:
+			var inst := _subject.instance
+			talker_audio_player = inst.voice_audio_player if (inst and inst is SpriteActor and inst.voice_audio_player) else null
+		else:
+			talker_audio_player = null
+
 var _message : DisplayString
 var message : DisplayString :
 	get: return _message
@@ -278,6 +292,8 @@ func _ready() -> void:
 	time_per_char.resize(visible_characters_max + 1)
 
 	roger.set.call_deferred(&"visible", false)
+
+	_talker_audio_player_default = _talker_audio_player
 
 	prep()
 	is_initialized = true
