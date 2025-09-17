@@ -47,6 +47,8 @@ const K_CONSUMED := &"consumed"
 ## Display text used to represent this object.
 const K_TEXT := &"text"
 
+const DEFAULT_CROSS_CURVE : Curve = preload("uid://c0n3ef6ykv60w")
+
 static var static_init_completed : bool = false
 
 static var ROOT : Cell
@@ -322,13 +324,46 @@ func exit__redo(record: Record) -> void:
 	record.data[&"result"] = await exit.callv(record.data[&"args"])
 
 
-## Moves (crosses) a Node from one position to another. Can be a marker or a literal position.
-func cross(funx: Funx, to: Variant, curve: Variant):
-	print("%s: cross (to: %s, curve: %s)" % [self.key_name, str(to), curve])
+## Moves (crosses) a Node from one position to another. Can be a marker or a literal position. use [curve] to specify motion. [curve] should be a 1D [Curve] with a domain and range of 0.0 to 1.0.
+func cross(funx: Funx, to: Variant, duration : float = 1.0, curve: String = "", global: bool = false):
+	var destination = get_cross_destination(funx.host, to)
+
+	var inst := instance
+
+	var operation := CrossOperation.new(destination, load(curve) if curve else DEFAULT_CROSS_CURVE, duration, global)
+	inst.add_child(operation)
+	operation.start()
+	funx.record.data[&"origin"] = inst.global_transform if global else inst.transform
+	await operation.finished
+func cross__cleanup(record: Record) -> void:
+	var inst := instance
+	if inst:
+		var operation : CrossOperation = null
+		for child in inst.get_children():
+			if child is CrossOperation:
+				operation = child
+				break
+		if operation: operation.finish()
 func cross__undo(record: Record) -> void:
-	print("%s: cross undo." % self.key_name)
+	var inst := instance
+	if inst:
+		inst.transform = record.data[&"origin"]
 func cross__redo(record: Record) -> void:
-	print("%s: cross redo." % self.key_name)
+	var inst := instance
+	if inst:
+		var destination = get_cross_destination(record.host, record.data[&"args"][1])
+
+		var operation := CrossOperation.new(destination, null, 0.0, false)
+		inst.add_child(operation)
+		operation.finish()
+
+func get_cross_destination(host: PennyHost, to: Variant) -> Variant:
+	if to is StringName:
+		return get_marker_node(host, to)
+	elif to is Vector3 or to is Vector2:
+		return to
+	assert(false)
+	return null
 
 
 func reparent(funx: Funx, parent_name: StringName) -> Variant:

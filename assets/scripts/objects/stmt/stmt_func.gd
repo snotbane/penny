@@ -4,6 +4,7 @@
 ## An undo function is not required, but if it exists, it must start with a [Record] parameter.
 class_name StmtFunc extends StmtCell
 
+const CLEANUP_SUFFIX := &"__cleanup"
 const UNDO_SUFFIX := &"__undo"
 const REDO_SUFFIX := &"__redo"
 
@@ -14,6 +15,11 @@ var execute_function_ref : Path
 
 var execute_function : Callable :
 	get: return execute_function_ref.evaluate()
+
+var cleanup_function_name : StringName :
+	get: return execute_function.get_method() + CLEANUP_SUFFIX
+var cleanup_function : Callable :
+	get: return Callable(execute_function.get_object(), cleanup_function_name)
 
 var undo_function_name : StringName :
 	get: return execute_function.get_method() + UNDO_SUFFIX
@@ -27,6 +33,11 @@ var redo_function : Callable :
 
 var is_reserved_function : bool :
 	get: return local_subject_ref.ids.size() == 1
+
+
+# func _get_is_skippable() -> bool:
+# 	return false
+
 
 func _init(__is_awaited__: bool = false) -> void:
 	super._init(StorageQualifier.NONE)
@@ -54,7 +65,9 @@ func _populate(tokens: Array) -> void:
 
 
 func _prep(record: Record) -> void:
-	var evaluated_arguments : Array = [Funx.new(record.host, is_awaited)]
+	var funx := Funx.new(record.host, is_awaited)
+	funx.record = record
+	var evaluated_arguments : Array = [funx]
 	for arg in arguments: evaluated_arguments.push_back(arg.evaluate() if arg is Expr else arg)
 
 	record.data.merge({
@@ -65,8 +78,10 @@ func _prep(record: Record) -> void:
 func _execute(record: Record) :
 	record.data[&"result"] = await execute_function.callv(record.data[&"args"])
 
-# func _cleanup(record: Record) -> void:
-# 	pass
+func _cleanup(record: Record) -> void:
+	super._cleanup(record)
+	if cleanup_function.is_valid():
+		cleanup_function.call(record)
 
 func _undo(record: Record) -> void:
 	super._undo(record)

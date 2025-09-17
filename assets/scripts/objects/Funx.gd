@@ -3,6 +3,7 @@ class_name Funx extends RefCounted
 
 var host : PennyHost
 var wait : bool
+var record : Record
 
 func _init(__host__: PennyHost = null, __wait__: bool = false) -> void:
 	host = __host__
