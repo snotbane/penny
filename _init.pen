@@ -4,7 +4,7 @@ object
 	.dialog = dialog
 	.name = "Unnamed Object"
 	.prefix = "<>"
-	.text = "@.prefix@.name</>"
+	.text => @.prefix@.name</>
 	var .instances = null
 
 dialog = new object
@@ -28,52 +28,52 @@ option = new object
 
 filter = new object
 	.pattern = '.+'
-	.replace = 'default_filter_replace'
+	.replace => default_filter_replace
 
 actor = new object
 	.color = #ff00ff
-	.d_name = `Mx.`
-	.f_name = `John`
-	.l_name = `Doe`
-	.df_name = `@.prefix@.d_name @.f_name</>`
-	.dl_name = `@.prefix@.d_name @.l_name</>`
-	.fl_name = `@.prefix@.f_name @.l_name</>`
-	.dfl_name = `@.prefix@.d_name @.f_name @.l_name</>`
-	.fml_name = `@.prefix@.f_name @.m_name @.l_name</>`
-	.name = `@.f_name`
-	.prefix = `<b;color=@.color>`
+	.d_name => Mx.
+	.f_name => John
+	.l_name => Doe
+	.df_name => @.prefix@.d_name @.f_name</>
+	.dl_name => @.prefix@.d_name @.l_name</>
+	.fl_name => @.prefix@.f_name @.l_name</>
+	.dfl_name => @.prefix@.d_name @.f_name @.l_name</>
+	.fml_name => @.prefix@.f_name @.m_name @.l_name</>
+	.name => @.f_name
+	.prefix => <b;color=@.color>
 	.res = 'uid://3tbms65op2ht'
 	.unknown = new unknown
 	var .marker = null
 
 unknown = new actor
-	.name = `???`
+	.name => ???
 
 PARAGRAPH_START = new filter
 	.pattern = `^`
-	.replace = `<p><dropin><dropout>`
+	.replace => <p><dropin><dropout>
 	# .replace = `<delay=0.5><p><dropin><dropout>`
 
 PARAGRAPH_START_CENTERED = new filter
 	.pattern = `^`
-	.replace = `<p align="center"><dropin><dropout>`
+	.replace => <p align="center"><dropin><dropout>
 	# .replace = `<delay=0.5><p align="center"><dropin><dropout>`
 
 PUNCTUATION_TO_PIPE = new filter
-	.pattern = `(?<!(?:Mx|Mr|Dr|Prof)s?)((?:[.,?!:;](?!\S))|-{2,})+['")\]]?`
+	.pattern = `(?<!(?:Mx|Mr|Dr|Prof)s?)((?:[.,?!:;](?!\S))|-{2,})+[\'")\]]?`
 	.replace = `$0|`
 
 SLOW_ELLIPSES = new filter
 	.pattern = `\.{3}`
-	.replace = `<delay=0.2; speed=5>...</>`
+	.replace => <delay=0.2; speed=5>...</>
 
 PIPE_TO_DELAY = new filter
 	.pattern = `\|`
-	.replace = `<delay>`
+	.replace => <delay>
 
 SLASH_TO_WAIT = new filter
 	.pattern = `(?<!\\)\/`
-	.replace = `<wait>`
+	.replace => <wait>
 
 TRIPLE_HYPHEN_TO_LONG_DASH = new filter
 	.pattern = `---`

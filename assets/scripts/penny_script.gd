@@ -311,18 +311,18 @@ class Token extends RefCounted:
 		WHITESPACE,
 	}
 	static var TYPE_PATTERNS : Dictionary[Type, RegEx] = {
-		Token.Type.INDENTATION: 			RegEx.create_from_string(r"(?m)^\t+"),
-		Token.Type.VALUE_STRING: 			RegEx.create_from_string(r"(?s)([`'\"]).*?\1"),
-		Token.Type.KEYWORD: 				RegEx.create_from_string(r"\b(await|call|else|elif|if|init|jump|label|let|match|menu|pass|print|return|var)\b"),
-		Token.Type.VALUE_BOOLEAN: 			RegEx.create_from_string(r"\b([Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
-		Token.Type.VALUE_COLOR: 			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
-		Token.Type.ASSIGNMENT: 				RegEx.create_from_string(r"=>|([+\-*/]?)=(?!=)"),
-		Token.Type.OPERATOR: 				Op.PATTERN_COMPILED,
-		Token.Type.COMMENT: 				RegEx.create_from_string(r"(?ms)(([#/])\*.*?(\*\2))|((#|\/{2}).*?$)"),
-		Token.Type.IDENTIFIER: 				RegEx.create_from_string(r"[a-zA-Z_]\w*"),
-		Token.Type.VALUE_NUMBER: 			RegEx.create_from_string(r"\d+\.\d*|\.?\d+"),
-		Token.Type.TERMINATOR: 				RegEx.create_from_string(r"(?m)(?<!\[)[:;\n]+(?!\])"),
-		Token.Type.WHITESPACE: 				RegEx.create_from_string(r"(?m)[ \n]+|(?<!^|\t)\t+"),
+		Type.INDENTATION:			RegEx.create_from_string(r"(?m)^\t+"),
+		Type.VALUE_STRING:			RegEx.create_from_string(r"(?s)(?:([`'\"]{3}|[`'\"])(.*?)\1)|(?:(?:>[\t ]*)?(```|`)(.*?)\3)|(?:>[\t ]*([^\n]*)[\t ]*(?=$|\n))"),
+		Type.KEYWORD:				RegEx.create_from_string(r"\b(await|call|else|elif|if|init|jump|label|let|match|menu|pass|print|return|var)\b"),
+		Type.VALUE_BOOLEAN:			RegEx.create_from_string(r"\b([Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
+		Type.VALUE_COLOR:			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
+		Type.ASSIGNMENT:			RegEx.create_from_string(r"===|([+\-*/]?)=(?!=)"),
+		Type.OPERATOR:				Op.PATTERN_COMPILED,
+		Type.COMMENT:				RegEx.create_from_string(r"(?ms)(([#/])\*.*?(\*\2))|((#|\/{2}).*?$)"),
+		Type.IDENTIFIER:			RegEx.create_from_string(r"[a-zA-Z_]\w*"),
+		Type.VALUE_NUMBER:			RegEx.create_from_string(r"\d+\.\d*|\.?\d+"),
+		Type.TERMINATOR:			RegEx.create_from_string(r"(?m)(?<!\[)[:;\n]+(?!\])"),
+		Type.WHITESPACE:			RegEx.create_from_string(r"(?m)[ \n]+|(?<!^|\t)\t+"),
 	}
 
 	enum Literal {
@@ -335,7 +335,7 @@ class Token extends RefCounted:
 		NUMBER_INTEGER,
 	}
 	static var LITERAL_PATTERNS : Dictionary[Literal, RegEx] = {
-		Literal.STRING: 			RegEx.create_from_string(r"(?s)(?<=([`'\"])).*?(?=\1)"),
+		Literal.STRING: 			RegEx.create_from_string(r"(?s)^(?:([`'\"]{3}|[`'\"])(.*?)\1)|(?:(?:>[\t ]*)?([`'\"]{3}|[`'\"])(.*)\3)|(?:>[\t ]*([^\n]*))$"),
 		Literal.COLOR: 				TYPE_PATTERNS[Token.Type.VALUE_COLOR],
 		Literal.NULL: 				RegEx.create_from_string(r"\b([Nn]ull|NULL)\b"),
 		Literal.BOOLEAN_TRUE: 		RegEx.create_from_string(r"\b([Tt]rue|TRUE)\b"),
@@ -347,7 +347,7 @@ class Token extends RefCounted:
 		for i in LITERAL_PATTERNS.size():
 			var rx : RegExMatch = LITERAL_PATTERNS[i].search(raw)
 			if rx: match i:
-				Literal.STRING:			return rx.get_string()
+				Literal.STRING:			return rx.get_string(2) + rx.get_string(4) + rx.get_string(5)
 				Literal.COLOR:			return Color(raw)
 				Literal.NULL:			return null
 				Literal.BOOLEAN_TRUE:	return true
