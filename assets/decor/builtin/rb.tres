@@ -10,8 +10,5 @@ func _compile(element: DecorElement) -> String:
 [resource]
 script = SubResource("GDScript_yyug8")
 id = &"rb"
-args = Dictionary[StringName, Variant]({})
 closable = false
-bbcode = true
-prod_stop = false
 metadata/_custom_type_script = "uid://w7bl3g20knuq"

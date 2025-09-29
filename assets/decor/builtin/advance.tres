@@ -10,8 +10,6 @@ func encounter_open(element: DecorElement) -> void:
 [resource]
 script = SubResource("GDScript_o8efx")
 id = &"advance"
-args = Dictionary[StringName, Variant]({})
 closable = false
 bbcode = false
-prod_stop = false
 metadata/_custom_type_script = "uid://w7bl3g20knuq"

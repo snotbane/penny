@@ -18,7 +18,7 @@ resource_name = "name_label"
 script/source = "extends RichTextLabel
 
 func _on_typewriter_received(record: Record) -> void:
-	var dstring = DisplayString.new_from_pure(record.data[&\"who\"].evaluate().get_value(Cell.K_NAME, \"???\"), record.data[&\"who\"].evaluate())
+	var dstring = DisplayString.new_from_pure(str(record.data[&\"who\"].evaluate().get_value(Cell.K_NAME, \"???\")), record.data[&\"who\"].evaluate())
 	self.text = dstring.text
 "
 
@@ -173,7 +173,7 @@ talk_character_pattern = "[a-zA-Z0-9]"
 silent_character_pattern = "[.?!]"
 
 [node name="talker_default" type="AudioStreamPlayer" parent="typewriter"]
-max_polyphony = 2
+max_polyphony = 4
 script = ExtResource("5_a8dr1")
 
 [node name="name_label" type="RichTextLabel" parent="."]
@@ -193,10 +193,10 @@ size_flags_horizontal = 2
 focus_mode = 2
 mouse_filter = 2
 theme_override_constants/outline_size = 12
-theme_override_font_sizes/bold_italics_font_size = 36
-theme_override_font_sizes/italics_font_size = 36
 theme_override_font_sizes/normal_font_size = 36
 theme_override_font_sizes/bold_font_size = 36
+theme_override_font_sizes/bold_italics_font_size = 36
+theme_override_font_sizes/italics_font_size = 36
 theme_override_styles/focus = SubResource("StyleBoxEmpty_7rfiq")
 bbcode_enabled = true
 text = "Someone"

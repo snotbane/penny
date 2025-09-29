@@ -312,14 +312,14 @@ class Token extends RefCounted:
 	}
 	static var TYPE_PATTERNS : Dictionary[Type, RegEx] = {
 		Type.INDENTATION:			RegEx.create_from_string(r"(?m)^\t+"),
-		Type.VALUE_STRING:			RegEx.create_from_string(r"(?s)(?:([`'\"]{3}|[`'\"])(.*?)\1)|(?:(?:>[\t ]*)?(```|`)(.*?)\3)|(?:>[\t ]*([^\n]*)[\t ]*(?=$|\n))"),
-		Type.KEYWORD:				RegEx.create_from_string(r"\b(await|call|else|elif|if|init|jump|label|let|match|menu|pass|print|return|var)\b"),
-		Type.VALUE_BOOLEAN:			RegEx.create_from_string(r"\b([Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
+		Type.VALUE_STRING:			RegEx.create_from_string(r"(?:([>+](?!=))[\t ]*([^\n]*)(?=$|\n))|(?:([`'\"]{3}|[`'\"])(.*?)\3)"),
+		Type.KEYWORD:				RegEx.create_from_string(r"\b(?:await|call|else|elif|if|init|jump|label|let|match|menu|pass|print|return|var)\b"),
+		Type.VALUE_BOOLEAN:			RegEx.create_from_string(r"\b(?:[Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
 		Type.VALUE_COLOR:			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
 		Type.ASSIGNMENT:			RegEx.create_from_string(r"===|([+\-*/]?)=(?!=)"),
 		Type.OPERATOR:				Op.PATTERN_COMPILED,
 		Type.COMMENT:				RegEx.create_from_string(r"(?ms)(([#/])\*.*?(\*\2))|((#|\/{2}).*?$)"),
-		Type.IDENTIFIER:			RegEx.create_from_string(r"[a-zA-Z_]\w*"),
+		Type.IDENTIFIER:			RegEx.create_from_string(r"~|(?:[a-zA-Z_]\w*)"),
 		Type.VALUE_NUMBER:			RegEx.create_from_string(r"\d+\.\d*|\.?\d+"),
 		Type.TERMINATOR:			RegEx.create_from_string(r"(?m)(?<!\[)[:;\n]+(?!\])"),
 		Type.WHITESPACE:			RegEx.create_from_string(r"(?m)[ \n]+|(?<!^|\t)\t+"),
@@ -334,20 +334,22 @@ class Token extends RefCounted:
 		NUMBER_DECIMAL,
 		NUMBER_INTEGER,
 	}
+
 	static var LITERAL_PATTERNS : Dictionary[Literal, RegEx] = {
-		Literal.STRING: 			RegEx.create_from_string(r"(?s)^(?:([`'\"]{3}|[`'\"])(.*?)\1)|(?:(?:>[\t ]*)?([`'\"]{3}|[`'\"])(.*)\3)|(?:>[\t ]*([^\n]*))$"),
+		Literal.STRING: 			TYPE_PATTERNS[Token.Type.VALUE_STRING],
 		Literal.COLOR: 				TYPE_PATTERNS[Token.Type.VALUE_COLOR],
-		Literal.NULL: 				RegEx.create_from_string(r"\b([Nn]ull|NULL)\b"),
-		Literal.BOOLEAN_TRUE: 		RegEx.create_from_string(r"\b([Tt]rue|TRUE)\b"),
-		Literal.BOOLEAN_FALSE: 		RegEx.create_from_string(r"\b([Ff]alse|FALSE)\b"),
-		Literal.NUMBER_DECIMAL: 	RegEx.create_from_string(r"\b(\d+\.\d+|\d+\.|\.\d+)\b"),
+		Literal.NULL: 				RegEx.create_from_string(r"\b(?:[Nn]ull|NULL)\b"),
+		Literal.BOOLEAN_TRUE: 		RegEx.create_from_string(r"\b(?:[Tt]rue|TRUE)\b"),
+		Literal.BOOLEAN_FALSE: 		RegEx.create_from_string(r"\b(?:[Ff]alse|FALSE)\b"),
+		Literal.NUMBER_DECIMAL: 	RegEx.create_from_string(r"\b(?:\d+\.\d+|\d+\.|\.\d+)\b"),
 		Literal.NUMBER_INTEGER: 	RegEx.create_from_string(r"\b\d+\b"),
 	}
+
 	static func parse_code_as_literal(raw: String) -> Variant:
 		for i in LITERAL_PATTERNS.size():
 			var rx : RegExMatch = LITERAL_PATTERNS[i].search(raw)
 			if rx: match i:
-				Literal.STRING:			return rx.get_string(2) + rx.get_string(4) + rx.get_string(5)
+				Literal.STRING:			return ScriptString.new_or_plain_from_match(rx)
 				Literal.COLOR:			return Color(raw)
 				Literal.NULL:			return null
 				Literal.BOOLEAN_TRUE:	return true
@@ -355,7 +357,6 @@ class Token extends RefCounted:
 				Literal.NUMBER_DECIMAL:	return float(raw)
 				Literal.NUMBER_INTEGER:	return int(raw)
 		return StringName(raw)
-
 
 	var type : Type
 	var value : Variant
@@ -390,3 +391,28 @@ class Token extends RefCounted:
 			Token.Type.WHITESPACE: token_type_string = "whitespace"
 			_: token_type_string = "invalid_token"
 		return "%s:%s" % [token_type_string, str(value)]
+
+class ScriptString extends RefCounted:
+	enum {
+		QUALIFIER_NONE,
+		QUALIFIER_RELATIVE,
+		QUALIFIER_ADDITIVE,
+	}
+
+	var text : String
+	var qualifier : int
+
+	static func new_or_plain_from_match(match: RegExMatch) -> Variant:
+		var __text__ = match.get_string(2) + match.get_string(4)
+		match match.get_string(1):
+			"+":	return ScriptString.new(__text__, QUALIFIER_ADDITIVE)
+			">":	return ScriptString.new(__text__, QUALIFIER_RELATIVE)
+			_:		return __text__
+
+	func _init(__text__: String, __qualifier__: int) -> void:
+		text = __text__
+		qualifier = __qualifier__
+
+	func _to_string() -> String:
+		return text
+

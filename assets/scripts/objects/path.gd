@@ -2,6 +2,12 @@
 ## Path from the root cell to another cell, or any of its properties, or any of its instance's properties.
 class_name Path extends Evaluable
 
+enum {
+	DIRECT_EXPLICIT,
+	DIRECT_RELATIVE,
+	DIRECT_BLANK,
+}
+
 const COLOR := Color8(65, 122, 236)
 
 static var ROOT := Path.new(PackedStringArray(), false)
@@ -70,9 +76,11 @@ func import_json(json: String) -> void:
 var ids : PackedStringArray
 var rel : bool
 
-var is_host_previous : bool :
-	get: return rel == true and ids.is_empty()
+var is_explicit : bool :
+	get: return ids.is_empty()
 
+var directive : int :
+	get: return (DIRECT_RELATIVE if rel else DIRECT_BLANK) if ids.is_empty() else DIRECT_EXPLICIT
 
 func _init(_ids: PackedStringArray = [], _rel: bool = false) -> void:
 	self.ids = _ids
@@ -130,8 +138,9 @@ func evaluate_local(context := Cell.ROOT) -> Variant:
 func evaluate_dynamic(context: Cell, get_func: StringName, has_func: StringName) -> Variant:
 	if not rel: context = Cell.ROOT
 	var result : Variant = context
+	var __id_previous__ : StringName
 	for id in ids:
-		assert(result != null, "Attempted to evaluate path '%s', but resulted to null. (before id: %s)" % [self, id])
+		assert(result != null, "Attempted to evaluate path '%s', but id '%s' couldn't be found." % [self, __id_previous__])
 		if result.has_method(id) or result.has_signal(id) or result.has_meta(id):
 			# print("Path result %s has method or signal or meta: %s" % [ self, id ])
 			pass
@@ -144,4 +153,5 @@ func evaluate_dynamic(context: Cell, get_func: StringName, has_func: StringName)
 				result = inst.get(id)
 				continue
 		result = result.get(id)
+		__id_previous__ = id
 	return result

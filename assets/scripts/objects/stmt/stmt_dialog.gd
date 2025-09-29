@@ -5,9 +5,17 @@ const DEPTH_REMOVAL_PATTERN := r"\n\t{0,%s}"
 static var REGEX_WORD_COUNT := RegEx.create_from_string(r"\b\w+\b")
 static var REGEX_CHAR_COUNT := RegEx.create_from_string(r"\S")
 
+static var USE_PERSISTENT_SUBJECT : bool
+
+
+static func _static_init() -> void:
+	super._static_init()
+
+	USE_PERSISTENT_SUBJECT = true
 
 var subject_dialog_path : Path
 var pure_text : String
+var qualifier : int
 
 
 func _get_verbosity() -> Verbosity:
@@ -27,13 +35,19 @@ func _create_history_listing(record: Record) -> HistoryListing:
 func _get_record_message(record: Record) -> String:
 	return record.data[&"what"].text
 
+func _get_should_use_previous_subject() -> bool:
+	return super._get_should_use_previous_subject() or qualifier >= PennyScript.ScriptString.QUALIFIER_RELATIVE
+
 
 func _init() -> void:
 	super._init(StorageQualifier.NONE)
 
 func _populate(tokens: Array) -> void:
 	var regex_whitespace := RegEx.create_from_string(DEPTH_REMOVAL_PATTERN % self.depth)
-	pure_text = regex_whitespace.sub(tokens.pop_back().value, " ", true)
+	var text_token = tokens.pop_back().value
+
+	pure_text = regex_whitespace.sub(text_token.text if text_token is PennyScript.ScriptString else text_token, " ", true)
+	qualifier = text_token.qualifier if text_token is PennyScript.ScriptString else PennyScript.ScriptString.QUALIFIER_NONE
 
 	super._populate(tokens)
 

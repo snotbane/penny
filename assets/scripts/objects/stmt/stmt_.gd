@@ -95,6 +95,7 @@ func _get_record_message(record: Record) -> String:
 
 #region Construction
 
+static func _static_init() -> void: pass
 func _init() -> void: pass
 
 
@@ -114,7 +115,7 @@ func populate(_owner : PennyScript, _index : int, tokens : Array) -> void:
 		var _d : String = ""
 		for token in tokens:
 			_d += token.to_string().split(":")[1] + " "
-		__debug_string__ = "~\t".repeat(depth + 1) + _d.substr(0, _d.length() - 1)
+		__debug_string__ = "|\t".repeat(depth + 1) + _d.substr(0, _d.length() - 1)
 
 	index_in_same_depth_chain = get_index_in_same_depth_chain()
 	context_ref = get_context_ref()
@@ -132,6 +133,7 @@ func populate_from_other(other: Stmt, tokens : Array) -> void:
 	context_ref = other.context_ref
 
 	self._populate(tokens)
+	__debug_string__ += " (%s)" % self.get_script().get_global_name()
 
 
 ## Called when Penny reloads all scripts. If any errors are produced, add them to [member script]'s error list.

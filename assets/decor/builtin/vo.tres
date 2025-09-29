@@ -7,8 +7,6 @@ script/source = "extends Decor
 [resource]
 script = SubResource("GDScript_ej5q2")
 id = &"vo"
-args = Dictionary[StringName, Variant]({})
-closable = true
 bbcode = false
 prod_stop = true
 metadata/_custom_type_script = "uid://w7bl3g20knuq"

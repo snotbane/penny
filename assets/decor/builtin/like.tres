@@ -12,11 +12,5 @@ func populate(element: DecorElement) -> void:
 
 [resource]
 script = SubResource("GDScript_xhxg8")
-ids = Array[StringName]([])
-subelements = Dictionary[StringName, Dictionary]({})
 id = &"like"
-args = Dictionary[StringName, Variant]({})
-closable = true
-bbcode = true
-prod_stop = false
 metadata/_custom_type_script = "uid://w7bl3g20knuq"

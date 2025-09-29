@@ -7,6 +7,8 @@ object
 	.text => @.prefix@.name</>
 	var .instances = null
 
+~ = new object
+
 dialog = new object
 	.filters = [PARAGRAPH_START, PUNCTUATION_TO_PIPE, PIPE_TO_DELAY, SLASH_TO_WAIT, TRIPLE_HYPHEN_TO_LONG_DASH, DOUBLE_HYPHEN_TO_EM_DASH, FANCY_SINGLE_QUOTE_RIGHT, FANCY_SINGLE_QUOTE_LEFT, FANCY_DOUBLE_QUOTE_RIGHT, FANCY_DOUBLE_QUOTE_LEFT]
 	.marker = 'dialog'
