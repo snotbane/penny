@@ -312,7 +312,7 @@ class Token extends RefCounted:
 	}
 	static var TYPE_PATTERNS : Dictionary[Type, RegEx] = {
 		Type.INDENTATION:			RegEx.create_from_string(r"(?m)^\t+"),
-		Type.VALUE_STRING:			RegEx.create_from_string(r"(?:([>+](?!=))[\t ]*([^\n]*)(?=$|\n))|(?:([`'\"]{3}|[`'\"])(.*?)\3)"),
+		Type.VALUE_STRING:			RegEx.create_from_string(r"(?s)(?:([>+](?!=))[\t ]*([^\n]*)(?=$|\n))|(?:([`'\"]{3}|[`'\"])(.*?)\3)"),
 		Type.KEYWORD:				RegEx.create_from_string(r"\b(?:await|call|else|elif|if|init|jump|label|let|match|menu|pass|print|return|var)\b"),
 		Type.VALUE_BOOLEAN:			RegEx.create_from_string(r"\b(?:[Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
 		Type.VALUE_COLOR:			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),

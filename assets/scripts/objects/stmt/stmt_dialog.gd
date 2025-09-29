@@ -36,7 +36,7 @@ func _get_record_message(record: Record) -> String:
 	return record.data[&"what"].text
 
 func _get_should_use_previous_subject() -> bool:
-	return super._get_should_use_previous_subject() or qualifier >= PennyScript.ScriptString.QUALIFIER_RELATIVE
+	return subject_directive != Path.DIRECT_EXPLICIT and qualifier >= PennyScript.ScriptString.QUALIFIER_RELATIVE
 
 
 func _init() -> void:
