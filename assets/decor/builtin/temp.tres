@@ -14,8 +14,4 @@ subelements = Dictionary[StringName, Dictionary]({
 &"u": {}
 })
 id = &"temp"
-args = Dictionary[StringName, Variant]({})
-closable = true
-bbcode = true
-prod_stop = false
 metadata/_custom_type_script = "uid://w7bl3g20knuq"

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DecorCombo" load_steps=2 format=3 uid="uid://bwi6sir2o3aef"]
+
+[ext_resource type="Script" uid="uid://c2fhfd5aw0syl" path="res://addons/penny/assets/scripts/objects/decor/decor_combo.gd" id="1_hohki"]
+
+[resource]
+script = ExtResource("1_hohki")
+ids = Array[StringName]([&"wave", &"rainbow"])
+id = &"special"
+metadata/_custom_type_script = "uid://c2fhfd5aw0syl"

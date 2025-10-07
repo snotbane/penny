@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DecorRegistry" load_steps=24 format=3 uid="uid://drmpmcuvh657f"]
+[gd_resource type="Resource" script_class="DecorRegistry" load_steps=25 format=3 uid="uid://drmpmcuvh657f"]
 
 [ext_resource type="Script" uid="uid://w7bl3g20knuq" path="res://addons/penny/assets/scripts/objects/decor/decor_.gd" id="1_8yey2"]
 [ext_resource type="Resource" uid="uid://bgemvwokyw5gv" path="res://addons/penny/assets/decor/builtin/advance.tres" id="2_vmywo"]
@@ -21,9 +21,10 @@
 [ext_resource type="Resource" uid="uid://wms4vq8i3jqi" path="res://addons/penny/assets/decor/builtin/wait.tres" id="14_rdbep"]
 [ext_resource type="Script" uid="uid://cr3lmmfkuc6cm" path="res://addons/penny/assets/scripts/objects/decor/decor_registry.gd" id="15_o7bwu"]
 [ext_resource type="Resource" uid="uid://cvgy6u37mo04p" path="res://addons/penny/assets/decor/builtin/sfx.tres" id="16_2ql11"]
+[ext_resource type="Resource" uid="uid://bwi6sir2o3aef" path="res://addons/penny/assets/decor/builtin/special.tres" id="18_gn806"]
 [ext_resource type="Resource" uid="uid://b450n7q4en43b" path="res://addons/penny/assets/decor/builtin/vo.tres" id="19_4rimq"]
 [ext_resource type="Resource" uid="uid://d143ldv7dg0od" path="res://addons/penny/assets/decor/builtin/volume.tres" id="19_p34ur"]
 
 [resource]
 script = ExtResource("15_o7bwu")
-decors = Array[ExtResource("1_8yey2")]([ExtResource("2_vmywo"), ExtResource("2_xkc18"), ExtResource("3_vmywo"), ExtResource("4_is00u"), ExtResource("6_p34ur"), ExtResource("7_4rimq"), ExtResource("5_nu2pg"), ExtResource("9_ukvn5"), ExtResource("6_uyhgw"), ExtResource("7_p34ur"), ExtResource("8_4rimq"), ExtResource("9_2ql11"), ExtResource("10_ukvn5"), ExtResource("11_6qn7o"), ExtResource("16_2ql11"), ExtResource("12_xkc18"), ExtResource("12_cmpwd"), ExtResource("13_tureq"), ExtResource("19_4rimq"), ExtResource("19_p34ur"), ExtResource("14_rdbep")])
+decors = Array[ExtResource("1_8yey2")]([ExtResource("2_vmywo"), ExtResource("2_xkc18"), ExtResource("3_vmywo"), ExtResource("4_is00u"), ExtResource("6_p34ur"), ExtResource("7_4rimq"), ExtResource("5_nu2pg"), ExtResource("9_ukvn5"), ExtResource("6_uyhgw"), ExtResource("7_p34ur"), ExtResource("8_4rimq"), ExtResource("9_2ql11"), ExtResource("10_ukvn5"), ExtResource("11_6qn7o"), ExtResource("16_2ql11"), ExtResource("12_xkc18"), ExtResource("18_gn806"), ExtResource("12_cmpwd"), ExtResource("13_tureq"), ExtResource("19_4rimq"), ExtResource("19_p34ur"), ExtResource("14_rdbep")])
