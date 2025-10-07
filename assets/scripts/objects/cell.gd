@@ -86,7 +86,7 @@ var prototype : Cell :
 		return get_local_value(K_PROTOTYPE).duplicate().evaluate()
 
 var key_text : String :
-	get: return self.get_value(Cell.K_TEXT, key_name)
+	get: return str(self.get_value(Cell.K_TEXT, key_name))
 var text_as_display_string : DisplayString :
 	get: return DisplayString.new_from_pure(key_text, self)
 

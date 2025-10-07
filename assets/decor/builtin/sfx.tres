@@ -18,7 +18,6 @@ id = &"sfx"
 args = Dictionary[StringName, Variant]({
 &"wait": true
 })
-closable = true
 bbcode = false
 prod_stop = true
 metadata/_custom_type_script = "uid://w7bl3g20knuq"

@@ -14,11 +14,16 @@ var regex_map : Dictionary[String, AudioStream]
 
 var regex := RegEx.new()
 var default_audio_stream : AudioStream
-
+var playback : AudioStreamPlaybackPolyphonic
 
 func _ready() -> void:
 	default_audio_stream = self.stream
+	self.stream = AudioStreamPolyphonic.new()
+	self.stream.polyphony = self.max_polyphony
 
+	var this = self
+	this.play()
+	playback = this.get_stream_playback()
 
 func _process(delta: float) -> void:
 	_audio_timer += delta
@@ -31,16 +36,17 @@ func receive_character(c: String) -> void:
 	_receive_character(c)
 func _receive_character(c: String) -> void:
 	c = c.to_lower()
-	self.stream = default_audio_stream
+	var s := default_audio_stream
 
 	if char_map.has(c):
-		self.stream = char_map[c]
+		s = char_map[c]
 	else:
 		for k in regex_map.keys():
 			regex.compile(k)
 			if not regex.search(c): continue
-			self.stream = regex_map[k]
+			s = regex_map[k]
 			break
 
-	var this = self
-	this.play()
+	if s == null: return
+
+	playback.play_stream(s, 0.0, 0.0, 1.0, AudioServer.PLAYBACK_TYPE_DEFAULT, &"voice")

@@ -241,7 +241,10 @@ static func filter_from_context(string: String, context: Cell) -> String:
 	return string
 
 
-static func filter(string: String, pattern: String, replace: String) -> String:
+static func filter(string: String, pattern: Variant, replace: Variant) -> String:
+	pattern = str(pattern)
+	replace = str(replace)
+
 	var start := 0
 	var regex := RegEx.create_from_string(pattern)
 	while true:

@@ -37,12 +37,16 @@ var subject : Variant :
 var subject_node : Node :
 	get: return subject.instance if subject is Cell else null
 
+var subject_directive : int
 var flags : PackedStringArray
 
 var storage_qualifier : StorageQualifier
 
 func _get_verbosity() -> Verbosity:
 	return Verbosity.IGNORED
+
+func _get_should_use_previous_subject() -> bool:
+	return subject_directive == Path.DIRECT_RELATIVE
 
 func _get_record_message(record: Record) -> String:
 	return "[code][color=dim_gray]cell : %s[/color][/code]" % Penny.get_value_as_bbcode_string(subject_ref)
@@ -53,11 +57,11 @@ func _init(__storage_qualifier__ := StorageQualifier.NONE) -> void:
 
 
 func _populate(tokens: Array) -> void:
-	var tokens_error_string := str(tokens)
 	local_subject_ref = Path.new_from_tokens(tokens)
-	assert(subject_ref != null, "subject_ref evaluated to null from tokens: %s" % tokens_error_string)
 
-	if local_subject_ref.is_host_previous:
+	subject_directive = local_subject_ref.directive
+
+	if _get_should_use_previous_subject():
 		local_subject_ref = get_prev_with_explicit_subject().local_subject_ref
 
 	for token in tokens:
@@ -90,10 +94,11 @@ func _redo(record: Record) -> void:
 
 
 func get_prev_with_explicit_subject() -> StmtCell :
-	var cursor := self
+	var cursor : Stmt = self.get_prev_in_same_or_lower_depth()
 	while cursor:
-		if cursor is StmtCell and not cursor.local_subject_ref.is_host_previous:
+		if cursor is StmtReturn: break
+		if cursor is StmtCell and cursor.local_subject_ref.directive == Path.DIRECT_EXPLICIT:
 			return cursor
-		cursor = self.get_prev_in_same_or_lower_depth()
-	assert(false, "There is no previous StmtCell in the script with an explicit subject.")
+		cursor = cursor.get_prev_in_same_or_lower_depth()
+	assert(false, "There is no previous StmtCell in the script with an explicit subject for: %s" % __debug_string__)
 	return null

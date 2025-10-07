@@ -29,7 +29,7 @@ func _populate(tokens: Array) -> void:
 	for i in tokens.size():
 		if tokens[i].type == PennyScript.Token.Type.ASSIGNMENT:
 			match tokens[i].value:
-				"=>": 	type = Type.EXPRESSION
+				"===": 	type = Type.EXPRESSION
 				"=": 	type = Type.FLAT
 				"+=": 	type = Type.ADD
 				"-=": 	type = Type.SUBTRACT
@@ -37,7 +37,7 @@ func _populate(tokens: Array) -> void:
 				"/=": 	type = Type.DIVIDE
 				_:
 						type = Type.INVALID
-						assert(false, "Invalid assignment type '%s'" % tokens[i].value)
+						assert(false, "Invalid assignment type '%s' in statement :: %s" % [str(tokens[i].value), __debug_string__])
 			op_index = i
 			break
 

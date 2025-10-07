@@ -2,19 +2,20 @@
 label UNIT
 
 ## Empty string
-``
+~
+>
 
 ## Single-character string
-`A`
+> A
 
 ## Whitespace-only string
-`                `
+> `                `
 
 ## Standard string
-`Sphinx of black quartz, judge my vow.`
+> Sphinx of black quartz, judge my vow.
 
 ## Long string
-`Every single thing in the world has its own personality. The secret to doing anything is believing that you can do it. I like to beat the brush—just beat it a little bit. You've got to allow the paint to break to make it beautiful. Go out on a limb; that's where the fruit is. The joy of painting comes from creating. I think there's an artist hidden at the bottom of every single one of us. In this world, everything can be happy. Gotta give him a friend. Everyone needs a friend. In this world, everything can be happy.`
+> Every single thing in the world has its own personality. The secret to doing anything is believing that you can do it. I like to beat the brush—just beat it a little bit. You've got to allow the paint to break to make it beautiful. Go out on a limb; that's where the fruit is. The joy of painting comes from creating. I think there's an artist hidden at the bottom of every single one of us. In this world, everything can be happy. Gotta give him a friend. Everyone needs a friend. In this world, everything can be happy.
 
 jump UNIT
 
