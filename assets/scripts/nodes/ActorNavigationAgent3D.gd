@@ -8,10 +8,25 @@ enum {
 
 signal desired_move(direction: Vector3)
 
+@onready var parent : Node3D = get_parent()
+@onready var _temp_target := Node3D.new()
+
 @export var nav_timer_duration : float = 1.0
 
-@onready var parent : Node3D = get_parent()
-var move_target : Node3D
+var _move_target : Node3D
+var move_target : Node3D :
+	get: return _move_target
+	set(value):
+		if _move_target == value: return
+
+		if _move_target == _temp_target:
+			_temp_target.get_parent().remove_child(_temp_target)
+
+		_move_target = value
+
+		if _move_target == _temp_target:
+			parent.add_sibling(_temp_target)
+
 var nav_timer : Timer
 
 var state : int
@@ -34,6 +49,11 @@ func sequence() -> void:
 
 func wait(duration_seconds: float) :
 	await get_tree().create_timer(duration_seconds).timeout
+
+func create_loose_local_target(pos: Vector3) -> void:
+	_temp_target.position = pos
+	move_target = _temp_target
+
 
 func refresh_target_position() -> void:
 	if not move_target: return
