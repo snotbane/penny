@@ -1,4 +1,4 @@
-class_name CrossOperation extends Timer
+class_name TravelOperation extends Timer
 
 signal finished
 
@@ -21,6 +21,7 @@ func _init(__destination__, __curve__: Curve, __duration__: float = 1.0, __globa
 	global = __global__
 	wait_time = __duration__
 
+	autostart = true
 	timeout.connect(finish)
 
 

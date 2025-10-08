@@ -37,7 +37,8 @@ signal talking_changed(value : bool)
 		if not sprite_flags: return
 		sprite_flags.push_flag(&"talk" if value else &"silent")
 		talking_changed.emit(value)
-
+func set_is_talking(value: bool) -> void:
+	is_talking = value
 
 
 func _ready() -> void:
@@ -52,13 +53,17 @@ func spawn() -> void:
 	mesh.opacity = 0.0
 
 
-func face(funx: Funx, other: Cell):
-	print("%s face towards %s" % [cell, other])
+# func travel(destination: Node3D):
+# 	pass
 
-	## Verify other instance.
+# func travel__cleanup(record: Record) -> void:
+# 	pass
+
+
+func face(funx: Funx, other: Cell):
 	var other_inst : Node = other.instance
 	assert(other_inst != null, "%s can't face towards %s because no instance has been spawned yet." % [cell, other])
-	assert(other_inst is Node3D, "%s can't face towards %s because its instance is not a Node3D.")
+	assert(other_inst is Node3D, "%s can't face towards %s because its instance is not a Node3D." % [cell, other])
 
 	if funx.wait: await	_face(other_inst)
 	else:				_face(other_inst)
@@ -68,10 +73,6 @@ func _face(other: Node3D) :
 
 	animtree.is_facing_right = not animtree.is_facing_right
 	await animtree.facing_finished
-
-
-func set_is_talking(value: bool) -> void:
-	is_talking = value
 
 
 # var current_emanata : Node
@@ -85,8 +86,8 @@ func get_emanata_hook(node: Node) -> Node:
 
 
 const emanata_paths : Dictionary[StringName, String] = {
-	&"fireball": "res://assets/scenes/emanata/emanata_fireball.tscn",
-	&"fume": "res://assets/scenes/emanata/emanata_fume.tscn",
-	&"question": "res://assets/scenes/emanata/emanata_question.tscn",
-	&"vessel": "res://assets/scenes/emanata/emanata_vessel.tscn",
+	&"fireball": "uid://56jxmjxmj8gq",
+	&"fume": "uid://sqksymjvkkg",
+	&"question": "uid://b720l5iiacadm",
+	&"vessel": "uid://bor78qfbly6w5",
 }
