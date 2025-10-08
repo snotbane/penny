@@ -1,7 +1,7 @@
 
 ## Statement that calls a function (and undoes it, if available).
-## A called function's parameters must start with a [PennyHost] and be awaitable. It can return anything.
-## An undo function is not required, but if it exists, it must start with a [Record] parameter.
+## A called function must always start with a [Funx] parameter and must also be awaitable. It can return anything.
+## Undo, redo, and cleanup functions are not required, but if any exists, they must start with a [Record] parameter.
 class_name StmtFunc extends StmtCell
 
 const CLEANUP_SUFFIX := &"__cleanup"

@@ -9,6 +9,7 @@ signal talking_changed(value : bool)
 @export var mesh : MeshInstance3D
 @export var sprite_flags : FlagController
 @export var sprite_blink_anim : Node
+@export var animtree : AnimationTree
 
 
 @export var flags : PackedStringArray :
@@ -49,6 +50,24 @@ func _ready() -> void:
 
 func spawn() -> void:
 	mesh.opacity = 0.0
+
+
+func face(funx: Funx, other: Cell):
+	print("%s face towards %s" % [cell, other])
+
+	## Verify other instance.
+	var other_inst : Node = other.instance
+	assert(other_inst != null, "%s can't face towards %s because no instance has been spawned yet." % [cell, other])
+	assert(other_inst is Node3D, "%s can't face towards %s because its instance is not a Node3D.")
+
+	if funx.wait: await	_face(other_inst)
+	else:				_face(other_inst)
+
+func _face(other: Node3D) :
+	if signf(self.global_basis.x.dot(other.global_position - self.global_position)) > 0.0: return
+
+	animtree.is_facing_right = not animtree.is_facing_right
+	await animtree.facing_finished
 
 
 func set_is_talking(value: bool) -> void:

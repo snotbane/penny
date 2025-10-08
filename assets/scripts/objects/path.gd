@@ -141,6 +141,7 @@ func evaluate_dynamic(context: Cell, get_func: StringName, has_func: StringName)
 	var __id_previous__ : StringName
 	for id in ids:
 		assert(result != null, "Attempted to evaluate path '%s', but id '%s' couldn't be found." % [self, __id_previous__])
+		__id_previous__ = id
 		if result.has_method(id) or result.has_signal(id) or result.has_meta(id):
 			# print("Path result %s has method or signal or meta: %s" % [ self, id ])
 			pass
@@ -153,5 +154,4 @@ func evaluate_dynamic(context: Cell, get_func: StringName, has_func: StringName)
 				result = inst.get(id)
 				continue
 		result = result.get(id)
-		__id_previous__ = id
 	return result
