@@ -1,4 +1,4 @@
-@tool class_name SpriteActor extends Actor
+@tool class_name SpriteActor3D extends Actor
 
 signal flag_changed(value : StringName)
 signal blinking_changed(value : bool)
