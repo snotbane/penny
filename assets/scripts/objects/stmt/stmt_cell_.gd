@@ -72,7 +72,7 @@ func _prep(record: Record) -> void:
 		StorageQualifier.STORED:	subject_ref.set_storage_in_cell(context, true)
 		StorageQualifier.TRANSIENT: subject_ref.set_storage_in_cell(context, false)
 
-	if subject_node is SpriteActor:
+	if subject_node is SpriteActor3D:
 		for flag in flags:
 			subject_node.sprite_flags.push_flag(flag)
 

@@ -142,7 +142,7 @@ var subject : Cell :
 
 		if _subject:
 			var inst := _subject.instance
-			talker_audio_player = inst.voice_audio_player if (inst and inst is SpriteActor and inst.voice_audio_player) else null
+			talker_audio_player = inst.voice_audio_player if (inst and inst is SpriteActor3D and inst.voice_audio_player) else null
 		else:
 			talker_audio_player = null
 
