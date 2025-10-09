@@ -6,7 +6,7 @@ signal on_reload_cancel
 signal on_root_cell_modified
 
 const RECOGNIZED_EXTENSIONS : PackedStringArray = [ "pen", "penny" ]
-const STAGE_GROUP_NAME := &"penny_stage"
+const MARKER_GROUP_NAME := &"marker"
 const DEFAULT_MARKER_NAME := &"default_marker"
 
 const INPUT_DEADZONE_DEFAULT := 0.2

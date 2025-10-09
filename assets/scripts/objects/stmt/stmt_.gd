@@ -172,7 +172,7 @@ func execute(record: Record) :
 	await _cleanup(record)
 	return result as ExecutionResponse
 func _execute(record: Record) : pass
-## Perform cleanup actions regardless of how the execution finished.
+## Perform cleanup actions regardless of whether execution finished normally or was aborted.
 func _cleanup(record: Record) : pass
 
 

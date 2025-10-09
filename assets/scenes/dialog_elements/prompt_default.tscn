@@ -24,7 +24,7 @@ grow_vertical = 2
 follow_focus = true
 horizontal_scroll_mode = 0
 
-[node name="options" type="VBoxContainer" parent="scroll_box" groups=["penny_stage"]]
+[node name="options" type="VBoxContainer" parent="scroll_box" groups=["marker"]]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

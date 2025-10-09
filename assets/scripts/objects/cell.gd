@@ -222,9 +222,9 @@ func set_key_stored(key: StringName, stored: bool) -> void:
 #endregion
 
 func get_marker_node(host: PennyHost, marker_name: StringName = self.get_value(Cell.K_MARKER, Penny.DEFAULT_MARKER_NAME)) -> Node:
-	for node in host.get_tree().get_nodes_in_group(Penny.STAGE_GROUP_NAME):
+	for node in host.get_tree().get_nodes_in_group(Penny.MARKER_GROUP_NAME):
 		if marker_name == node.name: return node
-	assert(false, "Tried to find marker '%s', but no such marker node exists in the current scene. Make sure it belongs to the group '%s'." % [marker_name, Penny.STAGE_GROUP_NAME])
+	assert(false, "Tried to find marker '%s', but no such marker node exists in the current scene. Make sure it belongs to the group '%s'." % [marker_name, Penny.MARKER_GROUP_NAME])
 	return null
 
 func disconnect_all_instances() -> void:

@@ -129,7 +129,7 @@ layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="prompt" type="Control" parent="canvas_layer/ui/main_container/v_box_container/prompt_area" groups=["penny_stage"]]
+[node name="prompt" type="Control" parent="canvas_layer/ui/main_container/v_box_container/prompt_area" groups=["marker"]]
 layout_mode = 1
 anchor_left = 0.2
 anchor_right = 0.8
@@ -200,7 +200,7 @@ texture_disabled = ExtResource("8_xgny0")
 [node name="space" type="Control" parent="canvas_layer/ui/main_container/v_box_container/hbox/file_panel/margin_container/grid_container"]
 layout_mode = 2
 
-[node name="dialog" type="Control" parent="canvas_layer/ui/main_container/v_box_container/hbox" groups=["penny_stage"]]
+[node name="dialog" type="Control" parent="canvas_layer/ui/main_container/v_box_container/hbox" groups=["marker"]]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 8
