@@ -1,6 +1,6 @@
 class_name ActorWalkMovement3D extends Node
 
-@export var walk_speed : float = 1.0
+@export var walk_speed : float = 100.0
 
 @onready var character : CharacterBody3D = get_parent()
 

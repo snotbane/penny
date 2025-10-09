@@ -39,16 +39,17 @@ func _ready() -> void:
 	nav_timer.timeout.connect(refresh_target_position)
 	add_child(nav_timer)
 
-	target_reached.connect(stop)
+	target_reached.connect(stop_moving)
 
 	sequence()
 
 func sequence() -> void:
-	if not has_method(&"_sequence"): return
-	while is_inside_tree():	await call(&"_sequence")
+	while is_inside_tree():	await _sequence()
+func _sequence() : await wait(3600)
 
 func wait(duration_seconds: float) :
 	await get_tree().create_timer(duration_seconds).timeout
+
 
 func create_loose_local_target(pos: Vector3) -> void:
 	_temp_target.position = pos
@@ -67,7 +68,16 @@ func refresh_target_position() -> void:
 			var displacement := (get_next_path_position() - parent.global_position) * Vector3(1, 0, 1)
 			desired_move.emit(displacement.normalized())
 
+func start_moving(target: Variant = null) -> void:
+	if target is Node3D:
+		move_target = target
+	elif target is Vector3:
+		create_loose_local_target(target)
+	elif target != null:
+		assert(false, "Agent's dynamic target must be a Vector3 or Node3D.")
 
-func stop() -> void:
-	desired_move.emit(Vector3.ZERO)
+	state = MOVING if move_target != null else IDLING
+
+func stop_moving() -> void:
+	state = IDLING
 

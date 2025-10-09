@@ -55,10 +55,7 @@ func spawn() -> void:
 
 
 func travel(destination):
-	if destination is Node3D:
-		agent.move_target = destination
-	elif destination is Vector3:
-		agent.create_loose_local_target(destination)
+	agent.start_moving(destination)
 	await agent.target_reached
 
 func travel__cleanup(record: Record) -> void:

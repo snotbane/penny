@@ -327,12 +327,13 @@ func exit__redo(record: Record) -> void:
 
 ## Moves a [Node] from one position to another. Can be a marker or a literal position. use [curve] to specify motion. [curve] should be a 1D [Curve] with a domain and range of 0.0 to 1.0.
 func travel(funx: Funx, to: Variant, max_duration : float = 0.0, curve: String = "", global: bool = false):
-	var destination = get_travel_destination(funx.host, to)
 	var inst := instance
+	to = get_travel_destination(funx.host, to)
+	assert(to is Node3D or to is Node2D, "TODO: travel can currently only handle a named marker Node.")
 
 	funx.record.data[&"origin"] = inst.global_transform if global else inst.transform
 	if inst.has_method(&"travel"):
-		var waits : Array = [inst.travel.bind(destination)]
+		var waits : Array = [inst.travel.bind(to)]
 		var timer : Timer = null
 
 		if max_duration > 0.0:
@@ -347,12 +348,12 @@ func travel(funx: Funx, to: Variant, max_duration : float = 0.0, curve: String =
 		if timer:
 			timer.queue_free()
 	elif max_duration > 0.0:
-		var operation := TravelOperation.new(destination, load(curve) if curve else DEFAULT_TRAVEL_CURVE, max_duration, global)
+		var operation := TravelOperation.new(to, load(curve) if curve else DEFAULT_TRAVEL_CURVE, max_duration, global)
 		inst.add_child(operation)
 		operation.start()
 		await operation.finished
 	else:
-		inst.global_position = destination.global_position
+		inst.global_position = to.global_position
 
 func travel__cleanup(record: Record) -> void:
 	var inst := instance
@@ -371,11 +372,13 @@ func travel__undo(record: Record) -> void:
 func travel__redo(record: Record) -> void:
 	var inst := instance
 	if inst:
-		var destination = get_travel_destination(record.host, record.data[&"args"][1])
-		inst.global_position = destination.global_position
+		var to = get_travel_destination(record.host, record.data[&"args"][1])
+		assert(to is Node3D or to is Node2D, "TODO: travel can currently only handle a named marker Node.")
+
+		inst.global_position = to.global_position
 
 func get_travel_destination(host: PennyHost, to: Variant) -> Variant:
-	if to is StringName:
+	if to is StringName or to is String:
 		return get_marker_node(host, to)
 	elif to is Vector3 or to is Vector2:
 		return to
