@@ -10,7 +10,7 @@ signal talking_changed(value : bool)
 @export var sprite_flags : FlagController
 @export var sprite_blink_anim : Node
 @export var animtree : AnimationTree
-@export var agent : ActorNavigationAgent3D
+@export var brain : Brain3D
 
 
 @export var flags : PackedStringArray :
@@ -54,14 +54,16 @@ func spawn() -> void:
 	mesh.opacity = 0.0
 
 
-func travel(destination):
-	agent.start_moving(destination)
-	await agent.target_reached
+func travel(destination) :
+	print("SpriteActor3D travel start")
+	await brain.travel(destination)
+	print("SpriteActor3D travel finish")
+
 
 func travel__cleanup(record: Record) -> void:
-	if not agent.is_target_reached():
-		self.global_position = agent.target_position
-	agent.move_target = null
+	if brain.travelling:
+		self.global_position = brain.target_position
+		brain.stop()
 
 
 func face(funx: Funx, other: Cell):

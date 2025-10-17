@@ -14,5 +14,5 @@ func _physics_process(delta: float) -> void:
 	character.move_and_slide()
 
 
-func update_move_vector(direction:Vector3) -> void:
+func update_move_vector(direction: Vector3) -> void:
 	move_direction = direction

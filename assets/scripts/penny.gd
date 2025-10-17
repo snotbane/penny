@@ -7,7 +7,7 @@ signal on_root_cell_modified
 
 const RECOGNIZED_EXTENSIONS : PackedStringArray = [ "pen", "penny" ]
 const MARKER_GROUP_NAME := &"marker"
-const DEFAULT_MARKER_NAME := &"default_marker"
+const DEFAULT_MARKER_NAME := &"scene"
 
 const INPUT_DEADZONE_DEFAULT := 0.2
 

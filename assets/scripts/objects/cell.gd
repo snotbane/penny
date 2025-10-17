@@ -221,10 +221,12 @@ func set_key_stored(key: StringName, stored: bool) -> void:
 
 #endregion
 
-func get_marker_node(host: PennyHost, marker_name: StringName = self.get_value(Cell.K_MARKER, Penny.DEFAULT_MARKER_NAME)) -> Node:
+func get_marker_node(host: PennyHost, marker_name = null) -> Node:
+	if marker_name == null:
+		marker_name = self.get_value(Cell.K_MARKER, Penny.DEFAULT_MARKER_NAME)
 	for node in host.get_tree().get_nodes_in_group(Penny.MARKER_GROUP_NAME):
 		if marker_name == node.name: return node
-	assert(false, "Tried to find marker '%s', but no such marker node exists in the current scene. Make sure it belongs to the group '%s'." % [marker_name, Penny.MARKER_GROUP_NAME])
+	assert(false, "Tried to find %s '%s', but no such marker node exists in the current scene. Make sure it belongs to the group '%s'." % ["marker" if marker_name != Penny.DEFAULT_MARKER_NAME else "default marker", marker_name, Penny.MARKER_GROUP_NAME])
 	return null
 
 func disconnect_all_instances() -> void:
@@ -233,11 +235,8 @@ func disconnect_all_instances() -> void:
 #region Penny Methods
 
 ## [member instantiate]s a [Cell], and adds it to the appropriate parent [Node]. If it already exists, it despawns the old node and creates a new one.
-func spawn(funx: Funx, parent_name = get_value(K_MARKER)) -> Node:
-	var parent_node : Node = null
-	if parent_name:
-		set_value(K_MARKER, parent_name)
-		parent_node = get_marker_node(funx.host, parent_name)
+func spawn(funx: Funx, parent_name = null) -> Node:
+	var parent_node : Node = get_marker_node(funx.host, parent_name)
 
 	assert(has_value(Cell.K_RES), "Attempted to instantiate cell '%s', but it does not have a [%s] attribute." % [self, Cell.K_RES])
 
@@ -286,17 +285,22 @@ func despawn__redo(record: Record) -> void:
 	record.data[&"result"] = despawn.callv(record.data[&"args"])
 
 
-func enter(funx: Funx, parent_name = get_value(K_MARKER)) :
+func enter(funx: Funx, marker_name = get_value(K_MARKER), parent_name = null) :
+	var result : bool = false
 	var inst : Node = instance
-	var spawned : bool = false
 	if inst == null:
-		spawned = true
+		assert(parent_name != null, "Cell.enter() can't be called on a Cell with no instance. Call spawn() first, or add a parent_name argument to the end of the enter() call.")
 		inst = spawn(funx, parent_name)
+		result = true
+
+	if marker_name != null:
+		var marker : Node = get_marker_node(funx.host, marker_name)
+		inst.global_position = marker.global_position
 
 	if inst.has_method(&"enter"):
 		await inst.enter(funx)
 
-	return spawned
+	return result
 
 func enter__undo(record: Record) -> void:
 	exit(record.data[&"args"][0], record.data[&"result"])
@@ -343,9 +347,11 @@ func travel(funx: Funx, to: Variant, max_duration : float = 0.0, curve: String =
 			inst.add_child(timer)
 			waits.push_back(timer.timeout)
 
+		print("Cell travel start")
 		await Async.any(waits)
+		print("Cell travel finish")
 
-		if timer:
+		if timer != null:
 			timer.queue_free()
 	elif max_duration > 0.0:
 		var operation := TravelOperation.new(to, load(curve) if curve else DEFAULT_TRAVEL_CURVE, max_duration, global)
