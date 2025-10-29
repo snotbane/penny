@@ -9,7 +9,9 @@ var move_direction : Vector3
 func _physics_process(delta: float) -> void:
 	character.velocity = Vector3.ZERO
 	character.velocity += move_direction * walk_speed * delta
-	character.velocity += ProjectSettings.get_setting("physics/3d/default_gravity_vector") * ProjectSettings.get_setting("physics/3d/default_gravity")
+
+	if not character.is_on_floor():
+		character.velocity += ProjectSettings.get_setting("physics/3d/default_gravity_vector") * ProjectSettings.get_setting("physics/3d/default_gravity")
 
 	character.move_and_slide()
 
