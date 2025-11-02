@@ -1,4 +1,4 @@
-## Function context.
+## Function context. Tells us about which host called the function and whether or not it is awaited.
 class_name Funx extends RefCounted
 
 var host : PennyHost

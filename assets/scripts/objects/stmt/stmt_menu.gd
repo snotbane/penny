@@ -87,7 +87,7 @@ func _execute(record: Record) :
 
 	record.host.expecting_conditional = record.force_cull_history and mode == Mode.EXPLICIT
 
-func _cleanup(record: Record) :
+func _cleanup(record: Record, execution_response: ExecutionResponse) :
 	await subject.exit(Funx.new(record.host, true))
 
 func _undo(record: Record) -> void:

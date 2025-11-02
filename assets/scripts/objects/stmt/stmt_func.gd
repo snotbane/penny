@@ -78,10 +78,10 @@ func _prep(record: Record) -> void:
 func _execute(record: Record) :
 	record.data[&"result"] = await execute_function.callv(record.data[&"args"])
 
-func _cleanup(record: Record) :
-	super._cleanup(record)
+func _cleanup(record: Record, execution_response: ExecutionResponse) :
+	super._cleanup(record, execution_response)
 	if cleanup_function.is_valid():
-		await cleanup_function.call(record)
+		await cleanup_function.call(record, execution_response)
 
 func _undo(record: Record) -> void:
 	super._undo(record)

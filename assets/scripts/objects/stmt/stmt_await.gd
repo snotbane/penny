@@ -36,7 +36,7 @@ func _execute(record: Record) :
 	else:
 		assert(false, "Attempted to await %s, but we don't know what to do with it." % wait)
 
-# func _cleanup(record: Record) -> void:
+# func _cleanup(record: Record, execution_response: ExecutionResponse) -> void:
 # 	pass
 
 # func _undo(record: Record) -> void:

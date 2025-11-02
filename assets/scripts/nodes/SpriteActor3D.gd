@@ -54,16 +54,20 @@ func spawn() -> void:
 	mesh.opacity = 0.0
 
 
-func travel(destination) :
-	print("SpriteActor3D travel start")
-	await brain.travel(destination)
-	print("SpriteActor3D travel finish")
-
-
-func travel__cleanup(record: Record) -> void:
+func travel(funx: Funx, destination) :
 	if brain.travelling:
-		self.global_position = brain.target_position
+		printerr("WARNING: The brain is already travelling!")
 		brain.stop()
+
+	if funx.wait:	await	brain.travel(destination)
+	else:					brain.travel(destination)
+
+
+func travel__cleanup(record: Record, execution_response: Stmt.ExecutionResponse) -> void:
+	## This configuration allows actors to stop and teleport if they are part of an awaited function which was manually aborted by the end user, as if time was skipped.
+	## If the actor started travelling as part of a non-awaited function, they will not teleport and just continue as they were.
+	if execution_response == Stmt.ExecutionResponse.ABORTED and brain.travelling:
+		brain.stop_and_teleport()
 
 
 func face(funx: Funx, other: Cell):

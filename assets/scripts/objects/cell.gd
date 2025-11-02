@@ -337,7 +337,7 @@ func travel(funx: Funx, to: Variant, max_duration : float = 0.0, curve: String =
 
 	funx.record.data[&"origin"] = inst.global_transform if global else inst.transform
 	if inst.has_method(&"travel"):
-		var waits : Array = [inst.travel.bind(to)]
+		var waits : Array = [inst.travel.bind(funx, to)]
 		var timer : Timer = null
 
 		if max_duration > 0.0:
@@ -347,9 +347,7 @@ func travel(funx: Funx, to: Variant, max_duration : float = 0.0, curve: String =
 			inst.add_child(timer)
 			waits.push_back(timer.timeout)
 
-		print("Cell travel start")
 		await Async.any(waits)
-		print("Cell travel finish")
 
 		if timer != null:
 			timer.queue_free()
@@ -361,11 +359,10 @@ func travel(funx: Funx, to: Variant, max_duration : float = 0.0, curve: String =
 	else:
 		inst.global_position = to.global_position
 
-func travel__cleanup(record: Record) -> void:
+func travel__cleanup(record: Record, execution_response: Stmt.ExecutionResponse) -> void:
 	var inst := instance
-	if inst.has_method(&"travel"):
-		assert(inst.has_method(&"travel__cleanup"), "Cell instance '%s' implements a custom travel method, but no 'travel__cleanup' method is specified.")
-		inst.travel__cleanup(record)
+	if inst.has_method(&"travel__cleanup"):
+		inst.travel__cleanup(record, execution_response)
 	else:
 		var operation : TravelOperation = Snotbane.find_child_of_type(inst, "TravelOperation")
 		if operation: operation.finish()

@@ -165,15 +165,15 @@ func _prep(record: Record) -> void: pass
 
 ## Given a record, waits for something to complete BEFORE calling the next [Stmt]
 func execute(record: Record) :
-	var result = await Async.any_indexed([
+	var result := await Async.any_indexed([
 		_execute.bind(record),
 		aborted,
-	])
-	await _cleanup(record)
-	return result as ExecutionResponse
+	]) as ExecutionResponse
+	await _cleanup(record, result)
+	return result
 func _execute(record: Record) : pass
 ## Perform cleanup actions regardless of whether execution finished normally or was aborted.
-func _cleanup(record: Record) : pass
+func _cleanup(record: Record, execution_response: ExecutionResponse) : pass
 
 
 ## Occurs when something interrupts this [Stmt] in the middle of execution.

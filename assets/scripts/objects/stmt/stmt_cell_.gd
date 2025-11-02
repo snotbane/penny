@@ -81,7 +81,7 @@ func _prep(record: Record) -> void:
 		&"flags_after": [],
 	})
 
-# func _cleanup(record: Record) -> void:
+# func _cleanup(record: Record, execution_response: ExecutionResponse) -> void:
 # 	pass
 
 func _undo(record: Record) -> void:

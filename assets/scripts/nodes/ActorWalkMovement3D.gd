@@ -16,5 +16,12 @@ func _physics_process(delta: float) -> void:
 	character.move_and_slide()
 
 
-func update_move_vector(direction: Vector3) -> void:
-	move_direction = direction
+func teleport(global_pos: Vector3) -> void:
+	character.global_position = global_pos
+
+
+func move(direction: Vector3) -> void:
+	if character.is_on_floor():
+		move_direction = Plane(character.get_floor_normal()).project(direction)
+	else:
+		move_direction = direction * (Vector3.ONE - character.up_direction)
