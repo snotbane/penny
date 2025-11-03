@@ -6,25 +6,8 @@ var host : PennyHost :
 		return get_parent()
 
 
-func _input(event: InputEvent) -> void:
-	if Engine.is_editor_hint() : return
-	if event.is_action_pressed(&"penny_skip"):
-		host.user_skip()
-	elif event.is_action_pressed(&"penny_roll_back"):
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed(Penny.INPUT_ROLL_BACK):
 		host.roll_back()
-	elif event.is_action_pressed(&"penny_roll_ahead"):
+	elif event.is_action_pressed(Penny.INPUT_ROLL_AHEAD):
 		host.roll_ahead()
-
-	# if event is InputEventKey and event.is_pressed():
-	# 	match event.keycode:
-	# 		KEY_1:
-	# 			var json := {
-	# 				&"type": TYPE_OBJECT,
-	# 				&"class": "Resource",
-	# 				&"script": "uid://dsr5vl8q6oe33",
-	# 				&"value": {
-	# 					&"prototype": &"object"
-	# 				}
-	# 			}
-	# 			var cell = JSONSerialize.deserialize(json, false)
-	# 			print(cell)

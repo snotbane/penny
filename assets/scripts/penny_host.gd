@@ -53,10 +53,14 @@ func _set_history_index(value: int) -> void:
 
 	execute_record(history_cursor)
 
+## Also handle skipping.
 func roll_ahead() -> void:
-	if not allow_rolling: return
-
-	super.roll_ahead()
+	if allow_skipping and is_at_present:
+		if cursor and not cursor.stmt.is_skippable: return
+		abort()
+		create_record_and_execute(get_next_stmt(cursor))
+	elif allow_rolling:
+		super.roll_ahead()
 
 func roll_back() -> void:
 	if not allow_rolling: return
@@ -160,20 +164,10 @@ func execute_record(record: Record) :
 	else:
 		roll_ahead()
 
+
 func abort() -> void:
 	if cursor == null: return
 	cursor.stmt.abort()
-
-
-func user_skip() -> void:
-	if not allow_skipping: return
-
-	if is_at_present:
-		if cursor and not cursor.stmt.is_skippable: return
-		abort()
-		create_record_and_execute(get_next_stmt(cursor))
-	else:
-		roll_ahead()
 
 
 func get_next_stmt(record : Record) -> Stmt:

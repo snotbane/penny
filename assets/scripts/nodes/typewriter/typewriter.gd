@@ -309,7 +309,7 @@ var user_did_scroll_input : bool = false
 func _input(event: InputEvent) -> void:
 	if event is InputEventPanGesture:
 		user_did_scroll_input = event.delta.y != 0.0
-	elif Input.get_axis(&"penny_scroll_up", &"penny_scroll_down") != 0.0:
+	elif Input.get_axis(Penny.INPUT_SCROLL_UP, Penny.INPUT_SCROLL_DOWN) != 0.0:
 		user_did_scroll_input = true
 	elif OS.is_debug_build() and event is InputEventKey:
 		if not event.is_pressed(): return

@@ -47,7 +47,7 @@ func configure_input() -> void:
 		penny_advance_input_0.physical_keycode = KEY_SPACE
 
 		var penny_advance_input_1 := InputEventKey.new()
-		penny_advance_input_1.physical_keycode = KEY_X
+		penny_advance_input_1.physical_keycode = KEY_Z
 
 		var penny_advance_input_2 := InputEventJoypadButton.new()
 		penny_advance_input_2.button_index = JOY_BUTTON_A
@@ -61,34 +61,18 @@ func configure_input() -> void:
 			]
 		})
 
-	if ProjectSettings.get_setting(Penny.SETTING_INPUT_SKIP) == null:
-		# var penny_skip_input_0 := InputEventMouseButton.new()
-		# penny_skip_input_0.button_index = MOUSE_BUTTON_RIGHT
-
-		var penny_skip_input_1 := InputEventKey.new()
-		penny_skip_input_1.physical_keycode = KEY_ENTER
-
-		var penny_skip_input_2 := InputEventJoypadButton.new()
-		penny_skip_input_2.button_index = JOY_BUTTON_B
-
-		ProjectSettings.set_setting(Penny.SETTING_INPUT_SKIP, {
-			"deadzone": Penny.INPUT_DEADZONE_DEFAULT,
-			"events": [
-				# penny_skip_input_0,
-				penny_skip_input_1,
-				penny_skip_input_2,
-			]
-		})
-
 	if ProjectSettings.get_setting(Penny.SETTING_INPUT_ROLL_BACK) == null:
 		var penny_roll_back_input_0 := InputEventMouseButton.new()
 		penny_roll_back_input_0.button_index = MOUSE_BUTTON_XBUTTON1
 
 		var penny_roll_back_input_1 := InputEventKey.new()
-		penny_roll_back_input_1.physical_keycode = KEY_W
+		penny_roll_back_input_1.physical_keycode = KEY_X
 
-		var penny_roll_back_input_2 := InputEventJoypadButton.new()
-		penny_roll_back_input_2.button_index = JOY_BUTTON_DPAD_UP
+		var penny_roll_back_input_2 := InputEventKey.new()
+		penny_roll_back_input_2.physical_keycode = KEY_BACKSPACE
+
+		var penny_roll_back_input_3 := InputEventJoypadButton.new()
+		penny_roll_back_input_3.button_index = JOY_BUTTON_LEFT_SHOULDER
 
 		ProjectSettings.set_setting(Penny.SETTING_INPUT_ROLL_BACK, {
 			"deadzone": Penny.INPUT_DEADZONE_DEFAULT,
@@ -96,6 +80,7 @@ func configure_input() -> void:
 				penny_roll_back_input_0,
 				penny_roll_back_input_1,
 				penny_roll_back_input_2,
+				penny_roll_back_input_3,
 			]
 		})
 
@@ -104,10 +89,13 @@ func configure_input() -> void:
 		penny_roll_ahead_input_0.button_index = MOUSE_BUTTON_XBUTTON2
 
 		var penny_roll_ahead_input_1 := InputEventKey.new()
-		penny_roll_ahead_input_1.physical_keycode = KEY_S
+		penny_roll_ahead_input_1.physical_keycode = KEY_C
 
-		var penny_roll_ahead_input_2 := InputEventJoypadButton.new()
-		penny_roll_ahead_input_2.button_index = JOY_BUTTON_DPAD_DOWN
+		var penny_roll_ahead_input_2 := InputEventKey.new()
+		penny_roll_ahead_input_2.button_index = KEY_ENTER
+
+		var penny_roll_ahead_input_3 := InputEventJoypadButton.new()
+		penny_roll_ahead_input_3.button_index = JOY_BUTTON_RIGHT_SHOULDER
 
 		ProjectSettings.set_setting(Penny.SETTING_INPUT_ROLL_AHEAD, {
 			"deadzone": Penny.INPUT_DEADZONE_DEFAULT,
@@ -115,6 +103,7 @@ func configure_input() -> void:
 				penny_roll_ahead_input_0,
 				penny_roll_ahead_input_1,
 				penny_roll_ahead_input_2,
+				penny_roll_ahead_input_3,
 			]
 		})
 
