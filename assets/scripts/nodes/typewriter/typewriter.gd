@@ -115,6 +115,14 @@ var _talker_audio_player : TypewriterAudioStreamPlayer
 
 		refresh_volume()
 
+## Any single characters that match this [RegEx] will indicate that the speaker should be talking. Characters not found here or in [member silent_character_pattern] will not set the talking state at all.
+@export var talk_character_pattern : String
+@onready var talk_character_regex := RegEx.create_from_string(talk_character_pattern)
+
+## Any single characters that match this [RegEx] will indicate that the speaker should not be talking. Characters not found here or in [member talk_character_pattern] will not set the talking state at all.
+@export var silent_character_pattern : String
+@onready var silent_character_regex := RegEx.create_from_string(silent_character_pattern)
+
 @export_subgroup("Debug")
 
 @export var debug_show_shaping_rtl : bool = false
@@ -480,12 +488,6 @@ func advance() -> void:
 
 #endregion
 #region Event Functions
-
-@export var talk_character_pattern : String
-@export var silent_character_pattern : String
-
-@onready var talk_character_regex := RegEx.create_from_string(talk_character_pattern)
-@onready var silent_character_regex := RegEx.create_from_string(silent_character_pattern)
 
 func encounter_char(c: String) -> void:
 	character_arrived.emit(c)
