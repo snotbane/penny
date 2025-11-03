@@ -412,9 +412,15 @@ func complete() -> void:
 
 ## Resets the dialog to be used again.
 func reset():
-	clear()
 	play_state = PlayState.RESETTING
 	await get_tree().create_timer(reset_delay).timeout
+	clear()
+	play_state = PlayState.READY
+
+## Immediately clears the text for reuse.
+func hard_reset() -> void:
+	play_state = PlayState.RESETTING
+	clear()
 	play_state = PlayState.READY
 
 
