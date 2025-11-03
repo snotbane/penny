@@ -10,12 +10,13 @@ const DEFAULT_Y := 6.0
 const bbcode := \"dropout\"
 
 func _process_custom_element_fx(char_fx: CharFXTransform, element: DecorElement, time_visible: float) -> bool:
-	var alpha : float = (Typewriter.now - element.owner.time_reseted)
-	alpha *= char_fx.env.get(&\"speed\", DEFAULT_SPEED)
+	var alpha : float = (Typewriter.now - element.owner.time_reseted) * char_fx.env.get(&\"speed\", DEFAULT_SPEED)
+	if alpha < 0.0: return true
+	
 	alpha = clampf(alpha, 0.0, 1.0)
 	char_fx.color = lerp(
 		char_fx.color,
-		Color(char_fx.color.r, char_fx.color.g, char_fx.color.b, 0.0),
+		char_fx.color * Color.TRANSPARENT,
 		alpha
 	)
 	var scale = 1.0

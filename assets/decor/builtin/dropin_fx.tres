@@ -11,9 +11,11 @@ const bbcode := \"dropin\"
 
 func _process_custom_element_fx(char_fx: CharFXTransform, element: DecorElement, time_visible: float) -> bool:
 	var alpha : float = time_visible * char_fx.env.get(&\"speed\", DEFAULT_SPEED)
+	if alpha > 1.0: return true
+	
 	alpha = clampf(alpha, 0.0, 1.0)
 	char_fx.color = lerp(
-		Color(char_fx.color.r, char_fx.color.g, char_fx.color.b, 0.0),
+		char_fx.color * Color.TRANSPARENT,
 		char_fx.color,
 		alpha
 	)
