@@ -1,10 +1,11 @@
 ## Actor suitable for receiving Dialog records and passing input to a [Typewriter].
 class_name DialogNode extends Actor
 
-const PREVENT_SKIP_DELAY_SECONDS := 0.125
 
 static var focus_left : bool = false
 
+## Defines a short period of time after the typewriter has finished typing in which input will be disabled. Used to help prevent users from accidentally skipping dialogue.
+@export_range(0.0, 1.0, 0.01) var prevent_skip_duration : float = 0.1
 
 var is_mouse_inside : bool
 var is_preventing_skip : bool
@@ -34,6 +35,8 @@ func _notification(what: int) -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed(Penny.INPUT_ADVANCE):
 		try_advance()
+	if event.is_action_pressed(Penny.INPUT_ROLL_AHEAD):
+		pass ## TODO: finish entire dialogue box
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -50,8 +53,10 @@ func receive(record: Record) :
 
 
 func prevent_skip() -> void:
+	if is_zero_approx(prevent_skip_duration): return
+
 	is_preventing_skip = true
-	await self.get_tree().create_timer(PREVENT_SKIP_DELAY_SECONDS, false, false, true).timeout
+	await self.get_tree().create_timer(prevent_skip_duration, false, false, true).timeout
 	is_preventing_skip = false
 
 

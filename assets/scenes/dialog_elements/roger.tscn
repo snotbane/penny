@@ -72,7 +72,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_wnu7b"]
 resource_name = "fade"
-length = 2.0
+length = 0.35
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -80,7 +80,7 @@ tracks/0/path = NodePath(".:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0, 0.33),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]

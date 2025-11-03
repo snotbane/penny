@@ -46,7 +46,10 @@ var prod_stop : bool :
 
 ## Use meta to reduce array instancing.
 var subelements : Array[DecorElement] :
-	get: return get_meta(&"subelements") if has_meta(&"subelements") else []
+	get:
+		var result : Array[DecorElement] = []
+		if has_meta(&"subelements"): result = get_meta(&"subelements")
+		return result
 	set(value): set_meta(&"subelements", value)
 
 var bbcode_open : String :

@@ -55,9 +55,9 @@ var volume : float :
 	get: return volume_stack.back()
 
 ## Amount of time to wait after receiving a new message, before printing it out.
-@export var start_delay : float = 0.5
-## When a completed message already exists, amount of time to wait before replacing the existing text.
-@export var reset_delay : float = 0.5
+@export var start_delay : float = 0.1
+## When a completed message already exists, amount of time to wait before replacing the existing text. This is used when animating characters to fade out before proceeding.
+@export var reset_delay : float = 0.1
 
 @export_subgroup("Autoscroll")
 
@@ -221,11 +221,13 @@ var visible_characters_partial : float :
 var visible_characters_completed : bool :
 	get: return visible_characters == visible_characters_max
 
+var _visible_characters_target : int
 var visible_characters : int :
 	get: return rtl.visible_characters
 	set (value):
 		value = clampi(value, 0, visible_characters_max)
 		if rtl.visible_characters == value: return
+		_visible_characters_target = value
 
 		var increment := signi(value - rtl.visible_characters)
 		while rtl.visible_characters != value:
@@ -500,6 +502,8 @@ func install_effect_from(element: DecorElement) -> void:
 
 
 func delay(seconds: float, new_state: PlayState = PlayState.DELAYED) :
+	if _visible_characters_target == visible_characters_max: return
+
 	play_state = new_state
 	await Async.any([get_tree().create_timer(seconds).timeout, prodded])
 	if play_state == new_state: play_state = PlayState.PLAYING
