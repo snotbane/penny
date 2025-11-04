@@ -34,9 +34,12 @@ func _notification(what: int) -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed(Penny.INPUT_ADVANCE):
+		get_viewport().set_input_as_handled()
 		try_advance()
 	if event.is_action_pressed(Penny.INPUT_ROLL_AHEAD):
-		pass ## TODO: finish entire dialogue box
+		get_viewport().set_input_as_handled()
+		try_complete()
+
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -66,6 +69,16 @@ func try_advance() -> void:
 	if not typewriter: return
 	if typewriter.is_working:
 		typewriter.prod()
+		return
+	if is_preventing_skip: return
+	advanced.emit()
+
+func try_complete() -> void:
+	if focus_left: return
+	if not is_entered: return
+	if not typewriter: return
+	if typewriter.is_working:
+		typewriter.complete()
 		return
 	if is_preventing_skip: return
 	advanced.emit()
