@@ -23,6 +23,7 @@ var owner : Typewriter
 
 var id : StringName
 var args : Dictionary[StringName, Variant] = {}
+var valid : bool = true
 
 var decor : Decor :
 	get: return Decor.from_id(id)
@@ -53,7 +54,7 @@ var subelements : Array[DecorElement] :
 	set(value): set_meta(&"subelements", value)
 
 var bbcode_open : String :
-	get: return decor.get_bbcode_open(self) if decor else get_bbcode_open()
+	get: return (decor.get_bbcode_open(self) if decor else get_bbcode_open()) if valid else String()
 func get_bbcode_open(_args: Dictionary[StringName, Variant] = args) -> String:
 	if not bbcode: return ""
 
@@ -67,7 +68,7 @@ func get_bbcode_open(_args: Dictionary[StringName, Variant] = args) -> String:
 	return "[%s%s]" % [id, args_string]
 
 var bbcode_close : String :
-	get: return decor.get_bbcode_close(self) if decor else get_bbcode_close()
+	get: return (decor.get_bbcode_close(self) if decor else get_bbcode_close()) if valid else String()
 func get_bbcode_close() -> String:
 	if not bbcode: return ""
 	return "[/%s]" % id
@@ -83,6 +84,7 @@ static func new_from_string(contents: String, index: int, context: Cell) -> Deco
 	assert(id_match != null, "Invalid id in element contents: %s" % contents)
 
 	result.id = ID_PATTERN.search(contents).get_string(1)
+	result.validate()
 
 	var arg_matches := ARG_PATTERN.search_all(contents)
 	for arg_match in arg_matches:
@@ -108,17 +110,23 @@ static func new_from_other(other: DecorElement, _id: StringName = other.id, _arg
 
 	result.id = _id
 	result.args = _args
+	result.valid = other.valid
 	result.open_index = other.open_index
 	result.close_index = other.close_index
 
 	return result
 
 
-func something(dstring: DisplayString) -> void:
-	if not decor: return
-	if not decor.has_method(&"something"): return
+func validate() -> void:
+	if not OS.is_debug_build(): return
 
-	decor.something(dstring, self)
+	valid = calc_validate()
+	if not valid: printerr("WARNING: Invalid decoration id: %s" % id)
+
+func calc_validate() -> bool:
+	if id in DecorRegistry.BUILTIN_BBCODE_DECORS: return true
+	for dec in Penny.DECOR_REGISTRY_DEFAULT.decors: if id == dec.id: return true
+	return false
 
 
 func register_end(index: int = open_index) -> void:
