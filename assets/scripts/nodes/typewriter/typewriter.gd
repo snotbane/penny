@@ -353,12 +353,13 @@ func _process_autoscroll(delta: float) -> void:
 
 	var is_maximum_height_reached := scroll_container.custom_minimum_size.y >= scrollbox_max_height if scrollbox_max_height > 0.0 else false
 
-	var target_height := shape_rtl.get_content_height() + scrollbox_add_height
+	var content_height := shape_rtl.get_visible_content_rect().size.y
+	var target_height := content_height + scrollbox_add_height
 	target_height = maxf(target_height, scrollbox_min_height)
 	if scrollbox_max_height > 0.0:
 		target_height = minf(target_height, scrollbox_max_height)
 
-	var max_scroll_y := (shape_rtl.get_content_height() - target_height) + (scrollbox_add_height / (1.0 if is_maximum_height_reached else 2.0))
+	var max_scroll_y := (content_height - target_height) + (scrollbox_add_height / (1.0 if is_maximum_height_reached else 2.0))
 
 	var motion := (target_height - scroll_container.custom_minimum_size.y) + maxf(max_scroll_y - v_scroll_bar.value, 0.0)
 	var alpha := autoscroll_curve.sample(motion) * autoscroll_multiplier * delta
