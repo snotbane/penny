@@ -56,7 +56,6 @@ func spawn() -> void:
 
 func travel(funx: Funx, destination) :
 	if brain.travelling:
-		printerr("WARNING: The brain is already travelling!")
 		brain.stop()
 
 	if funx.wait:	await	brain.travel(destination)
