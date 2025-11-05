@@ -68,7 +68,7 @@ func _execute(record: Record) :
 	var incoming_dialog : Cell = record.data[&"dialog"]
 
 	var incoming_dialog_node : DialogNode
-	var previous_dialog : Cell = record.host.last_dialog_object
+	var previous_dialog : Cell = record.host.subject_context.historical_dialog
 
 	var previous_dialog_node : DialogNode
 	var incoming_needs_creation : bool

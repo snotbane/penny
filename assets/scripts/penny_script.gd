@@ -193,6 +193,10 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 		tokens.pop_front()
 		if tokens.size() == 0: return null
 
+	if tokens.size() == 1 and tokens[0].type == Token.Type.OPERATOR and tokens[0].value.type == Op.MORE_THAN:
+		tokens.pop_front()
+		return StmtDialogClose.new()
+
 	var front_keywords : Array[Token] = []
 	while tokens and tokens.front().type == Token.Type.KEYWORD:
 		front_keywords.push_back(tokens.pop_front())
@@ -312,7 +316,7 @@ class Token extends RefCounted:
 	}
 	static var TYPE_PATTERNS : Dictionary[Type, RegEx] = {
 		Type.INDENTATION:			RegEx.create_from_string(r"(?m)^\t+"),
-		Type.VALUE_STRING:			RegEx.create_from_string(r"(?s)(?:([>+](?!=))[\t ]*([^\n]*)(?=$|\n))|(?:([`'\"]{3}|[`'\"])(.*?)\3)"),
+		Type.VALUE_STRING:			RegEx.create_from_string(r"(?s)(?:([>+](?!=))[\t ]*(\S[^\n]*)(?=$|\n))|(?:([`'\"]{3}|[`'\"])(.*?)\3)"),
 		Type.KEYWORD:				RegEx.create_from_string(r"\b(?:await|call|else|elif|if|init|jump|label|let|match|menu|pass|print|return|var)\b"),
 		Type.VALUE_BOOLEAN:			RegEx.create_from_string(r"\b(?:[Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
 		Type.VALUE_COLOR:			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),

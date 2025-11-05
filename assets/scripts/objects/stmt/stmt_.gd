@@ -77,7 +77,7 @@ var is_skippable : bool :
 func _get_is_skippable() -> bool:
 	return true
 
-
+## Defines whether or not we can save or load while the [PennyHost.cursor] is here. If not, we'll go back up through the history to the most recent one.
 var is_loadable : bool :
 	get: return _get_is_loadable()
 func _get_is_loadable() -> bool:

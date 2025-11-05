@@ -2,6 +2,17 @@
 ## Node that actualizes Penny statements. This stores local data_root and records based on what the player chooses to do. Most applications will simply use an autoloaded, global host. For more advanced uses, you can instantiate multiple of these simultaneously for concurrent or even network-replicated instances. The records/state can be saved.
 class_name PennyHost extends HistoryUser
 
+class SubjectContext extends RefCounted:
+	var subject : Cell
+	var dialog : Cell
+	var host : PennyHost
+
+	var historical_dialog : Cell :
+		get:
+			var last_dialog := host.history.last_dialog
+			if last_dialog: return last_dialog.stmt.subject_dialog_path.evaluate()
+			return null
+
 signal on_try_advance
 signal on_data_modified
 signal on_close
@@ -32,12 +43,7 @@ var expecting_conditional : bool
 var is_skipping : bool
 var is_aborting : bool = false
 
-## Returns the object in data that has most recently sent a message.
-var last_dialog_object : Cell :
-	get:
-		var last_dialog := history.last_dialog
-		if last_dialog: return last_dialog.stmt.subject_dialog_path.evaluate()
-		return null
+var subject_context : SubjectContext
 
 func _set_history_index(value: int) -> void:
 	abort()
@@ -79,6 +85,9 @@ func _exit_tree() -> void:
 
 
 func _ready() -> void:
+	subject_context = SubjectContext.new()
+	subject_context.host = self
+
 	Penny.inst.on_reload_finish.connect(try_reload)
 
 	if autostart:
