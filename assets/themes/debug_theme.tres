@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=3 format=3 uid="uid://cuqma0tj3my70"]
+[gd_resource type="Theme" format=3 uid="uid://cuqma0tj3my70"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_l10w6"]
 color = Color(0.5, 0.5, 0.5, 1)

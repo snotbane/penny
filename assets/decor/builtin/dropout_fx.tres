@@ -1,4 +1,4 @@
-[gd_resource type="RichTextEffect" load_steps=2 format=3 uid="uid://bijdywtugyu5a"]
+[gd_resource type="RichTextEffect" format=3 uid="uid://bijdywtugyu5a"]
 
 [sub_resource type="GDScript" id="GDScript_htca2"]
 script/source = "extends DecorTextEffect

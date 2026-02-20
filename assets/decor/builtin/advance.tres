@@ -1,4 +1,4 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://bgemvwokyw5gv"]
+[gd_resource type="Resource" format=3 uid="uid://bgemvwokyw5gv"]
 
 [sub_resource type="GDScript" id="GDScript_o8efx"]
 script/source = "extends Decor
