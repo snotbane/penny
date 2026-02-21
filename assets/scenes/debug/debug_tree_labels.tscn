@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dmbg70yn4283k"]
+[gd_scene format=3 uid="uid://dmbg70yn4283k"]
 
 [ext_resource type="PackedScene" uid="uid://do5fxa3uetnvv" path="res://addons/penny/assets/scenes/debug/debug_tree.tscn" id="1_0826c"]
-[ext_resource type="Script" uid="uid://db3c7qayg745q" path="res://addons/penny/assets/scenes/debug/debug_tree_labels.gd" id="2_2ryc6"]
+[ext_resource type="Script" uid="uid://db3c7qayg745q" path="res://addons/penny/assets/scenes/debug/DebugTreeLabels.gd" id="2_2ryc6"]
 
 [node name="debug_tree_labels" instance=ExtResource("1_0826c")]
 
