@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://do5fxa3uetnvv"]
 
 [ext_resource type="Script" uid="uid://dyyhyy2q5bjow" path="res://addons/penny/assets/scenes/debug/DebugTree.gd" id="1_5k2ps"]
-[ext_resource type="Texture2D" uid="uid://dbn36dthttn4c" path="res://addons/penny/assets/textures/icons/Search.svg" id="2_1mdob"]
+[ext_resource type="Texture2D" uid="uid://dbn36dthttn4c" path="res://addons/penny/textures/icons/Search.svg" id="2_1mdob"]
 
 [node name="debug_tree" type="Control"]
 layout_mode = 3

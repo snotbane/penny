@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://3tbms65op2ht"]
+[gd_scene format=3 uid="uid://3tbms65op2ht"]
 
 [ext_resource type="PackedScene" uid="uid://bl0oaq5hnsnsg" path="res://addons/penny/assets/scenes/actor_elements/actor3d.tscn" id="1_vf1pr"]
-[ext_resource type="Texture2D" uid="uid://d32s2mav1d2xi" path="res://addons/penny/assets/textures/actor_placeholder.png" id="2_qdyt2"]
+[ext_resource type="Texture2D" uid="uid://d32s2mav1d2xi" path="res://addons/penny/textures/actor_placeholder.png" id="2_qdyt2"]
 
 [node name="actor3d" instance=ExtResource("1_vf1pr")]
 

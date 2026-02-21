@@ -1,7 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://jumi8ea6vo4f"]
+[gd_scene format=3 uid="uid://jumi8ea6vo4f"]
 
-[ext_resource type="Texture2D" uid="uid://c5nb4l2ge7dlq" path="res://addons/penny/assets/textures/icons/Clear.svg" id="1_xhr8h"]
-[ext_resource type="Texture2D" uid="uid://dbn36dthttn4c" path="res://addons/penny/assets/textures/icons/Search.svg" id="2_g63wf"]
+[ext_resource type="Texture2D" uid="uid://c5nb4l2ge7dlq" path="res://addons/penny/textures/icons/Clear.svg" id="1_xhr8h"]
+[ext_resource type="Texture2D" uid="uid://dbn36dthttn4c" path="res://addons/penny/textures/icons/Search.svg" id="2_g63wf"]
 
 [sub_resource type="GDScript" id="GDScript_7c4hn"]
 script/source = "extends Control
