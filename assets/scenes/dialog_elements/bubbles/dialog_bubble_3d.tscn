@@ -1,9 +1,9 @@
-[gd_scene load_steps=20 format=3 uid="uid://dk235a8arrhyf"]
+[gd_scene format=3 uid="uid://dk235a8arrhyf"]
 
 [ext_resource type="Script" uid="uid://e1w7laspqfgt" path="res://addons/penny/assets/scenes/dialog_elements/bubbles/DialogBubble3D.gd" id="1_eb2vv"]
 [ext_resource type="Shader" uid="uid://vw54t8axvjbq" path="res://addons/penny/assets/shaders/bubble_superegg.gdshader" id="1_tr34g"]
 [ext_resource type="Script" uid="uid://b74jd8ytija5r" path="res://addons/penny/assets/scenes/dialog_elements/bubbles/SupereggMeshInstance3D.gd" id="2_33t7b"]
-[ext_resource type="Script" uid="uid://cdrs673e0hg62" path="res://addons/penny/assets/scripts/nodes/typewriter/typewriter.gd" id="4_7qy1j"]
+[ext_resource type="Script" uid="uid://cdrs673e0hg62" path="res://addons/penny/assets/scripts/nodes/typewriter/Typewriter.gd" id="4_7qy1j"]
 [ext_resource type="FontFile" uid="uid://dmxeggqth074l" path="res://addons/penny/assets/fonts/komika_text/Komika-Regular.ttf" id="5_obgd5"]
 [ext_resource type="PackedScene" uid="uid://byamam888n7fp" path="res://addons/penny/assets/scenes/dialog_elements/roger.tscn" id="6_cpqc3"]
 [ext_resource type="FontFile" uid="uid://xor8lneoivvb" path="res://addons/penny/assets/fonts/komika_text/Komika-Italic.ttf" id="6_dfc3c"]

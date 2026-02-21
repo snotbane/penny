@@ -1,10 +1,10 @@
-[gd_scene load_steps=14 format=3 uid="uid://b8sp6ey8fsgt7"]
+[gd_scene format=3 uid="uid://b8sp6ey8fsgt7"]
 
 [ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny/assets/themes/default_theme.tres" id="1_uxamp"]
 [ext_resource type="Script" uid="uid://bhviv6ri812ba" path="res://addons/penny/assets/scenes/dialog_elements/DialogNodeControl.gd" id="2_a8dr1"]
 [ext_resource type="PackedScene" uid="uid://byamam888n7fp" path="res://addons/penny/assets/scenes/dialog_elements/roger.tscn" id="3_bfsyc"]
-[ext_resource type="Script" uid="uid://cdrs673e0hg62" path="res://addons/penny/assets/scripts/nodes/typewriter/typewriter.gd" id="3_q7721"]
-[ext_resource type="Script" uid="uid://cmfsxei24xrjq" path="res://addons/penny/assets/scripts/nodes/typewriter/typewriter_audio_player.gd" id="5_a8dr1"]
+[ext_resource type="Script" uid="uid://cdrs673e0hg62" path="res://addons/penny/assets/scripts/nodes/typewriter/Typewriter.gd" id="3_q7721"]
+[ext_resource type="Script" uid="uid://cmfsxei24xrjq" path="res://addons/penny/assets/scripts/nodes/typewriter/TypewriterAudioPlayer.gd" id="5_a8dr1"]
 
 [sub_resource type="Curve" id="Curve_a8dr1"]
 _limits = [0.0, 300.0, -100.0, 100.0]

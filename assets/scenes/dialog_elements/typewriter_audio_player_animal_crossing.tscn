@@ -1,6 +1,6 @@
-[gd_scene load_steps=38 format=3 uid="uid://dee42p8puc3uf"]
+[gd_scene format=3 uid="uid://dee42p8puc3uf"]
 
-[ext_resource type="Script" uid="uid://cmfsxei24xrjq" path="res://addons/penny/assets/scripts/nodes/typewriter/typewriter_audio_player.gd" id="1_hxxge"]
+[ext_resource type="Script" uid="uid://cmfsxei24xrjq" path="res://addons/penny/assets/scripts/nodes/typewriter/TypewriterAudioPlayer.gd" id="1_hxxge"]
 [ext_resource type="AudioStream" uid="uid://uv0itpbqfrkd" path="res://addons/penny/assets/audio/phonics/sfx_boy_a.ogg" id="2_ccya7"]
 [ext_resource type="AudioStream" uid="uid://cu24sf1isktm3" path="res://addons/penny/assets/audio/phonics/sfx_boy_b.ogg" id="3_7sdvh"]
 [ext_resource type="AudioStream" uid="uid://ccgcfpvp5jsf0" path="res://addons/penny/assets/audio/phonics/sfx_boy_c.ogg" id="4_rsr6t"]
