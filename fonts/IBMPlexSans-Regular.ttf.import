@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://8xm7vwqkgqmo"
-path="res://.godot/imported/IBMPlexSans-Regular.ttf-8b8c85c7f37f1a75646544e79b4ac18c.fontdata"
+path="res://.godot/imported/IBMPlexSans-Regular.ttf-c24545ce340bc782ceb6d6e489e0513f.fontdata"
 
 [deps]
 
-source_file="res://addons/penny/assets/fonts/IBMPlexSans-Regular.ttf"
-dest_files=["res://.godot/imported/IBMPlexSans-Regular.ttf-8b8c85c7f37f1a75646544e79b4ac18c.fontdata"]
+source_file="res://addons/penny/fonts/IBMPlexSans-Regular.ttf"
+dest_files=["res://.godot/imported/IBMPlexSans-Regular.ttf-c24545ce340bc782ceb6d6e489e0513f.fontdata"]
 
 [params]
 

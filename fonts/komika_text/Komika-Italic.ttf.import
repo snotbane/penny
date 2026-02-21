@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://xor8lneoivvb"
-path="res://.godot/imported/Komika-Italic.ttf-a26f030ebc1543a2274a9cedc755a241.fontdata"
+path="res://.godot/imported/Komika-Italic.ttf-870730e29f83551ea7d33ec8f1809b5e.fontdata"
 
 [deps]
 
-source_file="res://addons/penny/assets/fonts/komika_text/Komika-Italic.ttf"
-dest_files=["res://.godot/imported/Komika-Italic.ttf-a26f030ebc1543a2274a9cedc755a241.fontdata"]
+source_file="res://addons/penny/fonts/komika_text/Komika-Italic.ttf"
+dest_files=["res://.godot/imported/Komika-Italic.ttf-870730e29f83551ea7d33ec8f1809b5e.fontdata"]
 
 [params]
 

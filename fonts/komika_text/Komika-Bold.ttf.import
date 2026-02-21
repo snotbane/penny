@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://mtarvvcboxmv"
-path="res://.godot/imported/Komika-Bold.ttf-bb66c8aad2abdd556b3f12ff0e1a0b3d.fontdata"
+path="res://.godot/imported/Komika-Bold.ttf-6734201cd5a0b9b35a85027536cd1de4.fontdata"
 
 [deps]
 
-source_file="res://addons/penny/assets/fonts/komika_text/Komika-Bold.ttf"
-dest_files=["res://.godot/imported/Komika-Bold.ttf-bb66c8aad2abdd556b3f12ff0e1a0b3d.fontdata"]
+source_file="res://addons/penny/fonts/komika_text/Komika-Bold.ttf"
+dest_files=["res://.godot/imported/Komika-Bold.ttf-6734201cd5a0b9b35a85027536cd1de4.fontdata"]
 
 [params]
 
