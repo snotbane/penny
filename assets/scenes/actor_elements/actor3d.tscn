@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://bl0oaq5hnsnsg"]
+[gd_scene format=3 uid="uid://bl0oaq5hnsnsg"]
 
-[ext_resource type="Script" uid="uid://b6w1jyrvn4odg" path="res://addons/penny/assets/scripts/nodes/actor.gd" id="1_id707"]
+[ext_resource type="Script" uid="uid://b6w1jyrvn4odg" path="res://addons/penny/assets/scripts/nodes/Actor.gd" id="1_id707"]
 [ext_resource type="Script" uid="uid://cjntx0ioowxdc" path="res://addons/penny/assets/scripts/nodes/CellLink.gd" id="2_o0elo"]
 
 [node name="actor3d" type="Node3D"]

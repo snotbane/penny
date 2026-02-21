@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://cuu7puh0nnyug"]
+[gd_scene format=3 uid="uid://cuu7puh0nnyug"]
 
-[ext_resource type="Script" uid="uid://beqxn507a7jks" path="res://addons/penny/assets/scripts/nodes/prompt_control.gd" id="1_y665k"]
+[ext_resource type="Script" uid="uid://beqxn507a7jks" path="res://addons/penny/assets/scripts/nodes/PromptControl.gd" id="1_y665k"]
 
 [node name="prompt_default" type="Control" node_paths=PackedStringArray("button_container")]
 layout_mode = 3
