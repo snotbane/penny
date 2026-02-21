@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://ckwmom7w0dvh1"]
 
-[ext_resource type="Script" uid="uid://mgq8nvjpadow" path="res://addons/penny/assets/scripts/nodes/HistoryViewer.gd" id="1_fie1n"]
-[ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny/assets/themes/default_theme.tres" id="1_lr0qd"]
+[ext_resource type="Script" uid="uid://mgq8nvjpadow" path="res://addons/penny/scripts/nodes/HistoryViewer.gd" id="1_fie1n"]
+[ext_resource type="Theme" uid="uid://bsvx4hbyp1r46" path="res://addons/penny/themes/default_theme.tres" id="1_lr0qd"]
 
 [node name="penny_history_box" type="Control" node_paths=PackedStringArray("scroll_container", "content_container")]
 layout_mode = 3

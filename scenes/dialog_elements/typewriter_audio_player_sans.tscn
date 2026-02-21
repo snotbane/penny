@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://nqdqol5n83pn"]
 
-[ext_resource type="AudioStream" uid="uid://bvaimbcs1j77n" path="res://addons/penny/assets/audio/sfx_typewriter_sans.ogg" id="1_bt1tk"]
-[ext_resource type="Script" uid="uid://cmfsxei24xrjq" path="res://addons/penny/assets/scripts/nodes/typewriter/TypewriterAudioPlayer.gd" id="2_t7ua2"]
+[ext_resource type="AudioStream" uid="uid://bvaimbcs1j77n" path="res://addons/penny/audio/sfx_typewriter_sans.ogg" id="1_bt1tk"]
+[ext_resource type="Script" uid="uid://cmfsxei24xrjq" path="res://addons/penny/scripts/nodes/typewriter/TypewriterAudioPlayer.gd" id="2_t7ua2"]
 
 [node name="typewriter_audio_player_sans" type="AudioStreamPlayer"]
 stream = ExtResource("1_bt1tk")

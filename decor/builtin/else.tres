@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Decor" format=3 uid="uid://be05vc4f6art8"]
 
-[ext_resource type="Script" uid="uid://w7bl3g20knuq" path="res://addons/penny/assets/scripts/objects/decor/Decor.gd" id="1_w6tgj"]
+[ext_resource type="Script" uid="uid://w7bl3g20knuq" path="res://addons/penny/scripts/objects/decor/Decor.gd" id="1_w6tgj"]
 
 [resource]
 script = ExtResource("1_w6tgj")

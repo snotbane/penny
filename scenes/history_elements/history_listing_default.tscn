@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://7xgdiuu2qk3s"]
 
-[ext_resource type="Script" uid="uid://s0jydmskmjhx" path="res://addons/penny/assets/scripts/nodes/HistoryListing.gd" id="1_b7734"]
+[ext_resource type="Script" uid="uid://s0jydmskmjhx" path="res://addons/penny/scripts/nodes/HistoryListing.gd" id="1_b7734"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_up5ly"]
 
