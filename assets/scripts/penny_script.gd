@@ -134,7 +134,7 @@ func _init(path : String) -> void:
 func update_from_file(file: FileAccess) -> void:
 	errors.clear()
 
-	var tokens := parse_code_to_tokens(file.get_as_text(true), file)
+	var tokens := parse_code_to_tokens(file.get_as_text(), file)
 	# print(tokens)
 
 	var old_stmts : Array[Stmt]
