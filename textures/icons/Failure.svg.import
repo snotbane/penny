@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://sk0o8qo2fdjw"
-path="res://.godot/imported/Failure.svg-55f4ff51746e2216f822036574df06a9.ctex"
+path="res://.godot/imported/Failure.svg-3a5b3aca7a291ad280a1e9db79b78a40.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny/assets/textures/icons/Failure.svg"
-dest_files=["res://.godot/imported/Failure.svg-55f4ff51746e2216f822036574df06a9.ctex"]
+source_file="res://addons/penny/textures/icons/Failure.svg"
+dest_files=["res://.godot/imported/Failure.svg-3a5b3aca7a291ad280a1e9db79b78a40.ctex"]
 
 [params]
 

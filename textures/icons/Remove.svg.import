@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://33m7mpfo5fbu"
-path="res://.godot/imported/Remove.svg-6a4fa2ecc112c2dc7c4b3499fb13b4fa.ctex"
+path="res://.godot/imported/Remove.svg-aa5e4cfd5a193669fa668bfe3625143b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny/assets/textures/icons/Remove.svg"
-dest_files=["res://.godot/imported/Remove.svg-6a4fa2ecc112c2dc7c4b3499fb13b4fa.ctex"]
+source_file="res://addons/penny/textures/icons/Remove.svg"
+dest_files=["res://.godot/imported/Remove.svg-aa5e4cfd5a193669fa668bfe3625143b.ctex"]
 
 [params]
 

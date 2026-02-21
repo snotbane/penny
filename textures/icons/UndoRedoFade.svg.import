@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cclh3lyq0mgnm"
-path="res://.godot/imported/UndoRedoFade.svg-92b266519b13158d8e84a201da2f9522.ctex"
+path="res://.godot/imported/UndoRedoFade.svg-0995b720edc64173a7599623dba16f1b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny/assets/textures/icons/UndoRedoFade.svg"
-dest_files=["res://.godot/imported/UndoRedoFade.svg-92b266519b13158d8e84a201da2f9522.ctex"]
+source_file="res://addons/penny/textures/icons/UndoRedoFade.svg"
+dest_files=["res://.godot/imported/UndoRedoFade.svg-0995b720edc64173a7599623dba16f1b.ctex"]
 
 [params]
 

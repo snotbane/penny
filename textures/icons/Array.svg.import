@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://brecacl0mws63"
-path="res://.godot/imported/Array.svg-9721344484559af001e3f594fd1bd8de.ctex"
+path="res://.godot/imported/Array.svg-468cc1a574009f989a809ef0fbe1a54e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny/assets/textures/icons/Array.svg"
-dest_files=["res://.godot/imported/Array.svg-9721344484559af001e3f594fd1bd8de.ctex"]
+source_file="res://addons/penny/textures/icons/Array.svg"
+dest_files=["res://.godot/imported/Array.svg-468cc1a574009f989a809ef0fbe1a54e.ctex"]
 
 [params]
 

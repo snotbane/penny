@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bqiynomjlbcme"
-path="res://.godot/imported/UndoRedo.svg-76acac8eecc0b487345bc32b20b6bd57.ctex"
+path="res://.godot/imported/UndoRedo.svg-5489d2d16a985aa1097f928c11eaa291.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/penny/assets/textures/icons/UndoRedo.svg"
-dest_files=["res://.godot/imported/UndoRedo.svg-76acac8eecc0b487345bc32b20b6bd57.ctex"]
+source_file="res://addons/penny/textures/icons/UndoRedo.svg"
+dest_files=["res://.godot/imported/UndoRedo.svg-5489d2d16a985aa1097f928c11eaa291.ctex"]
 
 [params]
 
