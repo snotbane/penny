@@ -3,8 +3,7 @@
 class_name DisplayString extends RefCounted
 
 const TAG_SPLITTER = ";"
-static var INTERJECTION_PATTERN :=		RegEx.create_from_string(r"(?<!\\)\{(.*?)(?<!\\)\}")
-static var INTERPOLATION_PATTERN :=		RegEx.create_from_string(r"(?<!\\)(?:@((?:\.?[A-Za-z_]\w*)+)|\[(.*?)(?<!\\)\])")
+static var INTERPOLATION_PATTERN :=		RegEx.create_from_string(r"(?<!\\)(?:@((?:\.?[A-Za-z_]\w*)+)|\{(.*?)(?<!\\)\})")
 static var TAG_PATTERN :=				RegEx.create_from_string(r"(?<!\\)<\s*([^<>]*?)\s*(?<!\\)>")
 static var ESCAPE_PATTERN := 			RegEx.create_from_string(r"\\(.)")
 static var ESCAPE_SUBSITUTIONS : Dictionary[String, String] = {
