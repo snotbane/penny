@@ -1,6 +1,12 @@
 
 @tool class_name PennyScript extends Resource
 
+enum {
+	INDENT_UNDEFINED,
+	INDENT_TABS,
+	INDENT_SPACES
+}
+
 class Diff:
 	class Entry:
 
@@ -109,8 +115,10 @@ class Diff:
 		return self.news[self.map[cursor.index]]
 
 static var LINE_FEED_REGEX : RegEx
+static var REGEX_LINE_INDENT : RegEx
 
 static func _static_init() -> void:
+	REGEX_LINE_INDENT = RegEx.create_from_string(r"^[\t ]+")
 	LINE_FEED_REGEX = RegEx.create_from_string(r"\n")
 
 @export_storage var id : int
@@ -246,6 +254,77 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 	assert(false, "No Stmt recycled from tokens: %s" % str(tokens))
 	return null
 
+static func parse_code_to_stmts(raw: String, context_file: FileAccess = null) -> Array[Stmt]:
+	#region Lines
+
+	var lines : Array[Line] = []
+
+	var indent_type := INDENT_UNDEFINED
+	var indent_length := 1
+
+	var lines_raw := raw.split("\n")
+	for i in lines_raw.size():
+		var line_raw := lines_raw[i]
+
+		var indent_text : String = REGEX_LINE_INDENT.search(line_raw).get_string()
+		var indent := 0
+
+		if not indent_text.is_empty():
+			assert(not (' ' in indent_text and '\t' in indent_text), "Line %s: Illegal indentation: contains a mixture of tabs and spaces." % [(i + 1)])
+
+			if indent_type == INDENT_UNDEFINED:
+				match indent_text[0]:
+					' ':
+						indent_type = INDENT_SPACES
+						indent_length = indent_text.length()
+
+					'\t':
+						indent_type = INDENT_TABS
+
+			match indent_type:
+				INDENT_SPACES:
+					assert('\t' not in indent_text, "Line %s: Illegal indentation: document must use the same kind of indentation (spaces)." % [(i + 1)])
+					assert(indent_text.length() % indent_length == 0, "Line %s: Illegal space indentation: document must use a multiple of %s spaces, as defined by the first indented line." % [(i+1), indent_length])
+
+					indent = indent_text.length() / indent_length
+
+				INDENT_TABS:
+					assert(' ' not in indent_text, "Line %s: Illegal indentation: document must use the same kind of indentation (tabs)." % [(i + 1)])
+
+					indent = indent_text.length()
+
+		lines.push_back(Line.new(
+			indent,
+			line_raw.substr(indent_text.length())
+		))
+
+	#endregion
+	#region Tokens
+
+	var tokens : Array[Token] = []
+	var token : Token = null
+
+	for i in lines.size():
+		var line := lines[i]
+
+		var cursor : int = 0
+
+	#endregion
+
+	var result : Array[Stmt] = []
+
+	return result
+
+static func parse_lines_to_tokens(lines: Array[Line], context_file: FileAccess = null) -> Array[Token]:
+	var result : Array[Token] = []
+	var token : Token = null
+	var cursor : int = 0
+
+	for line_idx in lines.size():
+		var line := lines[line_idx]
+
+
+	return result
 
 static func parse_code_to_tokens(raw: String, context_file: FileAccess = null) -> Array[Token]:
 	var result : Array[Token] = []
@@ -299,6 +378,15 @@ static func get_line_and_column_numbers(char_index: int, raw: String) -> Array[i
 	return [row + 1, col + 1]
 
 
+class Line extends RefCounted:
+	var indent : int
+	var text : String
+
+	func _init(__indent__: int, __text__: String) -> void:
+		indent = __indent__
+		text = __text__
+
+
 class Token extends RefCounted:
 	enum Type {
 		INDENTATION,
@@ -316,7 +404,7 @@ class Token extends RefCounted:
 	}
 	static var TYPE_PATTERNS : Dictionary[Type, RegEx] = {
 		Type.INDENTATION:			RegEx.create_from_string(r"(?m)^\t+"),
-		Type.VALUE_STRING:			RegEx.create_from_string(r"(?s)(?:([>+](?!=))[\t ]*(\S[^\n]*)(?=$|\n))|(?:([`'\"]{3}|[`'\"])(.*?)\3)"),
+		Type.VALUE_STRING:			RegEx.create_from_string(r"(?<!\\)(['\"]{3}|['\"]).*?(?<!\\)\1"),
 		Type.KEYWORD:				RegEx.create_from_string(r"\b(?:await|call|else|elif|if|init|jump|label|let|match|menu|pass|print|return|var)\b"),
 		Type.VALUE_BOOLEAN:			RegEx.create_from_string(r"\b(?:[Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
 		Type.VALUE_COLOR:			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
