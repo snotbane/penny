@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="DecorRegistry" load_steps=25 format=3 uid="uid://drmpmcuvh657f"]
+[gd_resource type="Resource" script_class="DecorRegistry" format=3 uid="uid://drmpmcuvh657f"]
 
-[ext_resource type="Script" uid="uid://w7bl3g20knuq" path="res://addons/penny/assets/scripts/objects/decor/decor_.gd" id="1_8yey2"]
+[ext_resource type="Script" uid="uid://w7bl3g20knuq" path="res://addons/penny/assets/scripts/objects/decor/Decor.gd" id="1_8yey2"]
 [ext_resource type="Resource" uid="uid://bgemvwokyw5gv" path="res://addons/penny/assets/decor/builtin/advance.tres" id="2_vmywo"]
 [ext_resource type="Resource" uid="uid://cn7h0j1al143o" path="res://addons/penny/assets/decor/builtin/delay.tres" id="2_xkc18"]
 [ext_resource type="Resource" uid="uid://r7l0c7yddrae" path="res://addons/penny/assets/decor/builtin/dropin.tres" id="3_vmywo"]
@@ -19,7 +19,7 @@
 [ext_resource type="Resource" uid="uid://b0c02niwg0rvx" path="res://addons/penny/assets/decor/builtin/skip.tres" id="12_xkc18"]
 [ext_resource type="Resource" uid="uid://0cxs2uf7ey8k" path="res://addons/penny/assets/decor/builtin/temp.tres" id="13_tureq"]
 [ext_resource type="Resource" uid="uid://wms4vq8i3jqi" path="res://addons/penny/assets/decor/builtin/wait.tres" id="14_rdbep"]
-[ext_resource type="Script" uid="uid://cr3lmmfkuc6cm" path="res://addons/penny/assets/scripts/objects/decor/decor_registry.gd" id="15_o7bwu"]
+[ext_resource type="Script" uid="uid://cr3lmmfkuc6cm" path="res://addons/penny/assets/scripts/objects/decor/DecorRegistry.gd" id="15_o7bwu"]
 [ext_resource type="Resource" uid="uid://cvgy6u37mo04p" path="res://addons/penny/assets/decor/builtin/sfx.tres" id="16_2ql11"]
 [ext_resource type="Resource" uid="uid://bwi6sir2o3aef" path="res://addons/penny/assets/decor/builtin/special.tres" id="18_gn806"]
 [ext_resource type="Resource" uid="uid://b450n7q4en43b" path="res://addons/penny/assets/decor/builtin/vo.tres" id="19_4rimq"]
