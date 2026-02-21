@@ -364,7 +364,7 @@ func travel__cleanup(record: Record, execution_response: Stmt.ExecutionResponse)
 	if inst.has_method(&"travel__cleanup"):
 		inst.travel__cleanup(record, execution_response)
 	else:
-		var operation : TravelOperation = Snotbane.find_child_of_type(inst, "TravelOperation")
+		var operation : TravelOperation = Myth.find_child_of_type(inst, "TravelOperation")
 		if operation: operation.finish()
 
 func travel__undo(record: Record) -> void:
@@ -413,7 +413,7 @@ func reparent__redo(record: Record) -> void:
 
 func play_audio(funx: Funx, res: String) :
 	var __parent__ : Node = instance if instance else funx.host
-	var asp := Snotbane.create_one_shot_audio(__parent__, load(res))
+	var asp := Myth.create_one_shot_audio(__parent__, load(res))
 	if funx.wait:	await asp.finished
 
 #endregion
