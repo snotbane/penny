@@ -1,9 +1,9 @@
-[gd_scene load_steps=17 format=3 uid="uid://c8yr1nrnrh2jh"]
+[gd_scene format=3 uid="uid://c8yr1nrnrh2jh"]
 
 [ext_resource type="Theme" uid="uid://cuqma0tj3my70" path="res://addons/penny/assets/themes/debug_theme.tres" id="1_hv265"]
 [ext_resource type="Texture2D" uid="uid://5dmiewmbmtxq" path="res://addons/penny/assets/textures/overlay.png" id="2_7s783"]
 [ext_resource type="Texture2D" uid="uid://cqkyoh7pijbha" path="res://addons/penny/assets/textures/icons/Code.svg" id="5_ufwun"]
-[ext_resource type="Script" uid="uid://3c4o4hpqwdbn" path="res://addons/penny/assets/scripts/utils/tabs_with_icons.gd" id="5_uv7g7"]
+[ext_resource type="Script" uid="uid://3c4o4hpqwdbn" path="res://addons/penny/assets/scripts/utils/TabsWithIcons.gd" id="5_uv7g7"]
 [ext_resource type="Texture2D" uid="uid://c3g6mc5ihxqvj" path="res://addons/penny/assets/textures/icons/Label.svg" id="6_6v586"]
 [ext_resource type="Texture2D" uid="uid://dfir03166e6r2" path="res://addons/penny/assets/textures/icons/Object.svg" id="7_44hdu"]
 [ext_resource type="PackedScene" uid="uid://c7yh1rwq1ctx" path="res://addons/penny/assets/scenes/debug/cell_viewer.tscn" id="7_sffmw"]
