@@ -1,3 +1,4 @@
+
 @tool class_name PennyScriptFormatLoader extends ResourceFormatLoader
 
 func _handles_type(type: StringName) -> bool:

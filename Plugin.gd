@@ -2,13 +2,59 @@
 ## Handles debug tools for the editor only.
 @tool class_name PennyPlugin extends EditorPlugin
 
-const IMPORTER := "res://addons/penny_godot/assets/scripts/penny.gd"
+const AUTOLOAD_PATH := "res://addons/penny/scripts/Penny.gd"
 const AUTOLOAD_NAME = "penny"
 
+const PSH_START_LABEL_DEFAULT := true
+const PSH_START_LABEL := {
+	&"name": "penny/general/start_label",
+	&"type": TYPE_STRING_NAME
+}
+
+const PSH_ALLOW_ROLLING_DEFAULT := true
+const PSH_ALLOW_ROLLING := {
+	&"name": "penny/general/allow_rolling",
+	&"type": TYPE_BOOL
+}
+
+const PSH_ALLOW_SKIPPING_DEFAULT := true
+const PSH_ALLOW_SKIPPING := {
+	&"name": "penny/general/allow_skipping",
+	&"type": TYPE_BOOL
+}
+
+static func init_project_setting(hint: Dictionary, value: Variant) -> void:
+	assert(hint.has(&"name"), "Project setting missing name.")
+	assert(hint.has(&"type"), "Project setting missing type.")
+
+	if not ProjectSettings.has_setting(hint[&"name"]):
+		ProjectSettings.set_setting(hint[&"name"], value)
+	ProjectSettings.add_property_info(hint)
+	ProjectSettings.set_initial_value(hint[&"name"], value)
 
 func _enable_plugin():
-	self.add_autoload_singleton(AUTOLOAD_NAME, IMPORTER)
+	self.add_autoload_singleton(AUTOLOAD_NAME, AUTOLOAD_PATH)
 	# EditorInterface.get_resource_filesystem().resources_reimported.connect(_resources_reimported)
+
+	if not ProjectSettings.has_setting(PSH_START_LABEL[&"name"]):
+		ProjectSettings.set_setting(PSH_START_LABEL[&"name"], PSH_START_LABEL_DEFAULT)
+	ProjectSettings.add_property_info(PSH_START_LABEL)
+	ProjectSettings.set_initial_value(PSH_START_LABEL[&"name"], PSH_START_LABEL_DEFAULT)
+
+	if not ProjectSettings.has_setting(PSH_ALLOW_ROLLING[&"name"]):
+		ProjectSettings.set_setting(PSH_ALLOW_ROLLING[&"name"], PSH_ALLOW_ROLLING_DEFAULT)
+	ProjectSettings.add_property_info(PSH_ALLOW_ROLLING)
+	ProjectSettings.set_initial_value(PSH_ALLOW_ROLLING[&"name"], PSH_ALLOW_ROLLING_DEFAULT)
+
+	if not ProjectSettings.has_setting(PSH_ALLOW_SKIPPING[&"name"]):
+		ProjectSettings.set_setting(PSH_ALLOW_SKIPPING[&"name"], PSH_ALLOW_SKIPPING_DEFAULT)
+	ProjectSettings.add_property_info(PSH_ALLOW_SKIPPING)
+	ProjectSettings.set_initial_value(PSH_ALLOW_SKIPPING[&"name"], PSH_ALLOW_SKIPPING_DEFAULT)
+
+	if not ProjectSettings.has_setting(DecorRegistry.PROJECT_SETTING_HINT[&"name"]):
+		ProjectSettings.set_setting(DecorRegistry.PROJECT_SETTING_HINT[&"name"], DecorRegistry.PROJECT_SETTING_DEFAULT_VALUE)
+	ProjectSettings.add_property_info(DecorRegistry.PROJECT_SETTING_HINT)
+	ProjectSettings.set_initial_value(DecorRegistry.PROJECT_SETTING_HINT[&"name"], DecorRegistry.PROJECT_SETTING_DEFAULT_VALUE)
 
 	configure_input()
 

@@ -8,9 +8,6 @@ label UNIT
 ## Single-character string
 > A
 
-## Whitespace-only string
-> `                `
-
 ## Standard string
 > Sphinx of black quartz, judge my vow.
 

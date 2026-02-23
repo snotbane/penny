@@ -52,51 +52,51 @@ unknown = new actor
 	.name => ???
 
 PARAGRAPH_START = new filter
-	.pattern = `^`
+	.pattern = "^"
 	.replace => <p><dropin><dropout>
-	# .replace = `<delay=0.5><p><dropin><dropout>`
+	# .replace = "<delay=0.5><p><dropin><dropout>"
 
 PARAGRAPH_START_CENTERED = new filter
-	.pattern = `^`
+	.pattern = "^"
 	.replace => <p align="center"><dropin><dropout>
-	# .replace = `<delay=0.5><p align="center"><dropin><dropout>`
+	# .replace = "<delay=0.5><p align="center"><dropin><dropout>"
 
 PUNCTUATION_TO_PIPE = new filter
-	.pattern = `(?<!(?:Mx|Mr|Dr|Prof)s?)((?:[.,?!:;](?!\S))|-{2,})+[\'")\]]?(?!$)`
-	.replace = `$0|`
+	.pattern = "(?<!(?:Mx|Mr|Dr|Prof)s?)((?:[.,?!:;](?!\S))|-{2,})+[\'\")\]]?(?!$)"
+	.replace = "$0|"
 
 SLOW_ELLIPSES = new filter
-	.pattern = `\.{3}`
+	.pattern = "\.{3}"
 	.replace => <delay=0.2; speed=5>...</>
 
 PIPE_TO_DELAY = new filter
-	.pattern = `\|`
+	.pattern = "\|"
 	.replace => <delay>
 
 SLASH_TO_WAIT = new filter
-	.pattern = `(?<!\\)\/`
+	.pattern = "(?<!\\)\/"
 	.replace => <wait>
 
 TRIPLE_HYPHEN_TO_LONG_DASH = new filter
-	.pattern = `---`
-	.replace = `—`
+	.pattern = "---"
+	.replace = "—"
 
 DOUBLE_HYPHEN_TO_EM_DASH = new filter
-	.pattern = `--`
-	.replace = `–`
+	.pattern = "--"
+	.replace = "–"
 
 FANCY_SINGLE_QUOTE_RIGHT = new filter
-	.pattern = `(\S)'`
-	.replace = `$1’`
+	.pattern = "(\S)'"
+	.replace = "$1’"
 
 FANCY_SINGLE_QUOTE_LEFT = new filter
-	.pattern = `'`
-	.replace = `‘`
+	.pattern = "'"
+	.replace = "‘"
 
 FANCY_DOUBLE_QUOTE_RIGHT = new filter
-	.pattern = `(\S)"`
-	.replace = `$1”`
+	.pattern = "(\S)\""
+	.replace = "$1”"
 
 FANCY_DOUBLE_QUOTE_LEFT = new filter
-	.pattern = `"`
-	.replace = `“`
+	.pattern = "\""
+	.replace = "“"
