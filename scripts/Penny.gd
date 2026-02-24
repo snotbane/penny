@@ -132,7 +132,7 @@ static func reload_many(many: Array[PennyScript] = uid_scripts.values(), emit_si
 
 	if many.size() > 0:
 		for script in many:
-			assert(ResourceLoader.get_resource_uid(script.resource_path) != -1, "No uid exists for resource path '%s'" % script.resource_path)
+			assert(ResourceLoader.get_resource_uid(script.resource_path) != -1, "No uid exists for resource '%s' at path '%s'" % [script.resource_name, script.resource_path])
 
 			uid_scripts[ResourceUID.id_to_text(ResourceLoader.get_resource_uid(script.resource_path))] = script
 

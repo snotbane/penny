@@ -134,20 +134,20 @@ func _init(path : String) -> void:
 func update_from_file(file: FileAccess) -> void:
 	errors.clear()
 
-	var tokens := parse_code_to_tokens(file.get_as_text(), file)
+	# var tokens := parse_code_to_tokens(file.get_as_text(), file)
 	# print(tokens)
 
-	var old_stmts : Array[Stmt]
-	if not Engine.is_editor_hint():
-		old_stmts = stmts.duplicate()
+	# var old_stmts : Array[Stmt]
+	# if not Engine.is_editor_hint():
+	# 	old_stmts = stmts.duplicate()
 
-	parse_tokens_to_stmts(tokens, file)
-	# print_stmts(stmts)
-	# print_dialog_metrics(file.get_path())
+	# parse_tokens_to_stmts(tokens, file)
+	# # print_stmts(stmts)
+	# # print_dialog_metrics(file.get_path())
 
-	if not Engine.is_editor_hint():
-		diff = Diff.new(old_stmts, stmts)
-		# if diff.changes: print(diff)
+	# if not Engine.is_editor_hint():
+	# 	diff = Diff.new(old_stmts, stmts)
+	# 	# if diff.changes: print(diff)
 
 
 func print_dialog_metrics(known_path: String = "") -> void:
@@ -255,7 +255,7 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 	return null
 
 static func parse_code_to_stmts(raw: String, context_file: FileAccess = null) -> Array[Stmt]:
-	#region Lines
+	#region Raw Code to Lines
 
 	var lines : Array[Line] = []
 
@@ -299,32 +299,57 @@ static func parse_code_to_stmts(raw: String, context_file: FileAccess = null) ->
 		))
 
 	#endregion
-	#region Tokens
+	#region Lines to Tokens
 
 	var tokens : Array[Token] = []
-	var token : Token = null
+	var most_recent_tab_depth : int = 0
 
 	for i in lines.size():
 		var line := lines[i]
 
+		# if line.indent > 0:
+		# 	tokens.push_back(Token.new(Token.Type.INDENTATION, "\t".repeat(line.indent)))
+
+		match tokens.back().type:
+			Token.Type.VALUE_STRING: pass
+
 		var cursor : int = 0
+		while cursor < line.text.length():
+			var token_found = false
+			for k in Token.TYPE_PATTERNS.keys():
+				var m_token : RegExMatch = Token.TYPE_PATTERNS[k].search(line.text, cursor)
+				if m_token == null or m_token.get_start() != cursor: continue
+				token_found = true
+
+				match k:
+					Token.Type.WHITESPACE, Token.Type.COMMENT:
+						pass
+
+					_:
+						if not tokens.is_empty() and k == Token.Type.TERMINATOR and tokens.back().type == Token.Type.TERMINATOR:
+							tokens.back().value += m_token.get_string()
+						else:
+							tokens.push_back(Token.new(k, m_token.get_string()))
+
+				cursor = m_token.get_end() if m_token.get_end() != cursor else cursor + 1
+				break
+
+			if not token_found:
+				var address_numbers := get_line_and_column_numbers(cursor, raw)
+				printerr("%s(ln %s, cl %s): Unrecognized token '%s'." % [
+					(context_file.get_path() + " ") if context_file else "",
+					address_numbers[0],
+					address_numbers[1],
+					raw[cursor]
+				])
+				break
 
 	#endregion
 
-	var result : Array[Stmt] = []
+	var stmts : Array[Stmt] = []
 
-	return result
+	return stmts
 
-static func parse_lines_to_tokens(lines: Array[Line], context_file: FileAccess = null) -> Array[Token]:
-	var result : Array[Token] = []
-	var token : Token = null
-	var cursor : int = 0
-
-	for line_idx in lines.size():
-		var line := lines[line_idx]
-
-
-	return result
 
 static func parse_code_to_tokens(raw: String, context_file: FileAccess = null) -> Array[Token]:
 	var result : Array[Token] = []
@@ -391,6 +416,7 @@ class Token extends RefCounted:
 	enum Type {
 		INDENTATION,
 		VALUE_STRING,
+		VALUE_MESSAGE,
 		KEYWORD,
 		VALUE_BOOLEAN,
 		VALUE_COLOR,
@@ -404,7 +430,8 @@ class Token extends RefCounted:
 	}
 	static var TYPE_PATTERNS : Dictionary[Type, RegEx] = {
 		Type.INDENTATION:			RegEx.create_from_string(r"(?m)^\t+"),
-		Type.VALUE_STRING:			RegEx.create_from_string(r"(?<!\\)(['\"]{3}|['\"]).*?(?<!\\)\1"),
+		Type.VALUE_STRING:			RegEx.create_from_string(r"(?<!\\)(['\"`]{3}|['\"`]).*?(?<!\\)\1"),
+		Type.VALUE_MESSAGE:			RegEx.create_from_string(r"[>+]\s*.*"),
 		Type.KEYWORD:				RegEx.create_from_string(r"\b(?:await|call|else|elif|if|init|jump|label|let|match|menu|pass|print|return|var)\b"),
 		Type.VALUE_BOOLEAN:			RegEx.create_from_string(r"\b(?:[Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
 		Type.VALUE_COLOR:			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
