@@ -1,21 +1,13 @@
 ## Manages interactions between dialog boxes to display text to the end user.
 class_name StmtDialog extends StmtNode
 
-const DEPTH_REMOVAL_PATTERN := r"\n\t{0,%s}"
 static var REGEX_WORD_COUNT := RegEx.create_from_string(r"\b\w+\b")
 static var REGEX_CHAR_COUNT := RegEx.create_from_string(r"\S")
 
-static var USE_PERSISTENT_SUBJECT : bool
-
-
-static func _static_init() -> void:
-	super._static_init()
-
-	USE_PERSISTENT_SUBJECT = true
 
 var subject_dialog_path : Path
 var pure_text : String
-var qualifier : int
+var message : DialogMessage
 
 
 func _get_verbosity() -> Verbosity:
@@ -36,18 +28,14 @@ func _get_record_message(record: Record) -> String:
 	return record.data[&"what"].text
 
 func _get_should_use_previous_subject() -> bool:
-	return subject_directive != Path.DIRECT_EXPLICIT and qualifier >= PennyScript.ScriptString.QUALIFIER_RELATIVE
+	return subject_directive != Path.DIRECT_EXPLICIT and message.declaration_type == DialogMessage.STANDARD
 
 
 func _init() -> void:
 	super._init(StorageQualifier.NONE)
 
 func _populate(tokens: Array) -> void:
-	var regex_whitespace := RegEx.create_from_string(DEPTH_REMOVAL_PATTERN % self.depth)
-	var text_token = tokens.pop_back().value
-
-	pure_text = regex_whitespace.sub(text_token.text if text_token is PennyScript.ScriptString else text_token, " ", true)
-	qualifier = text_token.qualifier if text_token is PennyScript.ScriptString else PennyScript.ScriptString.QUALIFIER_NONE
+	message = tokens.pop_back().value
 
 	super._populate(tokens)
 

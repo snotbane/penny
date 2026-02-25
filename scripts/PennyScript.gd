@@ -7,6 +7,8 @@ enum {
 	INDENT_SPACES
 }
 
+const REGEX_MESSAGE_PATTERN := r"(?s)[>+][\t ]*.*?(?=\n+[\t ]{,%d}(?![\t ])(?:\S|$))"
+
 class Diff:
 	class Entry:
 
@@ -114,11 +116,112 @@ class Diff:
 	func remap_stmt_index(cursor: Stmt) -> Stmt:
 		return self.news[self.map[cursor.index]]
 
+class Token extends RefCounted:
+	enum Type {
+		INDENTATION,
+		VALUE_MESSAGE,
+		VALUE_STRING,
+		KEYWORD,
+		VALUE_BOOLEAN,
+		VALUE_COLOR,
+		ASSIGNMENT,
+		OPERATOR,
+		COMMENT,
+		IDENTIFIER,
+		VALUE_NUMBER,
+		TERMINATOR,
+		WHITESPACE,
+	}
+	static var TYPE_PATTERNS : Dictionary[Type, RegEx] = {
+		Type.INDENTATION:			RegEx.create_from_string(r"(?m)^[\t ]+"),
+		Type.VALUE_MESSAGE:			RegEx.new(),
+		Type.VALUE_STRING:			RegEx.create_from_string(r"(?s)(?<!\\)(['\"`]{3}|['\"`])(.*?)(?<!\\)\1"),
+		Type.KEYWORD:				RegEx.create_from_string(r"\b(?:await|call|else|elif|if|init|jump|label|let|match|menu|pass|print|return|var)\b"),
+		Type.VALUE_BOOLEAN:			RegEx.create_from_string(r"\b(?:[Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
+		Type.VALUE_COLOR:			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
+		Type.ASSIGNMENT:			RegEx.create_from_string(r"===|([+\-*/]?)=(?!=)"),
+		Type.OPERATOR:				Op.PATTERN_COMPILED,
+		Type.COMMENT:				RegEx.create_from_string(r"(?ms)(([#/])\*.*?(\*\2))|((#|\/{2}).*?$)"),
+		Type.IDENTIFIER:			RegEx.create_from_string(r"~|(?:[a-zA-Z_]\w*)"),
+		Type.VALUE_NUMBER:			RegEx.create_from_string(r"\d+\.\d*|\.?\d+"),
+		Type.TERMINATOR:			RegEx.create_from_string(r"(?m)(?<!\[)[:;\n]+(?!\])"),
+		Type.WHITESPACE:			RegEx.create_from_string(r"(?m)[ \n]+|(?<!^|\t)\t+"),
+	}
+
+	enum Literal {
+		MESSAGE,
+		STRING,
+		COLOR,
+		NULL,
+		BOOLEAN_TRUE,
+		BOOLEAN_FALSE,
+		NUMBER_DECIMAL,
+		NUMBER_INTEGER,
+	}
+
+	static var LITERAL_PATTERNS : Dictionary[Literal, RegEx] = {
+		Literal.MESSAGE:			RegEx.create_from_string(r"^[>+]"),
+		Literal.STRING: 			TYPE_PATTERNS[Token.Type.VALUE_STRING],
+		Literal.COLOR: 				TYPE_PATTERNS[Token.Type.VALUE_COLOR],
+		Literal.NULL: 				RegEx.create_from_string(r"\b(?:[Nn]ull|NULL)\b"),
+		Literal.BOOLEAN_TRUE: 		RegEx.create_from_string(r"\b(?:[Tt]rue|TRUE)\b"),
+		Literal.BOOLEAN_FALSE: 		RegEx.create_from_string(r"\b(?:[Ff]alse|FALSE)\b"),
+		Literal.NUMBER_DECIMAL: 	RegEx.create_from_string(r"\b(?:\d+\.\d+|\d+\.|\.\d+)\b"),
+		Literal.NUMBER_INTEGER: 	RegEx.create_from_string(r"\b\d+\b"),
+	}
+
+	static func parse_code_as_literal(raw: String) -> Variant:
+		for i in LITERAL_PATTERNS.size():
+			var rx : RegExMatch = LITERAL_PATTERNS[i].search(raw)
+			if rx: match i:
+				Literal.MESSAGE:		return DialogMessage.new(raw)
+				Literal.STRING:			return rx.get_string(2)
+				Literal.COLOR:			return Color(raw)
+				Literal.NULL:			return null
+				Literal.BOOLEAN_TRUE:	return true
+				Literal.BOOLEAN_FALSE:	return false
+				Literal.NUMBER_DECIMAL:	return float(raw)
+				Literal.NUMBER_INTEGER:	return int(raw)
+		return StringName(raw)
+
+	var type : Type
+	var value : Variant
+
+
+	func _init(_type: Type, _raw: String) -> void:
+		type = _type
+
+		match type:
+			Token.Type.INDENTATION:
+				value = _raw.length()
+			Token.Type.OPERATOR:
+				value = Op.new_from_string(_raw)
+			_:
+				value = Token.parse_code_as_literal(_raw)
+
+
+	func _to_string() -> String:
+		var token_type_string : String
+		match type:
+			Token.Type.INDENTATION: token_type_string = "IDT"
+			Token.Type.VALUE_MESSAGE: token_type_string = "MSG"
+			Token.Type.VALUE_STRING: token_type_string = "STR"
+			Token.Type.KEYWORD: token_type_string = "KEY"
+			Token.Type.VALUE_BOOLEAN: token_type_string = "BOO"
+			Token.Type.VALUE_COLOR: token_type_string = "COL"
+			Token.Type.VALUE_NUMBER: token_type_string = "NUM"
+			Token.Type.OPERATOR: token_type_string = "OPR"
+			Token.Type.COMMENT: token_type_string = "COM"
+			Token.Type.ASSIGNMENT: token_type_string = "ASG"
+			Token.Type.IDENTIFIER: token_type_string = "IDR"
+			Token.Type.TERMINATOR: token_type_string = "TRM"
+			Token.Type.WHITESPACE: token_type_string = "WHT"
+			_: token_type_string = "INV"
+		return "%s:%s" % [token_type_string, str(value)]
+
 static var LINE_FEED_REGEX : RegEx
-static var REGEX_LINE_INDENT : RegEx
 
 static func _static_init() -> void:
-	REGEX_LINE_INDENT = RegEx.create_from_string(r"^[\t ]+")
 	LINE_FEED_REGEX = RegEx.create_from_string(r"\n")
 
 @export_storage var id : int
@@ -140,6 +243,8 @@ func update_from_file(file: FileAccess) -> void:
 	# var old_stmts : Array[Stmt]
 	# if not Engine.is_editor_hint():
 	# 	old_stmts = stmts.duplicate()
+
+	stmts = parse_code_to_stmts(file.get_as_text())
 
 	# parse_tokens_to_stmts(tokens, file)
 	# # print_stmts(stmts)
@@ -255,94 +360,76 @@ static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: Fi
 	return null
 
 static func parse_code_to_stmts(raw: String, context_file: FileAccess = null) -> Array[Stmt]:
-	#region Raw Code to Lines
-
-	var lines : Array[Line] = []
+	#region Raw to Tokens
 
 	var indent_type := INDENT_UNDEFINED
-	var indent_length := 1
-
-	var lines_raw := raw.split("\n")
-	for i in lines_raw.size():
-		var line_raw := lines_raw[i]
-
-		var indent_text : String = REGEX_LINE_INDENT.search(line_raw).get_string()
-		var indent := 0
-
-		if not indent_text.is_empty():
-			assert(not (' ' in indent_text and '\t' in indent_text), "Line %s: Illegal indentation: contains a mixture of tabs and spaces." % [(i + 1)])
-
-			if indent_type == INDENT_UNDEFINED:
-				match indent_text[0]:
-					' ':
-						indent_type = INDENT_SPACES
-						indent_length = indent_text.length()
-
-					'\t':
-						indent_type = INDENT_TABS
-
-			match indent_type:
-				INDENT_SPACES:
-					assert('\t' not in indent_text, "Line %s: Illegal indentation: document must use the same kind of indentation (spaces)." % [(i + 1)])
-					assert(indent_text.length() % indent_length == 0, "Line %s: Illegal space indentation: document must use a multiple of %s spaces, as defined by the first indented line." % [(i+1), indent_length])
-
-					indent = indent_text.length() / indent_length
-
-				INDENT_TABS:
-					assert(' ' not in indent_text, "Line %s: Illegal indentation: document must use the same kind of indentation (tabs)." % [(i + 1)])
-
-					indent = indent_text.length()
-
-		lines.push_back(Line.new(
-			indent,
-			line_raw.substr(indent_text.length())
-		))
-
-	#endregion
-	#region Lines to Tokens
+	Token.TYPE_PATTERNS[Token.Type.VALUE_MESSAGE].compile(REGEX_MESSAGE_PATTERN % [ 0 ])
 
 	var tokens : Array[Token] = []
-	var most_recent_tab_depth : int = 0
 
-	for i in lines.size():
-		var line := lines[i]
+	var cursor := 0
+	while cursor < raw.length():
+		var any_token_found := false
+		var error := String()
 
-		# if line.indent > 0:
-		# 	tokens.push_back(Token.new(Token.Type.INDENTATION, "\t".repeat(line.indent)))
+		# var indent_expected : String =
 
-		match tokens.back().type:
-			Token.Type.VALUE_STRING: pass
+		for k in Token.TYPE_PATTERNS.keys():
+			var m_token : RegExMatch = Token.TYPE_PATTERNS[k].search(raw, cursor)
+			if m_token == null or m_token.get_start() != cursor: continue
+			any_token_found = true
+			var token_string := m_token.get_string()
 
-		var cursor : int = 0
-		while cursor < line.text.length():
-			var token_found = false
-			for k in Token.TYPE_PATTERNS.keys():
-				var m_token : RegExMatch = Token.TYPE_PATTERNS[k].search(line.text, cursor)
-				if m_token == null or m_token.get_start() != cursor: continue
-				token_found = true
+			match k:
+				Token.Type.INDENTATION:
+					if ' ' in token_string and '\t' in token_string:
+						error = "Illegal indentation: contains a mixture of tabs and spaces."
+						break
 
-				match k:
-					Token.Type.WHITESPACE, Token.Type.COMMENT:
-						pass
+					match indent_type:
+						INDENT_SPACES:
+							if '\t' in token_string:
+								error = "Illegal indentation: document must use the same kind of indentation throughout (spaces)."
+								break
 
-					_:
-						if not tokens.is_empty() and k == Token.Type.TERMINATOR and tokens.back().type == Token.Type.TERMINATOR:
-							tokens.back().value += m_token.get_string()
-						else:
-							tokens.push_back(Token.new(k, m_token.get_string()))
+						INDENT_TABS:
+							if ' ' in token_string:
+								error = "Illegal indentation: document must use the same kind of indentation throughout (tabs)."
+								break
 
-				cursor = m_token.get_end() if m_token.get_end() != cursor else cursor + 1
-				break
+						INDENT_UNDEFINED:
+							match token_string[0]:
+								' ':	indent_type = INDENT_SPACES
+								'\t':	indent_type = INDENT_TABS
 
-			if not token_found:
-				var address_numbers := get_line_and_column_numbers(cursor, raw)
-				printerr("%s(ln %s, cl %s): Unrecognized token '%s'." % [
-					(context_file.get_path() + " ") if context_file else "",
-					address_numbers[0],
-					address_numbers[1],
-					raw[cursor]
-				])
-				break
+					tokens.push_back(Token.new(k, token_string))
+					Token.TYPE_PATTERNS[Token.Type.VALUE_MESSAGE].compile(REGEX_MESSAGE_PATTERN % [ tokens.back().value ])
+
+				Token.Type.WHITESPACE, Token.Type.COMMENT:
+					pass
+
+				_:
+					if not tokens.is_empty() and k == Token.Type.TERMINATOR and tokens.back().type == Token.Type.TERMINATOR:
+						tokens.back().value += token_string
+
+					else:
+						tokens.push_back(Token.new(k, token_string))
+
+			cursor = m_token.get_end() if m_token.get_end() != cursor else cursor + 1
+			break
+
+		if not any_token_found:
+			error = "Unrecognized token '%s'." % [raw[cursor]]
+
+		if error:
+			var address_numbers := get_line_and_column_numbers(cursor, raw)
+			printerr("%s(ln %s, cl %s): %s" % [
+				(context_file.get_path() + " ") if context_file else "",
+				address_numbers[0],
+				address_numbers[1],
+				error
+			])
+			break
 
 	#endregion
 
@@ -411,105 +498,6 @@ class Line extends RefCounted:
 		indent = __indent__
 		text = __text__
 
-
-class Token extends RefCounted:
-	enum Type {
-		INDENTATION,
-		VALUE_STRING,
-		VALUE_MESSAGE,
-		KEYWORD,
-		VALUE_BOOLEAN,
-		VALUE_COLOR,
-		ASSIGNMENT,
-		OPERATOR,
-		COMMENT,
-		IDENTIFIER,
-		VALUE_NUMBER,
-		TERMINATOR,
-		WHITESPACE,
-	}
-	static var TYPE_PATTERNS : Dictionary[Type, RegEx] = {
-		Type.INDENTATION:			RegEx.create_from_string(r"(?m)^\t+"),
-		Type.VALUE_STRING:			RegEx.create_from_string(r"(?<!\\)(['\"`]{3}|['\"`]).*?(?<!\\)\1"),
-		Type.VALUE_MESSAGE:			RegEx.create_from_string(r"[>+]\s*.*"),
-		Type.KEYWORD:				RegEx.create_from_string(r"\b(?:await|call|else|elif|if|init|jump|label|let|match|menu|pass|print|return|var)\b"),
-		Type.VALUE_BOOLEAN:			RegEx.create_from_string(r"\b(?:[Tt]rue|TRUE|[Ff]alse|FALSE)\b"),
-		Type.VALUE_COLOR:			RegEx.create_from_string(r"(?i)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![0-9a-f])"),
-		Type.ASSIGNMENT:			RegEx.create_from_string(r"===|([+\-*/]?)=(?!=)"),
-		Type.OPERATOR:				Op.PATTERN_COMPILED,
-		Type.COMMENT:				RegEx.create_from_string(r"(?ms)(([#/])\*.*?(\*\2))|((#|\/{2}).*?$)"),
-		Type.IDENTIFIER:			RegEx.create_from_string(r"~|(?:[a-zA-Z_]\w*)"),
-		Type.VALUE_NUMBER:			RegEx.create_from_string(r"\d+\.\d*|\.?\d+"),
-		Type.TERMINATOR:			RegEx.create_from_string(r"(?m)(?<!\[)[:;\n]+(?!\])"),
-		Type.WHITESPACE:			RegEx.create_from_string(r"(?m)[ \n]+|(?<!^|\t)\t+"),
-	}
-
-	enum Literal {
-		STRING,
-		COLOR,
-		NULL,
-		BOOLEAN_TRUE,
-		BOOLEAN_FALSE,
-		NUMBER_DECIMAL,
-		NUMBER_INTEGER,
-	}
-
-	static var LITERAL_PATTERNS : Dictionary[Literal, RegEx] = {
-		Literal.STRING: 			TYPE_PATTERNS[Token.Type.VALUE_STRING],
-		Literal.COLOR: 				TYPE_PATTERNS[Token.Type.VALUE_COLOR],
-		Literal.NULL: 				RegEx.create_from_string(r"\b(?:[Nn]ull|NULL)\b"),
-		Literal.BOOLEAN_TRUE: 		RegEx.create_from_string(r"\b(?:[Tt]rue|TRUE)\b"),
-		Literal.BOOLEAN_FALSE: 		RegEx.create_from_string(r"\b(?:[Ff]alse|FALSE)\b"),
-		Literal.NUMBER_DECIMAL: 	RegEx.create_from_string(r"\b(?:\d+\.\d+|\d+\.|\.\d+)\b"),
-		Literal.NUMBER_INTEGER: 	RegEx.create_from_string(r"\b\d+\b"),
-	}
-
-	static func parse_code_as_literal(raw: String) -> Variant:
-		for i in LITERAL_PATTERNS.size():
-			var rx : RegExMatch = LITERAL_PATTERNS[i].search(raw)
-			if rx: match i:
-				Literal.STRING:			return ScriptString.new_or_plain_from_match(rx)
-				Literal.COLOR:			return Color(raw)
-				Literal.NULL:			return null
-				Literal.BOOLEAN_TRUE:	return true
-				Literal.BOOLEAN_FALSE:	return false
-				Literal.NUMBER_DECIMAL:	return float(raw)
-				Literal.NUMBER_INTEGER:	return int(raw)
-		return StringName(raw)
-
-	var type : Type
-	var value : Variant
-
-
-	func _init(_type: Type, _raw: String) -> void:
-		type = _type
-
-		match type:
-			Token.Type.INDENTATION:
-				value = _raw.length()
-			Token.Type.OPERATOR:
-				value = Op.new_from_string(_raw)
-			_:
-				value = Token.parse_code_as_literal(_raw)
-
-
-	func _to_string() -> String:
-		var token_type_string : String
-		match type:
-			Token.Type.INDENTATION: token_type_string = "indent"
-			Token.Type.VALUE_STRING: token_type_string = "string"
-			Token.Type.KEYWORD: token_type_string = "keyword"
-			Token.Type.VALUE_BOOLEAN: token_type_string = "boolean"
-			Token.Type.VALUE_COLOR: token_type_string = "color"
-			Token.Type.VALUE_NUMBER: token_type_string = "number"
-			Token.Type.OPERATOR: token_type_string = "operator"
-			Token.Type.COMMENT: token_type_string = "comment"
-			Token.Type.ASSIGNMENT: token_type_string = "assigner"
-			Token.Type.IDENTIFIER: token_type_string = "identifier"
-			Token.Type.TERMINATOR: token_type_string = "terminator"
-			Token.Type.WHITESPACE: token_type_string = "whitespace"
-			_: token_type_string = "invalid_token"
-		return "%s:%s" % [token_type_string, str(value)]
 
 class ScriptString extends RefCounted:
 	enum {
