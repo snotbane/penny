@@ -54,9 +54,9 @@ var volume_stack : Array[float] = [ 1.0 ]
 var volume : float :
 	get: return volume_stack.back()
 
-## Amount of time to wait after receiving a new message, before printing it out.
+## Amount of time to wait after receiving a new snapshot, before printing it out.
 @export var start_delay : float = 0.1
-## When a completed message already exists, amount of time to wait before replacing the existing text. This is used when animating characters to fade out before proceeding.
+## When a completed snapshot already exists, amount of time to wait before replacing the existing text. This is used when animating characters to fade out before proceeding.
 @export var reset_delay : float = 0.1
 
 @export_subgroup("Autoscroll")
@@ -154,12 +154,12 @@ var subject : Cell :
 		else:
 			talker_audio_player = null
 
-var _message : DisplayString
-var message : DisplayString :
-	get: return _message
+var _snapshot : DialogMessageSnapshot
+var snapshot : DialogMessageSnapshot :
+	get: return _snapshot
 	set(value):
-		if _message == value: return
-		_message = value
+		if _snapshot == value: return
+		_snapshot = value
 		visible_message_changed.emit()
 
 var visible_characters_max : int
@@ -249,12 +249,12 @@ var visible_characters : int :
 		# var last_visible_character_bounds : Rect2 = rtl.last_visible_character_bounds
 		# roger.position = last_visible_character_bounds.position
 
-		if message:
-			# print(message.visible_text[rtl.visible_characters - 1])
-			var shape_marker_match := REGEX_SHAPE_MARKER.search(message.visible_text, rtl.visible_characters)
+		if snapshot:
+			# print(snapshot.visible_text[rtl.visible_characters - 1])
+			var shape_marker_match := REGEX_SHAPE_MARKER.search(snapshot.visible_text, rtl.visible_characters)
 			shape_rtl.visible_characters = shape_marker_match.get_start() if shape_marker_match else rtl.visible_characters
 			if rtl.visible_characters > 0:
-				encounter_char(message.visible_text[mini(rtl.visible_characters, message.visible_text.length()) - 1])
+				encounter_char(snapshot.visible_text[mini(rtl.visible_characters, snapshot.visible_text.length()) - 1])
 
 		if not visible_characters_completed:
 			_visible_characters_partial = rtl.visible_characters + fmod(_visible_characters_partial, 1.0)
@@ -439,22 +439,22 @@ func _receive(record: Record) :
 		await reset()
 
 	subject = record.data[&"who"].evaluate()
-	message = record.data[&"what"]
+	snapshot = record.data[&"what"]
 
 	element_opens.clear()
 	element_closes.clear()
 
-	rtl.text = message.compile_for_typewriter(self)
+	rtl.text = snapshot.compile_for_typewriter(self)
 	shape_rtl.text = String()
 
 	visible_characters_max = rtl.get_total_character_count()
-	assert(visible_characters_max == message.visible_text.length(), "The DisplayString's calculated length is different from its actual length! This usually happens because there is an unrecognized BBcode somewhere in the text:\n'%s'" % rtl.text)
+	assert(visible_characters_max == snapshot.visible_text.length(), "The DialogMessageSnapshot's calculated length is different from its actual length! This usually happens because there is an unrecognized BBcode somewhere in the text:\n'%s'" % rtl.text)
 
 	time_per_char.resize(visible_characters_max)
 	time_per_char.fill(INF)
 
 	var visible_offset := 0
-	for element in message.elements:
+	for element in snapshot.elements:
 		var compile_result := element.compile_for_typewriter(self)
 		visible_offset += compile_result.length()
 

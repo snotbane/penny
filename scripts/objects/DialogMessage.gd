@@ -1,9 +1,9 @@
-## Contains multiple translations for a single dialog block declaration. Strings within are prepared to be turned into [DisplayString]s.
+## Contains multiple translations for a single dialog block declaration. [DialogMessage]s will change only when scripts are reloaded. Strings within are prepared to be turned into [DialogMessageSnapshot]s.
 class_name DialogMessage extends RefCounted
 
 static var REGEX_DECLARATION_TYPE := RegEx.create_from_string(r"^[>+]\s*")
 static var REGEX_MERGE_LINES := RegEx.create_from_string(r"\s*\n\s*")
-static var REGEX_LANGUAGE_SEPARATION := RegEx.create_from_string(r"\s*\[\s*(\S+?)\s*\]\s*")
+static var REGEX_LANGUAGE_SEPARATION := RegEx.create_from_string(r"\s*(?<!\\)\[\s*(\S+?)\s*\]\s*")
 
 static var locale_fallback : String
 
@@ -60,10 +60,13 @@ func _to_string() -> String:
 	]
 
 
-func get_message_from_language(lang: String = OS.get_locale()) -> DisplayString:
-	var tr_text : String = translations.get(lang, translations.get(OS.get_locale_language(), translations.get(locale_fallback, translations[""])))
-
-	return DisplayString.new_from_pure(tr_text)
+func get_raw_string(lang: String = OS.get_locale()) -> String:
+	return translations.get(lang, translations.get(OS.get_locale_language(), translations.get(locale_fallback, translations[""])))
 
 
+func get_display_string(lang: String = OS.get_locale()) -> DialogMessageSnapshot:
+	return DialogMessageSnapshot.new_from_pure(get_raw_string(lang))
 
+
+func interpolate(context := Cell.ROOT) -> String:
+	return get_raw_string()

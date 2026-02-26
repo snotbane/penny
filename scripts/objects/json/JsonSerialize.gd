@@ -3,7 +3,7 @@ class_name JSONSerialize
 #region Serialization
 
 static var KNOWN_NONSERIALIZABLE_OBJECT_SCRIPTS : PackedStringArray = [
-	"DisplayString",
+	"DialogMessageSnapshot",
 ]
 
 static func serialize(value: Variant) -> Variant:

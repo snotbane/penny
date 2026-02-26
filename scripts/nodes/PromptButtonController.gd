@@ -20,7 +20,7 @@ func _populate() -> void:
 	self.disabled = not cell.get_value_evaluated(Cell.K_ENABLED, true)
 	self.consumed = cell.get_value_evaluated(Cell.K_CONSUMED, false)
 
-	label.text = DisplayString.new_from_pure(cell.get_value_evaluated(Cell.K_TEXT), cell).text
+	label.text = DialogMessageSnapshot.new_from_pure(cell.get_value_evaluated(Cell.K_TEXT), cell).text
 
 
 func refresh_size() -> void:

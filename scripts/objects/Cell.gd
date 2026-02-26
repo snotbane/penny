@@ -87,8 +87,8 @@ var prototype : Cell :
 
 var key_text : String :
 	get: return str(self.get_value(Cell.K_TEXT, key_name))
-var text_as_display_string : DisplayString :
-	get: return DisplayString.new_from_pure(key_text, self)
+var text_as_display_string : DialogMessageSnapshot :
+	get: return DialogMessageSnapshot.new_from_pure(key_text, self)
 
 var node_name : String :
 	get: return key_name

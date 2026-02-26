@@ -48,7 +48,7 @@ func _prep(record: Record) -> void:
 
 	record.data.merge({
 		&"who": subject_ref,
-		&"what": DisplayString.new_from_pure(pure_text, Cell.ROOT, incoming_dialog),
+		&"what": DialogMessageSnapshot.new_from_pure(pure_text, Cell.ROOT, incoming_dialog),
 		&"dialog": incoming_dialog
 	})
 
@@ -78,7 +78,7 @@ func _execute(record: Record) :
 		await incoming_dialog_node.enter(Funx.new(record.host, true))
 
 	if record.data[&"what"] == null:
-		record.data[&"what"] = DisplayString.new_from_pure(pure_text, Cell.ROOT, incoming_dialog)
+		record.data[&"what"] = DialogMessageSnapshot.new_from_pure(pure_text, Cell.ROOT, incoming_dialog)
 
 	incoming_dialog_node.receive(record)
 	await incoming_dialog_node.advanced
@@ -102,9 +102,9 @@ func _deserialize_record(record: Record, json: Variant) -> Variant:
 	var dialog : Cell = json[&"dialog"].evaluate()
 	return json.merged({
 		&"dialog": dialog,
-		&"what": DisplayString.new_from_pure(pure_text, Cell.ROOT, dialog),
+		&"what": DialogMessageSnapshot.new_from_pure(pure_text, Cell.ROOT, dialog),
 	}, true)
 
 
 func get_metrics() -> Dictionary:
-	return DisplayString.get_metrics_from_pure(pure_text)
+	return DialogMessageSnapshot.get_metrics_from_pure(pure_text)

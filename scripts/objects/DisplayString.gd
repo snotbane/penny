@@ -1,6 +1,6 @@
 
-## Text that has been interpolated, filtered, decorated, etc., and is ready to be displayed.
-class_name DisplayString extends RefCounted
+## Text that has been interpolated, filtered, decorated, etc., and is ready to be displayed. Represents a [DialogMessage] when rendered at a specific point in time. They are generated when encountered and are discarded after use.
+class_name DialogMessageSnapshot extends RefCounted
 
 const TAG_SPLITTER = ";"
 static var INTERPOLATION_PATTERN :=		RegEx.create_from_string(r"(?<!\\)(?:@((?:\.?[A-Za-z_]\w*)+)|\{(.*?)(?<!\\)\})")
@@ -41,8 +41,8 @@ class ConditionalBlock:
 	var main_if_element : DecorElement :
 		get: return conditions.front()
 
-	func process(dstring: DisplayString) -> void:
-		if not dstring.elements.has(main_if_element): return
+	func process(snapshot: DialogMessageSnapshot) -> void:
+		if not snapshot.elements.has(main_if_element): return
 
 		var start = 0
 		var end = 0
@@ -57,19 +57,13 @@ class ConditionalBlock:
 			end = conditions[i + 1].open_index if i != conditions.size() - 1 else main_if_element.close_index
 			break
 
-		dstring.erase(end, main_if_element.close_index)
-		dstring.erase(main_if_element.open_index, start)
+		snapshot.erase(end, main_if_element.close_index)
+		snapshot.erase(main_if_element.open_index, start)
 
 
 var free_elements_on_delete : bool = true
 
-var _text : String
-var text : String :
-	get: return _text
-	set(value):
-		if _text == value: return
-		_text = value
-		# visible_text = get_visible_text(_text)
+var text : String
 var visible_text : String
 
 var elements : Array[DecorElement]
@@ -115,7 +109,7 @@ func compile_for_typewriter(tw: Typewriter) -> String:
 	return result
 
 
-## Erases a portion of this [DisplayString], and re-indexes [DecorElement]s.
+## Erases a portion of this [DialogMessageSnapshot], and re-indexes [DecorElement]s.
 func erase(start: int = 0, end: int = -1, remove_elements: bool = true) -> void:
 	if start == end: return
 	# if end == -1: end = text.length()
@@ -129,27 +123,27 @@ func erase(start: int = 0, end: int = -1, remove_elements: bool = true) -> void:
 			element.close_index = maxi(element.close_index - (end - start), start)
 
 
-static func new_as_is(__text__ : String = "") -> DisplayString:
-	var result := DisplayString.new(__text__)
+static func new_as_is(__text__ : String = "") -> DialogMessageSnapshot:
+	var result := DialogMessageSnapshot.new(__text__)
 
-	result.visible_text = DisplayString.get_visible_text(result.text)
+	result.visible_text = DialogMessageSnapshot.get_visible_text(result.text)
 	return result
 
 
-static func new_from_pure(pure: String = "", context := Cell.ROOT, filter_context := context) -> DisplayString:
+static func new_from_pure(pure: String = "", context := Cell.ROOT, filter_context := context) -> DialogMessageSnapshot:
 	var result := pure
 
 	if context != null:
-		result = DisplayString.interpolate(result, context)
-		result = DisplayString.filter_from_context(result, filter_context)
+		result = DialogMessageSnapshot.interpolate(result, context)
+		result = DialogMessageSnapshot.filter_from_context(result, filter_context)
 
-	return DisplayString.new_from_filtered(result, context)
+	return DialogMessageSnapshot.new_from_filtered(result, context)
 
 
-static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplayString:
+static func new_from_filtered(string: String, context := Cell.ROOT) -> DialogMessageSnapshot:
 	# print("Raw: `%s`" % string)
 
-	var result := DisplayString.new(string)
+	var result := DialogMessageSnapshot.new(string)
 	var unclosed_tag_stack : Array[Tag]
 	var if_block_list : Array[ConditionalBlock]
 	var if_block_stack : Array[ConditionalBlock]
@@ -197,7 +191,7 @@ static func new_from_filtered(string: String, context := Cell.ROOT) -> DisplaySt
 	# print("Decorated: `%s`" % result.text)
 	# print("Elements: %s" % str(result.elements))
 
-	result.visible_text = DisplayString.get_visible_text(result.text)
+	result.visible_text = DialogMessageSnapshot.get_visible_text(result.text)
 	return result
 
 
@@ -207,12 +201,14 @@ static func interpolate(string: String, context: Cell) -> String:
 	while true:
 		var pattern_match : RegExMatch = INTERPOLATION_PATTERN.search(string)
 		if not pattern_match: break
+
 		# print("Found interpolation match: %s" % pattern_match.get_string())
 		var interp_data := pattern_match.get_string(1) + pattern_match.get_string(2)
 		var interp_expr := Expr.new_from_string(interp_data)
 		var evaluation := interp_expr.evaluate_adaptive(context)
 		var interp_context : Cell = evaluation[&"context"]
 		var interp_value : Variant = evaluation[&"value"]
+
 		# print("Interp context: %s, value: %s" % [interp_context, interp_value])
 		var interp_string : String
 		if interp_value == null:
@@ -221,12 +217,14 @@ static func interpolate(string: String, context: Cell) -> String:
 			interp_context = interp_value
 			interp_string = interp_value.key_text
 			# print("Interp string: %s" % interp_string)
+		elif interp_value is Object and interp_value.has_method(&"interpolate"):
+			interp_string = interp_value.interpolate(interp_context)
 		elif interp_value is Color:
 			interp_string = "#" + interp_value.to_html()
 		else:
 			interp_string = str(interp_value)
 
-		string = replace_match(pattern_match, DisplayString.interpolate(interp_string, interp_context))
+		string = replace_match(pattern_match, DialogMessageSnapshot.interpolate(interp_string, interp_context))
 
 	# print("interpolation result: %s" % string)
 	return string
@@ -236,7 +234,7 @@ static func filter_from_context(string: String, context: Cell) -> String:
 	var filters : Array = context.get_value(Cell.K_FILTERS, [])
 	for filter_ref in filters:
 		var filter_cell : Cell = filter_ref.evaluate(context)
-		string = DisplayString.filter(string, filter_cell.get_value(Cell.K_FILTER_PATTERN), filter_cell.get_value(Cell.K_FILTER_REPLACE))
+		string = DialogMessageSnapshot.filter(string, filter_cell.get_value(Cell.K_FILTER_PATTERN), filter_cell.get_value(Cell.K_FILTER_REPLACE))
 	return string
 
 
