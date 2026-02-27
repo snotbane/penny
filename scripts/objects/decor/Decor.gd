@@ -15,7 +15,7 @@ static func register_in_master(dec: Decor) -> void:
 @export var args : Dictionary[StringName, Variant] = {}
 
 ## This [RichTextEffect] will be installed to each [RichTextLabel] that requires this [Decor].
-## Also, if this effect is a [DecorTextEffect], it will be handled accordingly.
+## Also, if this effect is a [TypewriterTextEffect], it will be handled accordingly.
 @export var effect : RichTextEffect
 
 ## If enabled, the element may be closed using `</>` (closing element). Otherwise, the element will be treated as a standalone.
@@ -28,7 +28,7 @@ static func register_in_master(dec: Decor) -> void:
 @export var prod_stop : bool = false
 
 var is_decor_text_effect : bool :
-	get: return effect is DecorTextEffect
+	get: return effect is TypewriterTextEffect
 
 var wait_state : Typewriter.PlayState :
 	get: return Typewriter.PlayState.PAUSED if prod_stop else Typewriter.PlayState.DELAYED
@@ -51,7 +51,7 @@ func compile(element: DecorElement) -> String:
 
 	if not is_decor_text_effect: return result
 
-	element.args[&"_element"] = element.get_instance_id()
+	element.args[TypewriterTextEffect.ENV_ELEMENT_ID] = element.get_instance_id()
 
 	return result
 func _compile(element: DecorElement) -> String: return ""

@@ -1,6 +1,6 @@
 
-## Decorator class for a [RichTextLabel]. Prints out text over time in accordance with the Penny script.
-class_name Typewriter extends Node
+## Prints out text over time in accordance with a Penny script.
+class_name Typewriter extends RichTextLabel
 
 #region Static
 
@@ -33,8 +33,6 @@ signal advanced
 signal completed
 signal prodded
 signal roger_shown(visible: bool)
-
-@export var rtl : RichTextLabel
 
 var speed_stack : Array[float] = [ 40.0 ]
 ## How many characters per second to print out. For specific speeds mid-printout, use the <speed=x> decor.
@@ -138,7 +136,7 @@ var is_playing : bool :
 var is_working : bool :
 	get: return play_state != PlayState.COMPLETED
 
-var shape_rtl : RichTextLabel
+var shaper : RichTextLabel
 var v_scroll_bar : VScrollBar
 
 var _subject : Cell
@@ -215,7 +213,7 @@ var next_prod_stop : int :
 	get:
 		if visible_characters_completed: return visible_characters_max
 		for k in element_opens.keys():
-			if visible_characters >= k: continue
+			if visible_characters_rich >= k: continue
 			for element in element_opens[k]: if element.prod_stop: return k
 		return visible_characters_max
 
@@ -224,23 +222,23 @@ var visible_characters_partial : float :
 	get: return _visible_characters_partial
 	set(value):
 		_visible_characters_partial = value
-		visible_characters = floori(value)
+		visible_characters_rich = floori(value)
 
 var visible_characters_completed : bool :
-	get: return visible_characters == visible_characters_max
+	get: return visible_characters_rich == visible_characters_max
 
 var _visible_characters_target : int
-var visible_characters : int :
-	get: return rtl.visible_characters
+var visible_characters_rich : int :
+	get: return visible_characters
 	set (value):
 		value = clampi(value, 0, visible_characters_max)
-		if rtl.visible_characters == value: return
+		if visible_characters == value: return
 		_visible_characters_target = value
 
-		var increment := signi(value - rtl.visible_characters)
-		while rtl.visible_characters != value:
-			time_per_char[rtl.visible_characters] = time_elapsed
-			rtl.visible_characters += increment
+		var increment := signi(value - visible_characters)
+		while visible_characters != value:
+			time_per_char[visible_characters] = time_elapsed
+			visible_characters += increment
 
 			if increment <= 0: continue
 
@@ -250,14 +248,14 @@ var visible_characters : int :
 		# roger.position = last_visible_character_bounds.position
 
 		if snapshot:
-			# print(snapshot.visible_text[rtl.visible_characters - 1])
-			var shape_marker_match := REGEX_SHAPE_MARKER.search(snapshot.visible_text, rtl.visible_characters)
-			shape_rtl.visible_characters = shape_marker_match.get_start() if shape_marker_match else rtl.visible_characters
-			if rtl.visible_characters > 0:
-				encounter_char(snapshot.visible_text[mini(rtl.visible_characters, snapshot.visible_text.length()) - 1])
+			# print(snapshot.visible_text[visible_characters - 1])
+			var shape_marker_match := REGEX_SHAPE_MARKER.search(snapshot.visible_text, visible_characters)
+			shaper.visible_characters = shape_marker_match.get_start() if shape_marker_match else visible_characters
+			if visible_characters > 0:
+				encounter_char(snapshot.visible_text[mini(visible_characters, snapshot.visible_text.length()) - 1])
 
 		if not visible_characters_completed:
-			_visible_characters_partial = rtl.visible_characters + fmod(_visible_characters_partial, 1.0)
+			_visible_characters_partial = visible_characters + fmod(_visible_characters_partial, 1.0)
 
 		visible_message_changed.emit()
 
@@ -266,13 +264,13 @@ var handling_elements : bool
 func handle_elements() -> void:
 	handling_elements = true
 
-	if element_opens.has(rtl.visible_characters):
-		for element in element_opens[rtl.visible_characters]:
+	if element_opens.has(visible_characters):
+		for element in element_opens[visible_characters]:
 			if element.prod_stop:	await	element.encounter_open()
 			else:							element.encounter_open()
 
-	if element_closes.has(rtl.visible_characters):
-		for element in element_closes[rtl.visible_characters]:
+	if element_closes.has(visible_characters):
+		for element in element_closes[visible_characters]:
 			if element.prod_stop:	await	element.encounter_close()
 			else:							element.encounter_close()
 
@@ -280,7 +278,23 @@ func handle_elements() -> void:
 
 #endregion
 
-#region _ready(), _exit_tree()
+#region Initialization
+
+func _init() -> void:
+	visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
+
+	shaper = self.duplicate(DUPLICATE_DEFAULT & ~DUPLICATE_SCRIPTS)
+	shaper.name = "shaper"
+	shaper.visible_characters_behavior = TextServer.VC_CHARS_BEFORE_SHAPING
+	shaper.visibility_layer = 1 if debug_show_shaping_rtl and OS.is_debug_build() else 0
+	shaper.z_index = z_index - 1
+	shaper.self_modulate = Color.RED
+	shaper.focus_mode = Control.FOCUS_NONE
+	shaper.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	shaper.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(shaper)
+
+	time_per_char.resize(visible_characters_max + 1)
 
 var is_initialized : bool = false
 func _ready() -> void:
@@ -288,18 +302,6 @@ func _ready() -> void:
 		v_scroll_bar = scroll_container.get_v_scroll_bar()
 		scrollbox_min_height = scroll_container.custom_minimum_size.y
 
-	## Set up the fake rtl to ensure proper scrolling limits
-	shape_rtl = rtl.duplicate()
-	shape_rtl.name = "%s (shape)" % rtl.name
-	shape_rtl.visible_characters_behavior = TextServer.VC_CHARS_BEFORE_SHAPING
-	shape_rtl.visibility_layer = 1 if debug_show_shaping_rtl and OS.is_debug_build() else 0
-	shape_rtl.self_modulate = Color(1, 0, 0)
-	shape_rtl.focus_mode = Control.FOCUS_NONE
-
-	rtl.add_sibling.call_deferred(shape_rtl)
-	rtl.get_parent().move_child.call_deferred(shape_rtl, 0)
-
-	time_per_char.resize(visible_characters_max + 1)
 
 	roger.set.call_deferred(&"visible", false)
 
@@ -324,9 +326,9 @@ func _input(event: InputEvent) -> void:
 	elif OS.is_debug_build() and event is InputEventKey:
 		if not event.is_pressed(): return
 		if event.physical_keycode == KEY_PERIOD:
-			visible_characters += 1
+			visible_characters_rich += 1
 		elif event.physical_keycode == KEY_COMMA:
-			visible_characters -= 1
+			visible_characters_rich -= 1
 
 #endregion
 #region _process()
@@ -353,7 +355,7 @@ func _process_autoscroll(delta: float) -> void:
 
 	var is_maximum_height_reached := scroll_container.custom_minimum_size.y >= scrollbox_max_height if scrollbox_max_height > 0.0 else false
 
-	var content_height := shape_rtl.get_visible_content_rect().size.y
+	var content_height := shaper.get_visible_content_rect().size.y
 	var target_height := content_height + scrollbox_add_height
 	target_height = maxf(target_height, scrollbox_min_height)
 	if scrollbox_max_height > 0.0:
@@ -398,12 +400,12 @@ func _process_end(delta: float) -> void:
 #region Script Functions
 
 func clear() -> void:
-	rtl.visible_characters = 0
+	visible_characters = 0
 	_visible_characters_partial = 0
 
 ## Preps the dialog for printout, but doesn't start.
 func prep() -> void:
-	shape_rtl.text = rtl.text
+	shaper.text = text
 	time_prepped = NOW_USEC_FLOAT
 	play_state = PlayState.READY
 	clear()
@@ -416,7 +418,7 @@ func present() -> void:
 
 ## Skips to the very end, but doesn't reset.
 func complete() -> void:
-	visible_characters = visible_characters_max
+	visible_characters_rich = visible_characters_max
 	play_state = PlayState.COMPLETED
 
 ## Resets the dialog to be used again.
@@ -444,11 +446,11 @@ func _receive(record: Record) :
 	element_opens.clear()
 	element_closes.clear()
 
-	rtl.text = snapshot.compile_for_typewriter(self)
-	shape_rtl.text = String()
+	text = snapshot.compile_for_typewriter(self)
+	shaper.text = String()
 
-	visible_characters_max = rtl.get_total_character_count()
-	assert(visible_characters_max == snapshot.visible_text.length(), "The DialogMessageSnapshot's calculated length is different from its actual length! This usually happens because there is an unrecognized BBcode somewhere in the text:\n'%s'" % rtl.text)
+	visible_characters_max = get_total_character_count()
+	assert(visible_characters_max == snapshot.visible_text.length(), "The DialogMessageSnapshot's calculated length is different from its actual length! This usually happens because there is an unrecognized BBcode somewhere in the text:\n'%s'" % text)
 
 	time_per_char.resize(visible_characters_max)
 	time_per_char.fill(INF)
@@ -503,11 +505,11 @@ func encounter_char(c: String) -> void:
 
 func install_effect_from(element: DecorElement) -> void:
 	if not element.decor.effect: return
-	if rtl.custom_effects.has(element.decor.effect): return
+	if custom_effects.has(element.decor.effect): return
 
-	rtl.install_effect(element.decor.effect)
+	install_effect(element.decor.effect)
 	# Definitely necessary even though it's invisible. If disabled, multiple lines/scrolling may be broken.
-	shape_rtl.install_effect(element.decor.effect)
+	shaper.install_effect(element.decor.effect)
 
 
 func delay(seconds: float, new_state: PlayState = PlayState.DELAYED) :
