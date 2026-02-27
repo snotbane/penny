@@ -7,7 +7,7 @@ enum {
 	INDENT_SPACES
 }
 
-const REGEX_MESSAGE_PATTERN := r"(?s)[>+][\t ]*.*?(?=\n+[\t ]{,%d}(?![\t ])(?:\S|$))"
+const REGEX_MESSAGE_PATTERN := r"(?s)[>+](?!=)[\t ]*.*?(?=\n+[\t ]{,%d}(?![\t ])(?:\S|$))"
 
 class Diff:
 	class Entry:
@@ -240,22 +240,22 @@ func update_from_file(file: FileAccess) -> void:
 	# var tokens := parse_code_to_tokens(file.get_as_text(), file)
 	# print(tokens)
 
-	# var old_stmts : Array[Stmt]
-	# if not Engine.is_editor_hint():
-	# 	old_stmts = stmts.duplicate()
+	var old_stmts : Array[Stmt]
+	if not Engine.is_editor_hint():
+		old_stmts = stmts.duplicate()
 
-	stmts = parse_code_to_stmts(file.get_as_text())
+	stmts = parse_code_to_stmts(file.get_as_text(), file)
 
 	# parse_tokens_to_stmts(tokens, file)
 	# # print_stmts(stmts)
-	# # print_dialog_metrics(file.get_path())
+	# # print(get_metrics(file.get_path()))
 
-	# if not Engine.is_editor_hint():
-	# 	diff = Diff.new(old_stmts, stmts)
-	# 	# if diff.changes: print(diff)
+	if not Engine.is_editor_hint():
+		diff = Diff.new(old_stmts, stmts)
+		# if diff.changes: print(diff)
 
 
-func print_dialog_metrics(known_path: String = "") -> void:
+func get_metrics(known_path: String = "") -> Dictionary:
 	var total_word_count := 0
 	var total_letter_count := 0
 	var total_dialogs := 0
@@ -265,101 +265,21 @@ func print_dialog_metrics(known_path: String = "") -> void:
 		total_word_count += metrics[&"word_count"]
 		total_letter_count += metrics[&"letter_count"]
 		total_dialogs += 1
-	print("%s: %s dialogs, %s words, %s chars, %s cpw" % [known_path, total_dialogs, total_word_count, total_letter_count, (float(total_letter_count) / float(total_word_count))])
 
-
-func parse_tokens_to_stmts(tokens: Array[Token], context_file: FileAccess = null) -> void:
-	var token_groups : Array = [[]]
-	var g := 0
-	for token in tokens:
-		if token.type == Token.Type.TERMINATOR:
-			if not token_groups[g].is_empty():
-				token_groups.push_back([])
-				g += 1
-			continue
-		token_groups[g].push_back(token)
-	if token_groups.back().is_empty(): token_groups.pop_back()
-
-	stmts.clear()
-	stmts.resize(token_groups.size())
-	var offset := 0
-	var error_count := 0
-	for i in token_groups.size():
-		var j := i - offset
-		var stmt_temp := Stmt.new()
-		stmt_temp.populate(self, j, token_groups[i])
-		stmts[j] = recycle_stmt(stmt_temp, j, token_groups[i], context_file)
-		if stmts[j]:
-			stmts[j].populate_from_other(stmt_temp, token_groups[i])
-		else:
-			offset += 1
-			error_count += 1
-	stmts.resize(stmts.size() - error_count)
+	return {
+		&"path": known_path,
+		&"dialogs": total_dialogs,
+		&"words": total_word_count,
+		&"chars": total_letter_count,
+		&"chars_per_word": float(total_letter_count) / float(total_word_count)
+	}
 
 
 static func print_stmts(arr: Array[Stmt]) -> void:
 	for i in arr: print("%s (%s)" % [i, i.get_script().get_global_name()])
 
 
-static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: FileAccess = null) -> Stmt:
-	if tokens[0].type == Token.Type.INDENTATION:
-		tokens.pop_front()
-		if tokens.size() == 0: return null
-
-	if tokens.size() == 1 and tokens[0].type == Token.Type.OPERATOR and tokens[0].value.type == Op.MORE_THAN:
-		tokens.pop_front()
-		return StmtDialogClose.new()
-
-	var front_keywords : Array[Token] = []
-	while tokens and tokens.front().type == Token.Type.KEYWORD:
-		front_keywords.push_back(tokens.pop_front())
-
-	for token in tokens: if token.type == Token.Type.ASSIGNMENT: return StmtAssign.new(StmtCell.get_storage_qualifier_from_front_tokens(front_keywords))
-
-	if front_keywords:
-		match front_keywords[0].value:
-			&"call": 	return StmtJumpCall.new()
-			&"else": 	return StmtConditionalElse.new()
-			&"elif": 	return StmtConditionalElif.new()
-			&"if": 		return StmtConditionalIf.new()
-			&"init":	return StmtInit.new()
-			&"jump": 	return StmtJump.new()
-			&"label": 	return StmtLabel.new()
-			&"match": 	return StmtMatch.new()
-			&"menu": 	return StmtMenu.new()
-			&"pass": 	return StmtPass.new()
-			&"print": 	return StmtPrint.new()
-			&"return":	return StmtReturn.new()
-
-	var block_header := stmt.get_prev_in_lower_depth()
-	if block_header:
-		if block_header is StmtMatch:
-			return StmtConditionalMatch.new()
-		elif block_header is StmtMenu:
-			return StmtConditionalMenu.new()
-
-	match tokens.back().type:
-		Token.Type.VALUE_STRING:
-			return StmtDialog.new()
-		Token.Type.OPERATOR:
-			if tokens.back().value.type == Op.GROUP_CLOSE:
-				return StmtFunc.new(front_keywords and front_keywords[0].value == &"await")
-
-	if front_keywords:
-		match front_keywords[0].value:
-			&"await":	return StmtAwait.new()
-
-	match tokens.front().type:
-		Token.Type.IDENTIFIER:
-			return StmtCell.new(StmtCell.get_storage_qualifier_from_front_tokens(front_keywords))
-		Token.Type.OPERATOR:
-			if tokens.front().value.type == Op.DOT and tokens[1].type == Token.Type.IDENTIFIER:
-				return StmtCell.new(StmtCell.get_storage_qualifier_from_front_tokens(front_keywords))
-
-	assert(false, "No Stmt recycled from tokens: %s" % str(tokens))
-	return null
-
-static func parse_code_to_stmts(raw: String, context_file: FileAccess = null) -> Array[Stmt]:
+func parse_code_to_stmts(raw: String, context_file: FileAccess = null) -> Array[Stmt]:
 	#region Raw to Tokens
 
 	var indent_type := INDENT_UNDEFINED
@@ -433,50 +353,93 @@ static func parse_code_to_stmts(raw: String, context_file: FileAccess = null) ->
 
 	#endregion
 
-	var stmts : Array[Stmt] = []
+	var token_groups : Array = [[]]
+	var g := 0
+	for token in tokens:
+		if token.type == Token.Type.TERMINATOR:
+			if not token_groups[g].is_empty():
+				token_groups.push_back([])
+				g += 1
+			continue
+		token_groups[g].push_back(token)
+	if token_groups.back().is_empty(): token_groups.pop_back()
 
-	return stmts
-
-
-static func parse_code_to_tokens(raw: String, context_file: FileAccess = null) -> Array[Token]:
-	var result : Array[Token] = []
-
-	var cursor := 0
-	while cursor < raw.length():
-		var token_found = false
-		for k in Token.TYPE_PATTERNS.keys():
-			var token_match = Token.TYPE_PATTERNS[k].search(raw, cursor)
-			if token_match == null or token_match.get_start() != cursor: continue
-			token_found = true
-
-			match k:
-				Token.Type.WHITESPACE, Token.Type.COMMENT:
-					pass
-				_:
-					if result.size() != 0 and k == Token.Type.TERMINATOR and result.back().type == Token.Type.TERMINATOR:
-						result.back().value += token_match.get_string()
-					else:
-						result.push_back(Token.new(k, token_match.get_string()))
-
-			cursor = token_match.get_end() if token_match.get_end() != cursor else cursor + 1
-			break
-
-		if not token_found:
-			var address_numbers := get_line_and_column_numbers(cursor, raw)
-			if context_file:	printerr("%s (ln %s, cl %s): Unrecognized token '%s'." % [
-				context_file.get_path(),
-				address_numbers[0],
-				address_numbers[1],
-				raw[cursor]
-			])
-			else:				printerr("(ln %s, cl %s): Unrecognized token '%s'." % [
-				address_numbers[0],
-				address_numbers[1],
-				raw[cursor]
-			])
-			break
+	var result : Array[Stmt] = []
+	result.resize(token_groups.size())
+	var offset := 0
+	var error_count := 0
+	for i in token_groups.size():
+		var j := i - offset
+		var stmt_temp := Stmt.new()
+		stmt_temp.populate(self, j, token_groups[i])
+		result[j] = recycle_stmt(stmt_temp, j, token_groups[i], context_file)
+		if result[j]:
+			result[j].populate_from_other(stmt_temp, token_groups[i])
+		else:
+			offset += 1
+			error_count += 1
+	result.resize(result.size() - error_count)
 
 	return result
+
+
+static func recycle_stmt(stmt: Stmt, index: int, tokens: Array, context_file: FileAccess = null) -> Stmt:
+	if tokens[0].type == Token.Type.INDENTATION:
+		tokens.pop_front()
+		if tokens.size() == 0: return null
+
+	if tokens.size() == 1 and tokens[0].type == Token.Type.OPERATOR and tokens[0].value.type == Op.MORE_THAN:
+		tokens.pop_front()
+		return StmtDialogClose.new()
+
+	var front_keywords : Array[Token] = []
+	while tokens and tokens.front().type == Token.Type.KEYWORD:
+		front_keywords.push_back(tokens.pop_front())
+
+	for token in tokens: if token.type == Token.Type.ASSIGNMENT: return StmtAssign.new(StmtCell.get_storage_qualifier_from_front_tokens(front_keywords))
+
+	if front_keywords:
+		match front_keywords[0].value:
+			&"call": 	return StmtJumpCall.new()
+			&"else": 	return StmtConditionalElse.new()
+			&"elif": 	return StmtConditionalElif.new()
+			&"if": 		return StmtConditionalIf.new()
+			&"init":	return StmtInit.new()
+			&"jump": 	return StmtJump.new()
+			&"label": 	return StmtLabel.new()
+			&"match": 	return StmtMatch.new()
+			&"menu": 	return StmtMenu.new()
+			&"pass": 	return StmtPass.new()
+			&"print": 	return StmtPrint.new()
+			&"return":	return StmtReturn.new()
+
+	var block_header := stmt.get_prev_in_lower_depth()
+	if block_header:
+		if block_header is StmtMatch:
+			return StmtConditionalMatch.new()
+		elif block_header is StmtMenu:
+			return StmtConditionalMenu.new()
+
+	match tokens.back().type:
+		Token.Type.VALUE_STRING:
+			return StmtDialog.new()
+		Token.Type.OPERATOR:
+			if tokens.back().value.type == Op.GROUP_CLOSE:
+				return StmtFunc.new(front_keywords and front_keywords[0].value == &"await")
+
+	if front_keywords:
+		match front_keywords[0].value:
+			&"await":	return StmtAwait.new()
+
+	match tokens.front().type:
+		Token.Type.IDENTIFIER:
+			return StmtCell.new(StmtCell.get_storage_qualifier_from_front_tokens(front_keywords))
+		Token.Type.OPERATOR:
+			if tokens.front().value.type == Op.DOT and tokens[1].type == Token.Type.IDENTIFIER:
+				return StmtCell.new(StmtCell.get_storage_qualifier_from_front_tokens(front_keywords))
+
+	assert(false, "No Stmt recycled from tokens: %s" % str(tokens))
+	return null
 
 
 static func get_line_and_column_numbers(char_index: int, raw: String) -> Array[int]:
@@ -488,38 +451,3 @@ static func get_line_and_column_numbers(char_index: int, raw: String) -> Array[i
 	else:
 		col = char_index - matches[row - 1].get_end()
 	return [row + 1, col + 1]
-
-
-class Line extends RefCounted:
-	var indent : int
-	var text : String
-
-	func _init(__indent__: int, __text__: String) -> void:
-		indent = __indent__
-		text = __text__
-
-
-class ScriptString extends RefCounted:
-	enum {
-		QUALIFIER_NONE,
-		QUALIFIER_RELATIVE,
-		QUALIFIER_ADDITIVE,
-	}
-
-	var text : String
-	var qualifier : int
-
-	static func new_or_plain_from_match(match: RegExMatch) -> Variant:
-		var __text__ = match.get_string(2) + match.get_string(4)
-		match match.get_string(1):
-			"+":	return ScriptString.new(__text__, QUALIFIER_ADDITIVE)
-			">":	return ScriptString.new(__text__, QUALIFIER_RELATIVE)
-			_:		return __text__
-
-	func _init(__text__: String, __qualifier__: int) -> void:
-		text = __text__
-		qualifier = __qualifier__
-
-	func _to_string() -> String:
-		return text
-

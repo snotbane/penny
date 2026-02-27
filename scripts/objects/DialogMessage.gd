@@ -26,7 +26,7 @@ func _init(raw_string: String = ">") -> void:
 
 	assert(m_declaration_type != null, "No declaration type in DialogMessage: `%s`." % raw_string)
 
-	match m_declaration_type.get_string(1)[0]:
+	match m_declaration_type.get_string()[0]:
 		">": declaration_type = STANDARD
 		"+": declaration_type = APPENDAGE
 
@@ -38,8 +38,8 @@ func _init(raw_string: String = ">") -> void:
 
 	for i in tr_matches.size():
 		cursor = tr_matches[i].get_end()
-		var end := tr_matches[i+1].get_start() if i < tr_matches.size() - 1 else -1
-		translations[tr_matches[i].get_string(1)] = raw_string.substr(cursor, end - cursor)
+		var end := (tr_matches[i+1].get_start() - cursor) if i < tr_matches.size() - 1 else -1
+		translations[tr_matches[i].get_string(1)] = raw_string.substr(cursor, end)
 
 	for k in translations.keys():
 		translations[k] = REGEX_MERGE_LINES.sub(translations[k], " ", true)

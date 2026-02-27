@@ -25,6 +25,38 @@ const SETTING_INPUT_ROLL_AHEAD := "input/" + INPUT_ROLL_AHEAD
 const SETTING_INPUT_SCROLL_UP := "input/" + INPUT_SCROLL_UP
 const SETTING_INPUT_SCROLL_DOWN := "input/" + INPUT_SCROLL_DOWN
 
+const CELL_COLOR := Color.PERU
+const OTHER_COLOR := Color.DEEP_PINK
+
+
+const PSH_START_LABEL := {
+	&"name": "penny/general/start_label",
+	&"type": TYPE_STRING_NAME
+}
+const PSH_START_LABEL_DEFAULT := &""
+static var start_label : StringName :
+	get: return ProjectSettings.get_setting(PSH_START_LABEL[&"name"], PSH_START_LABEL_DEFAULT)
+	set(value): ProjectSettings.set_setting(PSH_START_LABEL[&"name"], value)
+
+const PSH_ALLOW_ROLLING := {
+	&"name": "penny/general/allow_rolling",
+	&"type": TYPE_BOOL
+}
+const PSH_ALLOW_ROLLING_DEFAULT := true
+static var allow_rolling : bool :
+	get: return ProjectSettings.get_setting(PSH_ALLOW_ROLLING[&"name"], PSH_ALLOW_ROLLING_DEFAULT)
+	set(value): ProjectSettings.set_setting(PSH_ALLOW_ROLLING[&"name"], value)
+
+const PSH_ALLOW_SKIPPING := {
+	&"name": "penny/general/allow_skipping",
+	&"type": TYPE_BOOL
+}
+const PSH_ALLOW_SKIPPING_DEFAULT := true
+static var allow_skipping : bool :
+	get: return ProjectSettings.get_setting(PSH_ALLOW_SKIPPING[&"name"], PSH_ALLOW_SKIPPING_DEFAULT)
+	set(value): ProjectSettings.set_setting(PSH_ALLOW_SKIPPING[&"name"], value)
+
+
 static var SCRIPT_RESOURCE_LOADER := preload("uid://0mqljw2t364x").new()
 static var PENNY_DEBUG_SCENE := preload("uid://cfkhtume00g5e")
 static var DECOR_REGISTRY_DEFAULT : DecorRegistry = preload("uid://drmpmcuvh657f")
@@ -34,6 +66,7 @@ static var inst : Penny = null
 static var is_reloading_bulk : bool = false
 static var is_all_scripts_valid : bool = true
 static var script_reload_timestamps : Dictionary[String, int]
+
 
 static var scripts : Array[PennyScript]
 static var uid_scripts : Dictionary[String, PennyScript]
@@ -166,6 +199,13 @@ static func rebuild() -> void:
 	is_all_scripts_valid = errors.is_empty()
 
 
+static func play(start: StringName = start_label) -> PennyHost:
+	var host := PennyHost.new(start)
+
+	return host
+
+
+
 func _enter_tree() -> void:
 	inst = self
 	Penny.register_formats()
@@ -175,7 +215,6 @@ func _ready():
 	if not Engine.is_editor_hint():
 		static_host = PennyHost.new()
 		static_host.name = &"static_host"
-		static_host.allow_rolling = false
 		add_child.call_deferred(static_host)
 
 		if OS.is_debug_build():
@@ -231,8 +270,10 @@ static func get_value_as_string(value: Variant) -> String:
 
 static func get_value_as_bbcode_string(value: Variant) -> String:
 	var s := get_value_as_string(value)
-	if value is Cell or value is Expr:
-		return "[color=peru]%s[/color]" % s
-	if value is Color:
-		return "[color=%s]%s[/color]" % [s, s]
-	return "[color=deep_pink]%s[/color]" % s
+
+	var c : String
+	if value is Color:						c = s
+	elif value is Cell or value is Expr:	c = get_value_as_string(CELL_COLOR)
+	else:									c = get_value_as_string(OTHER_COLOR)
+
+	return "[color=%s]%s[/color]" % [c, s]

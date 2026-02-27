@@ -18,14 +18,8 @@ signal on_data_modified
 signal on_close
 signal finished_execution
 
-## If enabled, the host will begin execution on ready.
-@export var autostart := false
-
-## The label in Penny scripts to start at. Make sure this is populated with a valid label.
-@export var start_label := &"start"
-
-@export var allow_skipping := true
-@export var allow_rolling := true
+@export var autostart : bool
+@export var start_label : StringName
 
 @export_subgroup("Debug")
 
@@ -61,20 +55,22 @@ func _set_history_index(value: int) -> void:
 
 ## Also handle skipping.
 func roll_ahead() -> void:
-	if allow_skipping and is_at_present:
+	if Penny.allow_skipping and is_at_present:
 		if cursor and not cursor.stmt.is_skippable: return
 		abort()
 		create_record_and_execute(get_next_stmt(cursor))
-	elif allow_rolling:
+	elif Penny.allow_rolling:
 		super.roll_ahead()
 
 func roll_back() -> void:
-	if not allow_rolling: return
+	if not Penny.allow_rolling: return
 
 	super.roll_back()
 
 
-func _init() -> void:
+func _init(__start_label__: StringName = Penny.start_label) -> void:
+	start_label = __start_label__
+
 	insts.push_back(self)
 
 	super._init()
@@ -91,7 +87,7 @@ func _ready() -> void:
 	Penny.inst.on_reload_finish.connect(try_reload)
 
 	if autostart:
-		jump_to.call_deferred(start_label)
+		start.call_deferred()
 
 	super._ready()
 
@@ -128,6 +124,10 @@ func perform_inits_selective(scripts: Array[PennyScript]) -> void:
 		create_record_and_execute(init)
 
 
+func start() -> void:
+	jump_to(start_label)
+
+
 func jump_to(label: StringName) -> void:
 	abort()
 	create_record_and_execute(Penny.get_stmt_from_label(label))
@@ -159,7 +159,8 @@ func execute_record(record: Record) :
 	cursor = record
 	last_valid_cursor = cursor
 
-	if debug_log_stmts: print("%s %s" % [name, cursor.stmt.__debug_string__])
+	if debug_log_stmts and OS.is_debug_build():
+		print("%s %s" % [name, cursor.stmt.__debug_string__])
 
 	var response : Stmt.ExecutionResponse = await cursor.stmt.execute(cursor)
 
