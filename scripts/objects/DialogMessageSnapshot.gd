@@ -69,6 +69,8 @@ var visible_text : String
 var elements : Array[DecorElement]
 var tags : Array[Tag]
 
+var subject : Cell
+
 var interfacing_elements : Array[DecorElement] :
 	get: return elements.filter( func(element: DecorElement) -> bool:
 		return element.decor != null

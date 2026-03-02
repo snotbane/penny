@@ -55,7 +55,7 @@ var volume : float :
 ## Amount of time to wait after receiving a new snapshot, before printing it out.
 @export var start_delay : float = 0.1
 ## When a completed snapshot already exists, amount of time to wait before replacing the existing text. This is used when animating characters to fade out before proceeding.
-@export var reset_delay : float = 0.1
+@export var reset_delay : float = 0.333
 
 @export_subgroup("Autoscroll")
 
@@ -114,11 +114,11 @@ var _talker_audio_player : TypewriterAudioStreamPlayer
 		refresh_volume()
 
 ## Any single characters that match this [RegEx] will indicate that the speaker should be talking. Characters not found here or in [member silent_character_pattern] will not set the talking state at all.
-@export var talk_character_pattern : String
+@export var talk_character_pattern : String = r"[a-zA-Z0-9]"
 @onready var talk_character_regex := RegEx.create_from_string(talk_character_pattern)
 
 ## Any single characters that match this [RegEx] will indicate that the speaker should not be talking. Characters not found here or in [member talk_character_pattern] will not set the talking state at all.
-@export var silent_character_pattern : String
+@export var silent_character_pattern : String = r"[.!?]"
 @onready var silent_character_regex := RegEx.create_from_string(silent_character_pattern)
 
 @export_subgroup("Debug")
@@ -440,8 +440,8 @@ func _receive(record: Record) :
 	if play_state != PlayState.READY:
 		await reset()
 
-	subject = record.data[&"who"].evaluate()
 	snapshot = record.data[&"what"]
+	subject = snapshot.subject
 
 	element_opens.clear()
 	element_closes.clear()

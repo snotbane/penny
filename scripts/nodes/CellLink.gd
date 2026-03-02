@@ -2,6 +2,8 @@ class_name CellLink extends Node
 
 const GROUP_PREFIX := &"_claimant_"
 
+signal dialog_received(snapshot: DialogMessageSnapshot)
+
 ## This will determine the priority of the parent [Node] in its [Cell]'s instance list.
 @export var priority : int = 0
 
