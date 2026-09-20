@@ -3,33 +3,49 @@ class_name StmtElse
 extends StmtBranch
 
 @export_storage
-var ADDRESS_HEAD: Address
+var address_prev: Address
 
 @export_storage
-var ADDRESS_END: Address
-
-
-func get_head_record(player: PennyPlayer) -> Penny.Record:
-	return player.ledger.find_recent_record_from_stmt(ADDRESS_HEAD.stmt)
+var address_skip: Address
 
 
 func _compile(script: PennyScript) -> void:
-	ADDRESS_HEAD = Address.new(get_stmt_idx_in_depth_less_than(-1))
-	ADDRESS_END = Address.new(get_stmt_idx_in_depth_less_than(+1))
+	var prev_idx := get_stmt_idx_in_depth_equal(-1)
+	var prev_stmt := get_stmt_in_owner(prev_idx)
+
+	if prev_stmt is StmtOption:
+		address_prev = prev_stmt.address_head
+		address_skip = Address.new(get_stmt_idx_in_depth_less_than(+1))
+
+	elif prev_stmt is StmtElif or prev_stmt is StmtIf:
+		address_prev = Address.new(prev_idx)
+		address_skip = Address.new(get_stmt_idx_in_depth_less_than_or_equal(+1))
+
+	elif prev_stmt == null:
+		prev_idx = get_stmt_idx_in_depth_less_than(-1)
+		assert(
+			get_stmt_in_owner(prev_idx) is StmtMatch,
+			"StmtElse must be preceeded by a 'if', 'elif', 'match' or a match option."
+		)
+		address_skip = Address.new(get_stmt_idx_in_depth_less_than(+1))
+
+	else:
+		assert(
+			false,
+			"StmtElse must be preceeded by a 'if', 'elif', 'match' or a match option."
+		)
+		address_skip = Address.new(get_stmt_idx_in_depth_less_than_or_equal(+1))
 
 
 func _draw(player: PennyPlayer, record: Penny.Record) -> void:
-	super._draw(player, record)
 	assert(record.data == null)
 
-	var head_record := get_head_record(player)
+	var prev_record := player.ledger.find_recent_record_from_stmt(address_prev.stmt)
 	record.next = (
-		ADDRESS_END.stmt
-		if head_record.data.satisfied
-		else null
+		address_skip.stmt
+		if prev_record.data.satisfied
+		else get_stmt_next_in_order()
 	)
 
-	head_record.data.satisfied = true
-
-func _next(player: PennyPlayer, record: Penny.Record) -> Stmt:
-	return record.next if record.next else get_stmt_in_order()
+	if prev_record.stmt is StmtMatch:
+		prev_record.data.satisfied = true

@@ -10,3 +10,7 @@ func _draw(player: PennyPlayer, record: Penny.Record) -> void:
 		&"result": record.data,
 		&"satisfied": false,
 	}
+
+
+func _next(player: PennyPlayer, record: Penny.Record) -> Stmt:
+	return get_stmt_next_in_order()

@@ -40,8 +40,19 @@ match x:
 	1:
 		>	Option 1
 
-	else:
-		>	Option else
+
+y = 2
+
+if y == 0:
+	>	Condition satisfied
+
+elif y == 1:
+	>	Elif condition satisfied
+
+else:
+	>	Else reached
+
+pass
 
 >	End
 

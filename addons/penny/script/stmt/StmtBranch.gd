@@ -13,3 +13,7 @@ func _populate(tokens: Array) -> void:
 		tokens.pop_back()
 
 	super._populate(tokens)
+
+
+func _next(player: PennyPlayer, record: Penny.Record) -> Stmt:
+	return record.next

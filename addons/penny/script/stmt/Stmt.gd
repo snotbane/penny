@@ -265,13 +265,13 @@ func _abort() -> void:
 func next(player: PennyPlayer, record: Penny.Record) -> Stmt:
 	return _next(player, record)
 func _next(player: PennyPlayer, record: Penny.Record) -> Stmt:
-	return get_stmt_in_order()
+	return get_stmt_next_in_order()
 
 #region Linkage
 
 
-func get_stmt_in_order(inc: int = +1) -> Stmt:
-	return get_stmt_in_owner(get_stmt_idx_in_order(inc))
+func get_stmt_next_in_order() -> Stmt:
+	return get_stmt_in_owner(get_stmt_idx_in_order(+1))
 
 
 func get_stmt_in_owner(idx: int) -> Stmt:

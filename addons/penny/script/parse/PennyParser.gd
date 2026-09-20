@@ -195,11 +195,17 @@ func get_stmt_from_token_group_destructive(group: Array) -> Stmt:
 			PennyScript.Token.Keyword.CALL:
 				return StmtCall.new()
 
+			PennyScript.Token.Keyword.ELIF:
+				return StmtElif.new()
+
 			PennyScript.Token.Keyword.ELSE:
 				return StmtElse.new()
 
 			PennyScript.Token.Keyword.EXIT:
 				return StmtExit.new()
+
+			PennyScript.Token.Keyword.IF:
+				return StmtIf.new()
 
 			PennyScript.Token.Keyword.JUMP:
 				return StmtJump.new()
