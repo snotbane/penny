@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://ckb8dfe8j2233"]
+
+[ext_resource type="Script" uid="uid://cjigub85cjqv" path="res://addons/penny/script/PennyPlayer.gd" id="1_ig7tw"]
+
+[node name="control" type="Control" unique_id=496489708]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="penny_player" type="Node" parent="." unique_id=891367020]
+script = ExtResource("1_ig7tw")
+start_label = &"start"
+autostart = true
+debug_enabled = true
+metadata/_custom_type_script = "uid://cjigub85cjqv"
+
+[node name="v_box_container" type="VBoxContainer" parent="." unique_id=342198958]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="line_edit" type="LineEdit" parent="v_box_container" unique_id=1484888857]
+layout_mode = 2
+placeholder_text = "Enter Label..."
+
+[connection signal="ready" from="v_box_container/line_edit" to="v_box_container/line_edit" method="grab_focus"]
+[connection signal="text_submitted" from="v_box_container/line_edit" to="penny_player" method="play"]

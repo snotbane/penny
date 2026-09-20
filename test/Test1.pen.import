@@ -1,0 +1,14 @@
+[remap]
+
+importer="penny.native.importer"
+type="Resource"
+uid="uid://dywol1fadd3sx"
+path="res://.godot/imported/Test1.pen-1eb802cd9cd98ec8668094c8a275b649.res"
+
+[deps]
+
+source_file="res://test/Test1.pen"
+dest_files=["res://.godot/imported/Test1.pen-1eb802cd9cd98ec8668094c8a275b649.res"]
+
+[params]
+

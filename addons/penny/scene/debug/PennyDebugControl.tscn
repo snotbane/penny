@@ -1,0 +1,72 @@
+[gd_scene format=3 uid="uid://ciboon6vi38hs"]
+
+[ext_resource type="PackedScene" uid="uid://bvclds7iw23g7" path="res://addons/penny/scene/debug/PennyDebugTreePanel_Cell.tscn" id="1_pno0i"]
+[ext_resource type="PackedScene" uid="uid://djbk8mgb70f7o" path="res://addons/penny/scene/debug/PennyDebugTreePanel_Script.tscn" id="2_n6314"]
+[ext_resource type="PackedScene" uid="uid://cd4vdeabrvuj7" path="res://addons/penny/scene/debug/PennyDebugTreePanel_Stmt.tscn" id="3_yqv1p"]
+
+[node name="penny_debug_control" type="Control" unique_id=1791219936]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="h_split_container" type="HSplitContainer" parent="." unique_id=820717115]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+split_offsets = PackedInt32Array(10)
+split_offset = 10
+
+[node name="statics" type="TabContainer" parent="h_split_container" unique_id=664307383]
+layout_mode = 2
+size_flags_horizontal = 3
+current_tab = 1
+
+[node name="Object Tree" type="Control" parent="h_split_container/statics" unique_id=1571395125]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+metadata/_tab_index = 0
+
+[node name="penny_debug_tree_panel_cell" parent="h_split_container/statics/Object Tree" unique_id=390383731 instance=ExtResource("1_pno0i")]
+layout_mode = 1
+
+[node name="Script Tree" type="Control" parent="h_split_container/statics" unique_id=2109930223]
+layout_mode = 2
+size_flags_horizontal = 3
+metadata/_tab_index = 1
+
+[node name="h_split_container" type="HSplitContainer" parent="h_split_container/statics/Script Tree" unique_id=1582816800]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+split_offsets = PackedInt32Array(240)
+split_offset = 240
+
+[node name="penny_debug_tree_panel_script" parent="h_split_container/statics/Script Tree/h_split_container" unique_id=1821378950 instance=ExtResource("2_n6314")]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="penny_debug_tree_panel_stmt" parent="h_split_container/statics/Script Tree/h_split_container" unique_id=816076005 instance=ExtResource("3_yqv1p")]
+layout_mode = 2
+
+[node name="tab_container" type="TabContainer" parent="h_split_container" unique_id=624934112]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+current_tab = 0
+
+[node name="Flow Control" type="Control" parent="h_split_container/tab_container" unique_id=1531389854]
+layout_mode = 2
+size_flags_horizontal = 3
+metadata/_tab_index = 0
+
+[connection signal="script_selected" from="h_split_container/statics/Script Tree/h_split_container/penny_debug_tree_panel_script" to="h_split_container/statics/Script Tree/h_split_container/penny_debug_tree_panel_stmt" method="on_script_selected"]

@@ -1,0 +1,7 @@
+
+
+def Location = new object
+
+
+def Charybdis = new Location
+	.name => Charybdis

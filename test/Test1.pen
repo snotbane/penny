@@ -1,0 +1,118 @@
+
+def Character = new object
+	.name => @.f_name @.l_name
+	.filter = "asdf" -> "whassup"
+
+
+def Beatrix = new Character
+	.f_name => Beatrix
+	.l_name => Denali
+	.friend = Rubin.spouse
+
+
+def Esther = new Character
+	.f_name => Esther
+		[ru] Эстер
+		[ja] エスター
+		[zh] 以斯帖
+	.l_name => Zeitzen
+	.spouse = Rubin
+
+def Rubin = new Character
+	.age = 24
+	.f_name => Rubin
+		[ru] Рубин
+		[ja] ルービン
+		[zh] 鱼宾
+	.l_name => Redding
+	.spouse = Esther
+
+label start
+
+>	Hello
+
+x = 1
+
+match x:
+	0:
+		>	Option 0
+
+	1:
+		>	Option 1
+
+>	End
+
+# Comment
+
+# null
+# Null
+# NULL
+
+# true
+# True
+# TRUE
+
+# false
+# False
+# FALSE
+
+# 0
+# 123
+# 0.5
+# .1
+
+# "raw string"
+# "raw string \"with escaped quotes\""
+
+# `Rich string`
+# > Rich block
+
+# "filter" -> "replace"
+
+# path
+# path.path.path
+
+# []
+
+# [ 0 ]
+
+# arr = [
+# 	0,
+# 	1,
+# 	2,
+# ]
+
+
+# a0 = arr[0]
+
+# think()
+
+# await travel(0, 1)
+
+# x = 0
+
+# match x:
+# 	0:
+# 		pass
+# 	_:
+# 		pass
+
+# if x:
+# 	pass
+
+# elif x == 1:
+# 	pass
+
+# else:
+# 	pass
+
+# ask:
+
+# x ask:
+# 	> Option 1
+# 	:
+# 		> You have chosen Option 1
+
+# label start
+
+# jump start

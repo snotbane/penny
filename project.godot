@@ -1,0 +1,57 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Penny"
+run/main_scene="uid://ckb8dfe8j2233"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+PennyAutoload="*uid://bilj07ejpsfxm"
+PennyDebugWindow="*uid://djt7a50e83iit"
+
+[debug]
+
+gdscript/warnings/unused_parameter=0
+gdscript/warnings/incompatible_ternary=0
+
+[display]
+
+window/stretch/aspect="expand"
+
+[editor]
+
+naming/node_name_num_separator=2
+naming/node_name_casing=2
+naming/scene_name_casing=1
+naming/script_name_casing=1
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/penny/plugin.cfg")
+
+[file_customization]
+
+folder_colors={
+"res://addons/": "gray"
+}
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+rendering_device/driver.windows="d3d12"
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

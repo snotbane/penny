@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://djbk8mgb70f7o"]
+
+[ext_resource type="PackedScene" uid="uid://buhth8fpwwt52" path="res://addons/penny/scene/debug/PennyDebugTreePanel.tscn" id="1_hx3yi"]
+[ext_resource type="Script" uid="uid://n570ysh7cve5" path="res://addons/penny/scene/debug/PennyDebugTree_Script.gd" id="2_f8hah"]
+[ext_resource type="Script" uid="uid://bsqm0w7fp3t0" path="res://addons/penny/scene/debug/PennyDebugTreePanel_Script.gd" id="2_qy0ou"]
+
+[node name="penny_debug_tree_panel_script" unique_id=390383731 instance=ExtResource("1_hx3yi")]
+script = ExtResource("2_qy0ou")
+
+[node name="tree" parent="v_box_container" parent_id_path=PackedInt32Array(45725622) index="1" unique_id=574544469]
+script = ExtResource("2_f8hah")

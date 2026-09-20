@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://bdl4as1ftjk0s"]
+
+[ext_resource type="Script" uid="uid://txc4uc25vwc3" path="res://addons/penny/scene/DialogHandler.gd" id="1_bab8c"]
+
+[node name="dialog_handler" type="Control" unique_id=725538249]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bab8c")
+
+[node name="button" type="Button" parent="." unique_id=120286397]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="rich_text_label" type="RichTextLabel" parent="." unique_id=1268043343]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+bbcode_enabled = true
+fit_content = true
+scroll_active = false

@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://bvclds7iw23g7"]
+
+[ext_resource type="PackedScene" uid="uid://buhth8fpwwt52" path="res://addons/penny/scene/debug/PennyDebugTreePanel.tscn" id="1_qkdcs"]
+[ext_resource type="Texture2D" uid="uid://dur3p2j4ande5" path="res://addons/penny/icons/Text.svg" id="2_p515b"]
+[ext_resource type="Script" uid="uid://drty7fswjxb68" path="res://addons/penny/scene/debug/FilterValuesCheckButton.gd" id="3_gel0n"]
+[ext_resource type="Texture2D" uid="uid://bi3iut2ofxvmr" path="res://addons/penny/icons/Storage.svg" id="4_y30s6"]
+[ext_resource type="Script" uid="uid://eeq5yin78w6e" path="res://addons/penny/scene/debug/PennyDebugTree_Cell.gd" id="5_gel0n"]
+
+[node name="penny_debug_tree_panel_cell" unique_id=390383731 instance=ExtResource("1_qkdcs")]
+
+[node name="filter_values" type="CheckButton" parent="v_box_container/filter" parent_id_path=PackedInt32Array(2089713098) index="1" unique_id=120210954]
+layout_mode = 2
+button_pressed = true
+icon = ExtResource("2_p515b")
+script = ExtResource("3_gel0n")
+text_enabled = "Filter values..."
+text_disabled = "Filter keys..."
+
+[node name="filter_storage" type="CheckButton" parent="v_box_container/filter" parent_id_path=PackedInt32Array(2089713098) index="2" unique_id=1161566513]
+visible = false
+layout_mode = 2
+button_pressed = true
+icon = ExtResource("4_y30s6")
+script = ExtResource("3_gel0n")
+text_enabled = "Filter values..."
+text_disabled = "Filter keys..."
+
+[node name="tree" parent="v_box_container" parent_id_path=PackedInt32Array(45725622) index="1" unique_id=574544469]
+script = ExtResource("5_gel0n")
+
+[connection signal="text_changed" from="v_box_container/filter/filter_values" to="v_box_container/filter/text" method="set_placeholder"]
+[connection signal="toggled" from="v_box_container/filter/filter_values" to="v_box_container/tree" method="set_filter_mode"]

@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://buhth8fpwwt52"]
+
+[ext_resource type="Texture2D" uid="uid://dycn8lb02dspx" path="res://addons/penny/icons/magnifying_glass.svg" id="1_3wtdq"]
+[ext_resource type="Script" uid="uid://c33gb8iweb8ar" path="res://addons/penny/scene/debug/PennyDebugTree.gd" id="2_r4t8g"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n6314"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_igc1g"]
+
+[node name="penny_debug_tree_panel" type="PanelContainer" unique_id=390383731]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_n6314")
+
+[node name="v_box_container" type="VBoxContainer" parent="." unique_id=45725622]
+layout_mode = 2
+
+[node name="filter" type="HBoxContainer" parent="v_box_container" unique_id=2089713098]
+layout_mode = 2
+
+[node name="text" type="LineEdit" parent="v_box_container/filter" unique_id=1229357725]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Filter values..."
+clear_button_enabled = true
+right_icon = ExtResource("1_3wtdq")
+icon_expand_mode = 1
+
+[node name="tree" type="Tree" parent="v_box_container" unique_id=574544469]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_igc1g")
+script = ExtResource("2_r4t8g")
+
+[connection signal="text_changed" from="v_box_container/filter/text" to="v_box_container/tree" method="set_filter"]
