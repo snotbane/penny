@@ -31,7 +31,7 @@ label start
 
 >	Hello
 
-x = 2
+x = 1
 
 match x:
 	0:
@@ -39,6 +39,9 @@ match x:
 
 	1:
 		>	Option 1
+
+	else:
+		>	Option else
 
 
 y = 2
