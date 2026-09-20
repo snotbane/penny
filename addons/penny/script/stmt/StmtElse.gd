@@ -1,12 +1,9 @@
 @tool
-class_name StmtOption
+class_name StmtElse
 extends StmtBranch
 
 @export_storage
 var ADDRESS_HEAD: Address
-
-@export_storage
-var ADDRESS_NEXT_OPTION: Address
 
 @export_storage
 var ADDRESS_END: Address
@@ -18,27 +15,21 @@ func get_head_record(player: PennyPlayer) -> Penny.Record:
 
 func _compile(script: PennyScript) -> void:
 	ADDRESS_HEAD = Address.new(get_stmt_idx_in_depth_less_than(-1))
-	ADDRESS_NEXT_OPTION = Address.new(get_stmt_idx_in_depth_less_than_or_equal(+1))
 	ADDRESS_END = Address.new(get_stmt_idx_in_depth_less_than(+1))
 
 
 func _draw(player: PennyPlayer, record: Penny.Record) -> void:
-	var head_record := get_head_record(player)
-	if head_record.data.satisfied:
-		record.data = null
-		record.next = ADDRESS_END.stmt
-		return
-
 	super._draw(player, record)
+	assert(record.data == null)
 
-	if Penny.Express.type_and_value_equals(head_record.data.result, record.data):
-		head_record.data.satisfied = true
-
+	var head_record := get_head_record(player)
 	record.next = (
-		null
+		ADDRESS_END.stmt
 		if head_record.data.satisfied
-		else ADDRESS_NEXT_OPTION.stmt
+		else null
 	)
+
+	head_record.data.satisfied = true
 
 func _next(player: PennyPlayer, record: Penny.Record) -> Stmt:
 	return record.next if record.next else get_stmt_in_order()

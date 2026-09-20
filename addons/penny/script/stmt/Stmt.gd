@@ -189,7 +189,7 @@ static func get_context_path(stmt: Stmt, target_property_name: StringName) -> Pe
 
 ## Called when the [PennyScript] resource is compiled and all other [Stmt]s in the script exist.
 func compile(script: PennyScript, idx: int) -> void:
-	# ## These are already set in [PennyParser], so no need to redo them here.
+	# ## These are already set in [PennyParser], just before populate, so no need to redo them here. They will be set again in [member ready].
 	# owner = script
 	# owner_idx = idx
 

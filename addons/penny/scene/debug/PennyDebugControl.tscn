@@ -25,10 +25,9 @@ split_offset = 10
 [node name="statics" type="TabContainer" parent="h_split_container" unique_id=664307383]
 layout_mode = 2
 size_flags_horizontal = 3
-current_tab = 1
+current_tab = 0
 
 [node name="Object Tree" type="Control" parent="h_split_container/statics" unique_id=1571395125]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 metadata/_tab_index = 0
@@ -37,6 +36,7 @@ metadata/_tab_index = 0
 layout_mode = 1
 
 [node name="Script Tree" type="Control" parent="h_split_container/statics" unique_id=2109930223]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 metadata/_tab_index = 1
