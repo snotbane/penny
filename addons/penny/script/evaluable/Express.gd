@@ -63,7 +63,7 @@ static func operator_apply(stack: Array, op: PennyScript.Token.Operator, context
 
 			stack.push_back(Penny.Cell.new("", arg[0]))
 
-		PennyScript.Token.Operator.QUESTION:
+		PennyScript.Token.Operator.FALLBACK:
 			stack.push_back(fallback(arg[0], arg[1]))
 
 		PennyScript.Token.Operator.NOT:

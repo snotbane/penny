@@ -124,7 +124,7 @@ func interpolate(string: String, initial_context) -> String:
 			)
 		elif interp_value is Penny.Cell:
 			interp_context = interp_value
-			interp_value = interp_value.display_name
+			interp_value = interp_value.display_text
 		elif interp_value is Color:
 			interp_string = "#%s" % interp_value.to_html()
 		else:

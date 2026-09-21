@@ -19,10 +19,20 @@ static func _static_init() -> void:
 	ROOT.set_data_local(&"prompt_ask", PROMPT_ASK)
 	ROOT.set_data_local(&"prompt_say", PROMPT_SAY)
 
+	OBJECT.set_data_local(&"text", Penny.Express.new_or_literal_from_string(".name ?? \"Unnamed_Penny_Object\""))
 	OBJECT.set_data_local(&"prompt_ask", Penny.Path.to(PROMPT_ASK))
 	OBJECT.set_data_local(&"prompt_say", Penny.Path.to(PROMPT_SAY))
 	OBJECT.set_data_local(&"filters", [
+		Penny.Text.Filter.new(r"(?<!(?:Mx|Mr|Dr|Prof)s?)((?:[.,?!:;](?!\S))|-{2,})+[\'\")\]]?(?!$)", "$0<delay>"),
+		Penny.Text.Filter.new(r"\.{2,}", "<delay=0.2 | speed=5>$0</>"),
+		Penny.Text.Filter.new(r"(?<!\\)\|", "<delay>"),
 		Penny.Text.Filter.new(r"(?<!\\)\/", "<wait>"),
+		Penny.Text.Filter.new(r"---", "—"),
+		Penny.Text.Filter.new(r"--", "–"),
+		Penny.Text.Filter.new(r"(\S)\"", "$1”"),
+		Penny.Text.Filter.new(r"\"", "“"),
+		Penny.Text.Filter.new(r"(\S)'", "$1’"),
+		Penny.Text.Filter.new(r"'", "‘"),
 	])
 
 	NARRATOR.prototype = OBJECT
@@ -162,9 +172,9 @@ var scene: PackedScene:
 		return load(get_data(&"scene"))
 
 ## Name for use when interpolating [Penny.Message]s.
-var display_name: Variant:
-	get: return get_data(&"name", "<Unnamed Penny Object>")
-	set(value): set_data_local(&"name", value)
+var display_text: Variant:
+	get: return get_data(&"text", "Unnamed_Penny_Object")
+	set(value): set_data_local(&"text", value)
 
 
 var node_name: StringName:

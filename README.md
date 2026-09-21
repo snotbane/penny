@@ -45,17 +45,17 @@ You may wish for certain objects (i.e. characters) to be displayed with special 
 
 ```penny
 def Rubin = new object
-	.name => Rubin
+	.text => Rubin
 
 >	Hello, @Rubin.
 
 ```
 
-The `name` attribute is always used when referencing a `Penny.Cell` in a message. If the name has multiple translations, they will be assigned accordingly.
+The `text` attribute is always used when referencing a `Penny.Cell` in a message. If the name has multiple translations, they will be assigned accordingly.
 
 ```penny
 def Rubin = new object
-	.name => Rubin
+	.text => Rubin
 		[ru] Рубин
 		[ja] ルービン
 		[zh] 鱼宾
@@ -74,6 +74,67 @@ def Rubin = new object
 	[ja]
 		こんにちは、ルービン。
 
+```
+
+#### Filters
+
+[`Penny.Filter`](addons/penny/script/text/Filter.gd)s allow you to use [Regular Expressions](https://en.wikipedia.org/wiki/Regular_expression) to automatically replace certain text with new text. You can do this by setting the `filters` value of an object to an array:
+
+```penny
+def object.filters = [
+	"apples" -> "oranges",
+]
+
+>	I have 10 apples.
+
+## This will display the following:
+
+>	I have 10 oranges.
+```
+
+This can be used for any number of applications. The default filters are as follows:
+
+```penny
+def object.filters = [
+	# ## Match the start of the string.
+	# ## you can use this to establish decorations that apply
+	# ## to the entire message.
+	# "^" -> "<p>\t",
+
+	## This is used to create a short delay after most punctuation,
+	## to mimic pauses in speech.
+	"(?<!(?:Mx|Mr|Dr|Prof)s?)((?:[.,?!:;](?!\S))|-{2,})+[\'\")\]]?(?!$)" -> "$0<delay>",
+
+	## Makes ellipses print slowly.
+	"\.{2,}" -> "<delay=0.2 | speed=5>$0</>",
+
+	## Converts pipes to delays.
+	"(?<!\\)\|" -> "<delay>",
+
+	## Converts slashes to waits.
+	"(?<!\\)\/" -> "<wait>",
+
+	## Converts individual dashes to em dashes.
+	"---" -> "—",
+	"--" -> "–",
+
+	## Replaces normal quotes with rich quotes
+	'(\S)"' -> '$1”',
+	'"' -> '“',
+	"(\S)'" -> "$1’",
+	"'" -> "‘",
+]
+```
+
+> [!IMPORTANT]
+> Filters cannot self-recur, but they are applied to the entire message, in the order which they are provided in the array. Therefore, changing the order will change how they are applied.
+
+The most common way to add filters is to append them to the existing array in the base object, e.g.:
+
+```penny
+def object.filters += [
+	"apples" -> "oranges"
+]
 ```
 
 #### Unique Dialog Nodes
@@ -103,12 +164,18 @@ Rubin > Hello, world.
 Say statements will always use the most recent context specified, until a new one is specified.
 
 ```penny
+## Set the context (speaker) to Rubin.
 Rubin
 >	Hello, my name is @Rubin.
 
+## Rubin will also say this.
 >	I'm 24 years old and I'm from Mars.
 
-## Set the new context to `~` (narrator).
+## Set the context (speaker) to `~` (narrator).
 ~
 >	Rubin looked around the room. Everyone was staring at him.
+
+## Set the context (speaker) to Esther.
+Esther
+>	Excuse me @Rubin, you're from MARS??
 ```

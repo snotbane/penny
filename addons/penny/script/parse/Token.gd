@@ -121,7 +121,7 @@ enum Operator {
 	BIT_AND,
 	BIT_OR,
 
-	QUESTION,
+	FALLBACK,
 	DOT,
 }
 
@@ -156,8 +156,8 @@ static var OPERATOR_PATTERNS: Dictionary[int, RegEx] = {
 		RegEx.create_from_string(r"@"),
 	Operator.DOT:
 		RegEx.create_from_string(r"\."),
-	Operator.QUESTION:
-		RegEx.create_from_string(r"\?"),
+	Operator.FALLBACK:
+		RegEx.create_from_string(r"\?\?"),
 	Operator.ACCESS:
 		RegEx.create_from_string(r":"),
 
@@ -234,7 +234,7 @@ static func operator_to_string(operator: Operator) -> String:
 			return "@"
 		Operator.DOT:
 			return "."
-		Operator.QUESTION:
+		Operator.FALLBACK:
 			return "??"
 		Operator.ACCESS:
 			return ":"
