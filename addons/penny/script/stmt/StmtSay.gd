@@ -1,7 +1,7 @@
 ## The most crucial statement in Penny. Evaluates a [Penny.Message] and displays it to the user. The specific [PennyPlayer] can have its own implementation of how to handle this.
 @tool
 class_name StmtSay
-extends StmtNodeInterface
+extends StmtNodePrompt
 
 enum {
 	DIALOG_DECLARATION_DEFAULT,
@@ -25,7 +25,7 @@ func _get_debug_message() -> String:
 
 
 func _get_node_key() -> StringName:
-	return &"interface_say"
+	return &"prompt_say"
 
 
 func _populate(tokens: Array) -> void:

@@ -3,30 +3,30 @@ extends Resource
 
 static var ROOT : Penny.Cell
 static var OBJECT : Penny.Cell
-static var INTERFACE_ASK : Penny.Cell
-static var INTERFACE_SAY : Penny.Cell
+static var PROMPT_ASK : Penny.Cell
+static var PROMPT_SAY : Penny.Cell
 
 static func _static_init() -> void:
 	ROOT = Penny.Cell.new(&"ROOT", null)
 	OBJECT = Penny.Cell.new(&"object", null)
-	INTERFACE_ASK = Penny.Cell.new(&"interface_ask", null)
-	INTERFACE_SAY = Penny.Cell.new(&"interface_say", null)
+	PROMPT_ASK = Penny.Cell.new(&"prompt_ask", null)
+	PROMPT_SAY = Penny.Cell.new(&"prompt_say", null)
 
 	ROOT.set_data_local(&"object", OBJECT)
-	ROOT.set_data_local(&"interface_ask", INTERFACE_ASK)
-	ROOT.set_data_local(&"interface_say", INTERFACE_SAY)
+	ROOT.set_data_local(&"prompt_ask", PROMPT_ASK)
+	ROOT.set_data_local(&"prompt_say", PROMPT_SAY)
 
-	OBJECT.set_data_local(&"interface_ask", Penny.Path.to(INTERFACE_ASK))
-	OBJECT.set_data_local(&"interface_say", Penny.Path.to(INTERFACE_SAY))
+	OBJECT.set_data_local(&"prompt_ask", Penny.Path.to(PROMPT_ASK))
+	OBJECT.set_data_local(&"prompt_say", Penny.Path.to(PROMPT_SAY))
 	OBJECT.set_data_local(&"filters", [
 		Penny.Text.Filter.new(r"(?<!\\)\/", "<wait>"),
 	])
 
-	INTERFACE_ASK.prototype = OBJECT
-	INTERFACE_ASK.set_data_local(&"scene", "res://addons/penny/scene/InterfaceAsk.tscn")
+	PROMPT_ASK.prototype = OBJECT
+	PROMPT_ASK.set_data_local(&"scene", "res://addons/penny/scene/PromptAsk.tscn")
 
-	INTERFACE_SAY.prototype = OBJECT
-	INTERFACE_SAY.set_data_local(&"scene", "res://addons/penny/scene/InterfaceSay.tscn")
+	PROMPT_SAY.prototype = OBJECT
+	PROMPT_SAY.set_data_local(&"scene", "res://addons/penny/scene/PromptSay.tscn")
 
 
 @export_storage

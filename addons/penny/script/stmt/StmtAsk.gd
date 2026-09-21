@@ -1,6 +1,6 @@
 @tool
 class_name StmtAsk
-extends StmtNodeInterface
+extends StmtNodePrompt
 
 @export_storage
 var options: Array[Address] = []
@@ -13,7 +13,7 @@ func _get_verbosity() -> Verbosity:
 
 
 func _get_node_key() -> StringName:
-	return &"interface_ask"
+	return &"prompt_ask"
 
 
 func _populate(tokens: Array) -> void:

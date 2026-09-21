@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://bdl4as1ftjk0s"]
 
-[ext_resource type="Script" uid="uid://txc4uc25vwc3" path="res://addons/penny/scene/InterfaceSay.gd" id="1_bab8c"]
+[ext_resource type="Script" uid="uid://khsyo06h0s31" path="res://addons/penny/scene/PromptSay.gd" id="1_bab8c"]
 
-[node name="interface_say" type="Control" unique_id=725538249]
+[node name="prompt_say" type="Control" unique_id=725538249]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

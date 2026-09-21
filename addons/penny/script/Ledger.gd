@@ -62,15 +62,15 @@ func find_recent_record_from_stmt(stmt: Stmt) -> Penny.Record:
 	return null
 
 
-func find_recent_interface_from_key(key: StringName, fetch: int = 0) -> Penny.Cell:
+func find_recent_prompt_from_key(key: StringName, fetch: int = 0) -> Penny.Cell:
 	for i in records.size():
-		if records[-i-1].stmt is not StmtNodeInterface:
+		if records[-i-1].stmt is not StmtNodePrompt:
 			continue
 
 		## This is another way of checking whether we're talking about StmtSay or StmtAsk, but it's a little more comprehensive in case there are any other types.
-		if records[-i-1].data.interface_key != key:
+		if records[-i-1].data.prompt_key != key:
 			continue
-			# ## This can be used to control exactly which interface is returned.
+			# ## This can be used to control exactly which prompt is returned.
 			# match fetch:
 			# 	0: break
 			# 	1: pass
@@ -79,6 +79,6 @@ func find_recent_interface_from_key(key: StringName, fetch: int = 0) -> Penny.Ce
 			# 		assert(false, "Unimplemented fetch mode.")
 			# 		break
 
-		return records[-i-1].data.interface
+		return records[-i-1].data.prompt
 
 	return null

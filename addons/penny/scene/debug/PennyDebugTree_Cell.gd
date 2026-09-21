@@ -17,20 +17,23 @@ const COLUMN_NAMES : PackedStringArray = [
 ]
 
 
-const PRIORITY_KEYS_REVERSED : PackedStringArray = [
-	"filters",
-	"interface_say",
-	"interface_ask",
-	"prototype",
-	"name",
+const PRIORITY_KEYS : PackedStringArray = [
 	"object",
+	"name",
+	"prototype",
+	"prompt_ask",
+	"prompt_say",
+	"filters",
 ]
+
+static func _static_init() -> void:
+	PRIORITY_KEYS.reverse()
 
 static func get_name_tooltip(text: String) -> String:
 	match text:
 		"name": return "The display name of this object. This is what will be displayed in [Penny.Message]s."
-		"interface_ask": return "The path to the object which this object instantiates when it prompts the user."
-		"interface_say": return "The path to the object which this object instantiates when it speaks."
+		"prompt_ask": return "The path to the object which this object instantiates when it prompts the user."
+		"prompt_say": return "The path to the object which this object instantiates when it speaks."
 		"filters": return "An array of [Penny.Text.Filter]s. Each one will perform a [RegEx] search-and-replace operation\non any [Penny.Message] spoken by this object. These apply iteratively, so order matters!"
 		"object": return "The base object. All other objects inherit from this, so\nchanging values here will effectively change them globally."
 		"prototype": return "The path to the object which this object inherits values from."
@@ -39,7 +42,7 @@ static func get_name_tooltip(text: String) -> String:
 
 
 static func get_name_color(text: String) -> Variant:
-	if text in PRIORITY_KEYS_REVERSED:
+	if text in PRIORITY_KEYS:
 		return Color.html("ffca5f")
 	else:
 		return null
@@ -127,8 +130,8 @@ static func sorted(dict: Dictionary) -> Dictionary:
 
 	var keys := dict.keys()
 	keys.sort_custom((func(a, b) -> bool:
-		var ai := PRIORITY_KEYS_REVERSED.find(a)
-		var bi := PRIORITY_KEYS_REVERSED.find(b)
+		var ai := PRIORITY_KEYS.find(a)
+		var bi := PRIORITY_KEYS.find(b)
 
 		return a < b if ai == bi else ai > bi
 	))
@@ -173,7 +176,7 @@ func create_variant_item(
 	var name_color = get_name_color(name)
 	if name_color:
 		result.set_custom_color(COLUMN_NAME, name_color)
-	if name in PRIORITY_KEYS_REVERSED:
+	if name in PRIORITY_KEYS:
 		result.collapsed = true
 
 	result.set_selectable(COLUMN_STORAGE, false)

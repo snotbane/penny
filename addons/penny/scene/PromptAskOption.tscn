@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://bsfgsc0wnp78g"]
 
-[ext_resource type="Script" uid="uid://bn0b0x1tdci5b" path="res://addons/penny/scene/InterfaceAskOption.gd" id="1_s7xdv"]
+[ext_resource type="Script" uid="uid://bgbj8bbekl0ep" path="res://addons/penny/scene/PromptAskOption.gd" id="1_s7xdv"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_igc1g"]
 
-[node name="interface_ask_option" type="PanelContainer" unique_id=372936859]
+[node name="prompt_ask_option" type="PanelContainer" unique_id=372936859]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 23.0
