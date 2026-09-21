@@ -3,16 +3,19 @@ extends Resource
 
 static var ROOT : Penny.Cell
 static var OBJECT : Penny.Cell
+static var NARRATOR : Penny.Cell
 static var PROMPT_ASK : Penny.Cell
 static var PROMPT_SAY : Penny.Cell
 
 static func _static_init() -> void:
 	ROOT = Penny.Cell.new(&"ROOT", null)
 	OBJECT = Penny.Cell.new(&"object", null)
+	NARRATOR = Penny.Cell.new(&"~", null)
 	PROMPT_ASK = Penny.Cell.new(&"prompt_ask", null)
 	PROMPT_SAY = Penny.Cell.new(&"prompt_say", null)
 
 	ROOT.set_data_local(&"object", OBJECT)
+	ROOT.set_data_local(&"~", NARRATOR)
 	ROOT.set_data_local(&"prompt_ask", PROMPT_ASK)
 	ROOT.set_data_local(&"prompt_say", PROMPT_SAY)
 
@@ -22,10 +25,10 @@ static func _static_init() -> void:
 		Penny.Text.Filter.new(r"(?<!\\)\/", "<wait>"),
 	])
 
-	PROMPT_ASK.prototype = OBJECT
+	NARRATOR.prototype = OBJECT
+
 	PROMPT_ASK.set_data_local(&"scene", "res://addons/penny/scene/PromptAsk.tscn")
 
-	PROMPT_SAY.prototype = OBJECT
 	PROMPT_SAY.set_data_local(&"scene", "res://addons/penny/scene/PromptSay.tscn")
 
 

@@ -19,6 +19,7 @@ const COLUMN_NAMES : PackedStringArray = [
 
 const PRIORITY_KEYS : PackedStringArray = [
 	"object",
+	"~",
 	"name",
 	"prototype",
 	"prompt_ask",
@@ -32,6 +33,7 @@ static func _static_init() -> void:
 static func get_name_tooltip(text: String) -> String:
 	match text:
 		"name": return "The display name of this object. This is what will be displayed in [Penny.Message]s."
+		"~": return "The default narrator object."
 		"prompt_ask": return "The path to the object which this object instantiates when it prompts the user."
 		"prompt_say": return "The path to the object which this object instantiates when it speaks."
 		"filters": return "An array of [Penny.Text.Filter]s. Each one will perform a [RegEx] search-and-replace operation\non any [Penny.Message] spoken by this object. These apply iteratively, so order matters!"
