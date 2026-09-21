@@ -35,10 +35,7 @@ func _draw(player: PennyPlayer, record: Penny.Record) -> void:
 		head_record.data.satisfied = true
 
 	record.next = (
-		null
+		get_stmt_next_in_order()
 		if head_record.data.satisfied
 		else address_next_option.stmt
 	)
-
-func _next(player: PennyPlayer, record: Penny.Record) -> Stmt:
-	return record.next if record.next else get_stmt_next_in_order()

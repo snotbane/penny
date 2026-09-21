@@ -30,6 +30,16 @@ def Rubin = new Character
 label start
 
 >	Hello
+	[es]	Hola
+
+ask:
+	>	Where are you going?
+	:
+		>	I'm going nowhere.
+
+	>	How are you doing?
+	:
+		>	I'm doing just fine.
 
 x = 1
 
@@ -55,9 +65,11 @@ elif y == 1:
 else:
 	>	Else reached
 
-pass
+# pass
 
->	End
+# >	End
+
+
 
 # Comment
 

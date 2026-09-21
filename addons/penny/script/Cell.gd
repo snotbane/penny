@@ -3,23 +3,30 @@ extends Resource
 
 static var ROOT : Penny.Cell
 static var OBJECT : Penny.Cell
-static var DIALOG : Penny.Cell
+static var INTERFACE_ASK : Penny.Cell
+static var INTERFACE_SAY : Penny.Cell
 
 static func _static_init() -> void:
 	ROOT = Penny.Cell.new(&"ROOT", null)
 	OBJECT = Penny.Cell.new(&"object", null)
-	DIALOG = Penny.Cell.new(&"dialog", null)
+	INTERFACE_ASK = Penny.Cell.new(&"interface_ask", null)
+	INTERFACE_SAY = Penny.Cell.new(&"interface_say", null)
 
 	ROOT.set_data_local(&"object", OBJECT)
-	ROOT.set_data_local(&"dialog", DIALOG)
+	ROOT.set_data_local(&"interface_ask", INTERFACE_ASK)
+	ROOT.set_data_local(&"interface_say", INTERFACE_SAY)
 
-	OBJECT.set_data_local(&"dialog", Penny.Path.to(DIALOG))
+	OBJECT.set_data_local(&"interface_ask", Penny.Path.to(INTERFACE_ASK))
+	OBJECT.set_data_local(&"interface_say", Penny.Path.to(INTERFACE_SAY))
 	OBJECT.set_data_local(&"filters", [
 		Penny.Text.Filter.new(r"(?<!\\)\/", "<wait>"),
 	])
 
-	DIALOG.prototype = OBJECT
-	DIALOG.set_data_local(&"scene", "res://addons/penny/scene/DialogHandler.tscn")
+	INTERFACE_ASK.prototype = OBJECT
+	INTERFACE_ASK.set_data_local(&"scene", "res://addons/penny/scene/InterfaceAsk.tscn")
+
+	INTERFACE_SAY.prototype = OBJECT
+	INTERFACE_SAY.set_data_local(&"scene", "res://addons/penny/scene/InterfaceSay.tscn")
 
 
 @export_storage

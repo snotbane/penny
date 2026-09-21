@@ -121,11 +121,28 @@ func statementize() -> void:
 	var token_groups: Array[Array] = [[]]
 	var group_index := 0
 	for token in tokens:
-		if token.type == PennyScript.Token.Type.TERMINATOR:
-			if not token_groups[group_index].is_empty():
-				token_groups.push_back([])
-				group_index += 1
-			continue
+		match token.type:
+			PennyScript.Token.Type.TERMINATOR:
+				if not token_groups[group_index].is_empty():
+					token_groups.push_back([])
+					group_index += 1
+
+				continue
+
+			## Use this to merge statements that are on separate lines, but should be on the same line. E.g. StmtOption with a rich string.
+			PennyScript.Token.Type.OPERATOR:
+				if (
+					token.value == PennyScript.Token.Operator.ACCESS
+					and (
+						token_groups[group_index].is_empty()
+						or (
+							token_groups[group_index].size() == 1
+							and token_groups[group_index][0].type == PennyScript.Token.Type.INDENTATION
+						)
+					)
+				):
+					token_groups.pop_back()
+					group_index -= 1
 
 		token_groups[group_index].push_back(token)
 
@@ -179,11 +196,11 @@ func get_stmt_from_token_group_destructive(group: Array) -> Stmt:
 				match group[0].value:
 					PennyScript.Token.Operator.LESS_THAN:
 						group.clear()
-						return StmtDialogClose.new(true)
+						return StmtShut.new(true)
 
 					PennyScript.Token.Operator.SUBTRACT:
 						group.clear()
-						return StmtDialogClose.new(false)
+						return StmtShut.new(false)
 
 
 	var front_keywords: Array[PennyScript.Token.Keyword] = []
@@ -192,6 +209,9 @@ func get_stmt_from_token_group_destructive(group: Array) -> Stmt:
 
 	if front_keywords:
 		match front_keywords[0]:
+			PennyScript.Token.Keyword.ASK:
+				return StmtAsk.new()
+
 			PennyScript.Token.Keyword.CALL:
 				return StmtCall.new()
 
@@ -236,7 +256,7 @@ func get_stmt_from_token_group_destructive(group: Array) -> Stmt:
 	match group.back().type:
 		PennyScript.Token.Type.STRING_BLOCK, \
 		PennyScript.Token.Type.STRING_QUOTED:
-			return StmtDialog.new()
+			return StmtSay.new()
 
 		PennyScript.Token.Type.OPERATOR:
 			match group.back().value:

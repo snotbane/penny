@@ -215,11 +215,19 @@ func ready(script: PennyScript, idx: int) -> void:
 
 	for prop: Dictionary in get_property_list():
 		if not prop.usage & PROPERTY_USAGE_STORAGE: continue
-		if prop.class_name != "Resource": continue
 
-		var resource : Resource = get(prop.name)
-		if resource is Stmt.Address:
-			resource.populate(script)
+		match prop.type:
+			TYPE_OBJECT:
+				if prop.class_name != "Resource": continue
+
+				var resource : Resource = get(prop.name)
+				if resource is Stmt.Address:
+					resource.populate(script)
+
+			TYPE_ARRAY:
+				for e in get(prop.name):
+					if e is Stmt.Address:
+						e.populate(script)
 
 	_ready()
 

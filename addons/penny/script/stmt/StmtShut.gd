@@ -1,5 +1,5 @@
 @tool
-class_name StmtDialogClose
+class_name StmtShut
 extends StmtPass
 
 @export_storage

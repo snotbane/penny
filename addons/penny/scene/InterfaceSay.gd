@@ -9,8 +9,14 @@ var label : RichTextLabel = $rich_text_label
 
 
 func handle(record: Penny.Record):
+	var message = record.data.message
 	var translation : StringName = &""
-	var text = record.data.message.get_translation(translation)
+	var text: Variant
+
+	if message is String:
+		text = message
+	elif message is Penny.Message:
+		text = message.get_translation(translation)
 
 	if text is String:
 		label.text = text

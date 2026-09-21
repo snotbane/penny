@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://bsfgsc0wnp78g"]
+
+[ext_resource type="Script" uid="uid://bn0b0x1tdci5b" path="res://addons/penny/scene/InterfaceAskOption.gd" id="1_s7xdv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_igc1g"]
+
+[node name="interface_ask_option" type="PanelContainer" unique_id=372936859]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_igc1g")
+script = ExtResource("1_s7xdv")
+
+[node name="button" type="Button" parent="." unique_id=180087144]
+layout_mode = 2
+
+[node name="rich_text_label" type="RichTextLabel" parent="." unique_id=1930036766]
+layout_mode = 2
+mouse_filter = 2
+fit_content = true
+horizontal_alignment = 1
+vertical_alignment = 1

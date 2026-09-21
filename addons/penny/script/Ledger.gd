@@ -18,11 +18,11 @@ var cursor_is_tail: bool:
 	get: return cursor == null or records.is_empty() or cursor == records[-1]
 
 
-## Returns the most recent [Penny.Record] whose [member Penny.Record.stmt] is a [StmtDialog].
+## Returns the most recent [Penny.Record] whose [member Penny.Record.stmt] is a [StmtSay].
 var most_recent_dialog: Penny.Cell:
 	get:
 		for i in records.size():
-			if records[-i-1].stmt is StmtDialog:
+			if records[-i-1].stmt is StmtSay:
 				return records[-i-1].data.dialog
 
 		return null
@@ -58,5 +58,27 @@ func find_recent_record_from_stmt(stmt: Stmt) -> Penny.Record:
 	for i in records.size():
 		if records[-i-1].stmt == stmt:
 			return records[-i-1]
+
+	return null
+
+
+func find_recent_interface_from_key(key: StringName, fetch: int = 0) -> Penny.Cell:
+	for i in records.size():
+		if records[-i-1].stmt is not StmtNodeInterface:
+			continue
+
+		## This is another way of checking whether we're talking about StmtSay or StmtAsk, but it's a little more comprehensive in case there are any other types.
+		if records[-i-1].data.interface_key != key:
+			continue
+			# ## This can be used to control exactly which interface is returned.
+			# match fetch:
+			# 	0: break
+			# 	1: pass
+			# 	2: continue
+			# 	_:
+			# 		assert(false, "Unimplemented fetch mode.")
+			# 		break
+
+		return records[-i-1].data.interface
 
 	return null
