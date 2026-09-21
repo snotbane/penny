@@ -19,7 +19,8 @@ const COLUMN_NAMES : PackedStringArray = [
 
 const PRIORITY_KEYS_REVERSED : PackedStringArray = [
 	"filters",
-	"dialog",
+	"interface_say",
+	"interface_ask",
 	"prototype",
 	"name",
 	"object",
@@ -28,7 +29,8 @@ const PRIORITY_KEYS_REVERSED : PackedStringArray = [
 static func get_name_tooltip(text: String) -> String:
 	match text:
 		"name": return "The display name of this object. This is what will be displayed in [Penny.Message]s."
-		"dialog": return "The path to the object which this object instantiates when it speaks."
+		"interface_ask": return "The path to the object which this object instantiates when it prompts the user."
+		"interface_say": return "The path to the object which this object instantiates when it speaks."
 		"filters": return "An array of [Penny.Text.Filter]s. Each one will perform a [RegEx] search-and-replace operation\non any [Penny.Message] spoken by this object. These apply iteratively, so order matters!"
 		"object": return "The base object. All other objects inherit from this, so\nchanging values here will effectively change them globally."
 		"prototype": return "The path to the object which this object inherits values from."
