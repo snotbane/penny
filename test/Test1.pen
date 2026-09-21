@@ -32,13 +32,20 @@ label start
 >	Hello
 	[es]	Hola
 
+player_has_key = true
+
 ask:
 	>	Where are you going?
 	:
 		>	I'm going nowhere.
 
+	>	I have the key!
+	when player_has_key:
+		>	I have used the key!!!
+		player_has_key = false
+
 	>	How are you doing?
-	:
+	when not player_has_key:
 		>	I'm doing just fine.
 
 x = 1
@@ -47,8 +54,13 @@ match x:
 	0:
 		>	Option 0
 
-	1:
-		>	Option 1
+	1
+	when player_has_key
+	:
+		>	Option 1 (player has key)
+
+	1 when not player_has_key:
+		>	Option 1 (player does not have key)
 
 	else:
 		>	Option else
@@ -67,7 +79,7 @@ else:
 
 # pass
 
-# >	End
+>	End
 
 
 

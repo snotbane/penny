@@ -22,6 +22,7 @@ func handle(record: Penny.Record):
 			"Option node must have a signal 'selected'."
 		)
 
+		option_nodes[i].visible = record.data.options_visible[i]
 		option_nodes[i].populate(record.data.options[i])
 		option_signals[i] = option_nodes[i].selected
 

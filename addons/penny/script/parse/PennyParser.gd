@@ -130,10 +130,17 @@ func statementize() -> void:
 				continue
 
 			## Use this to merge statements that are on separate lines, but should be on the same line. E.g. StmtOption with a rich string.
-			PennyScript.Token.Type.OPERATOR:
+			_:
 				if (
-					token.value == PennyScript.Token.Operator.ACCESS
-					and (
+					(
+						(
+							token.type == PennyScript.Token.Type.KEYWORD
+							and token.value == PennyScript.Token.Keyword.WHEN
+						) or (
+							token.type == PennyScript.Token.Type.OPERATOR
+							and token.value == PennyScript.Token.Operator.ACCESS
+						)
+					) and (
 						token_groups[group_index].is_empty()
 						or (
 							token_groups[group_index].size() == 1

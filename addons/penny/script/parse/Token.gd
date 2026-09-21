@@ -21,7 +21,8 @@ enum Keyword {
 	PRINT,
 	RETURN,
 	SUSPEND,
-	VAR
+	VAR,
+	WHEN,
 }
 
 const KEYWORDS: PackedStringArray = [
@@ -42,6 +43,7 @@ const KEYWORDS: PackedStringArray = [
 	"return",
 	"suspend",
 	"var",
+	"when",
 ]
 
 static func keyword_from_string(s: String) -> Keyword:

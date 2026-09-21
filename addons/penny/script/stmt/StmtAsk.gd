@@ -38,12 +38,23 @@ func _draw(player: PennyPlayer, record: Penny.Record) -> void:
 	record.data.satisfied = true
 
 	record.data.options = []
+	record.data.options_visible = []
 	record.data.options.resize(options.size())
+	record.data.options_visible.resize(options.size())
 	for i in options.size():
 		assert(
 			options[i].stmt is StmtOption,
 			"Ask children can only be [StmtOption]s."
 		)
+
+		if options[i].stmt.when_express != null:
+			var when_value = Penny.Evaluable.evaluate_any(options[i].stmt.when_express, context_value_from_recent)
+			if when_value:
+				record.data.options_visible[i] = true
+			else:
+				record.data.options_visible[i] = false
+		else:
+			record.data.options_visible[i] = true
 
 		## This should be the same as what we do in [StmtExpress].
 		var option_value : Variant = Penny.Evaluable.evaluate_any(options[i].stmt.express, context_value_from_recent)
