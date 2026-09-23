@@ -66,7 +66,7 @@ func process(string: String, translation: StringName = &"") -> String:
 		if m_is_inside_tag:
 			continue
 
-		result = PennyScript.MessageParser.regex_replace_match(m, replace_string)
+		result = PennyScript.MessageParser.regex_replace_match(regex, m, replace_string)
 		start = m.get_start() + replace_string.length()
 
 	return result

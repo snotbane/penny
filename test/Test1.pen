@@ -29,6 +29,9 @@ def Rubin = new Character
 
 label start
 
+>	Hello <i>world.<b> <>How</i> are</*> you today?
+
+
 >	Hello
 	[es]	Hola
 

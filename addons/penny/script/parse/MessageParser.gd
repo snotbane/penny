@@ -39,8 +39,10 @@ static func regex_get_first_match_in_list_tuple(string: String, rlist: Array[Reg
 
 	return [ null, null ]
 
-static func regex_replace_match(m: RegExMatch, s: String) -> String:
-	return m.subject.left(m.get_start()) + s + m.subject.right(-m.get_end())
+static func regex_replace_match(r: RegEx, m: RegExMatch, s: String) -> String:
+	return r.sub(m.subject, s, false, m.get_start(), m.get_end())
+
+	# return m.subject.left(m.get_start()) + s + m.subject.right(-m.get_end())
 
 var object_context: Variant
 var filter_context: Variant
@@ -76,6 +78,8 @@ func purify(string: String, t: StringName) -> Variant:
 
 	return decorate(string, object_context)
 
+
+#region Interpolate
 
 static var REGEX_INTERPOLATE_PATH := RegEx.create_from_string("%s(?:@((?:\\.?[A-Za-z_]\\w*)+))" % [ ODD_ESCAPE_PATTERN ])
 static var REGEX_INTERPOLATE_EXPRESS := RegEx.create_from_string("%s\\{(.*?)%s\\}" % [ ODD_ESCAPE_PATTERN, ODD_ESCAPE_PATTERN ])
@@ -136,6 +140,7 @@ func interpolate(string: String, initial_context) -> String:
 			interp_string = interp_value.get_translation(translation)
 
 		string = regex_replace_match(
+			r,
 			m,
 			interpolate(interp_string, interp_context)
 		)
@@ -153,7 +158,10 @@ func interpolate(string: String, initial_context) -> String:
 # 	interpolation_path_tuple_cache[path] = result
 # 	return result
 
+#endregion
 
+
+#region Filtrate
 
 func filtrate(string: String, filter_context) -> String:
 	if filter_context is not Penny.Cell:
@@ -173,6 +181,39 @@ func filtrate(string: String, filter_context) -> String:
 
 	return string
 
+#endregion
+
+
+#region Lingulate
+
+static func lingulate_int(value_string: String, translation: StringName) -> String:
+	if translation.begins_with(&"en"):
+		return value_string
+
+	return value_string
+
+static func lingulate_float(value_string: String, translation: StringName) -> String:
+	if translation.begins_with(&"en"):
+		return value_string
+
+	return value_string
+
+static func lingulate_time(value_string: String, translation: StringName) -> String:
+	if translation.begins_with(&"en"):
+		return value_string
+
+	return value_string
+
+static func lingulate_roman(value_string: String, translation: StringName) -> String:
+	if translation.begins_with(&"en"):
+		return value_string
+
+	return value_string
+
+#endregion
+
+
+#region Decorate
 
 static var REGEX_DECORATE_ESCAPE := RegEx.create_from_string(r"\\(.)")
 static var ESCAPE_SUBSITUTIONS : Dictionary[String, String] = {
@@ -183,8 +224,8 @@ static var ESCAPE_SUBSITUTIONS : Dictionary[String, String] = {
 	"]": "<rb>",
 }
 
-static var REGEX_DECORATE_TAG := RegEx.create_from_string("%s<(?:\\s*(\\/))?\\s*((?:\\S.*?)?)\\s*%s>" % [
-	ODD_ESCAPE_PATTERN, ODD_ESCAPE_PATTERN
+static var REGEX_DECORATE_TAG := RegEx.create_from_string("%s<(?:\\s*(\\/))?\\s*((?:(?:%s\\*)|(?:.*?))?)\\s*%s>" % [
+	ODD_ESCAPE_PATTERN, ODD_ESCAPE_PATTERN, ODD_ESCAPE_PATTERN
 ])
 
 static var RLIST_DECORATE : Array[RegEx] = [
@@ -229,18 +270,33 @@ func decorate(string: String, object_context) -> Penny.Text:
 		var m_tag: RegExMatch = tuple[1]
 		var match_string: String
 
-
 		match r_tag:
 			REGEX_DECORATE_ESCAPE:
 				match_string = m_tag.get_string(1)
 				result.text = regex_replace_match(
+					r_tag,
 					m_tag,
 					ESCAPE_SUBSITUTIONS.get(match_string, match_string)
 				)
 
 			REGEX_DECORATE_TAG:
 				match_string = m_tag.get_string(2)
-				var tag := Penny.Text.Tag.new(int(not m_tag.get_string(1).is_empty()))
+				var mode : int = (
+					Penny.Text.Tag.MODE_PUSH
+					if m_tag.get_string(1).is_empty()
+					else (
+						Penny.Text.Tag.MODE_CLEAR
+						if match_string == "*"
+						else Penny.Text.Tag.MODE_POP
+					)
+				)
+
+				var tag := Penny.Text.Tag.new(mode)
+				result.add_tag(tag, m_tag.get_start())
+				result.text = regex_replace_match(r_tag, m_tag, "")
+
+				if tag.mode == Penny.Text.Tag.MODE_CLEAR or match_string.is_empty():
+					continue
 
 				var decoration_strings: PackedStringArray
 				var start_decoration := 0
@@ -251,10 +307,10 @@ func decorate(string: String, object_context) -> Penny.Text:
 
 					decoration_strings.push_back(match_string.substr(start_decoration, m_split.get_start() - start_decoration))
 					start_decoration = m_split.get_end()
-				decoration_strings.push_back(match_string.right(start_decoration))
+				decoration_strings.push_back(match_string.substr(start_decoration))
 
 				for decoration_string in decoration_strings:
-					var decoration := Penny.Text.DecInst.new()
+					var inst := PennyDecorationInstance.new()
 
 					var start_arg := 0
 					while true:
@@ -268,43 +324,42 @@ func decorate(string: String, object_context) -> Penny.Text:
 
 						match r_arg:
 							REGEX_DECORATION_ARGUMENT_EXPRESS:
-								decoration.add_argument(
+								inst.add_argument(
 									m_arg.get_string(1),
 									Penny.Express.new_or_literal_from_string(m_arg.get_string(2))
 								)
 
 							REGEX_DECORATION_ARGUMENT_STRING:
-								decoration.add_argument(
+								inst.add_argument(
 									m_arg.get_string(1),
 									m_arg.get_string(3)
 								)
 
 							REGEX_DECORATION_ARGUMENT_SINGLE:
-								decoration.add_argument(
+								inst.add_argument(
 									m_arg.get_string(1),
 									Penny.Express.new_or_literal_from_string(m_arg.get_string(2))
 								)
 
 							REGEX_DECORATION_ARGUMENT_STANDALONE:
-								decoration.add_argument(
+								inst.add_argument(
 									m_arg.get_string(1),
-									null
+									true
 								)
 
 							_:
-								printerr("Couldn't determine argument from text: %s" % decoration_string)
 								break
 
 						start_arg = m_arg.get_end()
 
-					tag.add_decoration(decoration)
-
-				result.text = regex_replace_match(m_tag, "")
+					tag.add_decoration_instance(inst)
 
 			_:
 				break
 
-	for tag in result.tags:
-		pass
+	# for tag in result.tags:
+	# 	print("tag :: %s : %s" % [ tag, result.tags[tag] ])
 
 	return result
+
+#endregion

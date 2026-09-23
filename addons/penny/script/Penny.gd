@@ -27,11 +27,16 @@ static var LOADED_SCRIPTS: Array[PennyScript]
 static var LABEL_SCRIPTS: Dictionary[StringName, PennyScript]
 
 
-static func get_penny_paths_in_project() -> PackedStringArray:
-	return get_paths_in_folder(RECOGNIZED_EXTENSIONS)
-
-
 static func get_paths_in_folder(valid_exts : PackedStringArray = [], root := "res://") -> PackedStringArray:
+	assert((func() -> bool:
+		for ext in valid_exts:
+			if ext.begins_with("."):
+				return false
+		return true
+	).call(),
+		"One or more exts contains a dot."
+	)
+
 	var dir := DirAccess.open(root)
 	if not dir: return []
 
@@ -58,7 +63,7 @@ static func get_git_commit_id(dir: String = "res://") -> String:
 	return output[0].strip_edges() if code == OK else "Unknown Commit!"
 
 
-static func load_script(path: String, type_hint := "") -> PennyScript:
+static func load_resource_editor_safe(path: String, type_hint := "") -> Resource:
 	return ResourceLoader.load(path, type_hint, (
 		ResourceLoader.CacheMode.CACHE_MODE_REUSE
 		if OS.has_feature("template")
@@ -78,8 +83,8 @@ static func add_label(label: StringName, script: PennyScript) -> void:
 
 
 func _ready() -> void:
-	for path in get_penny_paths_in_project():
-		var script: PennyScript = load_script(path)
+	for path in get_paths_in_folder(RECOGNIZED_EXTENSIONS):
+		var script: PennyScript = load_resource_editor_safe(path)
 		if script == null:
 			printerr("Failed loading script at path: '%s'" % path)
 			continue
@@ -89,6 +94,15 @@ func _ready() -> void:
 
 	if Engine.is_editor_hint():
 		return
+
+	for path in get_paths_in_folder(["tres", "res"], "res://addons/penny/decorations"):
+		var decoration: PennyDecoration = load_resource_editor_safe(path)
+		if decoration == null:
+			printerr("Failed loading decoration at path: '%s'" % path)
+			continue
+
+		PennyDecoration.add_decoration_to_registry(decoration)
+
 
 	var temp_player := PennyPlayer.new(true)
 	temp_player.name = "init"

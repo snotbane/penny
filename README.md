@@ -36,12 +36,14 @@ You can multiple translations for a single Say statement using brackets `[]` and
 		こんにちは、世界。
 ```
 
-They do not need to be formatted exactly like this, but this is the typical way to do so. As long as subsequent lines are one indent level higher than the quote block operator ( `>` ), they will all be considered part of the same message block. If the first translation in
-the list is not specified, it will be used as a fallback for any missing translations.
+They do not need to be formatted exactly like this, but this is the typical way to do so. As long as subsequent lines are one indent level higher than the quote block operator ( `>` ), they will all be considered part of the same message block. If the first translation in the list is not specified, it will be used as a fallback for any missing translations.
 
-#### Using Variables in Messages
+> [!NOTE]
+> Separating translations is the first thing that happens when parsing messages. Any decorations you place in one translation will need to be repeated in others.
 
-You may wish for certain objects (i.e. characters) to be displayed with special attributes. You can use the `@` operator to reference these values within Messages.
+#### 1. Interpolating Variables
+
+You may wish to display variables inside your text, for example, to display the player's name if they have entered it themselves. You can use the `@` operator to reference any Penny variable within Messages. This process is called **Interpolation**.
 
 ```penny
 def Rubin = new object
@@ -49,6 +51,19 @@ def Rubin = new object
 
 >	Hello, @Rubin.
 
+```
+
+Alternatively, you can use curly braces `{}` to interpolate an Expression. This is virtually identical to using the `@` operator, but this allows you to combine multiple symbols together.
+
+```penny
+var apple_count = 5
+
+Rubin
+>	You only got { apple_count } apples? I got { apple_count + 3 } apples!
+
+## This will display the following:
+
+>	You only got five apples? I got eight apples!
 ```
 
 The `text` attribute is always used when referencing a `Penny.Cell` in a message. If the name has multiple translations, they will be assigned accordingly.
@@ -76,7 +91,7 @@ def Rubin = new object
 
 ```
 
-#### Filters
+#### 2. Filters
 
 [`Penny.Filter`](addons/penny/script/text/Filter.gd)s allow you to use [Regular Expressions](https://en.wikipedia.org/wiki/Regular_expression) to automatically replace certain text with new text. You can do this by setting the `filters` value of an object to an array:
 
@@ -92,7 +107,10 @@ def object.filters = [
 >	I have 10 oranges.
 ```
 
-This can be used for any number of applications. The default filters are as follows:
+> [!NOTE]
+> Filtration occurs in between Interpolation and Decoration. But, because filters are often used to create Decorations, they also will not apply to any text within Decorations.
+
+The default filters are as follows:
 
 ```penny
 def object.filters = [
@@ -136,6 +154,110 @@ def object.filters += [
 	"apples" -> "oranges"
 ]
 ```
+
+#### 3. Numeric Lingulation
+
+In literature, it is often improper to display numerals directly. Case in point:
+
+```penny
+>	I ate three apples.
+
+>	I ate 3 apples.
+```
+
+Penny will, by default, automatically convert any numeric values into their linguistic counterparts. Therefore, the two above messages will actually display identical text.
+
+This can be controlled by modifying the following values (these are the defaults):
+
+```penny
+## e.g. Mach 3.4 -> Mach three-point-four
+def auto_lingulate_float = false
+
+## e.g. 3 apples -> three apples
+def auto_lingulate_int = true
+
+## e.g.
+##	3:00 AM -> three o'clock a.m.
+## 	17:30 -> seventeen thirty
+def auto_lingulate_time = false
+```
+
+Alternatively, if you wish to define a segment of text which is affected (or not) by this, you can use the `<lingulate>` and `<digitize>` tags. This will explicitly define how the text should be lingulated (or not), regardless of any of the `auto_lingulate_` settings:
+
+```penny
+var number = 3.5
+
+>	I saw <digitize>@number</> ships.
+#	I saw 3.5 ships.
+
+>	I saw <lingulate>@number</> ships.
+#	I saw three-point-five ships.
+
+>	I ate <lingulate=int>@number</> ships.
+#	I ate four ships. -- Note that the value is rounded.
+
+>	I was going Mach <lingulate=float>@number</>.
+#	I was going Mach three-point-five.
+
+>	I was wearing the Mark <lingulate=roman>@number</> Hazard Suit.
+#	I was wearing the Mark IV Hazard Suit. -- Note that the value is rounded.
+```
+
+> [!NOTE]
+> Using `<lingulate=roman>` is the only way to convert a number to roman numerals.
+
+> [!TIP]
+> If you want even more precise control over how each type is parsed, particularly if you are writing scripts which heavily rely on numeric variables, you can directly modify the following functions in the [`MessageParser`](addons/penny/script/parse/MessageParser.gd) :
+>
+> - `lingulate_int()`
+> - `lingulate_float()`
+> - `lingulate_time()`
+> - `lingulate_roman()`
+
+#### 4. Decoration
+
+Oftentimes you'll want to spruce up your text to make it look more dynamic. This can be done with HTML-like **Decoration**s. This is functionally the same as using [BBCode tags](https://docs.godotengine.org/en/stable/tutorials/ui/bbcode_in_richtextlabel.html) (and all bbcode tags are supported), but Penny Decorations provide additional decorations with some extra features.
+
+Most of these extra decorations are for use in [`TextTypewriter`](<>) s.
+
+Unlike HTML tags, Penny tags are very dynamic. Here are a few examples:
+
+```penny
+## This is the most common way to apply a decoration; with an explicit start tag and an implicit end tag (</>).
+> <b>Hello, world.</>
+
+## You can also use explicitly defined end tags.
+>	<b>Hello, world.</b>
+
+## An unclosed tag will function as if it is closed at the end of the message.
+> <b>Hello, world.
+
+## You can apply multiple decorations within the same tag.
+>	<b|i>Hello, world.</>
+
+## You can end one or more tags explicitly as well.
+>	<b|i|u>Hello,</i|u> world.</>
+
+## You can even independently interlock tags.
+>	<b>Hello, how <i>are you</b> doing today?</>
+
+## Finally, you can use the special end all tag </*> to completely clear the tag stack.
+>	<b>Hello, how <i>are you</*> doing today?
+```
+
+> [!NOTE]
+> A little bit about how this works:
+>
+> - Using an implicit end tag (`</>`) will always end the most recently used tag.
+> - Using an explicit end tag (e.g. `</b>`) will search backwards through the tag stack to find any unclosed decoration. If a decoration inside an end tag does not exist, this will do nothing. If it is unclosable, a warning will be displayed.
+> - The end all tag `</*>` implicitly occurs at the end of each message translation.
+
+##### Creating Custom Decorations
+
+In order for a decoration to be usable in your project, it must exist inside the `res://addons/penny/decorations/` directory. Create a new Resource there.
+
+> [!NOTE]
+> The subfolder `res://addons/penny/decorations/builtin/` is where Penny's built in decorations are located. Please do not modify these.
 
 #### Unique Dialog Nodes
 
