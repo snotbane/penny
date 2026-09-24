@@ -27,12 +27,15 @@ static func _static_init() -> void:
 		Penny.Text.Filter.new(r"\.{2,}", "<delay=0.2 | speed=5>$0</>"),
 		Penny.Text.Filter.new(r"(?<!\\)\|", "<delay>"),
 		Penny.Text.Filter.new(r"(?<!\\)\/", "<wait>"),
+	])
+	OBJECT.set_data_local(&"filters_post", [
 		Penny.Text.Filter.new(r"---", "—"),
 		Penny.Text.Filter.new(r"--", "–"),
 		Penny.Text.Filter.new(r"(\S)\"", "$1”"),
 		Penny.Text.Filter.new(r"\"", "“"),
 		Penny.Text.Filter.new(r"(\S)'", "$1’"),
 		Penny.Text.Filter.new(r"'", "‘"),
+		Penny.Text.Filter.new(r"\s+", " "),
 	])
 
 	NARRATOR.prototype = OBJECT

@@ -220,8 +220,8 @@ static var ESCAPE_SUBSITUTIONS : Dictionary[String, String] = {
 	"\\": "\\",
 	"n": "\n",
 	"t": "\t",
-	"[": "<lb>",
-	"]": "<rb>",
+	# "[": "<lb>",
+	# "]": "<rb>",
 }
 
 static var REGEX_DECORATE_TAG := RegEx.create_from_string("%s<(?:\\s*(\\/))?\\s*((?:(?:%s\\*)|(?:.*?))?)\\s*%s>" % [
@@ -279,6 +279,7 @@ func decorate(string: String, object_context) -> Penny.Text:
 					ESCAPE_SUBSITUTIONS.get(match_string, match_string)
 				)
 
+
 			REGEX_DECORATE_TAG:
 				match_string = m_tag.get_string(2)
 				var mode : int = (
@@ -291,8 +292,8 @@ func decorate(string: String, object_context) -> Penny.Text:
 					)
 				)
 
-				var tag := Penny.Text.Tag.new(mode)
-				result.add_tag(tag, m_tag.get_start())
+				var tag := Penny.Text.Tag.new(m_tag.get_start(), mode)
+				result.tags.push(tag)
 				result.text = regex_replace_match(r_tag, m_tag, "")
 
 				if tag.mode == Penny.Text.Tag.MODE_CLEAR or match_string.is_empty():
@@ -352,10 +353,12 @@ func decorate(string: String, object_context) -> Penny.Text:
 
 						start_arg = m_arg.get_end()
 
-					tag.add_decoration_instance(inst)
+					tag.push(inst)
 
 			_:
 				break
+
+	result.tags.push(Penny.Text.Tag.new(result.text.length(), Penny.Text.Tag.MODE_CLEAR))
 
 	# for tag in result.tags:
 	# 	print("tag :: %s : %s" % [ tag, result.tags[tag] ])

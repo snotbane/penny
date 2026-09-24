@@ -54,7 +54,11 @@ func _to_string() -> String:
 	return "<%s/>" % id
 
 
-func preprocess_start() -> void:
+func preprocess_start(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
+	pass
+
+
+func preprocess_end(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
 	pass
 
 

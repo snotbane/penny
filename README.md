@@ -115,9 +115,12 @@ The default filters are as follows:
 ```penny
 def object.filters = [
 	# ## Match the start of the string.
-	# ## you can use this to establish decorations that apply
-	# ## to the entire message.
+	# ## you can use this to establish decorations that apply to the entire message.
 	# "^" -> "<p>\t",
+
+	## This culls all trailing or expanded whitespace and replaces it with a single space.
+	## To artifically extend whitespace, use the <char=' ' repeat=(x)> tag.
+	"\s+" -> " "
 
 	## This is used to create a short delay after most punctuation,
 	## to mimic pauses in speech.

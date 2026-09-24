@@ -29,61 +29,69 @@ def Rubin = new Character
 
 label start
 
->	Hello <i>world.<b> <>How</i> are</*> you today?
+var emotion = 2
+
+# >	Hello, <b>world. <i>How</b> are</i> you today?
+
+>	I am feeling
+		<if={ emotion == 0 }>happy
+		<elif={ emotion == 1 }>sad
+		<else>angry
+	</> today.
 
 
->	Hello
-	[es]	Hola
-
-player_has_key = true
-
-ask:
-	>	Where are you going?
-	:
-		>	I'm going nowhere.
-
-	>	I have the key!
-	when player_has_key:
-		>	I have used the key!!!
-		player_has_key = false
-
-	>	How are you doing?
-	when not player_has_key:
-		>	I'm doing just fine.
-
-x = 1
-
-match x:
-	0:
-		>	Option 0
-
-	1
-	when player_has_key
-	:
-		>	Option 1 (player has key)
-
-	1 when not player_has_key:
-		>	Option 1 (player does not have key)
-
-	else:
-		>	Option else
-
-
-y = 2
-
-if y == 0:
-	>	Condition satisfied
-
-elif y == 1:
-	>	Elif condition satisfied
-
-else:
-	>	Else reached
-
-# pass
-
->	End
-
+#	>	Hello
+#		[es]	Hola
+#
+#	player_has_key = true
+#
+#	ask:
+#		>	Where are you going?
+#		:
+#			>	I'm going nowhere.
+#
+#		>	I have the key!
+#		when player_has_key:
+#			>	I have used the key!!!
+#			player_has_key = false
+#
+#		>	How are you doing?
+#		when not player_has_key:
+#			>	I'm doing just fine.
+#
+#	x = 1
+#
+#	match x:
+#		0:
+#			>	Option 0
+#
+#		1
+#		when player_has_key
+#		:
+#			>	Option 1 (player has key)
+#
+#		1 when not player_has_key:
+#			>	Option 1 (player does not have key)
+#
+#		else:
+#			>	Option else
+#
+#
+#	y = 2
+#
+#	if y == 0:
+#		>	Condition satisfied
+#
+#	elif y == 1:
+#		>	Elif condition satisfied
+#
+#	else:
+#		>	Else reached
+#
+#	# pass
+#
+#	>	End
+#
 
 
 # Comment

@@ -9,6 +9,10 @@ var template: PennyDecoration
 @export
 var args: Dictionary[StringName, Variant]
 
+
+var owner: Penny.Text.Tag
+
+
 var id: StringName:
 	get: return args.keys()[0] if args else &""
 
@@ -33,6 +37,15 @@ func _to_string() -> String:
 			)
 
 	return " ".join(results)
+
+
+func has_argument(arg: StringName) -> bool:
+	if args.has(arg):
+		return true
+	elif template.args.has(arg):
+		return true
+	else:
+		return false
 
 
 func get_argument(arg: StringName) -> Variant:
@@ -63,11 +76,19 @@ func add_argument(arg: StringName, value: Variant) -> void:
 	args[arg] = value
 
 
-## Push to the label. This happens during compilation, but
-func push_to_rtl(rtl: RichTextLabel) -> void:
+func preprocess_start(context: Penny.Text.DecorationContext) -> void:
+	template.preprocess_start(self, context)
+
+
+func preprocess_end(context: Penny.Text.DecorationContext) -> void:
+	template.preprocess_end(self, context)
+
+
+## Push to the label. This happens during compilation, but may happen multiple times as other decorations are pushed and popped.
+func push_to_rtl(context: Penny.Text.DecorationContext) -> void:
 	if template.rich_push_method:
-		rtl.call(template.rich_push_method)
+		context.rtl.call(template.rich_push_method)
 
 
-func pop_to_rtl(rtl: RichTextLabel) -> void:
+func pop_to_rtl(context: Penny.Text.DecorationContext) -> void:
 	pass
