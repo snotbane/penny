@@ -36,8 +36,8 @@ var emotion = 2
 >	I am feeling
 		<if={ emotion == 0 }>happy
 		<elif={ emotion == 1 }>sad
-		<else>angry
-	</> today.
+		<else>angry</>
+	today.
 
 
 #	>	Hello

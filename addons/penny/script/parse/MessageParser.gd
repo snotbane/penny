@@ -76,7 +76,9 @@ func purify(string: String, t: StringName) -> Variant:
 		string = interpolate(string, object_context)
 		string = filtrate(string, filter_context)
 
-	return decorate(string, object_context)
+	var result : Penny.Text = decorate(string, object_context)
+
+	return result
 
 
 #region Interpolate
@@ -215,6 +217,8 @@ static func lingulate_roman(value_string: String, translation: StringName) -> St
 
 #region Decorate
 
+static var REGEX_DECORATE_TRIM_WHITESPACE := RegEx.create_from_string(r"\s+")
+
 static var REGEX_DECORATE_ESCAPE := RegEx.create_from_string(r"\\(.)")
 static var ESCAPE_SUBSITUTIONS : Dictionary[String, String] = {
 	"\\": "\\",
@@ -229,8 +233,9 @@ static var REGEX_DECORATE_TAG := RegEx.create_from_string("%s<(?:\\s*(\\/))?\\s*
 ])
 
 static var RLIST_DECORATE : Array[RegEx] = [
+	REGEX_DECORATE_TRIM_WHITESPACE,
 	REGEX_DECORATE_ESCAPE,
-	REGEX_DECORATE_TAG
+	REGEX_DECORATE_TAG,
 ]
 
 static var REGEX_DECORATION_SPLIT := RegEx.create_from_string(
@@ -263,25 +268,29 @@ static var RLIST_DECORATION_ARGUMENT : Array[RegEx] = [
 
 func decorate(string: String, object_context) -> Penny.Text:
 	var result := Penny.Text.new(string)
+	var start := 0
 
 	while true:
-		var tuple := regex_get_first_match_in_string_tuple(result.text, RLIST_DECORATE)
+		var tuple := regex_get_first_match_in_string_tuple(result.text, RLIST_DECORATE, start)
 		var r_tag: RegEx = tuple[0]
 		var m_tag: RegExMatch = tuple[1]
 		var match_string: String
+		var substitution: String
 
 		match r_tag:
+			REGEX_DECORATE_TRIM_WHITESPACE:
+				substitution = " "
+
+
 			REGEX_DECORATE_ESCAPE:
 				match_string = m_tag.get_string(1)
-				result.text = regex_replace_match(
-					r_tag,
-					m_tag,
-					ESCAPE_SUBSITUTIONS.get(match_string, match_string)
-				)
+				substitution = ESCAPE_SUBSITUTIONS.get(match_string, match_string)
 
 
 			REGEX_DECORATE_TAG:
 				match_string = m_tag.get_string(2)
+				substitution = ""
+
 				var mode : int = (
 					Penny.Text.Tag.MODE_PUSH
 					if m_tag.get_string(1).is_empty()
@@ -294,9 +303,9 @@ func decorate(string: String, object_context) -> Penny.Text:
 
 				var tag := Penny.Text.Tag.new(m_tag.get_start(), mode)
 				result.tags.push(tag)
-				result.text = regex_replace_match(r_tag, m_tag, "")
 
 				if tag.mode == Penny.Text.Tag.MODE_CLEAR or match_string.is_empty():
+					result.text = regex_replace_match(r_tag, m_tag, substitution)
 					continue
 
 				var decoration_strings: PackedStringArray
@@ -357,6 +366,9 @@ func decorate(string: String, object_context) -> Penny.Text:
 
 			_:
 				break
+
+		start = m_tag.get_start() + substitution.length()
+		result.text = regex_replace_match(r_tag, m_tag, substitution)
 
 	result.tags.push(Penny.Text.Tag.new(result.text.length(), Penny.Text.Tag.MODE_CLEAR))
 
