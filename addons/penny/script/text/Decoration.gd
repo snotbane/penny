@@ -30,7 +30,7 @@ static func get_decoration_by_id(id: StringName) -> PennyDecoration:
 
 
 var require_rtl_context: bool:
-	get: return get_require_rtl_context() and not get_closable()
+	get: return get_require_rtl_context() and get_closable()
 
 
 @abstract
