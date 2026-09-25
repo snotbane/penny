@@ -18,8 +18,7 @@ var id: StringName:
 
 
 var require_rtl_context: bool:
-	get:
-		return not template.rich_push_method.is_empty() and template.closable
+	get: return template.require_rtl_context
 
 
 func _to_string() -> String:
@@ -42,7 +41,7 @@ func _to_string() -> String:
 func has_argument(arg: StringName) -> bool:
 	if args.has(arg):
 		return true
-	elif template.args.has(arg):
+	elif template.get_args().has(arg):
 		return true
 	else:
 		return false
@@ -51,8 +50,8 @@ func has_argument(arg: StringName) -> bool:
 func get_argument(arg: StringName) -> Variant:
 	if args.has(arg):
 		return args[arg]
-	elif template.args.has(arg):
-		return template.args[arg]
+	elif template.get_args().has(arg):
+		return template.get_args()[arg]
 	else:
 		printerr("Couldn't find argument '%s' in instance or decor." % arg)
 		return null
@@ -71,8 +70,6 @@ func add_argument(arg: StringName, value: Variant) -> void:
 			printerr("No decoration could be identified from the id '%s'. Make sure the desired decoration resource is located inside `res://addons/penny/decorations` and that it has a unique id." % arg)
 			return
 
-		template.populate(self)
-
 	args[arg] = value
 
 
@@ -85,10 +82,9 @@ func preprocess_end(context: Penny.Text.DecorationContext) -> void:
 
 
 ## Push to the label. This happens during compilation, but may happen multiple times as other decorations are pushed and popped.
-func push_to_rtl(context: Penny.Text.DecorationContext) -> void:
-	if template.rich_push_method:
-		context.rtl.call(template.rich_push_method)
+func build_start(context: Penny.Text.DecorationContext) -> void:
+	template.build_start(self, context)
 
 
-func pop_to_rtl(context: Penny.Text.DecorationContext) -> void:
-	pass
+func build_end(context: Penny.Text.DecorationContext) -> void:
+	template.build_end(self, context)

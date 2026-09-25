@@ -55,6 +55,12 @@ extends Resource:
 		list.clear()
 
 
+	func sort() -> void:
+		list.sort_custom((func(a: Penny.Text.Tag, b: Penny.Text.Tag) -> bool:
+			return a.position < b.position
+		))
+
+
 	func find_tag_from_instance(query: PennyDecorationInstance) -> Penny.Text.Tag:
 		for tag in list:
 			for inst in tag:
@@ -99,7 +105,7 @@ extends Resource:
 			if tag.position < start:
 				continue
 
-			elif tag.position > end:
+			elif tag.position >= end:
 				tag.position -= end - start
 				continue
 
@@ -108,6 +114,14 @@ extends Resource:
 
 		for tag in to_remove:
 			erase(tag)
+
+
+	func bump_position_range(start: int, offset: int) -> void:
+		for tag in list:
+			if tag.position < start:
+				continue
+
+			tag.position += offset
 
 
 @export_storage
@@ -171,3 +185,13 @@ func push(inst: PennyDecorationInstance, set_owner: bool = true) -> void:
 	instances.push_back(inst)
 	if set_owner:
 		inst.owner = self
+
+
+func duplicate_deep_instances_only() -> Penny.Text.Tag:
+	var result : Penny.Text.Tag = duplicate()
+	result.instances = instances.duplicate()
+	for i in instances.size():
+		result.instances[i] = instances[i].duplicate()
+		result.instances[i].owner = result
+
+	return result

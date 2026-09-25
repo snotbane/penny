@@ -118,10 +118,6 @@ def object.filters = [
 	# ## you can use this to establish decorations that apply to the entire message.
 	# "^" -> "<p>\t",
 
-	## This culls all trailing or expanded whitespace and replaces it with a single space.
-	## To artifically extend whitespace, use the <char=' ' repeat=(x)> tag.
-	"\s+" -> " "
-
 	## This is used to create a short delay after most punctuation,
 	## to mimic pauses in speech.
 	"(?<!(?:Mx|Mr|Dr|Prof)s?)((?:[.,?!:;](?!\S))|-{2,})+[\'\")\]]?(?!$)" -> "$0<delay>",
@@ -257,7 +253,7 @@ Unlike HTML tags, Penny tags are very dynamic. Here are a few examples:
 
 ##### Creating Custom Decorations
 
-In order for a decoration to be usable in your project, it must exist inside the `res://addons/penny/decorations/` directory. Create a new Resource there.
+In order for a decoration to be usable in your project, it must exist inside the `res://addons/penny/decorations/` directory. Create a new PennyDecoration Resource there, and give it a **unique** id.
 
 > [!NOTE]
 > The subfolder `res://addons/penny/decorations/builtin/` is where Penny's built in decorations are located. Please do not modify these.
@@ -304,3 +300,81 @@ Rubin
 Esther
 >	Excuse me @Rubin, you're from MARS??
 ```
+
+# Decorations
+
+## Builtin Decorations
+
+- `<b>` **Bold.**
+- `<i>` _Italic._
+- `<u>` Underline.
+
+## Preprocessed Decorations
+
+Preprocessed decorations perform their action before any other tag and can be used to modify the text which will be decorated. Because of this, it is best practice to give them their own tag, and to ensure that any non-preprocessed tags located between any preprocessed tags are completely self-contained and do not overlap, as this may cause issues. Unlike translations, they are not automatically separated.
+
+### `<if>`, `<elif>`, and `<else>`
+
+These three tags can be used to provide conditional text within a single message. `<if>` and `<elif>` each take a single boolean parameter. This functionality is primarily used to make small adjustments to a message.
+
+```penny
+var emotion = 1
+
+>	Hello, I am feeling
+		<if={ emotion == 0 }>		happy
+		<elif={ emotion == 1 }>		angry
+		<else>						sad
+	</>today. How about you?
+# Hello, I am feeling angry today. How about you?
+```
+
+> [!TIP]
+> The above formatting is not necessary for the if-block to work, but it is tremendously helpful in maintaining sanity. Here's what this looks like on a single line, just for morbid curiosity's sake:
+>
+> ```
+> Hello, I am feeling <if={ emotion == 0 }>happy<elif={ emotion == 1 }>angry<else>sad</>today.
+> ```
+>
+> Miserable.
+
+> [!NOTE]
+> `<if>` is considered a closable decoration, while `<elif>` and `<else>` are standalone tags that rely on an `<if>` tag. You can even place if-blocks inside of each other.
+
+### `<repeat>`
+
+This tag can be used to repeat a span of text, including whitespace (which is normally automatically trimmed).
+
+```penny
+var times = 10
+
+>	I'm feeling s<repeat=@times>o</> good today!
+#	I'm feeling soooooooooo good today!
+```
+
+## Miscellaneous Decorations
+
+### Combo Decorations
+
+Combo Decorations can be used to combine multiple existing decorations into a single one. These are very easy to create and require zero coding!
+
+> [!WARNING]
+> Combo Decorations are preprocessed. Therefore, while it is technically possible to add other preprocessed decorations to a Combo Decoration, this is highly discouraged. However, you can add multiple ComboDecorations.
+
+> [!NOTE]
+> Arguments can be passed to a combo decoration, and each one will be propagated to all child decorations. Therefore, if two decorations share the same argument, they will both be set. As of now, there is no way to distinguish these.
+
+### `<like>`
+
+This special kind of **Combo Decoration** will format a span of text such that it appears like another object. This can be useful if you want one of your characters to refer to another character without using their name, but still keep that other character's formatting.
+
+```penny
+>	Hello, I'm looking for <like=Rubin>your son</>.
+```
+
+> [!IMPORTANT]
+> This tag assumes that all of the following are true regarding the argument:
+>
+> - The argument is a **RAW** string. If you write it something like: `<like=@Rubin>`, this will trigger an **interpolation** and possibly translate the path, which is likely to result in an error.
+> - The argument is a path pointing to a String attribute, or object attribute (`.text` will be used).
+> - The String attribute is a raw string, or a Message containing a default translation.
+> - The default translation contains one or more tags _at the very beginning_. These tags/decorations will be the ones used to decorate the span.

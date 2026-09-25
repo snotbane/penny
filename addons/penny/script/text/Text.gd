@@ -74,7 +74,7 @@ extends RefCounted:
 					var is_open : bool = current_tag.instances.is_empty()
 
 					for inst in current_tag:
-						if inst.template.closable:
+						if inst.template.get_closable():
 							is_open = true
 						tag.push(inst, false)
 						inst.preprocess_start(self)
@@ -153,7 +153,7 @@ extends RefCounted:
 					var is_open : bool = tag.instances.is_empty()
 					for inst in current_tag:
 						tag.push(inst, false)
-						if inst.template.closable:
+						if inst.template.get_closable():
 							is_open = true
 
 						if inst.require_rtl_context:
@@ -168,7 +168,7 @@ extends RefCounted:
 						continue
 
 					for inst in open_tags.pop():
-						inst.pop_to_rtl(self)
+						inst.build_end(self)
 						if inst.require_rtl_context:
 							update_rtl_context = true
 
@@ -192,7 +192,7 @@ extends RefCounted:
 						if popped_inst_tags[inst].instances.is_empty():
 							open_tags.erase(popped_inst_tags[inst])
 
-						inst.pop_to_rtl(self)
+						inst.build_end(self)
 						if inst.require_rtl_context:
 							update_rtl_context = true
 
@@ -200,7 +200,7 @@ extends RefCounted:
 				Tag.MODE_CLEAR:
 					for tag in open_tags:
 						for inst in tag:
-							inst.pop_to_rtl(self)
+							inst.build_end(self)
 							if inst.require_rtl_context:
 								update_rtl_context = true
 
@@ -215,7 +215,7 @@ extends RefCounted:
 
 			for tag in open_tags:
 				for inst: PennyDecorationInstance in current_tag:
-					inst.push_to_rtl(self)
+					inst.build_start(self)
 
 			i += 1
 

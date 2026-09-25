@@ -29,15 +29,21 @@ def Rubin = new Character
 
 label start
 
-var emotion = 2
+>	I have something <important>important</important> to say.
+
+# var emotion = 2
 
 # >	Hello, <b>world. <i>How</b> are</i> you today?
 
->	I am feeling
-		<if={ emotion == 0 }>happy
-		<elif={ emotion == 1 }>sad
-		<else>angry</>
-	today.
+# >	I am feeling
+# 		<if={ emotion == 0 }>happy
+# 		<elif={ emotion == 1 }>sad
+# 		<else>angry</>
+# 	today.
+
+
+# >	I am feeling s<repeat=10>o</> good today!
+# >	I am feeling s<repeat=10> </> good today!
 
 
 #	>	Hello

@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="PennyDecorationCombo" format=3 uid="uid://c8ujv0p0hkvda"]
+
+[ext_resource type="Script" uid="uid://dbsv7cx3cgl1k" path="res://addons/penny/script/text/DecorationCombo.gd" id="1_bqukr"]
+[ext_resource type="Script" uid="uid://13d2x85igrb7" path="res://addons/penny/script/text/DecorationInstance.gd" id="1_w7nud"]
+[ext_resource type="Resource" uid="uid://djr3o66tn5xl1" path="res://addons/penny/decorations/builtin/bbcode/bold.res" id="2_eucvw"]
+[ext_resource type="Resource" uid="uid://chrcm571a18h5" path="res://addons/penny/decorations/builtin/bbcode/italics.res" id="3_8kno4"]
+
+[sub_resource type="Resource" id="Resource_ig7tw"]
+script = ExtResource("1_w7nud")
+template = ExtResource("2_eucvw")
+metadata/_custom_type_script = "uid://13d2x85igrb7"
+
+[sub_resource type="Resource" id="Resource_0xm2m"]
+script = ExtResource("1_w7nud")
+template = ExtResource("3_8kno4")
+metadata/_custom_type_script = "uid://13d2x85igrb7"
+
+[resource]
+script = ExtResource("1_bqukr")
+instances = Array[ExtResource("1_w7nud")]([SubResource("Resource_ig7tw"), SubResource("Resource_0xm2m")])
+id = &"important"
+metadata/_custom_type_script = "uid://dbsv7cx3cgl1k"
