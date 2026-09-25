@@ -42,19 +42,22 @@ func get_require_rtl_context() -> bool:
 
 func preprocess_start(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
 	for child in instances:
-		child.template.preprocess_start(child, context)
+		inst.args.merge(child.args)
+
+	for child in instances:
+		child.template.preprocess_start(inst, context)
 
 
 func preprocess_end(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
 	for child in instances:
-		child.template.preprocess_end(child, context)
+		child.template.preprocess_end(inst, context)
 
 
 func build_start(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
 	for child in instances:
-		child.template.build_start(child, context)
+		child.template.build_start(inst, context)
 
 
 func build_end(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
 	for child in instances:
-		child.template.build_end(child, context)
+		child.template.build_end(inst, context)
