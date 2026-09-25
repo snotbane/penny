@@ -69,7 +69,7 @@ func process(__source__) -> Variant:
 	return ""
 
 
-func purify(string: String, t: StringName) -> Variant:
+func purify(string: String, t: StringName) -> Penny.Text:
 	translation = t
 
 	if object_context:

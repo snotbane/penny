@@ -106,8 +106,6 @@ func append_missing_translations(other: Penny.Message) -> void:
 		translations[t] = translation_default
 
 
-
-
 ## Returns a copy of this [Penny.Message] where all translations have been parsed.
 func purified(object_context) -> Penny.Message:
 	var parser := PennyScript.MessageParser.new(object_context, object_context)

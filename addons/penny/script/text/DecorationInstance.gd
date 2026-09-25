@@ -10,6 +10,10 @@ var template: PennyDecoration
 var args: Dictionary[StringName, Variant]
 
 
+## Extra data not passed to any environment or context; for internal use only.
+var data: Dictionary
+
+
 var owner: Penny.Text.Tag
 
 
@@ -19,6 +23,11 @@ var id: StringName:
 
 var require_rtl_context: bool:
 	get: return template.require_rtl_context
+
+
+func _init() -> void:
+	args = {}
+	data = {}
 
 
 func _to_string() -> String:
@@ -41,7 +50,7 @@ func _to_string() -> String:
 func has_argument(arg: StringName) -> bool:
 	if args.has(arg):
 		return true
-	elif template.get_args().has(arg):
+	elif template.get_default_args().has(arg):
 		return true
 	else:
 		return false
@@ -50,8 +59,8 @@ func has_argument(arg: StringName) -> bool:
 func get_argument(arg: StringName) -> Variant:
 	if args.has(arg):
 		return args[arg]
-	elif template.get_args().has(arg):
-		return template.get_args()[arg]
+	elif template.get_default_args().has(arg):
+		return template.get_default_args()[arg]
 	else:
 		printerr("Couldn't find argument '%s' in instance or decor." % arg)
 		return null

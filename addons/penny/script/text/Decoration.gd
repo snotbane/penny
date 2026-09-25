@@ -34,7 +34,7 @@ var require_rtl_context: bool:
 
 
 @abstract
-func get_args() -> Dictionary[StringName, Variant]
+func get_default_args() -> Dictionary[StringName, Variant]
 
 @abstract
 func get_closable() -> bool

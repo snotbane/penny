@@ -8,10 +8,10 @@ extends PennyDecoration
 var instances : Array[PennyDecorationInstance]
 
 
-func get_args() -> Dictionary[StringName, Variant]:
+func get_default_args() -> Dictionary[StringName, Variant]:
 	var result : Dictionary[StringName, Variant] = {}
 	for inst in instances:
-		result.merge(inst.template.get_args())
+		result.merge(inst.template.get_default_args())
 
 	return result
 
@@ -61,3 +61,10 @@ func build_start(inst: PennyDecorationInstance, context: Penny.Text.DecorationCo
 func build_end(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
 	for child in instances:
 		child.template.build_end(inst, context)
+
+
+func encounter_start(inst: PennyDecorationInstance) -> void:
+	printerr("Unimplemented!")
+
+func encounter_end(inst: PennyDecorationInstance) -> void:
+	printerr("Unimplemented!")

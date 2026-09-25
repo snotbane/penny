@@ -3,9 +3,9 @@ class_name PennyDecorationSingle
 extends PennyDecoration
 
 ## Defines the default values for each argument. If an argument is passed that does not match one of these keys, it will print an error, and ignore it.
-@export var args : Dictionary[StringName, Variant] = {}
-func get_args() -> Dictionary[StringName, Variant]:
-	return args
+@export var default_args : Dictionary[StringName, Variant] = {}
+func get_default_args() -> Dictionary[StringName, Variant]:
+	return default_args
 
 
 ## If enabled, the element may be closed using `</>` (closing element). Otherwise, the element will be treated as a standalone.

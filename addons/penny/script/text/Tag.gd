@@ -84,7 +84,7 @@ extends Resource:
 				if inst.id != &"if":
 					continue
 
-				# if inst.has_argument(&"conditional_end"):
+				# if inst.data.has(&"conditional_end"):
 				# 	continue
 
 				return inst
