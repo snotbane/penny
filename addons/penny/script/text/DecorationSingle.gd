@@ -22,9 +22,6 @@ func get_prod_stop() -> bool:
 ## This is the name of the method to call. If this is empty, the decoration will be invisible.
 @export var rich_push_method : StringName
 
-## Also, if this effect is a [PennyDecorationTextEffect], it will be handled accordingly.
-@export var effect : RichTextEffect
-
 
 func get_require_rtl_context() -> bool:
 	return not rich_push_method.is_empty()
@@ -32,4 +29,4 @@ func get_require_rtl_context() -> bool:
 
 func build_start(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
 	if rich_push_method:
-		context.rtl.call(rich_push_method)
+		context.rtl.callv(rich_push_method, inst.args.values())

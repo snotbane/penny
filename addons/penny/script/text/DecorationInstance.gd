@@ -18,7 +18,7 @@ var owner: Penny.Text.Tag
 
 
 var id: StringName:
-	get: return args.keys()[0] if args else &""
+	get: return template.id
 
 
 var require_rtl_context: bool:
@@ -47,23 +47,18 @@ func _to_string() -> String:
 	return " ".join(results)
 
 
-func has_argument(arg: StringName) -> bool:
-	if args.has(arg):
-		return true
-	elif template.get_default_args().has(arg):
-		return true
-	else:
-		return false
+## Sets the id if not already set.
+func set_template_from_id(id: StringName) -> void:
+	if template != null:
+		return
 
-
-func get_argument(arg: StringName) -> Variant:
-	if args.has(arg):
-		return args[arg]
-	elif template.get_default_args().has(arg):
-		return template.get_default_args()[arg]
-	else:
-		printerr("Couldn't find argument '%s' in instance or decor." % arg)
-		return null
+	template = PennyDecoration.get_decoration_by_id(id)
+	assert(
+		template != null,
+		"No decoration could be identified from the id '%s'. Make sure the desired decoration resource is located inside `res://addons/penny/decorations` and that it has a unique id." % [
+			id
+		]
+	)
 
 
 func add_argument(arg: StringName, value: Variant) -> void:
@@ -73,13 +68,13 @@ func add_argument(arg: StringName, value: Variant) -> void:
 		])
 		return
 
-	if args.is_empty():
-		template = PennyDecoration.get_decoration_by_id(arg)
-		if template == null:
-			printerr("No decoration could be identified from the id '%s'. Make sure the desired decoration resource is located inside `res://addons/penny/decorations` and that it has a unique id." % arg)
-			return
-
 	args[arg] = value
+
+
+## Sets args to a new dictionary with all arguments in the proper order.
+func compile_args() -> void:
+	# args.merge(template.get_default_args())
+	args = template.get_default_args().merged(args, true)
 
 
 func preprocess_start(context: Penny.Text.DecorationContext) -> void:

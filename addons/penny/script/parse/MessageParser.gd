@@ -334,34 +334,41 @@ func decorate(string: String, object_context) -> Penny.Text:
 
 						match r_arg:
 							REGEX_DECORATION_ARGUMENT_EXPRESS:
+								inst.set_template_from_id(m_arg.get_string(1))
 								inst.add_argument(
 									m_arg.get_string(1),
 									Penny.Express.new_or_literal_from_string(m_arg.get_string(2))
 								)
 
 							REGEX_DECORATION_ARGUMENT_STRING:
+								inst.set_template_from_id(m_arg.get_string(1))
 								inst.add_argument(
 									m_arg.get_string(1),
 									m_arg.get_string(3)
 								)
 
 							REGEX_DECORATION_ARGUMENT_SINGLE:
+								inst.set_template_from_id(m_arg.get_string(1))
 								inst.add_argument(
 									m_arg.get_string(1),
 									Penny.Express.new_or_literal_from_string(m_arg.get_string(2))
 								)
 
 							REGEX_DECORATION_ARGUMENT_STANDALONE:
-								inst.add_argument(
-									m_arg.get_string(1),
-									true
-								)
+								if inst.template == null:
+									inst.set_template_from_id(m_arg.get_string(1))
+								else:
+									inst.add_argument(
+										m_arg.get_string(1),
+										true
+									)
 
 							_:
 								break
 
 						start_arg = m_arg.get_end()
 
+					inst.compile_args()
 					tag.push(inst)
 
 			_:

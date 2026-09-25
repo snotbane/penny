@@ -1,8 +1,7 @@
 
 def Character = new object
-	.text => <b|i>@.name</>
+	.text => <b|color=@.color>@.name</>
 	.name => @.f_name @.l_name
-	.filter = "asdf" -> "whassup"
 
 
 def Beatrix = new Character
@@ -12,6 +11,7 @@ def Beatrix = new Character
 
 
 def Esther = new Character
+	.color = #0000ff
 	.f_name => Esther
 		[ru] Эстер
 		[ja] エスター
@@ -21,6 +21,7 @@ def Esther = new Character
 
 def Rubin = new Character
 	.age = 24
+	.color = #ff0000
 	.f_name => Rubin
 		[ru] Рубин
 		[ja] ルービン
@@ -30,7 +31,7 @@ def Rubin = new Character
 
 label start
 
->	I'm looking for <like=Rubin>your</> son.
+>	I'm looking for <like>the fish</> and <like=Esther>the dragon</>.
 
 # >	I have something <important>important</> to say.
 

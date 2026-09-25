@@ -171,9 +171,10 @@ var scene: PackedScene:
 		)
 		return load(get_data(&"scene"))
 
+
 ## Name for use when interpolating [Penny.Message]s.
 var display_text: Variant:
-	get: return get_data(&"text", "Unnamed_Penny_Object")
+	get: return Penny.Evaluable.evaluate_any(get_data(&"text", "Unnamed_Penny_Object"), self)
 	set(value): set_data_local(&"text", value)
 
 
