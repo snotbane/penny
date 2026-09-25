@@ -1,5 +1,6 @@
 
 def Character = new object
+	.text => <b|i>@.name</>
 	.name => @.f_name @.l_name
 	.filter = "asdf" -> "whassup"
 
@@ -29,7 +30,9 @@ def Rubin = new Character
 
 label start
 
->	I have something <important>important</> to say.
+>	I'm looking for <like=Rubin>your</> son.
+
+# >	I have something <important>important</> to say.
 
 # var emotion = 2
 

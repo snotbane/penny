@@ -11,7 +11,7 @@ var instances : Array[PennyDecorationInstance]
 func get_default_args() -> Dictionary[StringName, Variant]:
 	var result : Dictionary[StringName, Variant] = {}
 	for inst in instances:
-		result.merge(inst.template.get_default_args())
+		result.merge(inst.args.merged(inst.template.get_default_args()))
 
 	return result
 
