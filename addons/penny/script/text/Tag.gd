@@ -10,6 +10,8 @@ enum {
 
 class Stack \
 extends Resource:
+	static var EMPTY: Stack = Stack.new()
+
 	@export_storage
 	var list: Array[Penny.Text.Tag]
 

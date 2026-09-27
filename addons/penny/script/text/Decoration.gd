@@ -40,7 +40,7 @@ func get_default_args() -> Dictionary[StringName, Variant]
 func get_closable() -> bool
 
 @abstract
-func get_prod_stop() -> bool
+func get_poke_stop() -> bool
 
 @abstract
 func get_require_rtl_context() -> bool

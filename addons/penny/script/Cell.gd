@@ -7,6 +7,8 @@ static var NARRATOR : Penny.Cell
 static var PROMPT_ASK : Penny.Cell
 static var PROMPT_SAY : Penny.Cell
 
+static var FILTER_START := Penny.Text.Filter.new(r"^", "<dropin|dropout>")
+
 static func _static_init() -> void:
 	ROOT = Penny.Cell.new(&"ROOT", null)
 	OBJECT = Penny.Cell.new(&"object", null)
@@ -22,7 +24,9 @@ static func _static_init() -> void:
 	OBJECT.set_data_local(&"text", Penny.Express.new_or_literal_from_string(".name ?? \"Unnamed_Penny_Object\""))
 	OBJECT.set_data_local(&"prompt_ask", Penny.Path.to(PROMPT_ASK))
 	OBJECT.set_data_local(&"prompt_say", Penny.Path.to(PROMPT_SAY))
+	OBJECT.set_data_local(&"filter_start", FILTER_START)
 	OBJECT.set_data_local(&"filters", [
+		Penny.Path.new_from_string(".filter_start"),
 		Penny.Text.Filter.new(r"(?<!(?:Mx|Mr|Dr|Prof)s?)((?:[.,?!:;](?!\S))|-{2,})+[\'\")\]]?(?!$)", "$0<delay>"),
 		Penny.Text.Filter.new(r"\.{2,}", "<delay=0.2 | speed=5>$0</>"),
 		Penny.Text.Filter.new(r"(?<!\\)\|", "<delay>"),

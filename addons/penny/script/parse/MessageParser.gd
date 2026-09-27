@@ -176,7 +176,9 @@ func filtrate(string: String, filter_context) -> String:
 
 	assert(filters is Array, "The object value 'filters' must be an Array consisting only of [Penny.Text.Filter]s.")
 
-	for filter: Penny.Text.Filter in filters:
+	for filter in filters:
+		filter = Penny.Evaluable.evaluate_any(filter, filter_context)
+
 		assert(filter is Penny.Text.Filter, "Only [Penny.Text.Filter]s are supported for filtration. Use the syntax `\"pattern\" -> replace` to create one. `pattern` must be a String, and `replace` can be anything.")
 
 		string = filter.process(string, translation)

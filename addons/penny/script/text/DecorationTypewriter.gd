@@ -1,6 +1,7 @@
-@tool
-class_name PennyDecorationSingle
+## A decoration specifically for use in a Typewriter.
+class_name PennyDecorationTypewriter
 extends PennyDecoration
+
 
 ## Defines the default values for each argument. If an argument is passed that does not match one of these keys, it will print an error, and ignore it.
 @export var default_args : Dictionary[StringName, Variant] = {}
@@ -19,14 +20,6 @@ func get_poke_stop() -> bool:
 	return poke_stop
 
 
-## This is the name of the method to call. If this is empty, the decoration will be invisible.
-@export var rich_push_method : StringName
-
-
+@export var effect: RichTextEffect
 func get_require_rtl_context() -> bool:
-	return not rich_push_method.is_empty()
-
-
-func build_start(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
-	if rich_push_method:
-		context.rtl.callv(rich_push_method, inst.args.values())
+	return effect != null

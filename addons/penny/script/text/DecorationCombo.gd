@@ -24,9 +24,9 @@ func get_closable() -> bool:
 	return false
 
 
-func get_prod_stop() -> bool:
+func get_poke_stop() -> bool:
 	for inst in instances:
-		if inst.template.get_prod_stop():
+		if inst.template.get_poke_stop():
 			return true
 
 	return false

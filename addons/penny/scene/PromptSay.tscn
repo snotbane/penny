@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bdl4as1ftjk0s"]
 
 [ext_resource type="Script" uid="uid://khsyo06h0s31" path="res://addons/penny/scene/PromptSay.gd" id="1_bab8c"]
+[ext_resource type="Script" uid="uid://cdydlk88x2kjo" path="res://addons/penny/scene/typewriter/TypewriterTextLabel.gd" id="2_pnqov"]
 
 [node name="prompt_say" type="Control" unique_id=725538249]
 layout_mode = 3
@@ -20,7 +21,7 @@ grow_horizontal = 2
 grow_vertical = 2
 flat = true
 
-[node name="rich_text_label" type="RichTextLabel" parent="." unique_id=1268043343]
+[node name="typewriter_text_label" type="RichTextLabel" parent="." unique_id=1907981000]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -28,7 +29,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
-mouse_filter = 2
-bbcode_enabled = true
+text = "The more you do it, the easier it becomes. It's almost like something out of a fairytale book. And I will hypnotize that just a little bit. You have to make those little noises or it won't work. Go out on a limb - that's where the fruit is. Everyone is going to see things differently - and that's the way it should be.
+
+All it takes is a little change of perspective. Maybe there's a little stream right here. How to paint. That's easy. What to paint. That's much harder. From all of us here, I want to wish you happy painting and God bless, my friends. Let's make some happy little clouds in our world. We'll make some happy little bushes here.
+
+Sometimes those accidents turn out to be the best part. We might as well make some Almighty mountains today as well, what the heck. You're the boss on this canvas. Let that brush dance around there and play. Don't kill all your dark areas - you need them to show the light. When you do it your way you can go anywhere you choose."
 fit_content = true
-scroll_active = false
+horizontal_alignment = 3
+justification_flags = 35
+visible_characters_behavior = 1
+script = ExtResource("2_pnqov")
+metadata/_custom_type_script = "uid://cdydlk88x2kjo"

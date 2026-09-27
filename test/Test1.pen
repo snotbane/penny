@@ -31,13 +31,13 @@ def Rubin = new Character
 
 label start
 
->	I'm looking for <like>the fish</> and <like=Esther>the dragon</>.
+# >	I'm looking for <like>the fish</> and <like=Esther>the dragon</>.
 
 # >	I have something <important>important</> to say.
 
-# var emotion = 2
+>	Hello, <b>world. <i>How</b> are</i> you today?
 
-# >	Hello, <b>world. <i>How</b> are</i> you today?
+# var emotion = 2
 
 # >	I am feeling
 # 		<if={ emotion == 0 }>happy

@@ -30,9 +30,18 @@ func print_with_tags() -> void:
 	print("‹ %s ›" % result)
 
 
-func push_to_rich_text_label(rtl: RichTextLabel) -> void:
+func push_to_rich_text_label(rtl: RichTextLabel, wait : bool = true):
+	if rtl is TypewriterTextLabel:
+		rtl.reset()
+
 	var decoration_context := DecorationContext.new(self, rtl, null)
 	decoration_context.process()
+
+	if rtl is TypewriterTextLabel:
+		if wait:
+			await rtl.present(self)
+		else:
+			rtl.present(self)
 
 
 class DecorationContext \
@@ -215,6 +224,7 @@ extends RefCounted:
 
 			for tag in open_tags:
 				for inst: PennyDecorationInstance in current_tag:
+					print("inst :: %s" % [ inst ])
 					inst.build_start(self)
 
 			i += 1

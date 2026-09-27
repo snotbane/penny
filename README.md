@@ -113,34 +113,38 @@ def object.filters = [
 The default filters are as follows:
 
 ```penny
-def object.filters = [
-	# ## Match the start of the string.
-	# ## you can use this to establish decorations that apply to the entire message.
-	# "^" -> "<p>\t",
+def object
+	## This matches to the start of the string. It is listed as a separate variable so that it can be modified without having to modify the filters array.
+	.filter_start = "^" -> "<dropin|dropout>"
 
-	## This is used to create a short delay after most punctuation,
-	## to mimic pauses in speech.
-	"(?<!(?:Mx|Mr|Dr|Prof)s?)((?:[.,?!:;](?!\S))|-{2,})+[\'\")\]]?(?!$)" -> "$0<delay>",
+	.filters = [
+		.filter_start,
 
-	## Makes ellipses print slowly.
-	"\.{2,}" -> "<delay=0.2 | speed=5>$0</>",
+		## This is used to create a short delay after most punctuation,
+		## to mimic pauses in speech.
+		"(?<!(?:Mx|Mr|Dr|Prof)s?)((?:[.,?!:;](?!\S))|-{2,})+[\'\")\]]?(?!$)" -> "$0<delay>",
 
-	## Converts pipes to delays.
-	"(?<!\\)\|" -> "<delay>",
+		## Makes ellipses print slowly.
+		"\.{2,}" -> "<delay=0.2 | speed=5>$0</>",
 
-	## Converts slashes to waits.
-	"(?<!\\)\/" -> "<wait>",
+		## Converts pipes to delays.
+		"(?<!\\)\|" -> "<delay>",
 
-	## Converts individual dashes to em dashes.
-	"---" -> "—",
-	"--" -> "–",
+		## Converts slashes to waits.
+		"(?<!\\)\/" -> "<wait>",
 
-	## Replaces normal quotes with rich quotes
-	'(\S)"' -> '$1”',
-	'"' -> '“',
-	"(\S)'" -> "$1’",
-	"'" -> "‘",
-]
+		## Converts individual dashes to em dashes.
+		"---" -> "—",
+		"--" -> "–",
+
+		## Replaces normal quotes with rich quotes
+		'(\S)"' -> '$1”',
+		'"' -> '“',
+		"(\S)'" -> "$1’",
+		"'" -> "‘",
+	]
+
+
 ```
 
 > [!IMPORTANT]
@@ -350,6 +354,175 @@ var times = 10
 >	I'm feeling s<repeat=@times>o</> good today!
 #	I'm feeling soooooooooo good today!
 ```
+
+## Typewriter Decorations
+
+These are special decorations which can only be used with a [`TypewriterTextLabel`](addons/penny/scene/typewriter/TypewriterTextLabel.gd). Any decoration which affects the timing of how characters being printed out, or audio, should be of this type.
+
+- [`<advance/>`](#advance)
+- [`<delay/>`](#delay)
+- [`<dropin|dropout>`](#dropin-and-dropout)
+- [`<lock>`](#lock)
+- [`<pokestop/>`](#pokestop)
+- [`<rate>`](#rate)
+- [`<retcon>`](#retcon)
+- [`<sfx>`](#sfx)
+- [`<skip>`](#skip)
+- [`<speed>`](#speed)
+- [`<stroke>`](#stroke)
+- [`<volume>`](#volume)
+- [`<wait/>`](#wait)
+
+### `<advance/>`
+
+Automatically aborts the typewriter and emits the `advanced` signal, which, when used with Penny, continues execution.
+
+```penny
+>	I thought you were going to--<advance>
+>	Shh! Not in front of mom!
+```
+
+> [!NOTE]
+> This can be placed anywhere in the text, but is only really useful at the end of a message.
+
+### `<delay/>`
+
+Waits a constant amount of time before continuing.
+
+```penny
+>	I<delay> love<delay> you.
+```
+
+There is a default filter in place which automatically converts pipe characters `|` to the default delay. The above text can be rewritten as:
+
+```penny
+>	I| love| you.
+```
+
+You can also customize the amount of time to wait, like so:
+
+```penny
+>	I...<delay=2.5> love<delay=1> you.
+```
+
+### `<dropin>` and `<dropout>`
+
+These are examples of decorations which allow the text to appear and disappear using a [`RichTextEffect`](<>). You may modify these to your liking or use them as a template. With decorations like this, it is most applicable to have them span the entirety of your message, and furthermore, to add them to a filter. These ones are part of the default attribute `object.filter_start`.
+
+```penny
+>	<dropin|dropout>Hello, world!</>
+```
+
+### `<lock>`
+
+Defines a span of text during which user input to the typewriter will be disabled. The lock will always be released when the text finishes printing. This can be used to ensure the user does not accidentally advance through important text.
+
+```penny
+>	I thought you were going to be <lock>at the party.</>
+```
+
+> [!NOTE]
+> This is considered a **poke stop**, meaning that if the user attempts to skip this text, the text will skip to this point and then continue as normal.
+
+### `<pokestop/>`
+
+Defines a poke stop. What this means is, if the user attempts to skip this text, the text will skip all the way until it reaches the first poke stop, or if there are none, to the end of the text. This is not the only tag which can create a poke stop.
+
+```penny
+>	Where are you going? <pokestop>To the supermarket? <pokestop>I thought so.
+```
+
+### `<rate>`
+
+Defines a span of text which should print out at a specific rate. The argument passed will be a float measuring the characters per second to print out. This will override all other variables influencing typewriter speed, including user settings and `<speed>` decorations. For setting a relative print speed which factors in user settings, use [`<speed>`](#speed).
+
+### `<retcon>`
+
+This decoration defines a span of text which will be printed out, and then un-printed out in reverse, before continuing.
+
+```penny
+>	But... I thought you were going to <retcon>the movies</>the grocery store.
+```
+
+> [!TIP]
+> Good practice to place a `<delay>` at the end of the span, so that the reader has time to read the retconned text.
+
+### `<sfx>`
+
+Use this to play a one-shot sound effect at this moment. If used as a span, the span of text will not advance until the audio has completed, regardless of the speed of the text. This functionality can be used to ensure that voice over audio syncs up with subtitles.
+
+```penny
+>	Look out! He's got a hammer! <sfx="bonk.ogg"/>Yeowch! He got me!
+>	Look out! He's got a hammer! <sfx="bonk.ogg">Yeowch! He got me!
+```
+
+> [!NOTE]
+> These two lines are different. The first one will finish playing the sound before continuing because the tag is an open-and-shut tag; whereas the second will continue printing out text with no delay because the end of the tag is implicitly at the end of the string. In this case, the text will not finish printing until the sound is finished playing, or until the user pokes the text.
+
+There are several parameters which can be passed:
+
+```penny
+>	<
+		sfx="voice_over.ogg"
+		channel=0
+		source=.voice
+		volume=1.0
+		wait=true
+	>
+```
+
+- `sfx` defines the audio resource path to play. Must be a String.
+- `channel` (default is `0`) Can be an `int` or `String` referring to a voice channel
+- `source` (default is `.voice`) Can be a path to a `Cell` with an instance, which must be an `AudioStreamPlayer` of some kind, and tells that Node to play the audio from it. Note that the default refers to the currently speaking character's `.voice` Cell. If it is null, this will use the TypewriterTextLabel's default AudioStreamPlayer.
+- `volume` is a float percentage which determines the volume of the sound.
+- `wait` (default is `true`) determines if the span of text must complete before text can continue.
+
+### `<skip>`
+
+Defines a span of text which will instantly print out the moment it is encountered. Effectively the same thing as using `<speed=INF>`, but more direct/robust.
+
+```penny
+>	And the winner is... <skip>@Rubin!</> Congratulations!
+```
+
+### `<speed>`
+
+Defines a span of text which should be printed at a different relative speed. The argument passed will be a percentage of the base speed. For overriding the base speed, use [`<rate>`](#rate).
+
+### `<stroke>`
+
+Defines a span of text which overrides the audio played when typing per character. The argument passed should evaluate to a String path which points to an `AudioStream` resource, which will be used to print out characters. Usually this is a path relative to the speaker.
+
+```penny
+>	<stroke=.sad>I thought I could trust you... <stroke=.angry>but you HURT me!
+```
+
+### `<volume>`
+
+Defines a span of text which alters the volume of per-character audio. The argument passed should be a percentage float (0.0-1.0) representing linear volume. This does NOT affect the audio in any `<sfx>` tags.
+
+### `<wait/>`
+
+This tag waits for the user to **poke** (interact with) the text before continuing.
+
+```penny
+>	I never knew him.<wait> ...But I did know his father.
+```
+
+There is a default filter in place which automatically converts slash characters `/` to the default poke. The above text can be rewritten as:
+
+```penny
+>	I never knew him./ ...But I did know his father.
+```
+
+You can also pass a string argument to wait for a specific signal. This can be used to customize specific conditions, e.g. in a tutorial. The default argument is `poke`, which TypewriterTextLabels handle by default. The argument should be a path that points to a Cell, which has an instance, and a signal of that name.
+
+```penny
+>	Let's learn how to fight!<wait> First, swing your sword.<wait=player.sword_swing> Great! Now jab!
+```
+
+> [!TIP]
+> The default method for sensing a poke is simply to wait for the user to click anywhere on the screen. But this can be changed to any method by connecting signals from any node to `TypewriterTextLabel.receive_poke()`. But in most cases, you'll usually want to separate stuff like this across multiple text boxes.
 
 ## Miscellaneous Decorations
 
