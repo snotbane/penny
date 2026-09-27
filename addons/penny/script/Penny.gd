@@ -96,12 +96,11 @@ func _ready() -> void:
 		return
 
 	for path in get_paths_in_folder(["tres", "res"], "res://addons/penny/decorations"):
-		var decoration: PennyDecoration = load_resource_editor_safe(path)
-		if decoration == null:
-			printerr("Failed loading decoration at path: '%s'" % path)
+		var resource: Resource = load_resource_editor_safe(path)
+		if resource is not PennyDecoration:
 			continue
-
-		PennyDecoration.add_decoration_to_registry(decoration)
+		
+		PennyDecoration.add_decoration_to_registry(resource)
 
 
 	var temp_player := PennyPlayer.new(true)

@@ -10,6 +10,8 @@ enum {
 }
 
 
+
+
 var present_delay_timer: Timer
 ## The amount of time to wait before presenting text.
 @export_range(0.0, 1.0, 0.01, "or_greater")
@@ -19,6 +21,22 @@ var present_delay: float = 0.5:
 
 		if present_delay > 0.1:
 			present_delay_timer.wait_time = value
+
+
+static var rate_base: float:
+	get: return ProjectSettings.get_setting("penny/typewriter/rate_base", 100.0)
+	set(value): ProjectSettings.set_setting("penny/typewriter/rate_base", value)
+
+var rate_stack: PackedFloat32Array
+
+var speed_stack: PackedFloat32Array
+
+var speed: float:
+	get:
+		var rate: float = rate_stack[-1] if rate_stack else rate_base
+		var scalar: float = speed_stack[-1] if speed_stack else 1.0
+
+		return rate * scalar
 
 
 signal playing_changed
@@ -77,9 +95,6 @@ var visible_characters_max: int
 var visible_characters_partial: float = 0.0
 
 
-var speed: float = 1.0
-
-
 var time_elapsed_stamp: int
 var time_prepped_stamp: int
 var characters_time_stamps: PackedInt32Array
@@ -105,11 +120,14 @@ func _ready() -> void:
 	visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
 
 
+var processing: bool = false
 func _process(delta: float) -> void:
 	time_elapsed_stamp = Time.get_ticks_usec() - time_elapsed_stamp
 
-	if typing:
+	if typing and not processing:
+		processing = true
 		await add_visible_characters_partial(speed * delta)
+		processing = false
 
 
 
@@ -161,7 +179,7 @@ func add_visible_characters_partial(value: float):
 		visible_characters_partial = visible_characters_max
 		return
 
-	var visible_characters_target := clampi(floori(value), 0, visible_characters_max)
+	var visible_characters_target := clampi(floori(visible_characters_partial), 0, visible_characters_max)
 
 	if visible_characters == visible_characters_target:
 		return
