@@ -71,9 +71,9 @@ func build_end(inst: PennyDecorationInstance, context: Penny.Text.DecorationCont
 	pass
 
 
-func encounter_start(inst: PennyDecorationInstance) -> void:
+func encounter_start(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel):
 	pass
 
 
-func encounter_end(inst: PennyDecorationInstance) -> void:
+func encounter_end(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel):
 	pass

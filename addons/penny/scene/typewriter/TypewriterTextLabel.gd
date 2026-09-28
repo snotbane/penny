@@ -75,10 +75,10 @@ var source: Variant:
 
 		if source is Penny.Text:
 			source_text = source.text
-			source_tags = source.tags
+			source_tags = source.tags.get_indexed_dict()
 		else:
 			source_text = value
-			source_tags = Penny.Text.Tag.Stack.EMPTY
+			source_tags = {}
 
 		text = source_text
 		visible_characters_max = get_total_character_count()
@@ -87,7 +87,7 @@ var source: Variant:
 
 
 var source_text: String
-var source_tags: Penny.Text.Tag.Stack
+var source_tags: Dictionary
 
 
 var visible_characters_max: int
@@ -198,5 +198,23 @@ func add_visible_characters_partial(value: float):
 
 	visible_characters_partial = float(visible_characters) + fmod(visible_characters_target, 1.0)
 
+
 func _handle_elements():
-	pass
+	if not source_tags.has(visible_characters):
+		return
+
+	for tags: Array in source_tags[visible_characters]:
+		for tag: Penny.Text.Tag in tags:
+			match tag.mode:
+				Penny.Text.Tag.MODE_PUSH:
+					for inst: PennyDecorationInstance in tag:
+						await inst.encounter_start(self)
+
+				Penny.Text.Tag.MODE_POP:
+					for inst: PennyDecorationInstance in tag:
+						await inst.encounter_end(self)
+
+				Penny.Text.Tag.MODE_PUSH_POP:
+					for inst: PennyDecorationInstance in tag:
+						await inst.encounter_start(self)
+						await inst.encounter_end(self)

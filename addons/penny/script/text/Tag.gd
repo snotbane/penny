@@ -4,6 +4,7 @@ extends Resource
 
 enum {
 	MODE_PUSH,
+	MODE_PUSH_POP,
 	MODE_POP,
 	MODE_CLEAR,
 }
@@ -61,6 +62,18 @@ extends Resource:
 		list.sort_custom((func(a: Penny.Text.Tag, b: Penny.Text.Tag) -> bool:
 			return a.position < b.position
 		))
+
+
+	func get_indexed_dict() -> Dictionary:
+		var result := {}
+
+		for tag in list:
+			if not result.has(tag.position):
+				result[tag.position] = []
+
+			result[tag.position].push_back(tag)
+
+		return result
 
 
 	func find_tag_from_instance(query: PennyDecorationInstance) -> Penny.Text.Tag:
@@ -163,6 +176,9 @@ func _to_string() -> String:
 	match mode:
 		MODE_PUSH:
 			result = "<%s>"
+
+		MODE_PUSH_POP:
+			result = "<%s/>"
 
 		MODE_POP:
 			result = "</%s>"

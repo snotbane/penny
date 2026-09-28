@@ -47,7 +47,6 @@ func preprocess_start(inst: PennyDecorationInstance, context: Penny.Text.Decorat
 	for child in instances:
 		child.template.preprocess_start(inst, context)
 
-
 func preprocess_end(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
 	for child in instances:
 		child.template.preprocess_end(inst, context)
@@ -56,15 +55,15 @@ func preprocess_end(inst: PennyDecorationInstance, context: Penny.Text.Decoratio
 func build_start(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
 	for child in instances:
 		child.template.build_start(inst, context)
-
-
 func build_end(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
 	for child in instances:
 		child.template.build_end(inst, context)
 
 
-func encounter_start(inst: PennyDecorationInstance) -> void:
-	printerr("Unimplemented!")
+func encounter_start(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel) -> void:
+	for child in instances:
+		child.template.encounter_start(inst, typewriter)
 
-func encounter_end(inst: PennyDecorationInstance) -> void:
-	printerr("Unimplemented!")
+func encounter_end(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel) -> void:
+	for child in instances:
+		child.template.encounter_end(inst, typewriter)

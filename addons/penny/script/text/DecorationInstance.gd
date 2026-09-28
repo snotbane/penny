@@ -80,7 +80,6 @@ func compile_args() -> void:
 func preprocess_start(context: Penny.Text.DecorationContext) -> void:
 	template.preprocess_start(self, context)
 
-
 func preprocess_end(context: Penny.Text.DecorationContext) -> void:
 	template.preprocess_end(self, context)
 
@@ -89,6 +88,12 @@ func preprocess_end(context: Penny.Text.DecorationContext) -> void:
 func build_start(context: Penny.Text.DecorationContext) -> void:
 	template.build_start(self, context)
 
-
 func build_end(context: Penny.Text.DecorationContext) -> void:
 	template.build_end(self, context)
+
+
+func encounter_start(typewriter: TypewriterTextLabel):
+	await template.encounter_start(self, typewriter)
+
+func encounter_end(typewriter: TypewriterTextLabel):
+	await template.encounter_end(self, typewriter)
