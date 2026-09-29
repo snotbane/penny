@@ -215,7 +215,7 @@ func spawn(player: PennyPlayer, record: Penny.Record, parent_name: StringName = 
 	if instance.has_method(&"spawn"):
 		instance.spawn()
 
-	parent.add_child(instance)
+	parent.add_child(instance, true)
 
 	return instance
 
@@ -234,7 +234,7 @@ func despawn(player: PennyPlayer, record: Penny.Record):
 
 
 ## [member spawn]s an instance if it does not already exist, and instantly [member travel]s it to [param marker_name], and makes it visible.
-func enter(player: PennyPlayer, record: Penny.Record, marker_name: StringName = &"", parent_name: StringName = &""):
+func enter(player: PennyPlayer, record: Penny.Record, marker_name: StringName = &"", parent_name: StringName = marker_name):
 	if not instance:
 		spawn(player, record, parent_name)
 

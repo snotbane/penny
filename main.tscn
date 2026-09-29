@@ -9,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="penny_player" type="Node" parent="." unique_id=891367020]
 script = ExtResource("1_ig7tw")
@@ -24,8 +25,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="line_edit" type="LineEdit" parent="v_box_container" unique_id=1484888857]
+z_index = 1
 layout_mode = 2
 placeholder_text = "Enter Label..."
 

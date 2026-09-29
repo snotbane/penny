@@ -13,17 +13,24 @@ enum {
 signal advanced
 signal poked
 
-## If enabled, clicking this Node will initiate a poke.
-@export
-var click_poke: bool = true:
-	get: return gui_input.is_connected(_gui_input_click_poke)
-	set(value):
-		if click_poke == value: return
-		if value:
-			gui_input.connect(_gui_input_click_poke)
-		else:
-			gui_input.disconnect(_gui_input_click_poke)
+var _poke_source_fallback: Control
 
+## When this node is clicked, it will poke the typewriter. If unset, an internal Control covering the entire screen will be used..
+@export
+var poke_source: Control:
+	set(value):
+		if value == null:
+			value = _poke_source_fallback
+
+		if poke_source:
+			poke_source.gui_input.disconnect(_gui_input_click_poke)
+
+		poke_source = value
+
+		_poke_source_fallback.visible = poke_source == _poke_source_fallback
+
+		if poke_source:
+			poke_source.gui_input.connect(_gui_input_click_poke)
 
 func _gui_input_click_poke(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -37,7 +44,6 @@ var poke_locked: bool
 func advance() -> void:
 	if state < FINISHED:
 		state = FINISHED
-	print("ADVANCE")
 	advanced.emit()
 
 
@@ -47,12 +53,10 @@ func poke() -> void:
 		PLAYING:
 			if poke_locked:
 				return
-			print("POKE! (PLAYING)")
 			complete()
 			poked.emit()
 
 		FINISHED:
-			print("POKE! (FINISHED)")
 			advance()
 
 
@@ -94,7 +98,6 @@ var state: int = READY:
 			playing_changed.emit()
 
 		state = value
-		print("state :: %s" % [ state ])
 
 		if state != PLAYING:
 			pausing = false
@@ -145,11 +148,17 @@ var time_prepped_stamp: int
 var characters_time_stamps: PackedInt32Array
 
 
+# ## Internal, invisible copy of this label which prints the same text out, word-by-word, to determine the appropriate height of the control.
 # var shaper: RichTextLabel
 
 
 func _init() -> void:
-	gui_input.connect(_gui_input_click_poke)
+	_poke_source_fallback = Control.new()
+	_poke_source_fallback.name = &"_poke_source_fallback"
+	_poke_source_fallback.show_behind_parent = true
+	_poke_source_fallback.top_level = true
+	_poke_source_fallback.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(_poke_source_fallback, false, INTERNAL_MODE_BACK)
 
 	present_delay_timer = Timer.new()
 	present_delay_timer.autostart = false
@@ -158,14 +167,17 @@ func _init() -> void:
 	add_child(present_delay_timer)
 
 
-
 # 	shaper = duplicate(0)
 # 	shaper.visible_characters_behavior = TextServer.VC_CHARS_BEFORE_SHAPING
 # 	add_child(shaper)
 
 
 func _ready() -> void:
+	if poke_source == null:
+		poke_source = _poke_source_fallback
+
 	visible_characters = 0
+
 	# visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
 
 
@@ -222,7 +234,6 @@ func complete() -> void:
 	if state >= FINISHED:
 		return
 
-	state = FINISHED
 	set_visible_characters_partial(-1)
 
 
@@ -250,13 +261,10 @@ func set_visible_characters_partial(value: float):
 		visible_characters_partial = visible_characters_max
 		for i in characters_time_stamps.size():
 			characters_time_stamps[i] = minf(characters_time_stamps[i], time_elapsed_stamp)
+		state = FINISHED
 		return
 
 	var visible_characters_target := clampi(floori(visible_characters_partial), 0, visible_characters_max)
-
-	if visible_characters >= visible_characters_target:
-		complete()
-		return
 
 	var inc := signi(visible_characters_target - visible_characters)
 	assert(inc != 0)
@@ -271,6 +279,9 @@ func set_visible_characters_partial(value: float):
 		await _handle_elements()
 
 	visible_characters_partial = float(visible_characters) + fmod(visible_characters_target, 1.0)
+
+	if visible_characters == visible_characters_max:
+		state = FINISHED
 
 
 func _handle_elements():

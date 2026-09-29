@@ -29,6 +29,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
+mouse_filter = 2
 fit_content = true
 horizontal_alignment = 3
 justification_flags = 35
