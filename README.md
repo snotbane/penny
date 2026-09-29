@@ -405,6 +405,13 @@ You can also customize the amount of time to wait, like so:
 >	I...<delay=2.5> love<delay=1> you.
 ```
 
+Additionally, you can add the `scaled` argument. This will scale the delay duration with the current typing speed. This is NOT affected by the user's rate setting or any [`<rate>`](#rate) tags, but it is affected by [`<speed>`](#speed) tags.
+
+```penny
+## The first delay will be 2.0 seconds long; the seccond delay will be 1.0 seconds long.
+>	<speed=0.5>I<delay=1.0 scaled> said<delay=1.0>no.</>
+```
+
 ### `<dropin>` and `<dropout>`
 
 These are examples of decorations which allow the text to appear and disappear using a [`RichTextEffect`](<>). You may modify these to your liking or use them as a template. With decorations like this, it is most applicable to have them span the entirety of your message, and furthermore, to add them to a filter. These ones are part of the default attribute `object.filter_start`.

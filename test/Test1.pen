@@ -31,9 +31,10 @@ def Rubin = new Character
 
 label start
 
->	Hello<advance>
+>	Hello<delay> I<delay> love<delay> you<delay>.
 
->	Goodbye
+# >	Hello<advance>
+# >	Goodbye
 
 >
 	The more you do it, the easier it becomes. It's almost like something out of a fairytale book. And I will hypnotize that just a little bit. You have to make those little noises or it won't work. Go out on a limb - that's where the fruit is. Everyone is going to see things differently - and that's the way it should be.

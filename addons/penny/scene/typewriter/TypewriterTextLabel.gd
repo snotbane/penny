@@ -40,27 +40,6 @@ func _gui_input_click_poke(event: InputEvent) -> void:
 var poke_locked: bool
 
 
-## Forces the typewriter to be marked as complete.
-func advance() -> void:
-	if state < FINISHED:
-		state = FINISHED
-	advanced.emit()
-
-
-## Initiates a user poke. You can call this method to add your own custom functionality.
-func poke() -> void:
-	match state:
-		PLAYING:
-			if poke_locked:
-				return
-			complete()
-			poked.emit()
-
-		FINISHED:
-			advance()
-
-
-
 var present_delay_timer: Timer
 ## The amount of time to wait before presenting text.
 @export_range(0.0, 1.0, 0.01, "or_greater")
@@ -80,12 +59,16 @@ var rate_stack: PackedFloat32Array
 
 var speed_stack: PackedFloat32Array
 
-var speed: float:
+var speed_percent: float:
+	get: return speed_stack[-1] if speed_stack else 1.0
+
+var typing_rate_and_speed: float:
 	get:
 		var rate: float = rate_stack[-1] if rate_stack else rate_base
-		var scalar: float = speed_stack[-1] if speed_stack else 1.0
+		return rate * speed_percent
 
-		return rate * scalar
+
+var delay_timer: Timer
 
 
 signal playing_changed
@@ -98,6 +81,13 @@ var state: int = READY:
 			playing_changed.emit()
 
 		state = value
+
+		match state:
+			PLAYING:
+				modulate = Color.WHITE
+
+			FINISHED:
+				modulate = Color.YELLOW
 
 		if state != PLAYING:
 			pausing = false
@@ -166,6 +156,11 @@ func _init() -> void:
 	present_delay_timer.wait_time = 0.5
 	add_child(present_delay_timer)
 
+	delay_timer = Timer.new()
+	delay_timer.autostart = false
+	delay_timer.one_shot = true
+	add_child(delay_timer)
+
 
 # 	shaper = duplicate(0)
 # 	shaper.visible_characters_behavior = TextServer.VC_CHARS_BEFORE_SHAPING
@@ -187,7 +182,7 @@ func _process(delta: float) -> void:
 
 	if typing and processing != source:
 		processing = source
-		await add_visible_characters_partial(speed * delta)
+		await add_visible_characters_partial(typing_rate_and_speed * delta)
 		processing = null
 
 
@@ -237,6 +232,19 @@ func complete() -> void:
 	set_visible_characters_partial(-1)
 
 
+## Initiates a user poke. You can call this method to add your own custom functionality.
+func poke() -> void:
+	match state:
+		PLAYING:
+			if poke_locked:
+				return
+			complete()
+			poked.emit()
+
+		FINISHED:
+			advance()
+
+
 func reset():
 	state = RESETTING
 
@@ -248,6 +256,13 @@ func reset():
 	await get_tree().process_frame
 
 	state = READY
+
+
+## Forces the typewriter to be marked as complete.
+func advance() -> void:
+	if state < FINISHED:
+		state = FINISHED
+	advanced.emit()
 
 
 func add_visible_characters_partial(value: float):
