@@ -31,9 +31,6 @@ func print_with_tags() -> void:
 
 
 func push_to_rich_text_label(rtl: RichTextLabel, wait : bool = true):
-	if rtl is TypewriterTextLabel:
-		rtl.reset()
-
 	var decoration_context := DecorationContext.new(self, rtl, null)
 	decoration_context.process()
 
@@ -48,19 +45,16 @@ class DecorationContext \
 extends RefCounted:
 	var text : Penny.Text
 	var rtl : RichTextLabel
-	var all_tags: Tag.Stack
-	var open_tags: Tag.Stack
 	var current_tag: Tag
 	var object_context
 
 	func _init(__text__: Penny.Text, __rtl__: RichTextLabel, __object_context__) -> void:
 		text = __text__
 		rtl = __rtl__
-		all_tags = text.tags.duplicate_deep()
-		open_tags = Tag.Stack.new()
+		# text.tags = text.tags.duplicate_deep()
 		object_context = __object_context__
 
-		for tag in all_tags:
+		for tag in text.tags:
 			for inst in tag:
 				inst.owner = tag
 
@@ -72,62 +66,23 @@ extends RefCounted:
 
 	func preprocess() -> void:
 		current_tag = null
-		open_tags.clear()
 		var i := 0
-		while i < all_tags.size():
-			current_tag = all_tags.list[i]
+		while i < text.tags.size():
+			current_tag = text.tags.list[i]
 
 			match current_tag.mode:
 				Tag.MODE_PUSH:
-					var tag := Tag.new(current_tag.position, Tag.MODE_PUSH)
-					var is_open : bool = current_tag.instances.is_empty()
-
 					for inst in current_tag:
-						if inst.template.get_closable():
-							is_open = true
-						tag.push(inst, false)
 						inst.preprocess_start(self)
 
-					if is_open:
-						open_tags.push(tag)
-
-
-				Tag.MODE_POP when current_tag.implicit:
-					if open_tags.is_empty():
-						continue
-
-					for inst in open_tags.pop():
+				Tag.MODE_PUSH_POP:
+					for inst in current_tag:
+						inst.preprocess_start(self)
 						inst.preprocess_end(self)
-
 
 				Tag.MODE_POP:
-					var popped_inst_tags : Dictionary[PennyDecorationInstance, Penny.Text.Tag] = {}
-
 					for inst in current_tag:
-						var found_popped_inst: bool = false
-						for j in open_tags.size():
-							for open_inst in open_tags.list[-j-1]:
-								if inst.id == open_inst.id:
-									popped_inst_tags[open_inst] = open_tags.list[-j-1]
-									found_popped_inst = true
-									break
-							if found_popped_inst:
-								break
-
-					for inst in popped_inst_tags:
-						popped_inst_tags[inst].instances.erase(inst)
-						if popped_inst_tags[inst].instances.is_empty():
-							open_tags.erase(popped_inst_tags[inst])
-
 						inst.preprocess_end(self)
-
-
-				Tag.MODE_CLEAR:
-					for tag in open_tags:
-						for inst in tag:
-							inst.preprocess_end(self)
-
-					open_tags.clear()
 
 				_:
 					assert(false, "Unimplemented tag mode '%s'." % current_tag.mode)
@@ -144,13 +99,12 @@ extends RefCounted:
 		rtl.push_context()
 
 		current_tag = null
-		open_tags.clear()
+		var open_insts : Array[PennyDecorationInstance] = []
 		var string_position := 0
 		var i := 0
-		while i < all_tags.size():
+		while i < text.tags.size():
 
-			current_tag = all_tags.list[i]
-			var update_rtl_context: bool = false
+			current_tag = text.tags.list[i]
 
 			if current_tag.position - string_position > 0:
 				rtl.add_text(text.text.substr(string_position, current_tag.position - string_position))
@@ -158,74 +112,35 @@ extends RefCounted:
 
 			match current_tag.mode:
 				Tag.MODE_PUSH:
-					var tag := Tag.new(current_tag.position, Tag.MODE_PUSH)
-					var is_open : bool = tag.instances.is_empty()
 					for inst in current_tag:
-						tag.push(inst, false)
-						if inst.template.get_closable():
-							is_open = true
+						open_insts.push_back(inst)
+						inst.build_start(self)
 
-						if inst.require_rtl_context:
-							update_rtl_context = true
-
-					if is_open:
-						open_tags.push(tag)
-
-
-				Tag.MODE_POP when current_tag.implicit:
-					if open_tags.is_empty():
-						continue
-
-					for inst in open_tags.pop():
+				Tag.MODE_PUSH_POP:
+					for inst in current_tag:
+						inst.build_start(self)
 						inst.build_end(self)
-						if inst.require_rtl_context:
-							update_rtl_context = true
-
 
 				Tag.MODE_POP:
-					var popped_inst_tags : Dictionary[PennyDecorationInstance, Penny.Text.Tag] = {}
-
+					var update_rtl_context: bool = false
 					for inst in current_tag:
-						var found_popped_inst: bool = false
-						for j in open_tags.size():
-							for open_inst in open_tags.list[-j-1]:
-								if inst.id == open_inst.id:
-									popped_inst_tags[open_inst] = open_tags.list[-j-1]
-									found_popped_inst = true
-									break
-							if found_popped_inst:
+						inst.build_end(self)
+
+						for j in open_insts.size():
+							if inst.is_match(open_insts[-j-1]):
+								open_insts.remove_at(-j-1)
 								break
 
-					for inst in popped_inst_tags:
-						popped_inst_tags[inst].instances.erase(inst)
-						if popped_inst_tags[inst].instances.is_empty():
-							open_tags.erase(popped_inst_tags[inst])
-
-						inst.build_end(self)
-						if inst.require_rtl_context:
+						if not update_rtl_context and inst.require_rtl_context:
 							update_rtl_context = true
+							rtl.pop_context()
+							rtl.push_context()
 
-
-				Tag.MODE_CLEAR:
-					for tag in open_tags:
-						for inst in tag:
-							inst.build_end(self)
-							if inst.require_rtl_context:
-								update_rtl_context = true
-
-					open_tags.clear()
+					for inst in open_insts:
+						inst.build_start(self)
 
 				_:
 					assert(false, "Unimplemented tag mode '%s'." % current_tag.mode)
-
-			if update_rtl_context:
-				rtl.pop_context()
-				rtl.push_context()
-
-			for tag in open_tags:
-				for inst: PennyDecorationInstance in current_tag:
-					print("inst :: %s" % [ inst ])
-					inst.build_start(self)
 
 			i += 1
 

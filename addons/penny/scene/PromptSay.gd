@@ -20,7 +20,6 @@ func handle(record: Penny.Record):
 
 	if text is String:
 		label.text = text
+		await button.pressed
 	elif text is Penny.Text:
 		await text.push_to_rich_text_label(label)
-
-	await button.pressed

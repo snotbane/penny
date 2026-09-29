@@ -6,6 +6,8 @@ enum {
 	MODE_PUSH,
 	MODE_PUSH_POP,
 	MODE_POP,
+
+	MODE_POP_IMPLICIT,
 	MODE_CLEAR,
 }
 
@@ -29,6 +31,9 @@ extends Resource:
 	func _iter_next(iter: Array) -> bool:
 		iter[0] += 1
 		return iter[0] < list.size()
+
+	func _to_string() -> String:
+		return str(list)
 
 
 	func is_empty() -> bool:
@@ -65,7 +70,7 @@ extends Resource:
 
 
 	func get_indexed_dict() -> Dictionary:
-		var result := {}
+		var result : Dictionary = {}
 
 		for tag in list:
 			if not result.has(tag.position):
@@ -183,6 +188,9 @@ func _to_string() -> String:
 		MODE_POP:
 			result = "</%s>"
 
+		MODE_POP_IMPLICIT:
+			return "</>"
+
 		MODE_CLEAR:
 			return "</*>"
 
@@ -205,7 +213,13 @@ func push(inst: PennyDecorationInstance, set_owner: bool = true) -> void:
 		inst.owner = self
 
 
-func duplicate_deep_instances_only() -> Penny.Text.Tag:
+func duplicate_instances_array_only() -> Penny.Text.Tag:
+	var result : Penny.Text.Tag = duplicate()
+	result.instances = result.instances.duplicate()
+	return result
+
+
+func duplicate_instances() -> Penny.Text.Tag:
 	var result : Penny.Text.Tag = duplicate()
 	result.instances = instances.duplicate()
 	for i in instances.size():

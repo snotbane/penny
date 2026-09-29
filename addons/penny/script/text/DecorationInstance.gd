@@ -11,6 +11,7 @@ var args: Dictionary[StringName, Variant]
 
 
 ## Extra data not passed to any environment or context; for internal use only.
+@export_storage
 var data: Dictionary
 
 
@@ -31,9 +32,12 @@ func _init() -> void:
 
 
 func _to_string() -> String:
-	var results : PackedStringArray = []
+	if template == null:
+		return "INVALID_DECORATION"
+
+	var results : PackedStringArray = [] if args.has(id) else [id]
 	for arg in args:
-		if args[arg] == true:
+		if args[arg] is bool and args[arg]:
 			results.push_back(arg)
 
 		else:
@@ -45,6 +49,10 @@ func _to_string() -> String:
 			)
 
 	return " ".join(results)
+
+
+func is_match(other: PennyDecorationInstance) -> bool:
+	return id == other.id
 
 
 ## Sets the id if not already set.

@@ -35,18 +35,22 @@ label start
 
 >	Goodbye
 
-# >
-# 	The more you do it, the easier it becomes. It's almost like something out of a fairytale book. And I will hypnotize that just a little bit. You have to make those little noises or it won't work. Go out on a limb - that's where the fruit is. Everyone is going to see things differently - and that's the way it should be.
-# 	\n
-# 	\nAll it takes is a little change of perspective. Maybe there's a little stream right here. How to paint. That's easy. What to paint. That's much harder. From all of us here, I want to wish you happy painting and God bless, my friends. Let's make some happy little clouds in our world. We'll make some happy little bushes here.
-# 	\n
-# 	\nSometimes those accidents turn out to be the best part. We might as well make some Almighty mountains today as well, what the heck. You're the boss on this canvas. Let that brush dance around there and play. Don't kill all your dark areas - you need them to show the light. When you do it your way you can go anywhere you choose.
+>
+	The more you do it, the easier it becomes. It's almost like something out of a fairytale book. And I will hypnotize that just a little bit. You have to make those little noises or it won't work. Go out on a limb - that's where the fruit is. Everyone is going to see things differently - and that's the way it should be.
+	\n
+	\nAll it takes is a little change of perspective. Maybe there's a little stream right here. How to paint. That's easy. What to paint. That's much harder. From all of us here, I want to wish you happy painting and God bless, my friends. Let's make some happy little clouds in our world. We'll make some happy little bushes here.
+	\n
+	\nSometimes those accidents turn out to be the best part. We might as well make some Almighty mountains today as well, what the heck. You're the boss on this canvas. Let that brush dance around there and play. Don't kill all your dark areas - you need them to show the light. When you do it your way you can go anywhere you choose.
 
-# >	I'm looking for <like>the fish</> and <like=Esther>the dragon</>.
+>	I'm looking for <like=Rubin>the fish</> and <like=Esther>the dragon</>.
 
 # >	I have something <important>important</> to say.
 
-# >	Hello, <b>world. <i>How</b> are</i> you today?
+# >	Hello, <b>world. <i>How</b> are</> you today?
+
+# >	Hello, <b>world. How</b> are you today?
+
+# >	<b>Hello, world 2.
 
 # var emotion = 2
 
@@ -59,6 +63,8 @@ label start
 
 # >	I am feeling s<repeat=10>o</> good today!
 # >	I am feeling s<repeat=10> </> good today!
+
+# >	Hello
 
 
 #	>	Hello

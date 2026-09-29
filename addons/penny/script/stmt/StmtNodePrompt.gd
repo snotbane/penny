@@ -67,3 +67,5 @@ func _execute(player: PennyPlayer, record: Penny.Record):
 
 	assert(incoming_prompt_node.has_method(&"handle"))
 	record.data.response = await incoming_prompt_node.handle(record)
+
+	# await player.get_tree().create_timer(3.0).timeout

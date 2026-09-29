@@ -230,7 +230,7 @@ static var ESCAPE_SUBSITUTIONS : Dictionary[String, String] = {
 	# "]": "<rb>",
 }
 
-static var REGEX_DECORATE_TAG := RegEx.create_from_string("%s<(?:\\s*(\\/))?\\s*((?:(?:%s\\*)|(?:.*?))?)\\s*%s>" % [
+static var REGEX_DECORATE_TAG := RegEx.create_from_string("%s<(?:\\s*(\\/))?\\s*((?:(?:%s\\*)|(?:.*?))?)(?:\\s*(\\/))?\\s*%s>" % [
 	ODD_ESCAPE_PATTERN, ODD_ESCAPE_PATTERN, ODD_ESCAPE_PATTERN
 ])
 
@@ -269,8 +269,10 @@ static var RLIST_DECORATION_ARGUMENT : Array[RegEx] = [
 
 
 func decorate(string: String, object_context) -> Penny.Text:
-	var result := Penny.Text.new(string)
+	var result := Penny.Text.new(string + "</*>")
 	var start := 0
+
+	var open_tags := Penny.Text.Tag.Stack.new()
 
 	while true:
 		var tuple := regex_get_first_match_in_string_tuple(result.text, RLIST_DECORATE, start)
@@ -294,21 +296,49 @@ func decorate(string: String, object_context) -> Penny.Text:
 				substitution = ""
 
 				var mode : int = (
-					Penny.Text.Tag.MODE_PUSH
+					(
+						Penny.Text.Tag.MODE_PUSH
+						if m_tag.get_string(3).is_empty()
+						else Penny.Text.Tag.MODE_PUSH_POP
+					)
 					if m_tag.get_string(1).is_empty()
 					else (
 						Penny.Text.Tag.MODE_CLEAR
 						if match_string == "*"
-						else Penny.Text.Tag.MODE_POP
+						else (
+							Penny.Text.Tag.MODE_POP_IMPLICIT
+							if match_string.is_empty()
+							else Penny.Text.Tag.MODE_POP
+						)
 					)
 				)
 
-				var tag := Penny.Text.Tag.new(m_tag.get_start(), mode)
-				result.tags.push(tag)
+				var tag : Penny.Text.Tag
+				match mode:
+					Penny.Text.Tag.MODE_POP_IMPLICIT:
+						tag = open_tags.pop().duplicate_instances()
+						tag.position = m_tag.get_start()
+						tag.instances.reverse()
+						tag.mode = Penny.Text.Tag.MODE_POP
 
-				if tag.mode == Penny.Text.Tag.MODE_CLEAR or match_string.is_empty():
-					result.text = regex_replace_match(r_tag, m_tag, substitution)
-					continue
+						result.tags.push(tag)
+						result.text = regex_replace_match(r_tag, m_tag, substitution)
+						continue
+
+					Penny.Text.Tag.MODE_CLEAR:
+						tag = Penny.Text.Tag.new(m_tag.get_start(), Penny.Text.Tag.MODE_POP)
+						for open_tag in open_tags:
+							for open_inst in open_tag:
+								tag.push(open_inst.duplicate())
+						tag.instances.reverse()
+						open_tags.clear()
+
+						result.tags.push(tag)
+						result.text = regex_replace_match(r_tag, m_tag, substitution)
+						continue
+
+				tag = Penny.Text.Tag.new(m_tag.get_start(), mode)
+				result.tags.push(tag)
 
 				var decoration_strings: PackedStringArray
 				var start_decoration := 0
@@ -373,13 +403,40 @@ func decorate(string: String, object_context) -> Penny.Text:
 					inst.compile_args()
 					tag.push(inst)
 
+				match mode:
+					Penny.Text.Tag.MODE_PUSH:
+						var is_open: bool = tag.instances.is_empty()
+						for inst in tag:
+							if inst.template.get_closable():
+								is_open = true
+								break
+
+						if is_open:
+							open_tags.push(tag.duplicate_instances_array_only())
+
+					Penny.Text.Tag.MODE_POP:
+						var popped_inst_tags : Dictionary[PennyDecorationInstance, Penny.Text.Tag] = {}
+						for inst in tag:
+							var found_popped_inst: bool = false
+							for i in open_tags.size():
+								for open_inst in open_tags.list[-i-1]:
+									if inst.is_match(open_inst):
+										popped_inst_tags[open_inst] = open_tags.list[-i-1]
+										found_popped_inst = true
+										break
+								if found_popped_inst:
+									break
+
+						for inst in popped_inst_tags:
+							popped_inst_tags[inst].instances.erase(inst)
+							if popped_inst_tags[inst].instances.is_empty():
+								open_tags.erase(popped_inst_tags[inst])
+
 			_:
 				break
 
 		start = m_tag.get_start() + substitution.length()
 		result.text = regex_replace_match(r_tag, m_tag, substitution)
-
-	result.tags.push(Penny.Text.Tag.new(result.text.length(), Penny.Text.Tag.MODE_CLEAR))
 
 	# for tag in result.tags:
 	# 	print("tag :: %s : %s" % [ tag, result.tags[tag] ])
