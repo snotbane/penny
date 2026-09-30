@@ -45,8 +45,11 @@ label start
 
 # >	Good <rate=2>morning</> <rate=10>morning<rate=5>morning</></>
 
->	But... I thought you were going to <retcon>the movies</>the grocery store.
-	\nBut... I thought you were going to the moviesthe grocery store.
+# >	But... I thought you were going to <retcon>the movies</>the grocery store.
+
+# >	Look out! He's got a hammer! <sfx="res://oof.ogg">Yeowch! He got me!
+>	Look out! He's got a hammer! <sfx="res://oof.ogg">Yeowch!</> He got me!
+
 
 
 # >

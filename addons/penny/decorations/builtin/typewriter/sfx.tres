@@ -1,0 +1,54 @@
+[gd_resource type="Resource" format=3 uid="uid://cqc8k64ia6phn"]
+
+[sub_resource type="GDScript" id="GDScript_o238a"]
+script/source = "extends PennyDecorationEffect
+
+func encounter_start(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel, wait: bool):
+	if not inst.args.has(&\"sfx\"):
+		return
+		
+	var sound_resource_path : String = Penny.Evaluable.evaluate_any(inst.args.sfx)
+	var sound_resource : AudioStream = load(sound_resource_path)
+		
+	var source
+	if inst.args.has(&\"source\"):
+		source = Penny.Evaluable.evaluate_any(inst.args.source, typewriter.object_context)
+		if source is Penny.Cell:
+			source = source.instance
+	else:
+		source = typewriter.sfx_audio_player
+	
+	assert(
+		source is Node and source.has_method(&\"play\"),
+		\"sfx source must be a Node with a play() method.\"
+	)
+	
+	if inst.args.has(&\"bus\"):
+		var bus : StringName
+		if inst.args.bus is int:
+			bus = AudioServer.get_bus_name(inst.args.bus)
+		else:
+			bus = inst.args.bus
+	
+		source.bus = bus
+	
+	inst.data.audio_source = source
+	typewriter.sfx_audio_player.volume_linear = inst.args.volume
+	typewriter.sfx_audio_player.stream = sound_resource_path
+	typewriter.sfx_audio_player.play()
+	
+func encounter_end(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel, wait: bool):
+	if not inst.args.has(&\"sfx\"):
+		return
+	
+	if wait and inst.args.sync and inst.data.source.playing:
+		await inst.data.source.finished
+"
+
+[resource]
+script = SubResource("GDScript_o238a")
+default_args = Dictionary[StringName, Variant]({
+&"sync": true,
+&"volume": 1.0
+})
+id = &"sfx"

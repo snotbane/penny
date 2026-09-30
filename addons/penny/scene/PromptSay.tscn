@@ -40,3 +40,5 @@ script = ExtResource("2_pnqov")
 present_delay = 0.15
 reset_delay = 0.05
 metadata/_custom_type_script = "uid://cdydlk88x2kjo"
+
+[node name="audio_stream_player" type="AudioStreamPlayer" parent="typewriter_text_label" unique_id=2058345222]

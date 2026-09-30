@@ -36,9 +36,9 @@ func push_to_rich_text_label(rtl: RichTextLabel, wait : bool = true):
 
 	if rtl is TypewriterTextLabel:
 		if wait:
-			await rtl.present(self)
+			await rtl.present(self, decoration_context.object_context)
 		else:
-			rtl.present(self)
+			rtl.present(self, decoration_context.object_context)
 
 
 class DecorationContext \
@@ -100,7 +100,6 @@ extends RefCounted:
 		var string_idx := 0
 		rtl.text = ""
 		rtl.push_context()
-		# rtl.set_
 
 		current_tag = null
 		var open_tag : Tag = Tag.new(-1, Tag.MODE_PUSH)

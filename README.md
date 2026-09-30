@@ -471,18 +471,18 @@ There are several parameters which can be passed:
 ```penny
 >	<
 		sfx="voice_over.ogg"
-		channel=0
+		bus="Master"
 		source=.voice
+		sync=true
 		volume=1.0
-		wait=true
 	>
 ```
 
 - `sfx` defines the audio resource path to play. Must be a String.
-- `channel` (default is `0`) Can be an `int` or `String` referring to a voice channel
+- `bus` (default is `0`) Can be an `int` or `String` referring to a voice bus
 - `source` (default is `.voice`) Can be a path to a `Cell` with an instance, which must be an `AudioStreamPlayer` of some kind, and tells that Node to play the audio from it. Note that the default refers to the currently speaking character's `.voice` Cell. If it is null, this will use the TypewriterTextLabel's default AudioStreamPlayer.
+- `sync` (default is `true`) determines that both the audio must finish playing AND the spanned text must finish typing, before continuing past the end of the sfx tag. This is useful for any kind of voice over. If you have a sound that you wish to play for a little bit, and then continue typing before it finishes, set `sync` to `false` and then add a `<delay>`.
 - `volume` is a float percentage which determines the volume of the sound.
-- `wait` (default is `true`) determines if the span of text must complete before text can continue.
 
 ### `<skip>`
 

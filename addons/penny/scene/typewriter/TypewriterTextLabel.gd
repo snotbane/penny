@@ -71,6 +71,12 @@ func get_next_poke_stop() -> int:
 
 	return -1
 
+var _sfx_audio_player_default: AudioStreamPlayer
+
+## The default [AudioStreamPlayer] to use for sfx tags. If unset, a default [AudioStreamPlayer] will be used. This node is not used if <sfx=
+@export
+var sfx_audio_player: Node
+
 
 var present_delay_timer: Timer
 ## The amount of time to wait before presenting text.
@@ -174,6 +180,8 @@ var source: Variant:
 		characters_time_stamps.fill(INF)
 
 
+var object_context
+
 var source_text: String
 var source_tags: Dictionary
 
@@ -200,6 +208,9 @@ func _init() -> void:
 	_poke_source_fallback.top_level = true
 	_poke_source_fallback.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(_poke_source_fallback, false, INTERNAL_MODE_BACK)
+
+	_sfx_audio_player_default = AudioStreamPlayer.new()
+	add_child(_sfx_audio_player_default)
 
 	present_delay_timer = Timer.new()
 	present_delay_timer.autostart = false
@@ -228,6 +239,9 @@ func _ready() -> void:
 	if poke_source == null:
 		poke_source = _poke_source_fallback
 
+	if sfx_audio_player == null:
+		sfx_audio_player = _sfx_audio_player_default
+
 	visible_characters = 0
 
 	# visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
@@ -243,10 +257,11 @@ func _process(delta: float) -> void:
 		processing = null
 
 
-func present(__source__):
+func present(__source__, __object_context__):
 	assert(state == READY)
 
 	source = __source__
+	object_context = __object_context__
 	state = PLAYING
 	pausing = true
 
