@@ -100,6 +100,7 @@ extends RefCounted:
 		var string_idx := 0
 		rtl.text = ""
 		rtl.push_context()
+		# rtl.set_
 
 		current_tag = null
 		var open_tag : Tag = Tag.new(-1, Tag.MODE_PUSH)

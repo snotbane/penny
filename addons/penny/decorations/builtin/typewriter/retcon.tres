@@ -1,0 +1,19 @@
+[gd_resource type="Resource" format=3 uid="uid://dl4teij4shkcr"]
+
+[sub_resource type="GDScript" id="GDScript_56b8k"]
+script/source = "extends PennyDecorationEffect
+
+func encounter_start(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel, wait: bool):
+	pass
+
+func encounter_end(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel, wait: bool):
+	if inst.args.has(&\"rate\"):
+		typewriter.rate_stack.push_back(inst.args.rate)
+		
+	if inst.args.has(&\"speed\"):
+		typewriter.speed_stack.push_back(inst.args.speed)
+"
+
+[resource]
+script = SubResource("GDScript_56b8k")
+id = &"retcon"

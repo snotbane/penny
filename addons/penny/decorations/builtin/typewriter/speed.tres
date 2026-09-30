@@ -15,4 +15,4 @@ script = SubResource("GDScript_micrd")
 default_args = Dictionary[StringName, Variant]({
 &"speed": 1.0
 })
-id = &"rate"
+id = &"speed"

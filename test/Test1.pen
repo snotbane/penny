@@ -43,7 +43,11 @@ label start
 
 # >	Where are you going? <poke>To the supermarket? <poke>I thought so.
 
->	Good <rate=2>morning</> <rate=10>morning<rate=5>morning</></>
+# >	Good <rate=2>morning</> <rate=10>morning<rate=5>morning</></>
+
+>	But... I thought you were going to <retcon>the movies</>the grocery store.
+	\nBut... I thought you were going to the moviesthe grocery store.
+
 
 # >
 # 	The more you do it, the easier it becomes. It's almost like something out of a fairytale book. And I will hypnotize that just a little bit. You have to make those little noises or it won't work. Go out on a limb - that's where the fruit is. Everyone is going to see things differently - and that's the way it should be.
