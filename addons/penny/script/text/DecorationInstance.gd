@@ -1,4 +1,4 @@
-## A single instance of a text template.
+# A single instance of a text template.
 @tool
 class_name PennyDecorationInstance
 extends Resource

@@ -331,7 +331,7 @@ func decorate(string: String, object_context) -> Penny.Text:
 						tag = Penny.Text.Tag.new(m_tag.get_start(), Penny.Text.Tag.MODE_POP)
 						for open_tag in open_tags:
 							for open_inst in open_tag:
-								tag.push(open_inst.duplicate())
+								tag.push_back(open_inst.duplicate())
 						tag.instances.reverse()
 						open_tags.clear()
 
@@ -403,7 +403,7 @@ func decorate(string: String, object_context) -> Penny.Text:
 						start_arg = m_arg.get_end()
 
 					inst.compile_args()
-					tag.push(inst)
+					tag.push_back(inst)
 
 				match mode:
 					Penny.Text.Tag.MODE_PUSH:

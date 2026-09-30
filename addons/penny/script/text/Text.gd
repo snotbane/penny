@@ -51,7 +51,6 @@ extends RefCounted:
 	func _init(__text__: Penny.Text, __rtl__: RichTextLabel, __object_context__) -> void:
 		text = __text__
 		rtl = __rtl__
-		# text.tags = text.tags.duplicate_deep()
 		object_context = __object_context__
 
 		for tag in text.tags:
@@ -70,21 +69,22 @@ extends RefCounted:
 		while i < text.tags.size():
 			current_tag = text.tags.list[i]
 
+			## Duplicate the instances here so that if the tag list changes, it won't lose track. This does mean that preprocessors will need to handle preprocessing any additional instances created.
 			match current_tag.mode:
 				Tag.MODE_PUSH:
-					for inst in current_tag:
+					for inst in current_tag.instances.duplicate():
 						inst.compile_env(rtl)
 						inst.preprocess_start(self)
 
 				Tag.MODE_PUSH_POP:
-					for inst in current_tag:
+					for inst in current_tag.instances.duplicate():
 						inst.compile_env(rtl)
 						inst.preprocess_start(self)
 						inst.preprocess_end(self)
 
 				Tag.MODE_POP:
-					for inst in current_tag:
-						inst.compile_env(rtl)
+					for inst in current_tag.instances.duplicate():
+						# inst.compile_env(rtl)
 						inst.preprocess_end(self)
 
 				_:
@@ -97,11 +97,14 @@ extends RefCounted:
 
 
 	func build() -> void:
+		print("text.tags :: %s" % [ text.tags ])
+
 		var string_idx := 0
 		rtl.text = ""
 		rtl.push_context()
 
 		current_tag = null
+		var open_tag : Tag = Tag.new(-1, Tag.MODE_PUSH)
 		var open_insts : Array[PennyDecorationInstance] = []
 		var string_position := 0
 		var i := 0
@@ -117,6 +120,7 @@ extends RefCounted:
 				Tag.MODE_PUSH:
 					for inst in current_tag:
 						if inst.template.get_closable():
+							open_tag.push_back(inst.duplicate())
 							open_insts.push_back(inst)
 						inst.build_start(self)
 
@@ -130,9 +134,10 @@ extends RefCounted:
 					for inst in current_tag:
 						inst.build_end(self)
 
-						for j in open_insts.size():
-							if inst.is_match(open_insts[-j-1]):
-								open_insts.remove_at(-j-1)
+						# for j in open_insts.size():
+						for j in open_tag.instances.size():
+							if inst.is_match(open_tag.instances[-j-1]):
+								open_tag.instances.remove_at(-j-1)
 								break
 
 						if not update_rtl_context and inst.require_rtl_context:
@@ -140,8 +145,16 @@ extends RefCounted:
 							rtl.pop_context()
 							rtl.push_context()
 
-					for inst in open_insts:
-						inst.build_start(self)
+					if open_tag.instances:
+						open_tag.position = current_tag.position
+						text.tags.list.insert(i + 1, open_tag)
+						i += 1
+
+						for inst in open_tag:
+							inst.compile_env(rtl)
+							inst.build_start(self)
+
+						open_tag = open_tag.duplicate_instances()
 
 				_:
 					assert(false, "Unimplemented tag mode '%s'." % current_tag.mode)
@@ -149,6 +162,13 @@ extends RefCounted:
 			i += 1
 
 		current_tag = null
+
+		print("Tags ::")
+		for tag in text.tags:
+			print("\t%s ::" % tag.position)
+			for inst in tag:
+				print("\t\t%s :: %s :: %s" % [inst.owner.position, inst.get_instance_id(), inst])
+
 
 		if string_position < text.text.length():
 			rtl.add_text(text.text.substr(string_position))

@@ -206,13 +206,24 @@ func _to_string() -> String:
 	return result
 
 
-func push(inst: PennyDecorationInstance, set_owner: bool = true) -> void:
+func push_back(inst: PennyDecorationInstance, set_owner: bool = true) -> void:
 	for d in instances:
 		if inst.id == d.id:
 			printerr("A duplicate decoration '%s' already exists in this tag. It will be ignored." % inst.id)
-			return
+			# return
 
 	instances.push_back(inst)
+	if set_owner:
+		inst.owner = self
+
+
+func push_front(inst: PennyDecorationInstance, set_owner: bool = true) -> void:
+	for d in instances:
+		if inst.id == d.id:
+			printerr("A duplicate decoration '%s' already exists in this tag. It will be ignored." % inst.id)
+			# return
+
+	instances.push_front(inst)
 	if set_owner:
 		inst.owner = self
 
