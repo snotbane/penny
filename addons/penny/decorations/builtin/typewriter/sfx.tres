@@ -10,12 +10,15 @@ func encounter_start(inst: PennyDecorationInstance, typewriter: TypewriterTextLa
 	var sound_resource_path : String = Penny.Evaluable.evaluate_any(inst.args.sfx)
 	var sound_resource : AudioStream = load(sound_resource_path)
 		
-	var source
+	var source = null
 	if inst.args.has(&\"source\"):
 		source = Penny.Evaluable.evaluate_any(inst.args.source, typewriter.object_context)
 		if source is Penny.Cell:
 			source = source.instance
-	else:
+		else:
+			source = null
+			
+	if source == null:
 		source = typewriter.sfx_audio_player
 	
 	assert(
