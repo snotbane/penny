@@ -114,8 +114,8 @@ func build_end(context: Penny.Text.DecorationContext) -> void:
 	template.build_end(self, context)
 
 
-func encounter_start(typewriter: TypewriterTextLabel):
-	await template.encounter_start(self, typewriter)
+func encounter_start(typewriter: TypewriterTextLabel, wait: bool):
+	await template.encounter_start(self, typewriter, wait)
 
-func encounter_end(typewriter: TypewriterTextLabel):
-	await template.encounter_end(self, typewriter)
+func encounter_end(typewriter: TypewriterTextLabel, wait: bool):
+	await template.encounter_end(self, typewriter, wait)

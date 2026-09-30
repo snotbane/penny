@@ -37,7 +37,39 @@ func _gui_input_click_poke(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
 			poke()
 
-var poke_locked: bool
+var poke_lock: int = 0:
+	set(value):
+		poke_lock = maxi(value, 0)
+
+
+## Initiates a user poke. You can call this method to add your own custom functionality. Use a <lock> decoration to prevent this functionality while typing.
+func poke() -> void:
+	match state:
+		PLAYING:
+			if poke_lock == 0:
+				set_visible_characters_partial(get_next_poke_stop(), false)
+			poked.emit()
+
+		FINISHED:
+			advance()
+
+
+func get_next_poke_stop() -> int:
+	if state < PLAYING:
+		return 0
+	elif state > PLAYING:
+		return -1
+
+	for k in source_tags:
+		if k <= visible_characters:
+			continue
+
+		for tag: Penny.Text.Tag in source_tags[k]:
+			for inst in tag:
+				if inst.template.get_poke_stop():
+					return k
+
+	return -1
 
 
 var present_delay_timer: Timer
@@ -98,6 +130,9 @@ var state: int = READY:
 			PLAYING:
 				time_started_stamp = Time.get_ticks_usec()
 				time_reseted_stamp = INT64_MAX
+
+			FINISHED:
+				poke_lock = 0
 
 			RESETTING:
 				time_reseted_stamp = Time.get_ticks_usec()
@@ -247,20 +282,7 @@ func complete() -> void:
 	if state >= FINISHED:
 		return
 
-	set_visible_characters_partial(-1)
-
-
-## Initiates a user poke. You can call this method to add your own custom functionality.
-func poke() -> void:
-	match state:
-		PLAYING:
-			if poke_locked:
-				return
-			complete()
-			poked.emit()
-
-		FINISHED:
-			advance()
+	set_visible_characters_partial(-1, false)
 
 
 func reset():
@@ -287,16 +309,16 @@ func advance() -> void:
 func add_visible_characters_partial(value: float):
 	await set_visible_characters_partial(visible_characters_partial + value)
 
-func set_visible_characters_partial(value: float):
+func set_visible_characters_partial(value: float, wait: bool = true):
 	visible_characters_partial = value
 
 	if visible_characters_partial < 0:
 		visible_characters = visible_characters_max
 		visible_characters_partial = visible_characters_max
-		for i in characters_time_stamps.size():
-			characters_time_stamps[i] = minf(characters_time_stamps[i], time_elapsed_stamp)
-		state = FINISHED
-		return
+		# for i in characters_time_stamps.size():
+		# 	characters_time_stamps[i] = minf(characters_time_stamps[i], time_elapsed_stamp)
+		# state = FINISHED
+		# return
 
 	var visible_characters_target := clampi(floori(visible_characters_partial), 0, visible_characters_max)
 
@@ -311,7 +333,7 @@ func set_visible_characters_partial(value: float):
 		if inc < 0:
 			continue
 
-		await _handle_elements()
+		await _handle_elements(wait)
 
 	visible_characters_partial = float(visible_characters) + fmod(visible_characters_target, 1.0)
 
@@ -319,7 +341,7 @@ func set_visible_characters_partial(value: float):
 		state = FINISHED
 
 
-func _handle_elements():
+func _handle_elements(wait: bool = true):
 	if state != PLAYING:
 		return
 
@@ -330,13 +352,13 @@ func _handle_elements():
 		match tag.mode:
 			Penny.Text.Tag.MODE_PUSH:
 				for inst: PennyDecorationInstance in tag:
-					await inst.encounter_start(self)
+					await inst.encounter_start(self, wait)
 
 			Penny.Text.Tag.MODE_PUSH_POP:
 				for inst: PennyDecorationInstance in tag:
-					await inst.encounter_start(self)
-					await inst.encounter_end(self)
+					await inst.encounter_start(self, wait)
+					await inst.encounter_end(self, wait)
 
 			Penny.Text.Tag.MODE_POP:
 				for inst: PennyDecorationInstance in tag:
-					await inst.encounter_end(self)
+					await inst.encounter_end(self, wait)

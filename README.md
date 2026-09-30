@@ -385,6 +385,14 @@ Automatically aborts the typewriter and emits the `advanced` signal, which, when
 > [!NOTE]
 > This can be placed anywhere in the text, but is only really useful at the end of a message.
 
+### `<appear>` and `<disappear>`
+
+These are examples of decorations which allow the text to appear and disappear using a [`RichTextEffect`](<>). You may modify these to your liking or use them as a template. With decorations like this, it is most applicable to have them span the entirety of your message, and furthermore, to add them to a filter. These ones are part of the default attribute `object.filter_start`.
+
+```penny
+>	<appear|disappear>Hello, world!</>
+```
+
 ### `<delay/>`
 
 Waits a constant amount of time before continuing.
@@ -410,14 +418,6 @@ Additionally, you can add the `scaled` argument. This will scale the delay durat
 ```penny
 ## The first delay will be 2.0 seconds long; the seccond delay will be 1.0 seconds long.
 >	<speed=0.5>I<delay=1.0 scaled> said<delay=1.0>no.</>
-```
-
-### `<appear>` and `<disappear>`
-
-These are examples of decorations which allow the text to appear and disappear using a [`RichTextEffect`](<>). You may modify these to your liking or use them as a template. With decorations like this, it is most applicable to have them span the entirety of your message, and furthermore, to add them to a filter. These ones are part of the default attribute `object.filter_start`.
-
-```penny
->	<appear|disappear>Hello, world!</>
 ```
 
 ### `<lock>`

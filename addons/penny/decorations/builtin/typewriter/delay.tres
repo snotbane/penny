@@ -3,7 +3,9 @@
 [sub_resource type="GDScript" id="GDScript_js853"]
 script/source = "extends PennyDecorationEffect
 
-func encounter_start(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel):
+func encounter_start(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel, wait: bool):
+	if not wait:
+		return
 	
 	var duration : float = inst.args.delay
 	if inst.args.scaled and typewriter.speed_percent > 0.0:
@@ -23,9 +25,9 @@ func encounter_start(inst: PennyDecorationInstance, typewriter: TypewriterTextLa
 
 [resource]
 script = SubResource("GDScript_js853")
-default_args = {
+default_args = Dictionary[StringName, Variant]({
 &"delay": 0.333,
 &"scaled": false
-}
+})
 closable = false
 id = &"delay"

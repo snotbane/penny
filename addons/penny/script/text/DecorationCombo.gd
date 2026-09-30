@@ -60,10 +60,10 @@ func build_end(inst: PennyDecorationInstance, context: Penny.Text.DecorationCont
 		child.template.build_end(inst, context)
 
 
-func encounter_start(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel) -> void:
+func encounter_start(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel, wait: bool) -> void:
 	for child in instances:
-		child.template.encounter_start(inst, typewriter)
+		child.template.encounter_start(inst, typewriter, wait)
 
-func encounter_end(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel) -> void:
+func encounter_end(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel, wait: bool) -> void:
 	for child in instances:
-		child.template.encounter_end(inst, typewriter)
+		child.template.encounter_end(inst, typewriter, wait)

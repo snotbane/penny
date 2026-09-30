@@ -3,7 +3,7 @@
 [sub_resource type="GDScript" id="GDScript_l7xow"]
 script/source = "extends PennyDecorationEffect
 
-func encounter_start(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel):
+func encounter_start(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel, wait: bool):
 	await typewriter.get_tree().process_frame
 	typewriter.advance()
 "
