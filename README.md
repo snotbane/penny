@@ -115,7 +115,7 @@ The default filters are as follows:
 ```penny
 def object
 	## This matches to the start of the string. It is listed as a separate variable so that it can be modified without having to modify the filters array.
-	.filter_start = "^" -> "<dropin|dropout>"
+	.filter_start = "^" -> "<appear|disappear>"
 
 	.filters = [
 		.filter_start,
@@ -361,7 +361,7 @@ These are special decorations which can only be used with a [`TypewriterTextLabe
 
 - [`<advance/>`](#advance)
 - [`<delay/>`](#delay)
-- [`<dropin|dropout>`](#dropin-and-dropout)
+- [`<appear|disappear>`](#appear-and-disappear)
 - [`<lock>`](#lock)
 - [`<pokestop/>`](#pokestop)
 - [`<rate>`](#rate)
@@ -412,12 +412,12 @@ Additionally, you can add the `scaled` argument. This will scale the delay durat
 >	<speed=0.5>I<delay=1.0 scaled> said<delay=1.0>no.</>
 ```
 
-### `<dropin>` and `<dropout>`
+### `<appear>` and `<disappear>`
 
 These are examples of decorations which allow the text to appear and disappear using a [`RichTextEffect`](<>). You may modify these to your liking or use them as a template. With decorations like this, it is most applicable to have them span the entirety of your message, and furthermore, to add them to a filter. These ones are part of the default attribute `object.filter_start`.
 
 ```penny
->	<dropin|dropout>Hello, world!</>
+>	<appear|disappear>Hello, world!</>
 ```
 
 ### `<lock>`

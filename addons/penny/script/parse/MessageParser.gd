@@ -69,12 +69,14 @@ func process(__source__) -> Variant:
 	return ""
 
 
-func purify(string: String, t: StringName) -> Penny.Text:
+func purify(string: String, t: StringName, do_filtrate: bool = true) -> Penny.Text:
 	translation = t
 
 	if object_context:
 		string = interpolate(string, object_context)
-		string = filtrate(string, filter_context)
+
+		if do_filtrate:
+			string = filtrate(string, filter_context)
 
 	var result : Penny.Text = decorate(string, object_context)
 

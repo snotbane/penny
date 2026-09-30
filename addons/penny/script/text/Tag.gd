@@ -197,7 +197,11 @@ func _to_string() -> String:
 	var instance_strings : PackedStringArray = []
 	instance_strings.resize(instances.size())
 	for i in instances.size():
-		instance_strings[i] = str(instances[i])
+		instance_strings[i] = str(
+			instances[i]
+			if mode != MODE_POP
+			else instances[i].id
+		)
 	result %= " | ".join(instance_strings)
 	return result
 

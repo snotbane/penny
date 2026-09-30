@@ -15,6 +15,11 @@ var args: Dictionary[StringName, Variant]
 var data: Dictionary
 
 
+## Extra data passed to custom fx, including arguments.
+@export_storage
+var env: Dictionary
+
+
 var owner: Penny.Text.Tag
 
 
@@ -83,6 +88,15 @@ func add_argument(arg: StringName, value: Variant) -> void:
 func compile_args() -> void:
 	# args.merge(template.get_default_args())
 	args = template.get_default_args().merged(args, true)
+
+
+func compile_env(ttl: TypewriterTextLabel) -> void:
+	env = {
+		&"_inst": self,
+		&"_typewriter": ttl,
+	}
+	# ## Not necessary because we can get the args via _inst.
+	# env.merge(args)
 
 
 func preprocess_start(context: Penny.Text.DecorationContext) -> void:

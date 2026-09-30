@@ -1,5 +1,6 @@
-## A decoration specifically for use in a Typewriter.
-class_name PennyDecorationTypewriter
+## A decoration which pushes a [RichTextEffect]. This also automatically passes itself and the [RichTextLabel] to the char_fx environment, i.e. it will work for [TypewriterTextEffect]s.
+@tool
+class_name PennyDecorationEffect
 extends PennyDecoration
 
 
@@ -23,3 +24,13 @@ func get_poke_stop() -> bool:
 @export var effect: RichTextEffect
 func get_require_rtl_context() -> bool:
 	return effect != null
+
+
+func preprocess_start(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
+	if effect and not effect in context.rtl.custom_effects:
+		context.rtl.install_effect(effect)
+
+
+func build_start(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext):
+	if effect:
+		context.rtl.push_customfx(effect, inst.env)

@@ -7,7 +7,7 @@ static var NARRATOR : Penny.Cell
 static var PROMPT_ASK : Penny.Cell
 static var PROMPT_SAY : Penny.Cell
 
-static var FILTER_START := Penny.Text.Filter.new(r"^", "<dropin|dropout>")
+static var FILTER_START := Penny.Text.Filter.new(r"^", "<appear|disappear>")
 
 static func _static_init() -> void:
 	ROOT = Penny.Cell.new(&"ROOT", null)

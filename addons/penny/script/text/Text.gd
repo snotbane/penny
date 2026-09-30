@@ -73,15 +73,18 @@ extends RefCounted:
 			match current_tag.mode:
 				Tag.MODE_PUSH:
 					for inst in current_tag:
+						inst.compile_env(rtl)
 						inst.preprocess_start(self)
 
 				Tag.MODE_PUSH_POP:
 					for inst in current_tag:
+						inst.compile_env(rtl)
 						inst.preprocess_start(self)
 						inst.preprocess_end(self)
 
 				Tag.MODE_POP:
 					for inst in current_tag:
+						inst.compile_env(rtl)
 						inst.preprocess_end(self)
 
 				_:
@@ -95,7 +98,7 @@ extends RefCounted:
 
 	func build() -> void:
 		var string_idx := 0
-		rtl.text = String()
+		rtl.text = ""
 		rtl.push_context()
 
 		current_tag = null
@@ -113,7 +116,8 @@ extends RefCounted:
 			match current_tag.mode:
 				Tag.MODE_PUSH:
 					for inst in current_tag:
-						open_insts.push_back(inst)
+						if inst.template.get_closable():
+							open_insts.push_back(inst)
 						inst.build_start(self)
 
 				Tag.MODE_PUSH_POP:

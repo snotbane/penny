@@ -51,6 +51,18 @@ var present_delay: float = 0.5:
 			present_delay_timer.wait_time = value
 
 
+var reset_delay_timer: Timer
+## The minimum amount of time to wait to reset the text. If you have any special decorations that function after reset, this duration should account for that.
+@export_range(0.0, 1.0, 0.01, "or_greater")
+var reset_delay: float = 0.5:
+	set(value):
+		reset_delay = value
+
+		if reset_delay > 0.1:
+			reset_delay_timer.wait_time = value
+
+
+
 static var rate_base: float:
 	get: return ProjectSettings.get_setting("penny/typewriter/rate_base", 100.0)
 	set(value): ProjectSettings.set_setting("penny/typewriter/rate_base", value)
@@ -84,10 +96,11 @@ var state: int = READY:
 
 		match state:
 			PLAYING:
-				modulate = Color.WHITE
+				time_started_stamp = Time.get_ticks_usec()
+				time_reseted_stamp = INT64_MAX
 
-			FINISHED:
-				modulate = Color.YELLOW
+			RESETTING:
+				time_reseted_stamp = Time.get_ticks_usec()
 
 		if state != PLAYING:
 			pausing = false
@@ -120,7 +133,7 @@ var source: Variant:
 			source_tags = {}
 
 		visible_characters_max = get_total_character_count()
-		characters_time_stamps.resize(visible_characters_max)
+		characters_time_stamps.resize(visible_characters_max + 1)
 		characters_time_stamps.fill(INF)
 
 
@@ -133,8 +146,9 @@ var visible_characters_max: int
 var visible_characters_partial: float = 0.0
 
 
+var time_started_stamp: int
 var time_elapsed_stamp: int
-var time_prepped_stamp: int
+var time_reseted_stamp: int
 var characters_time_stamps: PackedInt32Array
 
 
@@ -155,6 +169,12 @@ func _init() -> void:
 	present_delay_timer.one_shot = true
 	present_delay_timer.wait_time = 0.5
 	add_child(present_delay_timer)
+
+	reset_delay_timer = Timer.new()
+	reset_delay_timer.autostart = false
+	reset_delay_timer.one_shot = true
+	reset_delay_timer.wait_time = 0.5
+	add_child(reset_delay_timer)
 
 	delay_timer = Timer.new()
 	delay_timer.autostart = false
@@ -178,7 +198,7 @@ func _ready() -> void:
 
 var processing = null
 func _process(delta: float) -> void:
-	time_elapsed_stamp = Time.get_ticks_usec() - time_elapsed_stamp
+	time_elapsed_stamp = Time.get_ticks_usec() - time_started_stamp
 
 	if typing and processing != source:
 		processing = source
@@ -192,8 +212,6 @@ func present(__source__):
 	source = __source__
 	state = PLAYING
 	pausing = true
-
-	time_prepped_stamp = Time.get_ticks_usec()
 
 	_start_sequence()
 
@@ -248,7 +266,8 @@ func poke() -> void:
 func reset():
 	state = RESETTING
 
-	# await Penny.Async.all([ insts (such as dropout) ])
+	reset_delay_timer.start()
+	await reset_delay_timer.timeout
 
 	visible_characters_partial = 0.0
 	visible_characters = 0
@@ -282,7 +301,8 @@ func set_visible_characters_partial(value: float):
 	var visible_characters_target := clampi(floori(visible_characters_partial), 0, visible_characters_max)
 
 	var inc := signi(visible_characters_target - visible_characters)
-	assert(inc != 0)
+	if inc == 0:
+		return
 
 	while visible_characters != visible_characters_target:
 		characters_time_stamps[visible_characters] = time_elapsed_stamp
