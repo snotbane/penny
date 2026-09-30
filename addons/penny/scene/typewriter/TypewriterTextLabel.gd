@@ -133,6 +133,8 @@ var state: int = READY:
 
 			FINISHED:
 				poke_lock = 0
+				rate_stack.clear()
+				speed_stack.clear()
 
 			RESETTING:
 				time_reseted_stamp = Time.get_ticks_usec()

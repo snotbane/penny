@@ -117,7 +117,7 @@ extends RefCounted:
 			match current_tag.mode:
 				Tag.MODE_PUSH:
 					for inst in current_tag:
-						if inst.template.get_closable():
+						if inst.template.require_rtl_context:
 							open_tag.push_back(inst.duplicate())
 							open_insts.push_back(inst)
 						inst.build_start(self)

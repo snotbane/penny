@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="PennyDecorationEffect" format=3 uid="uid://bwf3f55ynp1ti"]
+
+[ext_resource type="Script" uid="uid://cdip6gpcqx4vs" path="res://addons/penny/script/text/DecorationEffect.gd" id="1_eyxt5"]
+
+[resource]
+script = ExtResource("1_eyxt5")
+poke_stop = true
+id = &"poke"
+metadata/_custom_type_script = "uid://cdip6gpcqx4vs"

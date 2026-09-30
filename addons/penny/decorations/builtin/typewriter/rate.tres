@@ -1,0 +1,18 @@
+[gd_resource type="Resource" format=3 uid="uid://1ucuidyre7rk"]
+
+[sub_resource type="GDScript" id="GDScript_micrd"]
+script/source = "extends PennyDecorationEffect
+
+func encounter_start(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel, wait: bool):
+	typewriter.rate_stack.push_back(inst.args.rate)
+	
+func encounter_end(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel, wait: bool):
+	typewriter.rate_stack.remove_at(typewriter.rate_stack.size() - 1)
+"
+
+[resource]
+script = SubResource("GDScript_micrd")
+default_args = Dictionary[StringName, Variant]({
+&"rate": 1.0
+})
+id = &"rate"

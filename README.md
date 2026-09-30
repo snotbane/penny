@@ -363,7 +363,7 @@ These are special decorations which can only be used with a [`TypewriterTextLabe
 - [`<delay/>`](#delay)
 - [`<appear|disappear>`](#appear-and-disappear)
 - [`<lock>`](#lock)
-- [`<pokestop/>`](#pokestop)
+- [`<poke/>`](#poke)
 - [`<rate>`](#rate)
 - [`<retcon>`](#retcon)
 - [`<sfx>`](#sfx)
@@ -431,12 +431,12 @@ Defines a span of text during which user input to the typewriter will be disable
 > [!NOTE]
 > This is considered a **poke stop**, meaning that if the user attempts to skip this text, the text will skip to this point and then continue as normal.
 
-### `<pokestop/>`
+### `<poke/>`
 
-Defines a poke stop. What this means is, if the user attempts to skip this text, the text will skip all the way until it reaches the first poke stop, or if there are none, to the end of the text. This is not the only tag which can create a poke stop.
+Defines a poke stop. What this means is, if the user attempts to skip this text, the text will skip all the way until it reaches the first poke stop, or if there are none, to the end of the text. This is not the only tag which can create a poke stop; just a shorthand for creating a custom stop without waiting. It's much more common to use [`<wait>`](#wait).
 
 ```penny
->	Where are you going? <pokestop>To the supermarket? <pokestop>I thought so.
+>	Where are you going? <poke>To the supermarket? <poke>I thought so.
 ```
 
 ### `<rate>`
