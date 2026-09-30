@@ -37,16 +37,16 @@ func _gui_input_click_poke(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
 			poke()
 
-var poke_lock: int = 0:
+var lock_depth: int = 0:
 	set(value):
-		poke_lock = maxi(value, 0)
+		lock_depth = maxi(value, 0)
 
 
 ## Initiates a user poke. You can call this method to add your own custom functionality. Use a <lock> decoration to prevent this functionality while typing.
 func poke() -> void:
 	match state:
 		PLAYING:
-			if poke_lock == 0:
+			if lock_depth == 0:
 				set_visible_characters_partial(get_next_poke_stop(), false)
 			poked.emit()
 
@@ -117,8 +117,9 @@ var typing_rate_and_speed: float:
 		var rate: float = rate_stack[-1] if rate_stack else rate_base
 		return rate * speed_percent
 
-
 var delay_timer: Timer
+
+var skip_depth: int
 
 
 signal playing_changed
@@ -138,7 +139,8 @@ var state: int = READY:
 				time_reseted_stamp = INT64_MAX
 
 			FINISHED:
-				poke_lock = 0
+				lock_depth = 0
+				skip_depth = 0
 				rate_stack.clear()
 				speed_stack.clear()
 
@@ -323,8 +325,8 @@ func advance() -> void:
 	advanced.emit()
 
 
-func add_visible_characters_partial(value: float):
-	await set_visible_characters_partial(visible_characters_partial + value)
+func add_visible_characters_partial(value: float, wait: bool = true):
+	await set_visible_characters_partial(visible_characters_partial + value, wait)
 
 func set_visible_characters_partial(value: float, wait: bool = true):
 	visible_characters_partial = value
@@ -350,12 +352,17 @@ func set_visible_characters_partial(value: float, wait: bool = true):
 		if inc < 0:
 			continue
 
-		await _handle_elements(wait)
+		await _handle_elements(wait and skip_depth == 0)
 
 	visible_characters_partial = float(visible_characters) + fmod(visible_characters_target, 1.0)
 
+
 	if visible_characters == visible_characters_max:
 		state = FINISHED
+
+	elif skip_depth > 0:
+		add_visible_characters_partial(1.0, false)
+		return
 
 
 func _handle_elements(wait: bool = true):

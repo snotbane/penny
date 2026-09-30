@@ -48,8 +48,9 @@ label start
 # >	But... I thought you were going to <retcon>the movies</>the grocery store.
 
 # >	Look out! He's got a hammer! <sfx="res://oof.ogg">Yeowch! He got me!
->	Look out! He's got a hammer! <sfx="res://oof.ogg">Yeowch!</> He got me!
+# >	Look out! He's got a hammer! <sfx="res://oof.ogg">Yeowch!</> He got me!
 
+>	And the winner is... <skip>@Rubin</>! Congratulations!
 
 
 # >

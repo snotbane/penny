@@ -1,17 +1,15 @@
-[gd_resource type="Resource" format=3 uid="uid://gh8uluuuvird"]
+[gd_resource type="Resource" format=3 uid="uid://dw1cxno2to56a"]
 
-[sub_resource type="GDScript" id="GDScript_rdwbe"]
+[sub_resource type="GDScript" id="GDScript_mrgve"]
 script/source = "extends PennyDecorationEffect
 
 func encounter_start(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel, wait: bool):
-	typewriter.lock_depth += 1
-	
+	typewriter.skip_depth += 1
 	
 func encounter_end(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel, wait: bool):
-	typewriter.lock_depth -= 1
+	typewriter.skip_depth -= 1
 "
 
 [resource]
-script = SubResource("GDScript_rdwbe")
-poke_stop = true
-id = &"lock"
+script = SubResource("GDScript_mrgve")
+id = &"skip"
