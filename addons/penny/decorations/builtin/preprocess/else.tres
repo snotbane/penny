@@ -1,0 +1,20 @@
+[gd_resource type="Resource" format=3 uid="uid://djeia16402bhb"]
+
+[sub_resource type="GDScript" id="GDScript_ve073"]
+script/source = "extends PennyDecorationSingle
+
+func preprocess_start(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
+	var head := context.text.tags.find_recent_if_instance(inst)
+	
+	if not head.data.has(&\"conditional_start\"):
+		head.data.conditional_start = inst.owner.position
+		
+	elif not head.data.has(&\"conditional_end\"):
+		head.data.conditional_end = inst.owner.position
+"
+
+[resource]
+script = SubResource("GDScript_ve073")
+closable = false
+id = &"else"
+metadata/_custom_type_script = "uid://8fnarsyo6oi2"

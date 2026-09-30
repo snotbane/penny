@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://bdl4as1ftjk0s"]
 
 [ext_resource type="Script" uid="uid://khsyo06h0s31" path="res://addons/penny/scene/PromptSay.gd" id="1_bab8c"]
-[ext_resource type="RichTextEffect" uid="uid://nkec8xyp1e7x" path="res://addons/penny/decorations/custom/appear_fx.res" id="2_56vcs"]
 [ext_resource type="Script" uid="uid://cdydlk88x2kjo" path="res://addons/penny/scene/typewriter/TypewriterTextLabel.gd" id="2_pnqov"]
 
 [node name="prompt_say" type="Control" unique_id=725538249]
@@ -34,7 +33,6 @@ mouse_filter = 2
 fit_content = true
 horizontal_alignment = 3
 justification_flags = 35
-custom_effects = [ExtResource("2_56vcs")]
 visible_characters_behavior = 1
 script = ExtResource("2_pnqov")
 present_delay = 0.15

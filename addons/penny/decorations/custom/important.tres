@@ -2,21 +2,30 @@
 
 [ext_resource type="Script" uid="uid://dbsv7cx3cgl1k" path="res://addons/penny/script/text/DecorationCombo.gd" id="1_bqukr"]
 [ext_resource type="Script" uid="uid://13d2x85igrb7" path="res://addons/penny/script/text/DecorationInstance.gd" id="1_w7nud"]
-[ext_resource type="Resource" uid="uid://djr3o66tn5xl1" path="res://addons/penny/decorations/builtin/bbcode/bold.res" id="2_eucvw"]
-[ext_resource type="Resource" uid="uid://chrcm571a18h5" path="res://addons/penny/decorations/builtin/bbcode/italics.res" id="3_8kno4"]
+[ext_resource type="Resource" uid="uid://dyfxi347gmmkq" path="res://addons/penny/decorations/builtin/bbcode/bold.tres" id="2_kuct2"]
+[ext_resource type="Resource" uid="uid://71j4ic0sxmjj" path="res://addons/penny/decorations/builtin/bbcode/italics.tres" id="3_3exfb"]
+[ext_resource type="Resource" uid="uid://ckvmcd2x6aj5h" path="res://addons/penny/decorations/builtin/bbcode/color.tres" id="4_psyys"]
 
 [sub_resource type="Resource" id="Resource_ig7tw"]
 script = ExtResource("1_w7nud")
-template = ExtResource("2_eucvw")
+template = ExtResource("2_kuct2")
 metadata/_custom_type_script = "uid://13d2x85igrb7"
 
 [sub_resource type="Resource" id="Resource_0xm2m"]
 script = ExtResource("1_w7nud")
-template = ExtResource("3_8kno4")
+template = ExtResource("3_3exfb")
+metadata/_custom_type_script = "uid://13d2x85igrb7"
+
+[sub_resource type="Resource" id="Resource_f2vwd"]
+script = ExtResource("1_w7nud")
+template = ExtResource("4_psyys")
+args = Dictionary[StringName, Variant]({
+&"color": Color(1, 1, 0, 1)
+})
 metadata/_custom_type_script = "uid://13d2x85igrb7"
 
 [resource]
 script = ExtResource("1_bqukr")
-instances = Array[ExtResource("1_w7nud")]([SubResource("Resource_ig7tw"), SubResource("Resource_0xm2m")])
+instances = Array[ExtResource("1_w7nud")]([SubResource("Resource_ig7tw"), SubResource("Resource_0xm2m"), SubResource("Resource_f2vwd")])
 id = &"important"
 metadata/_custom_type_script = "uid://dbsv7cx3cgl1k"

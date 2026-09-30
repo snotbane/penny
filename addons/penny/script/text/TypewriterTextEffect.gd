@@ -5,6 +5,7 @@ extends RichTextEffect
 
 func _process_custom_fx(char_fx: CharFXTransform) -> bool:
 	if not (char_fx.env.has(&"_inst") and char_fx.env.has(&"_typewriter")):
+		assert(false, "char_fx does not contain required parameters. Ensure PennyDecorationInstance.env is properly set up.")
 		return false
 
 	if char_fx.env._typewriter is not TypewriterTextLabel:

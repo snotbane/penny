@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PennyDecorationSingle" format=3 uid="uid://dhatbhnw2nx0f"]
+
+[ext_resource type="Script" uid="uid://076asiytiwk4" path="res://addons/penny/script/text/DecorationSingle.gd" id="1_gi41e"]
+
+[resource]
+script = ExtResource("1_gi41e")
+default_args = Dictionary[StringName, Variant]({
+&"alignment": 3,
+&"base_direction": 0,
+&"justification_flags": 35,
+&"language": "",
+&"st_parser": 0,
+&"tab_stops": PackedFloat32Array()
+})
+rich_push_method = &"push_paragraph"
+id = &"p"
+metadata/_custom_type_script = "uid://076asiytiwk4"

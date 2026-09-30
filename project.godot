@@ -46,10 +46,6 @@ folder_colors={
 "res://addons/": "gray"
 }
 
-[penny]
-
-typewriter/rate_base=10.0
-
 [physics]
 
 3d/physics_engine="Jolt Physics"

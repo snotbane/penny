@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="PennyDecorationSingle" format=3 uid="uid://71j4ic0sxmjj"]
+
+[ext_resource type="Script" uid="uid://076asiytiwk4" path="res://addons/penny/script/text/DecorationSingle.gd" id="1_yiuly"]
+
+[resource]
+script = ExtResource("1_yiuly")
+rich_push_method = &"push_italics"
+id = &"i"
+metadata/_custom_type_script = "uid://076asiytiwk4"

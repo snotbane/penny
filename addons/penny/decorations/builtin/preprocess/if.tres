@@ -1,0 +1,55 @@
+[gd_resource type="Resource" format=3 uid="uid://bwdxnncbtawxf"]
+
+[sub_resource type="GDScript" id="GDScript_oacbs"]
+script/source = "extends PennyDecorationSingle
+
+func preprocess_start(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
+	inst.data.satisfied = false
+	inst.data.start = inst.owner.position
+	
+	var condition_express = inst.args.if
+	var condition_result = Penny.Evaluable.evaluate_any(condition_express, context.object_context)
+
+	if condition_result:
+		inst.data.conditional_start = inst.data.start
+	
+
+func preprocess_end(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
+	if inst.data.satisfied:
+		return
+	inst.data.satisfied = true
+	
+	inst.data.end = context.current_tag.position
+	
+	if not inst.data.has(&\"conditional_end\"):
+		inst.data.conditional_end = inst.data.end
+	
+	context.text.text = (
+		context.text.text.substr(0, inst.data.start)
+		+ (
+			context.text.text.substr(
+				inst.data.conditional_start,
+				inst.data.conditional_end - inst.data.conditional_start
+			)
+			if inst.data.has(&\"conditional_start\")
+			else String()
+		)
+		+ context.text.text.substr(inst.data.end)
+	)
+	
+	context.text.tags.erase_position_range(inst.data.start, inst.data.conditional_start)
+	context.text.tags.erase_position_range(inst.data.conditional_end, inst.data.end)
+	
+	print(\"\\npreprocess_end\")
+	print(\"inst.data.start :: \", inst.data.start)
+	print(\"inst.data.end :: \", inst.data.end)
+	print(\"inst.data.conditional_start :: \", inst.data.conditional_start)
+	print(\"inst.data.conditional_end :: \", inst.data.conditional_end)
+	print(\"text :: \", context.text.text)
+	
+"
+
+[resource]
+script = SubResource("GDScript_oacbs")
+id = &"if"
+metadata/_custom_type_script = "uid://8fnarsyo6oi2"

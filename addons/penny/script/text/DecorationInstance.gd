@@ -16,7 +16,7 @@ var data: Dictionary
 
 
 ## Extra data passed to custom fx, including arguments.
-@export_storage
+# @export_storage
 var env: Dictionary
 
 

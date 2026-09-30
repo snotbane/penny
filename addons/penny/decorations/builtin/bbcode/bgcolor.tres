@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="PennyDecorationSingle" format=3 uid="uid://cq77qwbw2wqbu"]
+
+[ext_resource type="Script" uid="uid://076asiytiwk4" path="res://addons/penny/script/text/DecorationSingle.gd" id="1_2vm4e"]
+
+[resource]
+script = ExtResource("1_2vm4e")
+default_args = Dictionary[StringName, Variant]({
+&"bgcolor": Color(1, 1, 1, 1)
+})
+rich_push_method = &"push_bgcolor"
+id = &"bgcolor"
+metadata/_custom_type_script = "uid://076asiytiwk4"

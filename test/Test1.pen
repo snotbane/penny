@@ -37,7 +37,7 @@ label start
 
 # >	Hello<delay> I<delay> love<delay> you<delay>.
 
->	Appear and disappear
+# >	Appear and disappear
 
 # >
 # 	The more you do it, the easier it becomes. It's almost like something out of a fairytale book. And I will hypnotize that just a little bit. You have to make those little noises or it won't work. Go out on a limb - that's where the fruit is. Everyone is going to see things differently - and that's the way it should be.
@@ -52,11 +52,11 @@ label start
 
 # >	Hello, <b>world. <i>How</b> are</> you today?
 
->	Hello, <b>world. How</b> are you today?
+# >	Hello, <b>world. How</b> are you today?
 
 # >	<b>Hello, world 2.
 
-# var emotion = 2
+var emotion = 1
 
 # >	I am feeling
 # 		<if={ emotion == 0 }>happy

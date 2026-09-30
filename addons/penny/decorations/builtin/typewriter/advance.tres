@@ -1,0 +1,15 @@
+[gd_resource type="Resource" format=3 uid="uid://cc8onv21hiqtw"]
+
+[sub_resource type="GDScript" id="GDScript_l7xow"]
+script/source = "extends PennyDecorationEffect
+
+func encounter_start(inst: PennyDecorationInstance, typewriter: TypewriterTextLabel):
+	await typewriter.get_tree().process_frame
+	typewriter.advance()
+"
+
+[resource]
+script = SubResource("GDScript_l7xow")
+closable = false
+poke_stop = true
+id = &"advance"

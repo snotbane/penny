@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="PennyDecorationEffect" format=3 uid="uid://c0xwb37x5sg6q"]
+
+[ext_resource type="RichTextEffect" uid="uid://dgu6cke4vspb7" path="res://addons/penny/decorations/custom/appear_fx.tres" id="1_tkgfk"]
+[ext_resource type="Script" uid="uid://cdip6gpcqx4vs" path="res://addons/penny/script/text/DecorationEffect.gd" id="2_u0nqm"]
+
+[resource]
+script = ExtResource("2_u0nqm")
+default_args = Dictionary[StringName, Variant]({
+&"offset": Vector2(0, -6),
+&"speed": 10.0
+})
+effect = ExtResource("1_tkgfk")
+id = &"appear"
+metadata/_custom_type_script = "uid://cdip6gpcqx4vs"

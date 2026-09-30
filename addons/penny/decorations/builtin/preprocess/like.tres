@@ -1,0 +1,77 @@
+[gd_resource type="Resource" format=3 uid="uid://doj1ebke10v7d"]
+
+[sub_resource type="GDScript" id="GDScript_5bxah"]
+script/source = "extends PennyDecoration
+
+func get_closable() -> bool:
+	return true
+	
+func get_poke_stop() -> bool:
+	return false
+	
+func get_require_rtl_context() -> bool:
+	return true
+	
+func get_default_args() -> Dictionary[StringName, Variant]:
+	return {
+		&\"like\": Penny.Path.TO_OBJECT,
+	}
+
+func preprocess_start(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
+	var path : Penny.Path = inst.args[&\"like\"]
+	var path_result = Penny.Evaluable.evaluate_any(path)
+	assert(path_result is Penny.Cell, \"`like` argument requires a path which evaluates to a [Penny.Cell].\")
+	
+	var object_context : Penny.Cell = path_result
+	var message = object_context.display_text
+	
+	if message is Penny.Message:
+		message = message.translation_default
+	
+	var parser := PennyScript.MessageParser.new(object_context, object_context)
+	var purified := parser.purify(message, &\"\", false)
+	
+	var children : Array = []
+	for tag in purified.tags:
+		if tag.position != 0:
+			break
+		
+		var insert_idx := inst.owner.instances.find(inst)
+		for like_inst in tag:
+			var child := like_inst.duplicate()
+			children.push_back(child)
+			
+			inst.owner.instances.insert(insert_idx, child)
+			child.owner = inst.owner
+			insert_idx += 1
+			
+			child.preprocess_start(context)
+			
+		break
+		
+	inst.data.children = children
+
+
+func preprocess_end(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
+	var insert_idx := inst.owner.instances.find(inst)
+	for i: int in inst.data.children.size():
+		var child : PennyDecorationInstance = inst.data.children[-i-1].duplicate()
+		insert_idx += 1
+		inst.owner.instances.insert(insert_idx, child)
+		child.owner = inst.owner
+		child.preprocess_end(context)
+
+
+#func build_start(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
+	#for child: PennyDecorationInstance in inst.data.children:
+		#child.build_start(context)
+	#
+	#
+#func build_end(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
+	#for child: PennyDecorationInstance in inst.data.children:
+		#child.build_end(context)
+"
+
+[resource]
+script = SubResource("GDScript_5bxah")
+id = &"like"

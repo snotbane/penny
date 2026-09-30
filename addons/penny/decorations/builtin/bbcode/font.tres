@@ -1,0 +1,46 @@
+[gd_resource type="Resource" format=3 uid="uid://fpansjqraduv"]
+
+[sub_resource type="GDScript" id="GDScript_atvsd"]
+script/source = "extends PennyDecoration
+
+func get_closable() -> bool:
+	return true
+	
+func get_default_args() -> Dictionary[StringName, Variant]:
+	return {}
+	
+func get_poke_stop() -> bool:
+	return false
+
+func get_require_rtl_context() -> bool:
+	return true
+
+func build_start(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
+	if inst.args.has(&\"font\"):
+		if inst.args.font is Font:
+			context.rtl.push_font(inst.args.font)
+		elif inst.args.font is String:
+			var res : Resource = load(inst.args.font)
+			assert(
+				res is Font,
+				\"Decoration font argument must be a Font, or a String which loads a font. Actual value: %s\" % [
+					res
+				]
+			)
+			context.rtl.push_font(res)
+		else:
+			assert(
+				false,
+				\"Decoration font argument must be a Font, or a String which loads a font. Actual value: %s\" % [
+					inst.args.font
+				]
+			)
+	
+	if inst.args.has(&\"size\"):
+		context.rtl.push_font_size(inst.args.size)
+"
+
+[resource]
+script = SubResource("GDScript_atvsd")
+id = &"font"
+metadata/_custom_type_script = "uid://076asiytiwk4"

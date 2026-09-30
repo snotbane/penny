@@ -1,0 +1,33 @@
+[gd_resource type="Resource" format=3 uid="uid://b6unmralgylr0"]
+
+[sub_resource type="GDScript" id="GDScript_mcvuj"]
+script/source = "extends PennyDecoration
+
+func get_closable() -> bool:
+	return true
+	
+func get_default_args() -> Dictionary[StringName, Variant]:
+	return {
+		&\"color\": Color.BLACK,
+		&\"size\": 1,
+	}
+	
+func get_poke_stop() -> bool:
+	return false
+
+func get_require_rtl_context() -> bool:
+	return true
+	
+	
+func build_start(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
+	if inst.args.has(&\"color\"):
+		context.rtl.push_outline_color(inst.args.color)
+	
+	if inst.args.has(&\"size\"):
+		context.rtl.push_outline_size(inst.args.size)
+"
+
+[resource]
+script = SubResource("GDScript_mcvuj")
+id = &"outline"
+metadata/_custom_type_script = "uid://076asiytiwk4"

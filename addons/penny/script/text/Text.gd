@@ -97,8 +97,6 @@ extends RefCounted:
 
 
 	func build() -> void:
-		print("text.tags :: %s" % [ text.tags ])
-
 		var string_idx := 0
 		rtl.text = ""
 		rtl.push_context()
@@ -134,7 +132,6 @@ extends RefCounted:
 					for inst in current_tag:
 						inst.build_end(self)
 
-						# for j in open_insts.size():
 						for j in open_tag.instances.size():
 							if inst.is_match(open_tag.instances[-j-1]):
 								open_tag.instances.remove_at(-j-1)
@@ -163,11 +160,11 @@ extends RefCounted:
 
 		current_tag = null
 
-		print("Tags ::")
-		for tag in text.tags:
-			print("\t%s ::" % tag.position)
-			for inst in tag:
-				print("\t\t%s :: %s :: %s" % [inst.owner.position, inst.get_instance_id(), inst])
+		# print("Tags ::")
+		# for tag in text.tags:
+		# 	print("\t%s ::" % tag.position)
+		# 	for inst in tag:
+		# 		print("\t\t%s :: %s :: %s" % [inst.owner.position, inst.get_instance_id(), inst])
 
 
 		if string_position < text.text.length():

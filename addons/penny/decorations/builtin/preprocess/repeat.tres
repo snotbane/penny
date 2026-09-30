@@ -1,0 +1,57 @@
+[gd_resource type="Resource" format=3 uid="uid://binwnwo63gfge"]
+
+[sub_resource type="GDScript" id="GDScript_mfvg7"]
+script/source = "extends PennyDecorationSingle
+
+func preprocess_start(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
+	if not inst.has_argument(&\"repeat\"):
+		printerr(\"repeat decoration has no phrase specified.\")
+		return
+	
+	
+func preprocess_end(inst: PennyDecorationInstance, context: Penny.Text.DecorationContext) -> void:
+	var start : int = inst.owner.position
+	var end : int = context.current_tag.position
+	
+	var repeat_times : int = maxi(0, inst.get_argument(&\"repeat\"))
+	if repeat_times == 1:
+		return
+	
+	var repeat_string := context.text.text.substr(start, end - start).repeat(repeat_times)
+	
+	context.text.text = context.text.text.insert(
+		inst.owner.position,
+		repeat_string
+	)
+	
+	if repeat_times == 0:
+		context.all_tags.erase_position_range(start, end)
+		return
+	
+	## EVERYTHING BEYOND THIS POINT IS UNTESTED.
+	
+	var tags_to_repeat : Array[Penny.Text.Tag] = []
+	for tag in context.all_tags:
+		if tag == inst.owner or tag.position < start or tag.position >= end:
+			continue
+			
+		tags_to_repeat.push_back(tag)
+	
+	for i in repeat_times - 1:
+		for tag in tags_to_repeat:
+			var repeat_tag := tag.duplicate_instances()
+			var relative_position := tag.position - start
+			repeat_tag.position = start + relative_position * (i + 1)
+			context.all_tags.push(repeat_tag)
+	
+	context.all_tags.bump_position_range(end, repeat_string.length())
+	context.all_tags.sort()
+"
+
+[resource]
+script = SubResource("GDScript_mfvg7")
+default_args = Dictionary[StringName, Variant]({
+&"repeat": 1
+})
+id = &"repeat"
+metadata/_custom_type_script = "uid://8fnarsyo6oi2"
