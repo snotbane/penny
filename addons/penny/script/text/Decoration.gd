@@ -48,7 +48,8 @@ func get_require_rtl_context() -> bool
 
 ## Called when loaded at runtime.
 func _ready() -> void:
-	print("Decoration ready :: %s" % self)
+	# print("Decoration ready :: %s" % self)
+	pass
 
 
 func _to_string() -> String:

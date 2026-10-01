@@ -9,6 +9,10 @@ static var VISCHAR_SUBSTITUTIONS : Dictionary[String, String] = {
 	"rb": "]",
 }
 
+static var REGEX_REPLACE := RegEx.create_from_string("%s\\$([a-zA-Z]+|\\d+)" % [
+	ODD_ESCAPE_PATTERN
+])
+
 ## Given a list of [RegEx], searches the given [String] and returns a successful match, depending on *which match appears earliest in the [String]*.
 static func regex_get_first_match_in_string_tuple(string: String, rlist: Array[RegEx], start: int = 0) -> Array:
 	var regex_out: RegEx = null
@@ -39,10 +43,32 @@ static func regex_get_first_match_in_list_tuple(string: String, rlist: Array[Reg
 
 	return [ null, null ]
 
-static func regex_replace_match(r: RegEx, m: RegExMatch, s: String) -> String:
-	return r.sub(m.subject, s, false, m.get_start(), m.get_end())
 
-	# return m.subject.left(m.get_start()) + s + m.subject.right(-m.get_end())
+static func regex_replace_match(m: RegExMatch, s: String) -> String:
+	var start : int = 0
+	while true:
+		var meta_match := REGEX_REPLACE.search(s, start)
+		if meta_match == null:
+			break
+
+		var group = meta_match.get_string(1)
+		if group.is_valid_int():
+			group = int(group)
+
+		var meta_string : String = m.get_string(group)
+		s = _regex_replace_match(meta_match, meta_string)
+		start += meta_string.length()
+
+	return _regex_replace_match(m, s)
+
+
+static func _regex_replace_match(m: RegExMatch, s: String) -> String:
+	return (
+		m.subject.left(m.get_start())
+		+ s
+		+ (m.subject.right(-m.get_end()) if m.get_end() > 0 else m.subject)
+	)
+
 
 var object_context: Variant
 var filter_context: Variant
@@ -144,7 +170,6 @@ func interpolate(string: String, initial_context) -> String:
 			interp_string = interp_value.get_translation(translation)
 
 		string = regex_replace_match(
-			r,
 			m,
 			interpolate(interp_string, interp_context)
 		)
@@ -324,7 +349,7 @@ func decorate(string: String, object_context) -> Penny.Text:
 						tag.mode = Penny.Text.Tag.MODE_POP
 
 						result.tags.push(tag)
-						result.text = regex_replace_match(r_tag, m_tag, substitution)
+						result.text = regex_replace_match(m_tag, substitution)
 						continue
 
 					Penny.Text.Tag.MODE_CLEAR:
@@ -336,7 +361,7 @@ func decorate(string: String, object_context) -> Penny.Text:
 						open_tags.clear()
 
 						result.tags.push(tag)
-						result.text = regex_replace_match(r_tag, m_tag, substitution)
+						result.text = regex_replace_match(m_tag, substitution)
 						continue
 
 				tag = Penny.Text.Tag.new(m_tag.get_start(), mode)
@@ -438,7 +463,7 @@ func decorate(string: String, object_context) -> Penny.Text:
 				break
 
 		start = m_tag.get_start() + substitution.length()
-		result.text = regex_replace_match(r_tag, m_tag, substitution)
+		result.text = regex_replace_match(m_tag, substitution)
 
 	# for tag in result.tags:
 	# 	print("tag :: %s : %s" % [ tag, result.tags[tag] ])

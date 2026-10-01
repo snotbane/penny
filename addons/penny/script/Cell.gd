@@ -28,7 +28,7 @@ static func _static_init() -> void:
 	OBJECT.set_data_local(&"filters", [
 		Penny.Path.new_from_string(".filter_start"),
 		Penny.Text.Filter.new(r"(?<!(?:Mx|Mr|Dr|Prof)s?)((?:[.,?!:;](?!\S))|-{2,})+[\'\")\]]?(?!$)", "$0<delay>"),
-		Penny.Text.Filter.new(r"\.{2,}", "<delay=0.2 | speed=5>$0</>"),
+		Penny.Text.Filter.new(r"\.{2,}", "<delay=0.2 | rate=5>$0</>"),
 		Penny.Text.Filter.new(r"(?<!\\)\|", "<delay>"),
 		Penny.Text.Filter.new(r"(?<!\\)\/", "<wait>"),
 		Penny.Text.Filter.new(r"---", "—"),
