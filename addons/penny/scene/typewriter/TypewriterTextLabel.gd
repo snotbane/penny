@@ -9,6 +9,12 @@ enum {
 	RESETTING,
 }
 
+const TypewriterAudioPlayer := preload("res://addons/penny/scene/typewriter/TypewriterAudioPlayer.gd")
+
+
+static var REGEX_TALK_SILENT_CHAR := RegEx.create_from_string(r"[.,?!]")
+static var REGEX_TALK_NON_SILENT_CHAR := RegEx.create_from_string(r"[\w\d]")
+
 
 signal advanced
 signal poked
@@ -73,9 +79,16 @@ func get_next_poke_stop() -> int:
 
 var _sfx_audio_player_default: AudioStreamPlayer
 
-## The default [AudioStreamPlayer] to use for sfx tags. If unset, a default [AudioStreamPlayer] will be used. This node is not used if <sfx=
+## The default [AudioStreamPlayer] to use for sfx tags. If unset, a default [AudioStreamPlayer] will be used. This node is not used if <sfx source> is set.
 @export
 var sfx_audio_player: Node
+
+
+var _voice_audio_player_default: AudioStreamPlayer
+
+## The default [AudioStreamPlayer] to use for any voice audio, including voice acting as well as babble audio (sound effects which play as the typewriter types). If unset, a default [AudioStreamPlayer] will be used. This node is not used if [member context_object] has a valid `.voice` path.
+@export
+var voice_audio_player: Node
 
 
 var present_delay_timer: Timer
@@ -121,6 +134,8 @@ var delay_timer: Timer
 
 var skip_depth: int
 
+## At any given moment in time, this value will reflect whether or not the speaker should appear to be talking, e.g. play a talking animation.
+var talking: bool
 
 signal playing_changed
 signal state_changed
@@ -214,6 +229,12 @@ func _init() -> void:
 	_sfx_audio_player_default = AudioStreamPlayer.new()
 	add_child(_sfx_audio_player_default)
 
+	_voice_audio_player_default = AudioStreamPlayer.new()
+	_voice_audio_player_default.set_script(preload("res://addons/penny/scene/typewriter/TypewriterAudioPlayer.gd"))
+	_voice_audio_player_default.max_polyphony = 4
+	_voice_audio_player_default.stream = preload("res://addons/penny/audio/babble_blip.ogg")
+	add_child(_voice_audio_player_default)
+
 	present_delay_timer = Timer.new()
 	present_delay_timer.autostart = false
 	present_delay_timer.one_shot = true
@@ -243,6 +264,12 @@ func _ready() -> void:
 
 	if sfx_audio_player == null:
 		sfx_audio_player = _sfx_audio_player_default
+
+	if voice_audio_player == null:
+		voice_audio_player = _voice_audio_player_default
+
+	if voice_audio_player is TypewriterAudioPlayer:
+		character_encountered.connect(voice_audio_player.on_character_encountered)
 
 	visible_characters = 0
 
@@ -352,6 +379,7 @@ func set_visible_characters_partial(value: float, wait: bool = true):
 		if inc < 0:
 			continue
 
+		_handle_character(source_text[visible_characters - 1])
 		await _handle_elements(wait and skip_depth == 0)
 
 	visible_characters_partial = float(visible_characters) + fmod(visible_characters_target, 1.0)
@@ -363,6 +391,19 @@ func set_visible_characters_partial(value: float, wait: bool = true):
 	elif skip_depth > 0:
 		add_visible_characters_partial(1.0, false)
 		return
+
+signal character_encountered(c: String)
+
+func _handle_character(c: String) -> void:
+	character_encountered.emit(c)
+
+	if REGEX_TALK_SILENT_CHAR.search(c):
+		talking = false
+	elif REGEX_TALK_NON_SILENT_CHAR.search(c):
+		talking = true
+	else:
+		# talking = talking
+		pass
 
 
 func _handle_elements(wait: bool = true):

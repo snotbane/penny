@@ -360,8 +360,9 @@ var times = 10
 These are special decorations which can only be used with a [`TypewriterTextLabel`](addons/penny/scene/typewriter/TypewriterTextLabel.gd). Any decoration which affects the timing of how characters being printed out, or audio, should be of this type.
 
 - [`<advance/>`](#advance)
-- [`<delay/>`](#delay)
 - [`<appear|disappear>`](#appear-and-disappear)
+- [`<babble>`](#babble)
+- [`<delay/>`](#delay)
 - [`<lock>`](#lock)
 - [`<poke/>`](#poke)
 - [`<rate>`](#rate)
@@ -369,7 +370,6 @@ These are special decorations which can only be used with a [`TypewriterTextLabe
 - [`<sfx>`](#sfx)
 - [`<skip>`](#skip)
 - [`<speed>`](#speed)
-- [`<stroke>`](#stroke)
 - [`<volume>`](#volume)
 - [`<wait/>`](#wait)
 
@@ -391,6 +391,21 @@ These are examples of decorations which allow the text to appear and disappear u
 
 ```penny
 >	<appear|disappear>Hello, world!</>
+```
+
+### `<babble>`
+
+Defines a span of text which overrides the audioi properties played when typing per character. The argument passed should evaluate to a String path which points to an `AudioStream` resource, which will be used to print out characters. Usually this is a path relative to the speaker.
+
+```penny
+>	<babble=.sad>I thought I could trust you... <babble=.angry>but you HURT me!
+```
+
+```penny
+>	<
+		babble
+		rate=40
+	>
 ```
 
 ### `<delay/>`
@@ -443,6 +458,9 @@ Defines a poke stop. What this means is, if the user attempts to skip this text,
 
 Defines a span of text which should print out at a specific rate. The argument passed will be a float measuring the characters per second to print out. This will override all other variables influencing typewriter speed, including user settings and `<speed>` decorations. For setting a relative print speed which factors in user settings, use [`<speed>`](#speed).
 
+> [!NOTE]
+> This also defines the maximum rate for typewriter **Babble** audio, but changing it may not directly affect Babbling.
+
 ### `<retcon>`
 
 This decoration defines a span of text which will be printed out, and then un-printed out in reverse, before continuing.
@@ -486,7 +504,7 @@ There are several parameters which can be passed:
 
 ### `<skip>`
 
-Defines a span of text which will instantly print out the moment it is encountered. Effectively the same thing as using `<speed=INF>`, but more direct/robust.
+Defines a span of text which will instantly print out the moment it is encountered. Effectively the same thing as using `<speed=INF>`, but better for stability.
 
 ```penny
 >	And the winner is... <skip>@Rubin!</> Congratulations!
@@ -496,13 +514,8 @@ Defines a span of text which will instantly print out the moment it is encounter
 
 Defines a span of text which should be printed at a different relative speed. The argument passed will be a percentage of the base speed. For overriding the base speed, use [`<rate>`](#rate).
 
-### `<stroke>`
-
-Defines a span of text which overrides the audio played when typing per character. The argument passed should evaluate to a String path which points to an `AudioStream` resource, which will be used to print out characters. Usually this is a path relative to the speaker.
-
-```penny
->	<stroke=.sad>I thought I could trust you... <stroke=.angry>but you HURT me!
-```
+> [!NOTE]
+> This will also affect the speed of **Babble** audio.
 
 ### `<volume>`
 

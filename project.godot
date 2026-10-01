@@ -15,6 +15,10 @@ run/main_scene="uid://ckb8dfe8j2233"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[audio]
+
+buses/default_bus_layout="uid://cu2b608d8o0fm"
+
 [autoload]
 
 PennyAutoload="*uid://bilj07ejpsfxm"
@@ -48,7 +52,7 @@ folder_colors={
 
 [penny]
 
-typewriter/rate_base=10.0
+typewriter/rate_base=70.0
 
 [physics]
 

@@ -7,7 +7,7 @@
 script = ExtResource("2_u0nqm")
 default_args = Dictionary[StringName, Variant]({
 &"offset": Vector2(0, -6),
-&"speed": 10.0
+&"speed": 20.0
 })
 effect = ExtResource("1_tkgfk")
 id = &"appear"

@@ -53,7 +53,7 @@ func _enter_tree() -> void:
 			"name": "penny/typewriter/rate_base",
 			"type": TYPE_FLOAT,
 			"hint": PROPERTY_HINT_RANGE,
-			"hint_string": "0.0,200.0,10.0,or_greater",
+			"hint_string": "0.0,200.0,1.0,or_greater",
 		},
 		100.0
 	)
